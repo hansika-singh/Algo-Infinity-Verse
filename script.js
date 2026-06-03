@@ -810,6 +810,9 @@ const practiceProblems = [
     tags: ["Arrays", "Hash Table"],
     acceptance: "48.2%",
     category: "arrays",
+    description: "Given an array of integers nums and an integer target, return indices of the two numbers that add up to target. You may assume exactly one solution exists, and you may not use the same element twice. Return the answer in any order.",
+    constraints: ["2 ≤ nums.length ≤ 10⁴", "-10⁹ ≤ nums[i] ≤ 10⁹", "Only one valid answer exists"],
+    followUp: "Can you solve it in O(n) time complexity?",
   },
   {
     id: 2,
@@ -818,6 +821,9 @@ const practiceProblems = [
     tags: ["Strings", "Stack"],
     acceptance: "40.2%",
     category: "strings",
+    description: "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. A string is valid if every open bracket is closed by the same type of bracket in the correct order.",
+    constraints: ["1 ≤ s.length ≤ 10⁴", "s consists of parentheses only '()[]{}'"],
+    followUp: "Can you solve it in O(n) time and O(n) space?",
   },
   {
     id: 3,
@@ -2858,21 +2864,82 @@ function submitQuizCode() {
 
 function generateExamples(problem) {
   const examples = {
-    1: "<strong>Example 1:</strong><br>Input: nums = [2,7,11,15], target = 9<br>Output: [0,1]<br>Explanation: nums[0] + nums[1] = 2 + 7 = 9",
-    2: '<strong>Example 1:</strong><br>Input: s = "()"<br>Output: true',
-    3: "<strong>Example 1:</strong><br>Input: l1 = [1,2,4], l2 = [1,3,4]<br>Output: [1,1,2,3,4,4]",
-    4: "<strong>Example 1:</strong><br>Input: nums = [-2,1,-3,4,-1,2,1,-5,4]<br>Output: 6<br>Explanation: [4,-1,2,1] has the largest sum = 6",
-    5: "<strong>Example:</strong><br>Design and implement LRU Cache",
-    6: "<strong>Example 1:</strong><br>Input: adjList = [[2,4],[1,3],[2,4],[1,3]]<br>Output: [[2,4],[1,3],[2,4],[1,3]]",
-    7: "<strong>Example 1:</strong><br>Input: nums = [10,9,2,5,3,7,101,18]<br>Output: 4",
-    8: '<strong>Example 1:</strong><br>Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]<br>Output: 5',
-    9: "<strong>Example 1:</strong><br>Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]<br>Output: 6",
-    10: "<strong>Example 1:</strong><br>Input: head = [1,2,3,4,5]<br>Output: [5,4,3,2,1]",
-    11: "<strong>Example 1:</strong><br>Input: root = [4,2,7,1,3,6,9]<br>Output: [4,7,2,9,6,3,1]",
-    12: "<strong>Example 1:</strong><br>Input: root = [2,1,3]<br>Output: true",
-    13: '<strong>Example 1:</strong><br>Input: grid = [["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]<br>Output: 3',
-    14: "<strong>Example 1:</strong><br>Input: nums = [1,2,3,1]<br>Output: 4",
-    15: "<strong>Example 1:</strong><br>Input: numCourses = 2, prerequisites = [[1,0]]<br>Output: [0,1]",
+    1: `<strong>Example 1:</strong><br>Input: nums = [2,7,11,15], target = 9<br>Output: [0,1]<br>Explanation: nums[0] + nums[1] = 2 + 7 = 9<br><br>
+        <strong>Example 2:</strong><br>Input: nums = [3,2,4], target = 6<br>Output: [1,2]<br>Explanation: nums[1] + nums[2] = 2 + 4 = 6<br><br>
+        <strong>Example 3:</strong><br>Input: nums = [3,3], target = 6<br>Output: [0,1]<br><br>
+        <strong>Edge Cases:</strong><br>• What if the array has duplicates?<br>• What if target is negative?<br><br>
+        <strong>Follow-up:</strong> Can you solve it in O(n) using a Hash Map?`,
+
+    2: `<strong>Example 1:</strong><br>Input: s = "()"<br>Output: true<br><br>
+        <strong>Example 2:</strong><br>Input: s = "()[]{}"<br>Output: true<br><br>
+        <strong>Example 3:</strong><br>Input: s = "(]"<br>Output: false<br>Explanation: Brackets are not closed in the correct order.<br><br>
+        <strong>Edge Cases:</strong><br>• Empty string → true<br>• Odd length string → always false<br><br>
+        <strong>Follow-up:</strong> Can you solve it in O(n) time using a Stack?`,
+
+    3: `<strong>Example 1:</strong><br>Input: l1 = [1,2,4], l2 = [1,3,4]<br>Output: [1,1,2,3,4,4]<br><br>
+        <strong>Example 2:</strong><br>Input: l1 = [], l2 = []<br>Output: []<br><br>
+        <strong>Example 3:</strong><br>Input: l1 = [], l2 = [0]<br>Output: [0]<br><br>
+        <strong>Edge Cases:</strong><br>• One or both lists are empty<br>• Lists of different lengths<br><br>
+        <strong>Follow-up:</strong> Can you solve it both iteratively and recursively?`,
+
+    4: `<strong>Example 1:</strong><br>Input: nums = [-2,1,-3,4,-1,2,1,-5,4]<br>Output: 6<br>Explanation: [4,-1,2,1] has the largest sum = 6<br><br>
+        <strong>Example 2:</strong><br>Input: nums = [1]<br>Output: 1<br><br>
+        <strong>Example 3:</strong><br>Input: nums = [5,4,-1,7,8]<br>Output: 23<br><br>
+        <strong>Edge Cases:</strong><br>• All negative numbers → return the largest single element<br><br>
+        <strong>Follow-up:</strong> Can you solve it using Kadane's Algorithm in O(n)?`,
+
+    5: `<strong>Example:</strong><br>LRUCache cache = new LRUCache(2);<br>cache.put(1,1); // cache: {1=1}<br>cache.put(2,2); // cache: {1=1, 2=2}<br>cache.get(1);   // returns 1<br>cache.put(3,3); // evicts key 2, cache: {1=1, 3=3}<br>cache.get(2);   // returns -1 (not found)<br><br>
+        <strong>Edge Cases:</strong><br>• Capacity of 1<br>• Getting a key that was just evicted<br><br>
+        <strong>Follow-up:</strong> Can you achieve O(1) for both get and put using a HashMap + Doubly Linked List?`,
+
+    6: `<strong>Example 1:</strong><br>Input: adjList = [[2,4],[1,3],[2,4],[1,3]]<br>Output: [[2,4],[1,3],[2,4],[1,3]]<br><br>
+        <strong>Example 2:</strong><br>Input: adjList = [[]]<br>Output: [[]]<br><br>
+        <strong>Edge Cases:</strong><br>• Empty graph<br>• Single node with no neighbors<br><br>
+        <strong>Follow-up:</strong> Can you solve it using both BFS and DFS?`,
+
+    7: `<strong>Example 1:</strong><br>Input: nums = [10,9,2,5,3,7,101,18]<br>Output: 4<br>Explanation: [2,3,7,101] is the longest increasing subsequence<br><br>
+        <strong>Example 2:</strong><br>Input: nums = [0,1,0,3,2,3]<br>Output: 4<br><br>
+        <strong>Edge Cases:</strong><br>• All elements same → LIS = 1<br>• Already sorted → LIS = n<br><br>
+        <strong>Follow-up:</strong> Can you improve from O(n²) DP to O(n log n) using Binary Search?`,
+
+    8: `<strong>Example 1:</strong><br>Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]<br>Output: 5<br>Explanation: hit→hot→dot→dog→cog<br><br>
+        <strong>Example 2:</strong><br>Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]<br>Output: 0<br>Explanation: endWord not in wordList<br><br>
+        <strong>Follow-up:</strong> Can you find ALL shortest transformation sequences?`,
+
+    9: `<strong>Example 1:</strong><br>Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]<br>Output: 6<br><br>
+        <strong>Example 2:</strong><br>Input: height = [4,2,0,3,2,5]<br>Output: 9<br><br>
+        <strong>Edge Cases:</strong><br>• All same height → 0 water<br>• Monotonically increasing/decreasing → 0 water<br><br>
+        <strong>Follow-up:</strong> Can you solve it in O(n) time and O(1) space using Two Pointers?`,
+
+    10: `<strong>Example 1:</strong><br>Input: head = [1,2,3,4,5]<br>Output: [5,4,3,2,1]<br><br>
+        <strong>Example 2:</strong><br>Input: head = [1,2]<br>Output: [2,1]<br><br>
+        <strong>Edge Cases:</strong><br>• Empty list → null<br>• Single node → same node<br><br>
+        <strong>Follow-up:</strong> Can you solve it both iteratively and recursively?`,
+
+    11: `<strong>Example 1:</strong><br>Input: root = [4,2,7,1,3,6,9]<br>Output: [4,7,2,9,6,3,1]<br><br>
+        <strong>Example 2:</strong><br>Input: root = [2,1,3]<br>Output: [2,3,1]<br><br>
+        <strong>Edge Cases:</strong><br>• Empty tree → null<br>• Single node → same node<br><br>
+        <strong>Follow-up:</strong> Can you solve it both recursively and iteratively?`,
+
+    12: `<strong>Example 1:</strong><br>Input: root = [2,1,3]<br>Output: true<br><br>
+        <strong>Example 2:</strong><br>Input: root = [5,1,4,null,null,3,6]<br>Output: false<br>Explanation: Root's right child value 4 is not greater than root 5<br><br>
+        <strong>Edge Cases:</strong><br>• Empty tree → true<br>• Duplicate values → false<br><br>
+        <strong>Follow-up:</strong> Can you solve it without recursion using Morris Traversal?`,
+
+    13: `<strong>Example 1:</strong><br>Input: grid = [["1","1","0"],["1","1","0"],["0","0","1"]]<br>Output: 2<br><br>
+        <strong>Example 2:</strong><br>Input: grid = [["1","1","1"],["0","1","0"],["1","1","1"]]<br>Output: 1<br><br>
+        <strong>Edge Cases:</strong><br>• All water → 0<br>• All land → 1<br><br>
+        <strong>Follow-up:</strong> Can you solve it using both DFS and Union-Find?`,
+
+    14: `<strong>Example 1:</strong><br>Input: nums = [1,2,3,1]<br>Output: 4<br>Explanation: Rob house 1 (1) then house 3 (3)<br><br>
+        <strong>Example 2:</strong><br>Input: nums = [2,7,9,3,1]<br>Output: 12<br>Explanation: Rob house 1 (2), house 3 (9), house 5 (1)<br><br>
+        <strong>Edge Cases:</strong><br>• Single house → rob it<br>• Two houses → rob the larger<br><br>
+        <strong>Follow-up:</strong> What if houses are arranged in a circle? (House Robber II)`,
+
+    15: `<strong>Example 1:</strong><br>Input: numCourses = 2, prerequisites = [[1,0]]<br>Output: true<br>Explanation: Take course 0 first, then course 1<br><br>
+        <strong>Example 2:</strong><br>Input: numCourses = 2, prerequisites = [[1,0],[0,1]]<br>Output: false<br>Explanation: Cycle detected — impossible to finish<br><br>
+        <strong>Edge Cases:</strong><br>• No prerequisites → always true<br>• Self-loop → false<br><br>
+        <strong>Follow-up:</strong> Can you return the actual course order? (Course Schedule II)`,
   };
   return (
     examples[problem.id] || "<strong>Example:</strong><br>Solve this problem"
@@ -2918,13 +2985,20 @@ function openQuizEditor(problem) {
       : problem.difficulty === "medium"
         ? "difficulty-medium"
         : "difficulty-hard");
-
-  document.getElementById("quizDescription").textContent =
-    'Solve the "' +
-    problem.title +
-    '" problem. ' +
-    problem.tags.map((t) => "[" + t + "]").join(" ");
-
+        
+  const descEl = document.getElementById("quizDescription");
+  if (problem.description) {
+    let descHTML = problem.description;
+    if (problem.constraints) {
+      descHTML += "<br><br><strong>Constraints:</strong><ul>" +
+        problem.constraints.map(c => `<li>${c}</li>`).join("") +
+        "</ul>";
+    }
+    descEl.innerHTML = descHTML;
+  } else {
+    descEl.textContent = 'Solve the "' + problem.title + '" problem. ' +
+      problem.tags.map((t) => "[" + t + "]").join(" ");
+  }
   const examples = generateExamples(problem);
   document.getElementById("quizExamples").innerHTML = examples;
 
