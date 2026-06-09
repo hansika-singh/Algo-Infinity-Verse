@@ -3533,22 +3533,63 @@ function loadUserData() {
 
 function openTopicModal(topic) {
   const modal = document.getElementById("topicModal");
+  let selectedProblemName = null; // track selected problem
+
   document.getElementById("modalTitle").textContent = topic.name;
   document.getElementById("modalTheory").textContent = topic.theory;
   document.getElementById("modalDifficulty").innerHTML =
     `<span class="difficulty-badge ${getDifficultyClass(topic.difficulty)}">${topic.difficulty}</span>`;
 
   const problemsList = document.getElementById("modalProblems");
-  problemsList.innerHTML = topic.problems.map((p) => `<li>${p}</li>`).join("");
+  problemsList.innerHTML = topic.problems
+    .map((p) => `<li class="sample-problem-item" 
+      style="cursor:pointer; padding: 0.6rem 1rem; margin: 0.4rem 0; border-radius: 8px; border: 1px solid var(--glass-border); list-style: none; transition: all 0.2s ease;" 
+      onmouseover="this.style.background='var(--primary)'; this.style.color='var(--dark-bg)'"
+      onmouseout="if(!this.classList.contains('selected-problem')){this.style.background=''; this.style.color='';}"
+      onclick="selectSampleProblem(this, '${p}')">${p}</li>`)
+    .join("");
 
-  document.getElementById("startPracticeBtn").onclick = () => {
-    modal.classList.remove("active");
+  // Update Start Practicing button
+  const startBtn = document.getElementById("startPracticeBtn");
+  startBtn.textContent = "Start Practicing";
+  startBtn.onclick = () => {
+    const selected = document.querySelector(".selected-problem");
+    const problemName = selected ? selected.textContent.trim() : null;
+
+    closeTopicModal();
     document.getElementById("practice").scrollIntoView({ behavior: "smooth" });
+
+    setTimeout(() => {
+      const match = practiceProblems.find(
+        (p) => p.title.toLowerCase() === (problemName || "").toLowerCase()
+      );
+      if (match) {
+        openQuizEditor(match);
+      }
+    }, 600);
   };
 
   modal.classList.add("active");
 }
+function selectSampleProblem(el, problemName) {
+  // Remove selected state from all items
+  document.querySelectorAll(".sample-problem-item").forEach((item) => {
+    item.classList.remove("selected-problem");
+    item.style.background = "";
+    item.style.color = "";
+    item.style.border = "1px solid var(--glass-border)";
+  });
 
+  // Highlight selected item
+  el.classList.add("selected-problem");
+  el.style.background = "var(--primary)";
+  el.style.color = "var(--dark-bg)";
+  el.style.border = "1px solid var(--primary)";
+
+  // Update Start Practicing button to show selected problem
+  const startBtn = document.getElementById("startPracticeBtn");
+  startBtn.textContent = `Start Practicing: ${problemName}`;
+}
 function closeTopicModal() {
   document.getElementById("topicModal").classList.remove("active");
 }
