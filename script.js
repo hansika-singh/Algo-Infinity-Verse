@@ -705,8 +705,43 @@ const dsaTopics = [
     description:
       "Learn array operations, manipulations, and common interview problems",
     difficulty: "Easy-Medium",
-    theory:
-      "Arrays are contiguous memory locations that store elements of the same type. They provide O(1) access time but fixed size.",
+   theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🗂️ Arrays — The Foundation of DSA</h3>
+<p style="margin-bottom:1rem;">Arrays store elements in <strong>contiguous memory locations</strong>, giving lightning-fast index access.</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Key Operations & Complexity</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Operation</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Time</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Access by index</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(1) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Search (unsorted)</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Search (sorted)</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(log n)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert at end</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(1) ✅</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert at middle</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Delete</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know Interview Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Two Pointers</strong> — pair sum, container with most water</li>
+  <li style="padding:0.3rem 0;">→ <strong>Sliding Window</strong> — max sum subarray of size k</li>
+  <li style="padding:0.3rem 0;">→ <strong>Prefix Sum</strong> — range sum queries</li>
+  <li style="padding:0.3rem 0;">→ <strong>Kadane's Algorithm</strong> — maximum subarray sum</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• Sorted array? Think Binary Search first!</li>
+  <li style="padding:0.3rem 0;">• Need pairs? Two pointers beats nested loops</li>
+  <li style="padding:0.3rem 0;">• Watch for index out of bounds errors</li>
+  <li style="padding:0.3rem 0;">• Always ask: can I solve this in-place?</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Two Sum (Google), Trapping Rain Water (Amazon), Maximum Subarray (Microsoft)</p>
+`,
     problems: [
       "Two Sum",
       "Maximum Subarray",
@@ -725,8 +760,42 @@ const dsaTopics = [
     description:
       "Master string algorithms, pattern matching, and string manipulation",
     difficulty: "Easy-Medium",
-    theory:
-      "Strings are arrays of characters. Key operations include concatenation, substring search, and pattern matching using algorithms like KMP.",
+   theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🔤 Strings — Text Processing Powerhouse</h3>
+<p style="margin-bottom:1rem;">Strings are sequences of characters. <strong>Immutable in most languages</strong> — every modification creates a new string!</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Key Operations & Complexity</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Operation</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Time</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Access by index</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(1) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Concatenation</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Substring search (naive)</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n*m)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">KMP search</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(n+m) ✅</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Reverse</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know Interview Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Sliding Window</strong> — longest substring without repeating chars</li>
+  <li style="padding:0.3rem 0;">→ <strong>Two Pointers</strong> — palindrome check, reverse words</li>
+  <li style="padding:0.3rem 0;">→ <strong>Hash Map</strong> — anagram detection, character frequency</li>
+  <li style="padding:0.3rem 0;">→ <strong>Stack</strong> — valid parentheses, balanced brackets</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• Convert to char array when mutation needed</li>
+  <li style="padding:0.3rem 0;">• Use hash map for character frequency counting</li>
+  <li style="padding:0.3rem 0;">• Always clarify: case sensitive? spaces count?</li>
+  <li style="padding:0.3rem 0;">• ASCII trick: 'a'-'z' = 97-122, 'A'-'Z' = 65-90</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Longest Substring (Amazon), Group Anagrams (Google), Valid Parentheses (Microsoft)</p>
+`,
     problems: [
       "Longest Substring Without Repeating",
       "Valid Parentheses",
@@ -742,8 +811,50 @@ const dsaTopics = [
     description:
       "Singly, doubly, and circular linked lists with traversal techniques",
     difficulty: "Medium",
-    theory:
-      "Linked lists are linear data structures where elements are linked using pointers. Allows dynamic size and efficient insertions/deletions.",
+   theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🔗 Linked Lists — Dynamic Chain of Nodes</h3>
+<p style="margin-bottom:1rem;">Each node holds <strong>data + pointer to next node</strong>. No random access but super fast insertions!</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Key Operations & Complexity</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Operation</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Time</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Access by index</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Search</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert at head</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(1) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert at tail</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(1) ✅</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert at middle</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Delete</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🔀 Types</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Singly</strong> — each node points to next</li>
+  <li style="padding:0.3rem 0;">→ <strong>Doubly</strong> — each node points to next AND previous</li>
+  <li style="padding:0.3rem 0;">→ <strong>Circular</strong> — last node points back to first</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know Interview Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Fast & Slow Pointers</strong> — cycle detection, find middle</li>
+  <li style="padding:0.3rem 0;">→ <strong>Dummy Node</strong> — simplifies edge cases</li>
+  <li style="padding:0.3rem 0;">→ <strong>Reverse in place</strong> — iterative and recursive</li>
+  <li style="padding:0.3rem 0;">→ <strong>Merge technique</strong> — merging two sorted lists</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• ALWAYS check for null pointers first!</li>
+  <li style="padding:0.3rem 0;">• Draw pointer manipulations before coding</li>
+  <li style="padding:0.3rem 0;">• Dummy node trick eliminates edge cases</li>
+  <li style="padding:0.3rem 0;">• Fast/slow pointer = most tested LL pattern</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Reverse Linked List (Amazon), Detect Cycle (Google), Remove Nth From End (Microsoft)</p>
+`,
     problems: [
       "Reverse Linked List",
       "Detect Cycle",
@@ -759,13 +870,54 @@ const dsaTopics = [
     description:
       "Binary trees, BST, traversal algorithms, and tree-based problems",
     difficulty: "Medium-Hard",
-    theory:
-      "Trees are hierarchical structures. Binary trees have at most two children per node. BST maintains sorted order: left < root < right.",
+   theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🌳 Trees — Hierarchical Data Mastery</h3>
+<p style="margin-bottom:1rem;">Trees are <strong>non-linear hierarchical structures</strong>. Master recursion here and you master half of DSA!</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Key Operations & Complexity (Balanced BST)</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Operation</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Time</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Search</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(log n) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Insert</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(log n) ✅</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Delete</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(log n) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Traversal</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(n)</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🔀 Traversal Types</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Inorder (L→Root→R)</strong> — gives sorted output for BST ✅</li>
+  <li style="padding:0.3rem 0;">→ <strong>Preorder (Root→L→R)</strong> — used for tree copying</li>
+  <li style="padding:0.3rem 0;">→ <strong>Postorder (L→R→Root)</strong> — used for tree deletion</li>
+  <li style="padding:0.3rem 0;">→ <strong>Level Order (BFS)</strong> — processes level by level</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know Interview Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Recursion</strong> — most tree problems have elegant solutions</li>
+  <li style="padding:0.3rem 0;">→ <strong>BFS</strong> — level order, shortest path</li>
+  <li style="padding:0.3rem 0;">→ <strong>DFS</strong> — path sum, diameter, LCA</li>
+  <li style="padding:0.3rem 0;">→ <strong>Morris Traversal</strong> — O(1) space traversal</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• Always handle null/empty tree first!</li>
+  <li style="padding:0.3rem 0;">• Think recursively — what does my function return?</li>
+  <li style="padding:0.3rem 0;">• Height = bottom-up, Depth = top-down</li>
+  <li style="padding:0.3rem 0;">• BST inorder traversal = sorted array</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Validate BST (Amazon), LCA (Google), Maximum Depth (Microsoft)</p>
+`,
     problems: [
       "Maximum Depth",
       "Validate BST",
       "Lowest Common Ancestor",
-      "Serialize/Deserialize",
+      "Invert Binary Tree",
       "Path Sum",
     ],
   },
@@ -776,8 +928,50 @@ const dsaTopics = [
     description:
       "Graph representations, traversal (BFS/DFS), shortest paths, and networks",
     difficulty: "Hard",
-    theory:
-      "Graphs consist of vertices connected by edges. Representations: adjacency list/matrix. Traversals: BFS (level-order) and DFS (depth-first).",
+   theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🕸️ Graphs — Networks & Connections</h3>
+<p style="margin-bottom:1rem;">Graphs model <strong>real-world networks</strong>: social media, maps, dependencies. Master this = ace system design too!</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Key Algorithms & Complexity</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Algorithm</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Time</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">BFS</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(V+E) ✅</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">DFS</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(V+E) ✅</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Dijkstra</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O((V+E)logV)</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Topological Sort</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">O(V+E)</td></tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Union Find</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border); color:#22c55e;">O(α(n)) ✅</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🔀 Graph Types</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Directed</strong> vs <strong>Undirected</strong></li>
+  <li style="padding:0.3rem 0;">→ <strong>Weighted</strong> vs <strong>Unweighted</strong></li>
+  <li style="padding:0.3rem 0;">→ <strong>Cyclic</strong> vs <strong>Acyclic (DAG)</strong></li>
+  <li style="padding:0.3rem 0;">→ <strong>Connected</strong> vs <strong>Disconnected</strong></li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know Interview Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>BFS</strong> — shortest path, word ladder, level order</li>
+  <li style="padding:0.3rem 0;">→ <strong>DFS</strong> — islands, connected components, cycle detection</li>
+  <li style="padding:0.3rem 0;">→ <strong>Union Find</strong> — disjoint sets, connected components</li>
+  <li style="padding:0.3rem 0;">→ <strong>Topological Sort</strong> — course schedule, task ordering</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• ALWAYS track visited nodes to avoid infinite loops!</li>
+  <li style="padding:0.3rem 0;">• BFS = shortest path, DFS = exhaustive search</li>
+  <li style="padding:0.3rem 0;">• Draw the graph before you code</li>
+  <li style="padding:0.3rem 0;">• Adjacency list > matrix for sparse graphs</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Number of Islands (Google), Course Schedule (Amazon), Word Ladder (Facebook)</p>
+`,
     problems: [
       "Clone Graph",
       "Number of Islands",
@@ -793,8 +987,54 @@ const dsaTopics = [
     description:
       "Recursion, memoization, tabulation, and optimization problems",
     difficulty: "Hard",
-    theory:
-      "DP breaks problems into overlapping subproblems. Stores solutions to avoid recomputation. Approaches: top-down (memoization) and bottom-up (tabulation).",
+    theory: `
+<h3 style="color:var(--accent); margin-bottom:1rem;">🎯 Dynamic Programming — The Ultimate Problem Solver</h3>
+<p style="margin-bottom:1rem;"><strong>DP = Recursion + Memoization</strong>. Master this and you can crack any FAANG interview!</p>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">⚡ Two Must-Have Conditions</h4>
+<table style="width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.9rem;">
+  <tr style="background:var(--dark-card);">
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Condition</th>
+    <th style="padding:0.5rem 1rem; text-align:left; border:1px solid var(--glass-border);">Meaning</th>
+  </tr>
+  <tr><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Optimal Substructure</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Best solution uses best subsolutions</td></tr>
+  <tr style="background:var(--dark-card);"><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Overlapping Subproblems</td><td style="padding:0.5rem 1rem; border:1px solid var(--glass-border);">Same subproblems solved multiple times</td></tr>
+</table>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🔀 Two Approaches</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>Top-Down (Memoization)</strong> — recursive + cache = fast!</li>
+  <li style="padding:0.3rem 0;">→ <strong>Bottom-Up (Tabulation)</strong> — iterative, fill DP table</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🎯 Must-Know DP Patterns</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">→ <strong>1D DP</strong> — Fibonacci, Climbing Stairs, House Robber</li>
+  <li style="padding:0.3rem 0;">→ <strong>2D DP</strong> — Grid paths, Edit Distance, LCS</li>
+  <li style="padding:0.3rem 0;">→ <strong>Knapsack</strong> — 0/1 Knapsack, Coin Change, Subset Sum</li>
+  <li style="padding:0.3rem 0;">→ <strong>LIS Pattern</strong> — Longest Increasing Subsequence</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">📝 5 Steps to Solve Any DP Problem</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">1️⃣ Define the state — what does dp[i] mean?</li>
+  <li style="padding:0.3rem 0;">2️⃣ Write the recurrence relation</li>
+  <li style="padding:0.3rem 0;">3️⃣ Identify base cases</li>
+  <li style="padding:0.3rem 0;">4️⃣ Determine computation order</li>
+  <li style="padding:0.3rem 0;">5️⃣ Optimize space if possible</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">💡 Pro Tips</h4>
+<ul style="list-style:none; padding:0; margin-bottom:1rem;">
+  <li style="padding:0.3rem 0;">• Start with brute force → add memoization → optimize</li>
+  <li style="padding:0.3rem 0;">• Draw recursion tree to spot overlapping subproblems</li>
+  <li style="padding:0.3rem 0;">• Most 2D DP can reduce space from O(n²) to O(n)</li>
+  <li style="padding:0.3rem 0;">• If you see "minimum/maximum/count ways" → think DP!</li>
+</ul>
+
+<h4 style="color:var(--primary); margin:1rem 0 0.5rem;">🏆 Real Interview Questions from FAANG</h4>
+<p style="color:var(--text-secondary);">Coin Change (Amazon), Edit Distance (Google), LIS (Microsoft)</p>
+`,
     problems: [
       "Climbing Stairs",
       "Coin Change",
@@ -1046,7 +1286,228 @@ const practiceProblems = [
     constraints: [
       "0 ≤ n ≤ 30",
     ],
-    followUp: "Can you solve it using recursion, memoization, and bottom-up tabulation?",
+followUp: "Can you solve it using recursion, memoization, and bottom-up tabulation?",
+  },
+  {
+    id: 23,
+    title: "Merge Intervals",
+    difficulty: "medium",
+    tags: ["Arrays", "Sorting"],
+    acceptance: "46.4%",
+    category: "arrays",
+    description: "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
+    constraints: [
+      "1 ≤ intervals.length ≤ 10⁴",
+      "intervals[i].length == 2",
+      "0 ≤ starti ≤ endi ≤ 10⁴",
+    ],
+    followUp: "Can you solve it in O(n log n) time?",
+  },
+  {
+    id: 24,
+    title: "Product Except Self",
+    difficulty: "medium",
+    tags: ["Arrays", "Prefix Sum"],
+    acceptance: "65.2%",
+    category: "arrays",
+    description: "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. You must solve it without using the division operation and in O(n) time.",
+    constraints: [
+      "2 ≤ nums.length ≤ 10⁵",
+      "-30 ≤ nums[i] ≤ 30",
+      "The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer",
+    ],
+    followUp: "Can you solve it in O(1) extra space (excluding output array)?",
+  },
+  {
+    id: 25,
+    title: "Spiral Matrix",
+    difficulty: "medium",
+    tags: ["Arrays", "Matrix"],
+    acceptance: "44.8%",
+    category: "arrays",
+    description: "Given an m x n matrix, return all elements of the matrix in spiral order.",
+    constraints: [
+      "m == matrix.length",
+      "n == matrix[0].length",
+      "1 ≤ m, n ≤ 10",
+      "-100 ≤ matrix[i][j] ≤ 100",
+    ],
+    followUp: "Can you solve it without using extra space?",
+  },
+  {
+    id: 26,
+    title: "Longest Substring Without Repeating",
+    difficulty: "medium",
+    tags: ["Strings", "Sliding Window", "Hash Map"],
+    acceptance: "33.8%",
+    category: "strings",
+    description: "Given a string s, find the length of the longest substring without repeating characters.",
+    constraints: [
+      "0 ≤ s.length ≤ 5 × 10⁴",
+      "s consists of English letters, digits, symbols and spaces",
+    ],
+    followUp: "Can you solve it in O(n) using sliding window?",
+  },
+  {
+    id: 27,
+    title: "Group Anagrams",
+    difficulty: "medium",
+    tags: ["Strings", "Hash Map", "Sorting"],
+    acceptance: "67.3%",
+    category: "strings",
+    description: "Given an array of strings strs, group the anagrams together. You can return the answer in any order.",
+    constraints: [
+      "1 ≤ strs.length ≤ 10⁴",
+      "0 ≤ strs[i].length ≤ 100",
+      "strs[i] consists of lowercase English letters",
+    ],
+    followUp: "Can you solve it without sorting each string?",
+  },
+  {
+    id: 28,
+    title: "Detect Cycle",
+    difficulty: "easy",
+    tags: ["Linked List", "Two Pointers"],
+    acceptance: "49.2%",
+    category: "linkedlist",
+    description: "Given head, the head of a linked list, determine if the linked list has a cycle in it. Return true if there is a cycle, otherwise return false.",
+    constraints: [
+      "The number of nodes is in range [0, 10⁴]",
+      "-10⁵ ≤ Node.val ≤ 10⁵",
+    ],
+    followUp: "Can you solve it using Floyd's cycle detection algorithm in O(1) space?",
+  },
+  {
+    id: 29,
+    title: "Remove Nth From End",
+    difficulty: "medium",
+    tags: ["Linked List", "Two Pointers"],
+    acceptance: "42.5%",
+    category: "linkedlist",
+    description: "Given the head of a linked list, remove the nth node from the end of the list and return its head.",
+    constraints: [
+      "The number of nodes in the list is sz",
+      "1 ≤ sz ≤ 30",
+      "0 ≤ Node.val ≤ 100",
+      "1 ≤ n ≤ sz",
+    ],
+    followUp: "Can you solve it in one pass using two pointers?",
+  },
+  {
+    id: 30,
+    title: "Intersection of Two Lists",
+    difficulty: "easy",
+    tags: ["Linked List", "Two Pointers"],
+    acceptance: "57.8%",
+    category: "linkedlist",
+    description: "Given the heads of two singly linked-lists headA and headB, return the node at which the two lists intersect. If the two linked lists have no intersection at all, return null.",
+    constraints: [
+      "The number of nodes of listA is in the m",
+      "The number of nodes of listB is in the n",
+      "1 ≤ m, n ≤ 3 × 10⁴",
+    ],
+    followUp: "Can you solve it in O(m+n) time and O(1) space?",
+  },
+  {
+    id: 31,
+    title: "Maximum Depth",
+    difficulty: "easy",
+    tags: ["Trees", "DFS", "BFS"],
+    acceptance: "73.8%",
+    category: "trees",
+    description: "Given the root of a binary tree, return its maximum depth. The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.",
+    constraints: [
+      "The number of nodes is in range [0, 10⁴]",
+      "-100 ≤ Node.val ≤ 100",
+    ],
+    followUp: "Can you solve it both recursively and iteratively using BFS?",
+  },
+  {
+    id: 32,
+    title: "Lowest Common Ancestor",
+    difficulty: "medium",
+    tags: ["Trees", "DFS"],
+    acceptance: "61.4%",
+    category: "trees",
+    description: "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST. The LCA is defined as the lowest node that has both p and q as descendants.",
+    constraints: [
+      "The number of nodes is in range [2, 10⁵]",
+      "-10⁹ ≤ Node.val ≤ 10⁹",
+      "All Node.val are unique",
+    ],
+    followUp: "Can you solve it for a general binary tree (not just BST)?",
+  },
+  {
+    id: 33,
+    title: "Path Sum",
+    difficulty: "easy",
+    tags: ["Trees", "DFS"],
+    acceptance: "49.3%",
+    category: "trees",
+    description: "Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.",
+    constraints: [
+      "The number of nodes is in range [0, 5000]",
+      "-1000 ≤ Node.val ≤ 1000",
+      "-1000 ≤ targetSum ≤ 1000",
+    ],
+    followUp: "Can you find all paths that sum to target? (Path Sum II)",
+  },
+  {
+    id: 34,
+    title: "Network Delay Time",
+    difficulty: "medium",
+    tags: ["Graphs", "Dijkstra", "Shortest Path"],
+    acceptance: "52.3%",
+    category: "graphs",
+    description: "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target. Return the minimum time it takes for all n nodes to receive the signal. If it is impossible, return -1.",
+    constraints: [
+      "1 ≤ k ≤ n ≤ 100",
+      "1 ≤ times.length ≤ 6000",
+      "times[i].length == 3",
+    ],
+    followUp: "Can you solve it using Dijkstra's algorithm?",
+  },
+  {
+    id: 35,
+    title: "Climbing Stairs",
+    difficulty: "easy",
+    tags: ["DP", "Recursion"],
+    acceptance: "51.9%",
+    category: "dp",
+    description: "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+    constraints: [
+      "1 ≤ n ≤ 45",
+    ],
+    followUp: "Can you generalize to k steps at a time?",
+  },
+  {
+    id: 36,
+    title: "Coin Change",
+    difficulty: "medium",
+    tags: ["DP", "BFS"],
+    acceptance: "42.6%",
+    category: "dp",
+    description: "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount cannot be made up by any combination of the coins, return -1.",
+    constraints: [
+      "1 ≤ coins.length ≤ 12",
+      "1 ≤ coins[i] ≤ 2³¹ - 1",
+      "0 ≤ amount ≤ 10⁴",
+    ],
+    followUp: "Can you solve it using both top-down and bottom-up DP?",
+  },
+  {
+    id: 37,
+    title: "Edit Distance",
+    difficulty: "hard",
+    tags: ["DP", "Strings"],
+    acceptance: "56.4%",
+    category: "dp",
+    description: "Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2. You have three operations: Insert, Delete, Replace a character.",
+    constraints: [
+      "0 ≤ word1.length, word2.length ≤ 500",
+      "word1 and word2 consist of lowercase English letters",
+    ],
+    followUp: "Can you optimize the space complexity from O(m*n) to O(min(m,n))?",
   },
 ];
 
@@ -3536,7 +3997,7 @@ function openTopicModal(topic) {
   let selectedProblemName = null; // track selected problem
 
   document.getElementById("modalTitle").textContent = topic.name;
-  document.getElementById("modalTheory").textContent = topic.theory;
+document.getElementById("modalTheory").innerHTML = topic.theory;
   document.getElementById("modalDifficulty").innerHTML =
     `<span class="difficulty-badge ${getDifficultyClass(topic.difficulty)}">${topic.difficulty}</span>`;
 
