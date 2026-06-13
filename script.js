@@ -5581,3 +5581,251 @@ function initBackToTopButtons() {
 }
 
 initBackToTopButtons();
+// ===== GAME SYSTEM =====
+let currentGame = {
+  type: null,
+  topic: null,
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  correct: 0,
+  total: 0,
+  timer: null,
+  timeLeft: 30,
+  xpEarned: 0,
+};
+
+// Complexity guesser questions
+const complexityQuestions = [
+  {
+    question: "What is the time complexity of this code?\n\nfor(let i=0; i<n; i++) {\n  console.log(i);\n}",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 2,
+    explanation: "Single loop runs n times = O(n)"
+  },
+  {
+    question: "What is the time complexity?\n\nfor(let i=0; i<n; i++) {\n  for(let j=0; j<n; j++) {\n    console.log(i,j);\n  }\n}",
+    options: ["O(n)", "O(n log n)", "O(n²)", "O(2^n)"],
+    correct: 2,
+    explanation: "Nested loops both running n times = O(n²)"
+  },
+  {
+    question: "What is the time complexity?\n\nlet i = n;\nwhile(i > 1) {\n  i = Math.floor(i/2);\n}",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 1,
+    explanation: "Halving n each time = O(log n)"
+  },
+  {
+    question: "What is the space complexity?\n\nfunction sum(n) {\n  if(n <= 0) return 0;\n  return n + sum(n-1);\n}",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 2,
+    explanation: "Recursive calls stack n frames = O(n) space"
+  },
+  {
+    question: "What is the time complexity of binary search?",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    correct: 1,
+    explanation: "Binary search halves search space each step = O(log n)"
+  },
+  {
+    question: "What is the time complexity?\n\nconst map = {};\nfor(let i=0; i<n; i++) {\n  map[arr[i]] = i;\n}",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 2,
+    explanation: "Single loop with O(1) hash operations = O(n)"
+  },
+  {
+    question: "What is the time complexity of merge sort?",
+    options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+    correct: 1,
+    explanation: "Merge sort divides and merges = O(n log n)"
+  },
+  {
+    question: "What is the space complexity of an array of size n?",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 2,
+    explanation: "Array stores n elements = O(n) space"
+  },
+  {
+    question: "What is the time complexity of accessing a hash map?",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 0,
+    explanation: "Hash map provides O(1) average access time"
+  },
+  {
+    question: "What is the time complexity?\n\nfor(let i=1; i<n; i*=2) {\n  console.log(i);\n}",
+    options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    correct: 1,
+    explanation: "Multiplying by 2 each time = O(log n)"
+  },
+];
+
+function openGameModal() {
+  const modal = document.getElementById("gameModal");
+  const level = userProgress.level || 1;
+  const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
+  document.getElementById("gameModalTitle").textContent = 
+    `🎮 Level ${level} - ${levelNames[level-1]} Games`;
+  showGameTypeSelector();
+  modal.classList.add("active");
+}
+
+function closeGameModal() {
+  document.getElementById("gameModal").classList.remove("active");
+  clearInterval(currentGame.timer);
+  resetGame();
+}
+
+function showGameTypeSelector() {
+  document.getElementById("gameTypeSelector").style.display = "block";
+  document.getElementById("gamePlayArea").style.display = "none";
+  document.getElementById("gameResults").style.display = "none";
+  clearInterval(currentGame.timer);
+}
+
+function getTopicForLevel() {
+  const level = userProgress.level || 1;
+  const topics = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
+  return topics[level - 1] || "arrays";
+}
+
+function startGame(type) {
+  currentGame.type = type;
+  currentGame.score = 0;
+  currentGame.correct = 0;
+  currentGame.xpEarned = 0;
+  currentGame.currentIndex = 0;
+
+  const topic = getTopicForLevel();
+
+  if (type === "complexity") {
+    currentGame.questions = [...complexityQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+  } else {
+    const topicQuestions = quizQuestions[topic] || quizQuestions.arrays;
+    currentGame.questions = [...topicQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+  }
+
+  currentGame.total = currentGame.questions.length;
+
+  document.getElementById("gameTypeSelector").style.display = "none";
+  document.getElementById("gamePlayArea").style.display = "block";
+  document.getElementById("gameResults").style.display = "none";
+
+  loadGameQuestion();
+}
+
+function loadGameQuestion() {
+  if (currentGame.currentIndex >= currentGame.total) {
+    endGame();
+    return;
+  }
+
+  const q = currentGame.questions[currentGame.currentIndex];
+  document.getElementById("gameQuestion").textContent = currentGame.currentIndex + 1;
+  document.getElementById("gameScore").textContent = currentGame.score;
+  document.getElementById("gameQuestionText").textContent = q.question;
+  document.getElementById("gameExplanation").style.display = "none";
+
+  const optionsGrid = document.getElementById("gameOptionsGrid");
+  optionsGrid.innerHTML = q.options.map((opt, i) =>
+    `<button class="game-option" onclick="selectGameAnswer(${i})">${opt}</button>`
+  ).join("");
+
+  // Start timer
+  clearInterval(currentGame.timer);
+  currentGame.timeLeft = currentGame.type === "speed" ? 60 : 30;
+  
+  if (currentGame.type === "speed" && currentGame.currentIndex === 0) {
+    currentGame.timeLeft = 60;
+  }
+
+  document.getElementById("gameTimer").textContent = currentGame.timeLeft;
+
+  if (currentGame.type !== "speed" || currentGame.currentIndex === 0) {
+    currentGame.timer = setInterval(() => {
+      currentGame.timeLeft--;
+      document.getElementById("gameTimer").textContent = currentGame.timeLeft;
+      if (currentGame.timeLeft <= 0) {
+        clearInterval(currentGame.timer);
+        if (currentGame.type === "speed") {
+          endGame();
+        } else {
+          // Time's up — move to next
+          selectGameAnswer(-1);
+        }
+      }
+    }, 1000);
+  }
+}
+
+function selectGameAnswer(index) {
+  clearInterval(currentGame.timer);
+  const q = currentGame.questions[currentGame.currentIndex];
+  const options = document.querySelectorAll(".game-option");
+  const xpPerQ = currentGame.type === "quiz" ? 20 : currentGame.type === "speed" ? 10 : 15;
+
+  options.forEach(opt => opt.style.pointerEvents = "none");
+
+  if (index === q.correct) {
+    if (options[index]) options[index].classList.add("correct");
+    currentGame.score += 10;
+    currentGame.correct++;
+    currentGame.xpEarned += xpPerQ;
+    document.getElementById("gameScore").textContent = currentGame.score;
+  } else {
+    if (options[index]) options[index].classList.add("wrong");
+    if (options[q.correct]) options[q.correct].classList.add("correct");
+  }
+
+  // Show explanation
+  const expEl = document.getElementById("gameExplanation");
+  expEl.textContent = `💡 ${q.explanation}`;
+  expEl.style.display = "block";
+
+  currentGame.currentIndex++;
+
+  setTimeout(() => {
+    loadGameQuestion();
+  }, currentGame.type === "speed" ? 800 : 1500);
+}
+
+function endGame() {
+  clearInterval(currentGame.timer);
+
+  // Award XP
+  addXP(currentGame.xpEarned);
+  updateGamification();
+
+  const accuracy = Math.round((currentGame.correct / currentGame.total) * 100);
+
+  document.getElementById("gamePlayArea").style.display = "none";
+  document.getElementById("gameResults").style.display = "block";
+
+  const titles = {
+    quiz: "Quiz Complete! 🧩",
+    speed: "Speed Round Over! ⚡",
+    complexity: "Complexity Master! 🎯"
+  };
+
+  document.getElementById("gameResultsTitle").textContent = titles[currentGame.type];
+  document.getElementById("resultScore").textContent = currentGame.score;
+  document.getElementById("resultXP").textContent = `+${currentGame.xpEarned}`;
+  document.getElementById("resultAccuracy").textContent = `${accuracy}%`;
+
+  // Show notification
+  showNotification(
+    `🎮 Game Over! Score: ${currentGame.score} | +${currentGame.xpEarned} XP earned!`,
+    "success"
+  );
+}
+
+function restartGame() {
+  startGame(currentGame.type);
+}
+
+function resetGame() {
+  currentGame = {
+    type: null, topic: null, questions: [],
+    currentIndex: 0, score: 0, correct: 0,
+    total: 0, timer: null, timeLeft: 30, xpEarned: 0,
+  };
+}

@@ -665,9 +665,12 @@
               <span class="xp-text" id="xpText">0 / 1000 XP</span>
             </div>
             <div class="level-info">
-              <span class="level-badge" id="levelBadge"
-                >Level 1 - Beginner</span
-              >
+              <span class="level-badge" id="levelBadge" 
+                onclick="openGameModal()" 
+                style="cursor:pointer"
+                title="Click to play DSA games!">
+                Level 1 - Beginner
+              </span>
             </div>
           </div>
           <div class="badges-showcase big-box">
@@ -680,53 +683,88 @@
       </div>
     </section>
 
-    <!-- Chatbot Widget -->
-    <div class="chatbot-widget">
-      <button class="chatbot-toggle" id="chatbotToggle">
-        <i class="fas fa-comments"></i>
-        <span class="chatbot-badge">3</span>
-      </button>
-      <div class="chatbot-window hidden" id="chatbotWindow">
-        <div class="chatbot-header">
-          <h4>Algo Assistant</h4>
-          <button class="chatbot-close" id="chatbotClose">
-            <i class="fas fa-times"></i>
-          </button>
+</section>
+
+    <!-- Game Modal -->
+    <div class="modal game-modal" id="gameModal">
+      <div class="game-modal-content">
+        <div class="game-modal-header">
+          <h3 id="gameModalTitle">🎮 DSA Game</h3>
+          <button class="modal-close" onclick="closeGameModal()">×</button>
         </div>
-        <div class="chatbot-messages" id="chatbotMessages">
-          <div class="message bot">
-            <p>Hi! I'm your DSA assistant. How can I help you today?</p>
+        <div class="game-modal-body" id="gameModalBody">
+
+          <!-- Game Type Selector -->
+          <div id="gameTypeSelector">
+            <h4 style="text-align:center; margin-bottom:1.5rem; color:var(--accent)">Choose Your Game Mode</h4>
+            <div class="game-type-grid">
+              <div class="game-type-card" onclick="startGame('quiz')">
+                <div class="game-type-icon">🧩</div>
+                <h4>Quiz Game</h4>
+                <p>Answer MCQ questions with a 30s timer</p>
+                <span class="game-xp-reward">+20 XP per question</span>
+              </div>
+              <div class="game-type-card" onclick="startGame('speed')">
+                <div class="game-type-icon">⚡</div>
+                <h4>Speed Round</h4>
+                <p>Solve as many as possible in 60 seconds</p>
+                <span class="game-xp-reward">+10 XP per correct</span>
+              </div>
+              <div class="game-type-card" onclick="startGame('complexity')">
+                <div class="game-type-icon">🎯</div>
+                <h4>Complexity Guesser</h4>
+                <p>Guess the Big O of code snippets</p>
+                <span class="game-xp-reward">+15 XP per correct</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="chatbot-input">
-          <input
-            type="text"
-            id="chatbotInput"
-            placeholder="Type your question..."
-          />
-          <button id="chatbotSend">
-            <i class="fas fa-paper-plane"></i>
-          </button>
-        </div>
-        <div class="quick-questions">
-          <button
-            class="quick-q"
-            data-question="What is the time complexity of this problem?"
-          >
-            Time Complexity
-          </button>
-          <button
-            class="quick-q"
-            data-question="Can you give me a hint for this problem?"
-          >
-            Hint
-          </button>
-          <button class="quick-q" data-question="What approach should I use?">
-            Approach
-          </button>
+
+          <!-- Game Play Area -->
+          <div id="gamePlayArea" style="display:none">
+            <div class="game-stats-bar">
+              <span class="game-stat">⏱️ <span id="gameTimer">30</span>s</span>
+              <span class="game-stat">✅ Score: <span id="gameScore">0</span></span>
+              <span class="game-stat">❓ Q: <span id="gameQuestion">1</span>/10</span>
+            </div>
+            <div class="game-question-area">
+              <div class="game-question-text" id="gameQuestionText"></div>
+              <div class="game-options-grid" id="gameOptionsGrid"></div>
+            </div>
+            <div class="game-explanation" id="gameExplanation" style="display:none"></div>
+          </div>
+
+          <!-- Game Results -->
+          <div id="gameResults" style="display:none">
+            <div class="game-results-content">
+              <div class="game-results-icon">🏆</div>
+              <h3 id="gameResultsTitle">Game Complete!</h3>
+              <div class="game-results-stats">
+                <div class="result-stat">
+                  <span class="result-stat-value" id="resultScore">0</span>
+                  <span class="result-stat-label">Score</span>
+                </div>
+                <div class="result-stat">
+                  <span class="result-stat-value" id="resultXP">0</span>
+                  <span class="result-stat-label">XP Earned</span>
+                </div>
+                <div class="result-stat">
+                  <span class="result-stat-value" id="resultAccuracy">0%</span>
+                  <span class="result-stat-label">Accuracy</span>
+                </div>
+              </div>
+              <div class="game-results-buttons">
+                <button class="btn btn-primary" onclick="restartGame()">🔄 Play Again</button>
+                <button class="btn btn-secondary" onclick="showGameTypeSelector()">🎮 Change Mode</button>
+                <button class="btn btn-outline" onclick="closeGameModal()">✖ Close</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
+    <!-- Chatbot Widget -->
 
     <!-- Code Editor Shortcuts Panel -->
     <div class="shortcuts-panel" id="shortcutsPanel">
