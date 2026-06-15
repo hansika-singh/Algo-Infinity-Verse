@@ -6165,7 +6165,7 @@ const codeCompletionQuestions = {
     {
       code: `function numIslands(grid) {\n  let count = 0;\n  for(let i=0; i<grid.length; i++) {\n    for(let j=0; j<grid[0].length; j++) {\n      if(grid[i][j] === '1') {\n        _______;\n        count++;\n      }\n    }\n  }\n  return count;\n}`,
       blank: "_______",
-      options: ["dfs(grid, i, j)", "bfs(grid, i, j)", "grid[i][j] = 0", "count++"],
+      options: ["dfs(grid, i, j)", "return count", "grid[i][j] = 0", "count++"],
       correct: 0,
       explanation: "Call DFS to mark all connected land cells as visited",
     },
