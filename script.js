@@ -5734,6 +5734,10 @@ function showLockedMessage(xpRequired) {
 function closeGameModal() {
   document.getElementById("gameModal").classList.remove("active");
   clearInterval(currentGame.timer);
+  clearInterval(memoryState.timer);
+  clearInterval(codeGameState.timer);
+  memoryState.timer = null;
+  codeGameState.timer = null;
   resetGame();
 }
 
