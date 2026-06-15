@@ -5661,12 +5661,74 @@ const complexityQuestions = [
 
 function openGameModal() {
   const modal = document.getElementById("gameModal");
-  const level = userProgress.level || 1;
-  const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
-  document.getElementById("gameModalTitle").textContent = 
-    `🎮 Level ${level} - ${levelNames[level-1]} Games`;
-  showGameTypeSelector();
+  document.getElementById("gameModalTitle").textContent = `🎮 DSA Game Levels`;
+  showLevelSelector();
   modal.classList.add("active");
+}
+
+function showLevelSelector() {
+  const allIds = ["levelSelector","gameTypeSelector","gamePlayArea",
+    "gameResults","memoryGameArea","codeGameArea"];
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+  document.getElementById("levelSelector").style.display = "block";
+
+  const levels = [
+    { level: 1, name: "Beginner", topic: "Arrays", icon: "📊", xpRequired: 0 },
+    { level: 2, name: "Novice", topic: "Strings", icon: "🔤", xpRequired: 1000 },
+    { level: 3, name: "Intermediate", topic: "Linked List", icon: "🔗", xpRequired: 2500 },
+    { level: 4, name: "Advanced", topic: "Trees", icon: "🌳", xpRequired: 5000 },
+    { level: 5, name: "Expert", topic: "Graphs", icon: "🕸️", xpRequired: 10000 },
+    { level: 6, name: "Master", topic: "Dynamic Programming", icon: "🎯", xpRequired: 20000 },
+    { level: 7, name: "Grandmaster", topic: "Mixed All", icon: "🏆", xpRequired: 50000 },
+    { level: 8, name: "Legend", topic: "Boss Challenge", icon: "👑", xpRequired: 100000 },
+  ];
+
+  const currentXP = userProgress.xp || 0;
+  const currentLevel = userProgress.level || 1;
+
+  const grid = document.getElementById("levelSelectionGrid");
+  grid.innerHTML = levels.map(l => {
+    const isUnlocked = currentXP >= l.xpRequired;
+    const isCurrent = l.level === currentLevel;
+    const statusText = isCurrent ? "▶ Current" : isUnlocked ? "✅ Unlocked" : `🔒 ${l.xpRequired.toLocaleString()} XP`;
+    const statusClass = isCurrent ? "current-status" : isUnlocked ? "unlocked-status" : "locked-status";
+    const cardClass = isUnlocked ? "unlocked" : "locked";
+
+    return `
+      <div class="level-selection-card ${cardClass}" 
+        onclick="${isUnlocked ? `selectLevel(${l.level})` : `showLockedMessage(${l.xpRequired})`}">
+        <span class="level-card-status ${statusClass}">${isCurrent ? "▶ Current" : isUnlocked ? "✅" : "🔒"}</span>
+        <div class="level-card-icon">${l.icon}</div>
+        <div class="level-card-name">Level ${l.level} - ${l.name}</div>
+        <div class="level-card-topic">${l.topic}</div>
+        <div class="level-card-xp">${l.xpRequired === 0 ? "Free" : `${l.xpRequired.toLocaleString()} XP needed`}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function selectLevel(level) {
+  const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
+  const topicNames = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
+
+  // Temporarily set level for game
+  currentGame.selectedLevel = level;
+  currentGame.selectedTopic = topicNames[level - 1];
+
+  document.getElementById("gameModalTitle").textContent =
+    `🎮 Level ${level} - ${levelNames[level-1]} Games`;
+
+  showGameTypeSelector();
+}
+
+function showLockedMessage(xpRequired) {
+  showNotification(
+    `🔒 You need ${xpRequired.toLocaleString()} XP to unlock this level! Keep playing! 💪`,
+    "info"
+  );
 }
 
 function closeGameModal() {
@@ -5676,16 +5738,47 @@ function closeGameModal() {
 }
 
 function showGameTypeSelector() {
-  document.getElementById("gameTypeSelector").style.display = "block";
-  document.getElementById("gamePlayArea").style.display = "none";
-  document.getElementById("gameResults").style.display = "none";
+  const ids = ["levelSelector","gameTypeSelector","gamePlayArea",
+    "gameResults","memoryGameArea","codeGameArea"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === "gameTypeSelector" ? "block" : "none";
+  });
   clearInterval(currentGame.timer);
+  if (memoryState.timer) clearInterval(memoryState.timer);
+  if (codeGameState && codeGameState.timer) clearInterval(codeGameState.timer);
 }
 
 function getTopicForLevel() {
-  const level = userProgress.level || 1;
+  // Use selected level if available, otherwise use user's current level
+  const level = currentGame.selectedLevel || userProgress.level || 1;
   const topics = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
   return topics[level - 1] || "arrays";
+}
+
+function getDifficultyForLevel() {
+  const level = userProgress.level || 1;
+  if (level <= 2) return "easy";
+  if (level <= 4) return "medium";
+  if (level <= 6) return "hard";
+  return "expert";
+}
+
+function getQuestionsForLevel(topic) {
+  const level = userProgress.level || 1;
+  const allQuestions = quizQuestions[topic] || quizQuestions.arrays;
+  // For higher levels, skip first few easy questions
+  if (level <= 2) return allQuestions.slice(0, 8);
+  if (level <= 4) return allQuestions.slice(2);
+  if (level <= 6) return allQuestions.slice(4);
+  // Expert: mix all topics
+  return [
+    ...quizQuestions.arrays.slice(0, 2),
+    ...quizQuestions.strings.slice(0, 2),
+    ...quizQuestions.trees.slice(0, 2),
+    ...quizQuestions.graphs.slice(0, 2),
+    ...quizQuestions.dp.slice(0, 2),
+  ];
 }
 
 function startGame(type) {
@@ -5696,20 +5789,43 @@ function startGame(type) {
   currentGame.currentIndex = 0;
 
   const topic = getTopicForLevel();
+  const difficulty = getDifficultyForLevel();
+  const topicNames = {
+    arrays: "Arrays", strings: "Strings", linkedlist: "Linked List",
+    trees: "Trees", graphs: "Graphs", dp: "Dynamic Programming"
+  };
+
+  // Update level info display
+  document.getElementById("gameLevelTopic").textContent = 
+    `📚 Topic: ${topicNames[topic] || "Arrays"}`;
+  document.getElementById("gameLevelDifficulty").textContent = 
+    `⚡ Difficulty: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}`;
+
+  // Hide all game areas
+  document.getElementById("gameTypeSelector").style.display = "none";
+  document.getElementById("gamePlayArea").style.display = "none";
+  document.getElementById("memoryGameArea").style.display = "none";
+  document.getElementById("codeGameArea").style.display = "none";
+  document.getElementById("gameResults").style.display = "none";
+
+  if (type === "memory") {
+    startMemoryGame(topic);
+    return;
+  }
+
+  if (type === "code") {
+    startCodeGame(topic);
+    return;
+  }
 
   if (type === "complexity") {
     currentGame.questions = [...complexityQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
   } else {
-    const topicQuestions = quizQuestions[topic] || quizQuestions.arrays;
-    currentGame.questions = [...topicQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+    currentGame.questions = getQuestionsForLevel(topic).sort(() => Math.random() - 0.5).slice(0, 10);
   }
 
   currentGame.total = currentGame.questions.length;
-
-  document.getElementById("gameTypeSelector").style.display = "none";
   document.getElementById("gamePlayArea").style.display = "block";
-  document.getElementById("gameResults").style.display = "none";
-
   loadGameQuestion();
 }
 
@@ -5819,13 +5935,347 @@ function endGame() {
 }
 
 function restartGame() {
-  startGame(currentGame.type);
+  const type = currentGame.type;
+  currentGame.xpEarned = 0;
+  if (type === "memory") {
+    const topic = getTopicForLevel();
+    startMemoryGame(topic);
+  } else if (type === "code") {
+    const topic = getTopicForLevel();
+    startCodeGame(topic);
+  } else {
+    startGame(type);
+  }
 }
-
 function resetGame() {
   currentGame = {
     type: null, topic: null, questions: [],
     currentIndex: 0, score: 0, correct: 0,
     total: 0, timer: null, timeLeft: 30, xpEarned: 0,
   };
+}
+// ===== MEMORY GAME =====
+const memoryPairs = {
+  arrays: [
+    { concept: "Two Sum", definition: "Use Hash Map O(n)" },
+    { concept: "Binary Search", definition: "O(log n) sorted" },
+    { concept: "Sliding Window", definition: "O(n) subarray" },
+    { concept: "Kadane's Algo", definition: "Max subarray sum" },
+    { concept: "Two Pointers", definition: "O(n) pair finding" },
+    { concept: "Prefix Sum", definition: "Range sum queries" },
+  ],
+  strings: [
+    { concept: "Anagram", definition: "Same char frequency" },
+    { concept: "Palindrome", definition: "Reads same both ways" },
+    { concept: "KMP", definition: "O(n+m) pattern match" },
+    { concept: "Substring", definition: "Contiguous sequence" },
+    { concept: "Trie", definition: "Prefix tree O(m)" },
+    { concept: "Rolling Hash", definition: "Rabin-Karp search" },
+  ],
+  linkedlist: [
+    { concept: "Fast & Slow", definition: "Cycle detection" },
+    { concept: "Dummy Node", definition: "Simplify edge cases" },
+    { concept: "Reverse List", definition: "3 pointer technique" },
+    { concept: "Floyd's Algo", definition: "O(1) space cycle" },
+    { concept: "Merge Lists", definition: "Compare & advance" },
+    { concept: "Nth From End", definition: "Two pointer gap" },
+  ],
+  trees: [
+    { concept: "Inorder", definition: "Left Root Right" },
+    { concept: "BFS", definition: "Level order queue" },
+    { concept: "DFS", definition: "Depth first stack" },
+    { concept: "BST Property", definition: "Left < Root < Right" },
+    { concept: "Tree Height", definition: "Max depth leaves" },
+    { concept: "LCA", definition: "Lowest common ancestor" },
+  ],
+  graphs: [
+    { concept: "BFS", definition: "Shortest path queue" },
+    { concept: "DFS", definition: "Exhaustive search" },
+    { concept: "Dijkstra", definition: "Weighted shortest path" },
+    { concept: "Union Find", definition: "Disjoint sets O(α)" },
+    { concept: "Topo Sort", definition: "DAG ordering" },
+    { concept: "Adj List", definition: "Space efficient O(V+E)" },
+  ],
+  dp: [
+    { concept: "Memoization", definition: "Top-down caching" },
+    { concept: "Tabulation", definition: "Bottom-up DP table" },
+    { concept: "Knapsack", definition: "Include/exclude choice" },
+    { concept: "LIS", definition: "Longest increasing subseq" },
+    { concept: "Edit Distance", definition: "Min insert/delete/replace" },
+    { concept: "Coin Change", definition: "Fewest coins for amount" },
+  ],
+};
+
+let memoryState = {
+  flipped: [],
+  matched: 0,
+  moves: 0,
+  timer: null,
+  timeLeft: 60,
+  totalPairs: 0,
+};
+
+function startMemoryGame(topic) {
+  const pairs = memoryPairs[topic] || memoryPairs.arrays;
+  memoryState = {
+    flipped: [], matched: 0, moves: 0,
+    timer: null, timeLeft: 60,
+    totalPairs: pairs.length,
+  };
+
+  // Create cards array (concept + definition pairs)
+  const cards = [];
+  pairs.forEach((pair, i) => {
+    cards.push({ id: i, type: "concept", text: pair.concept, pairId: i });
+    cards.push({ id: i + pairs.length, type: "definition", text: pair.definition, pairId: i });
+  });
+
+  // Shuffle
+  cards.sort(() => Math.random() - 0.5);
+
+  const grid = document.getElementById("memoryGrid");
+  grid.innerHTML = cards.map((card, idx) => `
+    <div class="memory-card" id="mcard-${idx}" data-pair="${card.pairId}" data-type="${card.type}" onclick="flipMemoryCard(${idx}, ${card.pairId}, '${card.type}')">
+      <div class="memory-card-inner">
+        <div class="memory-card-front">🧠</div>
+        <div class="memory-card-back">${card.text}</div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("memoryGameArea").style.display = "block";
+  document.getElementById("memoryMatches").textContent = 0;
+  document.getElementById("memoryMoves").textContent = 0;
+  document.getElementById("memoryTimer").textContent = 60;
+
+  // Start timer
+  memoryState.timer = setInterval(() => {
+    memoryState.timeLeft--;
+    document.getElementById("memoryTimer").textContent = memoryState.timeLeft;
+    if (memoryState.timeLeft <= 0) {
+      clearInterval(memoryState.timer);
+      endMemoryGame();
+    }
+  }, 1000);
+}
+
+function flipMemoryCard(idx, pairId, type) {
+  const card = document.getElementById(`mcard-${idx}`);
+  if (card.classList.contains("flipped") || 
+      card.classList.contains("matched") || 
+      memoryState.flipped.length >= 2) return;
+
+  card.classList.add("flipped");
+  memoryState.flipped.push({ idx, pairId, type });
+
+  if (memoryState.flipped.length === 2) {
+    memoryState.moves++;
+    document.getElementById("memoryMoves").textContent = memoryState.moves;
+
+    const [first, second] = memoryState.flipped;
+    if (first.pairId === second.pairId && first.type !== second.type) {
+      // Match!
+      setTimeout(() => {
+        document.getElementById(`mcard-${first.idx}`).classList.add("matched");
+        document.getElementById(`mcard-${second.idx}`).classList.add("matched");
+        memoryState.matched++;
+        document.getElementById("memoryMatches").textContent = memoryState.matched;
+        memoryState.flipped = [];
+
+        currentGame.xpEarned += 25;
+
+        if (memoryState.matched === memoryState.totalPairs) {
+          clearInterval(memoryState.timer);
+          setTimeout(endMemoryGame, 500);
+        }
+      }, 500);
+    } else {
+      // No match
+      setTimeout(() => {
+        document.getElementById(`mcard-${first.idx}`).classList.remove("flipped");
+        document.getElementById(`mcard-${second.idx}`).classList.remove("flipped");
+        memoryState.flipped = [];
+      }, 1000);
+    }
+  }
+}
+
+function endMemoryGame() {
+  clearInterval(memoryState.timer);
+  addXP(currentGame.xpEarned);
+  updateGamification();
+
+  document.getElementById("memoryGameArea").style.display = "none";
+  document.getElementById("gameResults").style.display = "block";
+  document.getElementById("gameResultsTitle").textContent = "Memory Game Complete! 🧠";
+  document.getElementById("resultScore").textContent = memoryState.matched * 10;
+  document.getElementById("resultXP").textContent = `+${currentGame.xpEarned}`;
+  document.getElementById("resultAccuracy").textContent = 
+    `${Math.round((memoryState.matched / memoryState.totalPairs) * 100)}%`;
+
+  showNotification(`🧠 Memory Game! ${memoryState.matched}/${memoryState.totalPairs} matches! +${currentGame.xpEarned} XP`, "success");
+}
+
+// ===== CODE COMPLETION GAME =====
+const codeCompletionQuestions = {
+  arrays: [
+    {
+      code: `function twoSum(nums, target) {\n  const map = {};\n  for(let i=0; i<nums.length; i++) {\n    const complement = _______;\n    if(map[complement] !== undefined)\n      return [map[complement], i];\n    map[nums[i]] = i;\n  }\n}`,
+      blank: "_______",
+      options: ["target - nums[i]", "nums[i] - target", "target + nums[i]", "nums[i] * target"],
+      correct: 0,
+      explanation: "complement = target - nums[i] finds the number we need",
+    },
+    {
+      code: `function maxSubarray(nums) {\n  let maxSum = nums[0];\n  let curSum = nums[0];\n  for(let i=1; i<nums.length; i++) {\n    curSum = Math.max(nums[i], _______);\n    maxSum = Math.max(maxSum, curSum);\n  }\n  return maxSum;\n}`,
+      blank: "_______",
+      options: ["curSum + nums[i]", "curSum - nums[i]", "nums[i] + maxSum", "curSum * nums[i]"],
+      correct: 0,
+      explanation: "Kadane's: extend current subarray or start new one",
+    },
+  ],
+  strings: [
+    {
+      code: `function isAnagram(s, t) {\n  if(s.length !== t.length) return false;\n  const count = {};\n  for(let c of s) count[c] = _______;\n  for(let c of t) {\n    if(!count[c]) return false;\n    count[c]--;\n  }\n  return true;\n}`,
+      blank: "_______",
+      options: ["(count[c] || 0) + 1", "(count[c] || 0) - 1", "count[c] + 1", "1"],
+      correct: 0,
+      explanation: "Initialize to 0 if undefined, then increment",
+    },
+  ],
+  linkedlist: [
+    {
+      code: `function reverseList(head) {\n  let prev = null;\n  let curr = head;\n  while(curr) {\n    const next = curr.next;\n    curr.next = _______;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}`,
+      blank: "_______",
+      options: ["prev", "next", "curr", "null"],
+      correct: 0,
+      explanation: "Point current node's next to previous to reverse the link",
+    },
+  ],
+  trees: [
+    {
+      code: `function maxDepth(root) {\n  if(!root) return 0;\n  const left = maxDepth(root.left);\n  const right = maxDepth(root.right);\n  return _______;\n}`,
+      blank: "_______",
+      options: ["Math.max(left, right) + 1", "Math.min(left, right) + 1", "left + right + 1", "Math.max(left, right)"],
+      correct: 0,
+      explanation: "Take the maximum depth of left/right subtrees and add 1 for current node",
+    },
+  ],
+  graphs: [
+    {
+      code: `function numIslands(grid) {\n  let count = 0;\n  for(let i=0; i<grid.length; i++) {\n    for(let j=0; j<grid[0].length; j++) {\n      if(grid[i][j] === '1') {\n        _______;\n        count++;\n      }\n    }\n  }\n  return count;\n}`,
+      blank: "_______",
+      options: ["dfs(grid, i, j)", "bfs(grid, i, j)", "grid[i][j] = 0", "count++"],
+      correct: 0,
+      explanation: "Call DFS to mark all connected land cells as visited",
+    },
+  ],
+  dp: [
+    {
+      code: `function climbStairs(n) {\n  if(n <= 2) return n;\n  let a = 1, b = 2;\n  for(let i=3; i<=n; i++) {\n    const c = _______;\n    a = b;\n    b = c;\n  }\n  return b;\n}`,
+      blank: "_______",
+      options: ["a + b", "a * b", "b - a", "a + b + 1"],
+      correct: 0,
+      explanation: "Each step = sum of previous two steps (Fibonacci pattern)",
+    },
+  ],
+};
+
+let codeGameState = {
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  timer: null,
+  timeLeft: 30,
+};
+
+function startCodeGame(topic) {
+  const questions = codeCompletionQuestions[topic] || codeCompletionQuestions.arrays;
+  codeGameState = {
+    questions: [...questions].sort(() => Math.random() - 0.5),
+    currentIndex: 0,
+    score: 0,
+    timer: null,
+    timeLeft: 30,
+  };
+
+  currentGame.xpEarned = 0;
+  document.getElementById("codeGameArea").style.display = "block";
+  loadCodeQuestion();
+}
+
+function loadCodeQuestion() {
+  if (codeGameState.currentIndex >= codeGameState.questions.length) {
+    endCodeGame();
+    return;
+  }
+
+  const q = codeGameState.questions[codeGameState.currentIndex];
+  document.getElementById("codeQuestion").textContent = codeGameState.currentIndex + 1;
+  document.getElementById("codeScore").textContent = codeGameState.score;
+  document.getElementById("codeExplanation").style.display = "none";
+
+  // Highlight the blank
+  const highlighted = q.code.replace(q.blank, `<span class="code-blank">${q.blank}</span>`);
+  document.getElementById("codeSnippet").innerHTML = highlighted;
+
+  const optionsGrid = document.getElementById("codeOptionsGrid");
+  optionsGrid.innerHTML = q.options.map((opt, i) =>
+    `<button class="game-option" onclick="selectCodeAnswer(${i})">${opt}</button>`
+  ).join("");
+
+  // Timer
+  clearInterval(codeGameState.timer);
+  codeGameState.timeLeft = 30;
+  document.getElementById("codeTimer").textContent = 30;
+
+  codeGameState.timer = setInterval(() => {
+    codeGameState.timeLeft--;
+    document.getElementById("codeTimer").textContent = codeGameState.timeLeft;
+    if (codeGameState.timeLeft <= 0) {
+      clearInterval(codeGameState.timer);
+      selectCodeAnswer(-1);
+    }
+  }, 1000);
+}
+
+function selectCodeAnswer(index) {
+  clearInterval(codeGameState.timer);
+  const q = codeGameState.questions[codeGameState.currentIndex];
+  const options = document.querySelectorAll("#codeOptionsGrid .game-option");
+
+  options.forEach(opt => opt.style.pointerEvents = "none");
+
+  if (index === q.correct) {
+    if (options[index]) options[index].classList.add("correct");
+    codeGameState.score += 10;
+    currentGame.xpEarned += 30;
+    document.getElementById("codeScore").textContent = codeGameState.score;
+  } else {
+    if (options[index]) options[index].classList.add("wrong");
+    if (options[q.correct]) options[q.correct].classList.add("correct");
+  }
+
+  const expEl = document.getElementById("codeExplanation");
+  expEl.textContent = `💡 ${q.explanation}`;
+  expEl.style.display = "block";
+
+  codeGameState.currentIndex++;
+  setTimeout(loadCodeQuestion, 1500);
+}
+
+function endCodeGame() {
+  clearInterval(codeGameState.timer);
+  addXP(currentGame.xpEarned);
+  updateGamification();
+
+  document.getElementById("codeGameArea").style.display = "none";
+  document.getElementById("gameResults").style.display = "block";
+  document.getElementById("gameResultsTitle").textContent = "Code Complete! ✍️";
+  document.getElementById("resultScore").textContent = codeGameState.score;
+  document.getElementById("resultXP").textContent = `+${currentGame.xpEarned}`;
+  document.getElementById("resultAccuracy").textContent =
+    `${Math.round((codeGameState.score / (codeGameState.questions.length * 10)) * 100)}%`;
+
+  showNotification(`✍️ Code Game! Score: ${codeGameState.score} | +${currentGame.xpEarned} XP`, "success");
 }

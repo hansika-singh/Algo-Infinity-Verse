@@ -5599,3 +5599,190 @@ body.light-mode {
 .badge-lg:focus .badge-tooltip {
   opacity: 1;
 }
+/* ===== MEMORY GAME ===== */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.memory-card {
+  height: 80px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.memory-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.memory-card.flipped .memory-card-inner {
+  transform: rotateY(180deg);
+}
+
+.memory-card.matched .memory-card-inner {
+  transform: rotateY(180deg);
+}
+
+.memory-card.matched .memory-card-back {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #22c55e;
+}
+
+.memory-card-front,
+.memory-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.5rem;
+  border: 2px solid var(--glass-border);
+}
+
+.memory-card-front {
+  background: var(--primary);
+  color: var(--dark-bg);
+  font-size: 1.5rem;
+}
+
+.memory-card-back {
+  background: var(--dark-card);
+  color: var(--text-primary);
+  transform: rotateY(180deg);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+/* ===== CODE COMPLETION GAME ===== */
+.code-snippet {
+  background: var(--dark-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  border-left: 4px solid var(--accent);
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+}
+
+.code-blank {
+  background: var(--primary);
+  color: var(--dark-bg);
+  padding: 0.2rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.code-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ===== GAME LEVEL INFO ===== */
+.game-level-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding: 0.8rem;
+  background: var(--dark-card);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.game-level-info span {
+  font-weight: 600;
+}
+/* ===== LEVEL SELECTION ===== */
+.level-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.level-selection-card {
+  background: var(--dark-card);
+  border: 2px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.level-selection-card.unlocked:hover {
+  border-color: var(--accent);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.level-selection-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+}
+
+.level-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.level-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.level-card-topic {
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.level-card-xp {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.level-card-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.level-card-status.unlocked-status {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.level-card-status.locked-status {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.level-card-status.current-status {
+  background: rgba(108, 99, 255, 0.3);
+  color: var(--primary);
+}
