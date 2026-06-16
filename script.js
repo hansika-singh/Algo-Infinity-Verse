@@ -6797,35 +6797,6 @@ function initBackToTopButtons() {
 }
 
 initBackToTopButtons();
-
-
-// Centralized SPA State Router for Native Browser Navigation
-window.addEventListener('hashchange', () => {
-    const currentHash = window.location.hash || '#home';
-    console.log(`[Router] Navigation hash shifted to: ${currentHash}`);
-
-    if (currentHash === '#home' || currentHash === '') {
-        // 1. Scan the entire page dynamically for any layout changes
-        document.querySelectorAll('*').forEach(element => {
-            // A. If an element is a quiz or assistant component, hide it completely
-            if (element.id?.toLowerCase().includes('quiz') || 
-                element.className?.toString().toLowerCase().includes('quiz') ||
-                element.id?.toLowerCase().includes('assistant')) {
-                element.style.display = 'none';
-            } 
-            // B. If it's a main structural container that was hidden, bring it back
-            else if (element.classList.contains('hidden') && element.id !== 'loading-screen') {
-                element.classList.remove('hidden');
-                element.style.display = ''; // Resets style to default stylesheet value
-            }
-        });
-
-        // 2. Clear any active runtime quiz instances safely
-        if (typeof tQuiz !== 'undefined') {
-            tQuiz = null;
-        }
-    }
-});
 // ===== GAME SYSTEM =====
 let currentGame = {
   type: null,
@@ -6976,15 +6947,32 @@ function showLockedMessage(xpRequired) {
   );
   const level = userProgress.level || 1;
   const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
-  document.getElementById("gameModalTitle").textContent = 
+  const topicNames = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
+
+  // Temporarily set level for game
+  currentGame.selectedLevel = level;
+  currentGame.selectedTopic = topicNames[level - 1];
+
+  document.getElementById("gameModalTitle").textContent =
     `🎮 Level ${level} - ${levelNames[level-1]} Games`;
+
   showGameTypeSelector();
-  modal.classList.add("active");
+}
+
+function showLockedMessage(xpRequired) {
+  showNotification(
+    `🔒 You need ${xpRequired.toLocaleString()} XP to unlock this level! Keep playing! 💪`,
+    "info"
+  );
 }
 
 function closeGameModal() {
   document.getElementById("gameModal").classList.remove("active");
   clearInterval(currentGame.timer);
+  clearInterval(memoryState.timer);
+  clearInterval(codeGameState.timer);
+  memoryState.timer = null;
+  codeGameState.timer = null;
   resetGame();
 }
 
@@ -7007,10 +6995,13 @@ function getTopicForLevel() {
   document.getElementById("gamePlayArea").style.display = "none";
   document.getElementById("gameResults").style.display = "none";
   clearInterval(currentGame.timer);
+  if (memoryState.timer) clearInterval(memoryState.timer);
+  if (codeGameState && codeGameState.timer) clearInterval(codeGameState.timer);
 }
 
 function getTopicForLevel() {
-  const level = userProgress.level || 1;
+  // Use selected level if available, otherwise use user's current level
+  const level = currentGame.selectedLevel || userProgress.level || 1;
   const topics = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
   return topics[level - 1] || "arrays";
 }
