@@ -10,10 +10,91 @@ const __dirname = path.dirname(__filename);
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
+const MEMORY_FILE = path.join(DATA_DIR, "memory.json");
 const SESSION_COOKIE = "aiv_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 const PBKDF2_ITERATIONS = 210000;
 const PASSWORD_KEY_LENGTH = 32;
+
+// ── Rate limiting ────────────────────────────────────────────────────────────
+const SIGNUP_RATE_LIMIT = 5;
+const SIGNUP_WINDOW_MS = 15 * 60 * 1000;
+const signupAttempts = new Map();
+
+// Periodic sweeper — runs every SIGNUP_WINDOW_MS and deletes any identifier
+// whose timestamps have all aged out of the window.  This bounds the Map to
+// only identifiers that have been active within the last window period and
+// prevents unbounded memory growth under a sustained stream of unique IPs.
+const _signupSweeper = setInterval(() => {
+  const now = Date.now();
+  for (const [identifier, timestamps] of signupAttempts) {
+    const fresh = timestamps.filter((t) => now - t < SIGNUP_WINDOW_MS);
+    if (fresh.length === 0) {
+      signupAttempts.delete(identifier);
+    } else {
+      signupAttempts.set(identifier, fresh);
+    }
+  }
+}, SIGNUP_WINDOW_MS);
+
+// Allow the process to exit cleanly even while the interval is live
+// (relevant in test environments and graceful-shutdown scenarios).
+if (_signupSweeper.unref) _signupSweeper.unref();
+
+// IPs of reverse-proxies / load-balancers that are allowed to set
+// X-Forwarded-For.  Add your proxy CIDRs / IPs here or populate via
+// the TRUSTED_PROXIES env var (comma-separated) at startup.
+const TRUSTED_PROXIES = new Set(
+  (process.env.TRUSTED_PROXIES || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
+
+function getClientIdentifier(req) {
+  const remoteAddress = req.socket?.remoteAddress || "unknown";
+
+  // Only honour X-Forwarded-For when the immediate TCP caller is a
+  // known trusted proxy — otherwise an attacker can supply any value
+  // they like and trivially bypass rate limiting.
+  if (
+    remoteAddress !== "unknown" &&
+    TRUSTED_PROXIES.has(remoteAddress) &&
+    req.headers["x-forwarded-for"]
+  ) {
+    // The left-most entry is the original client IP added by the
+    // first proxy in the chain; everything to the right can be spoofed.
+    const leftmost = req.headers["x-forwarded-for"].split(",")[0].trim();
+    if (leftmost) return leftmost;
+  }
+
+  return remoteAddress;
+}
+
+function isSignupRateLimited(identifier) {
+  const now = Date.now();
+  const attempts = signupAttempts.get(identifier) || [];
+  // Trim stale timestamps on every read so the per-identifier array stays
+  // small even between sweeper runs.
+  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  signupAttempts.set(identifier, recentAttempts);
+  return recentAttempts.length >= SIGNUP_RATE_LIMIT;
+}
+
+function recordSignupAttempt(identifier) {
+  const now = Date.now();
+  const attempts = signupAttempts.get(identifier) || [];
+  // Trim before appending so the array never accumulates beyond
+  // SIGNUP_RATE_LIMIT + 1 entries between sweeper passes.
+  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  recentAttempts.push(now);
+  signupAttempts.set(identifier, recentAttempts);
+}
+
+async function normalizeAuthDelay() {
+  return new Promise((resolve) => setTimeout(resolve, 500));
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 const protectedPaths = new Set([
   "/community",
@@ -32,6 +113,9 @@ const mimeTypes = {
   ".png": "image/png",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".php": "text/html; charset=utf-8",
+  ".pdf": "application/pdf",
+  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
 async function loadEnvFile() {
@@ -79,10 +163,10 @@ function fromBase64Url(input) {
 function sessionSecret() {
   if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
   if (process.env.NODE_ENV === "production") {
-   throw new Error("SESSION_SECRET is required in production.");
+    throw new Error("SESSION_SECRET is required in production.");
   }
   return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
- }
+}
 
 function sign(value) {
   return crypto.createHmac("sha256", sessionSecret()).update(value).digest("base64url");
@@ -198,6 +282,86 @@ async function writeUsers(users) {
   await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`);
 }
 
+// ── Memory Scanner (Spaced Repetition, SM-2) ─────────────────────────────────
+// NOTE: This currently uses local JSON file storage, matching the existing
+// users.json/feedback.json pattern in this codebase. In multi-instance or
+// serverless (VERCEL=1 / Firestore) deployments this is not a shared source
+// of truth. Migrating to Firestore (mirroring getUserByEmail/createUser's
+// useFirestore branching) is tracked as a follow-up.
+let memoryWriteQueue = Promise.resolve();
+
+async function ensureMemoryStore() {
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  try {
+    await fs.access(MEMORY_FILE);
+  } catch {
+    await fs.writeFile(MEMORY_FILE, "{}\n");
+  }
+}
+
+async function readMemoryStore() {
+  await ensureMemoryStore();
+  const raw = await fs.readFile(MEMORY_FILE, "utf8");
+  return JSON.parse(raw || "{}");
+}
+
+async function writeMemoryStoreAtomic(filePath, store) {
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmpPath, `${JSON.stringify(store, null, 2)}\n`);
+  await fs.rename(tmpPath, filePath);
+}
+
+// Serializes read-modify-write cycles so concurrent /api/memory/* requests
+// cannot clobber each other's updates. `mutator` receives the current store
+// and must return the updated store.
+async function updateMemoryStore(mutator) {
+  const task = memoryWriteQueue.then(async () => {
+    await ensureMemoryStore();
+    const raw = await fs.readFile(MEMORY_FILE, "utf8");
+    const store = JSON.parse(raw || "{}");
+    const updated = await mutator(store);
+    await writeMemoryStoreAtomic(MEMORY_FILE, store);
+    return updated;
+  });
+
+  // Prevent one rejected task from permanently breaking the queue.
+  memoryWriteQueue = task.catch(() => {});
+  return task;
+}
+// SM-2 algorithm: quality is 0-5 (0 = total blackout, 5 = perfect recall)
+function applySM2(card, quality) {
+  const q = Math.max(0, Math.min(5, Number(quality)));
+  let { repetitions = 0, easeFactor = 2.5, interval = 0 } = card || {};
+
+  if (q < 3) {
+    repetitions = 0;
+    interval = 1;
+  } else {
+    repetitions += 1;
+    if (repetitions === 1) interval = 1;
+    else if (repetitions === 2) interval = 6;
+    else interval = Math.round(interval * easeFactor);
+  }
+
+  easeFactor = easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+  if (easeFactor < 1.3) easeFactor = 1.3;
+
+  const now = new Date();
+  const nextReviewDate = new Date(now);
+  nextReviewDate.setDate(now.getDate() + interval);
+
+  return {
+    topic: card?.topic,
+    repetitions,
+    easeFactor: Math.round(easeFactor * 100) / 100,
+    interval,
+    lastReviewed: now.toISOString(),
+    nextReviewDate: nextReviewDate.toISOString(),
+    lastQuality: q,
+  };
+}
+// ──────────────────────────────────────────────────────────────────────────
+
 function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
   const hash = crypto
     .pbkdf2Sync(password, salt, PBKDF2_ITERATIONS, PASSWORD_KEY_LENGTH, "sha256")
@@ -261,6 +425,7 @@ function getSession(req) {
   const cookies = parseCookies(req.headers.cookie || "");
   return verifySessionToken(cookies[SESSION_COOKIE]);
 }
+
 function normalizePathname(pathname) {
   if (!pathname) return "/";
   return pathname.replace(/\/+$/, "") || "/";
@@ -311,16 +476,43 @@ async function handleApi(req, res, pathname) {
   }
 
   if (pathname === "/api/signup" && req.method === "POST") {
+    // ── Rate limit check ─────────────────────────────────────────────────────
+    const clientId = getClientIdentifier(req);
+
+    if (isSignupRateLimited(clientId)) {
+      await normalizeAuthDelay();
+      return sendJson(res, 429, {
+        error: "Too many signup attempts. Please try again later.",
+      });
+    }
+
+    // Record the attempt before processing so every inbound request counts,
+    // including those that fail validation or find a duplicate email.
+    recordSignupAttempt(clientId);
+    // ─────────────────────────────────────────────────────────────────────────
+
     const payload = await readJsonBody(req);
     const validationError = validateSignup(payload);
     if (validationError) return sendJson(res, 400, { error: validationError });
 
     const email = String(payload.email).trim().toLowerCase();
-   const existing = useFirestore
+    const existing = useFirestore
       ? await getUserByEmail(email)
       : (await readUsers()).find((user) => user.email === email);
     if (existing) {
-      return sendJson(res, 409, { error: "An account with this email already exists." });
+      // Normalize response time so a duplicate is indistinguishable from a
+      // real signup by timing — a real signup always runs PBKDF2 before
+      // responding, so we must delay here to match that latency profile.
+      await normalizeAuthDelay();
+      console.warn("[signup] duplicate email attempt", {
+        email,
+        ip: clientId,
+        at: new Date().toISOString(),
+      });
+      // Return a generic 200 that is indistinguishable from a real signup
+      // success so callers cannot enumerate registered email addresses.
+      // No session cookie is issued — the submitter has not authenticated.
+      return sendJson(res, 200, { ok: true });
     }
 
     const user = {
@@ -345,8 +537,8 @@ async function handleApi(req, res, pathname) {
     const payload = await readJsonBody(req);
     const email = String(payload.email || "").trim().toLowerCase();
     const password = String(payload.password || "");
-   const user = useFirestore
-     ? await getUserByEmail(email)
+    const user = useFirestore
+      ? await getUserByEmail(email)
       : (await readUsers()).find((candidate) => candidate.email === email);
     if (!user || !passwordMatches(password, user.password)) {
       return sendJson(res, 401, { error: "Invalid email or password." });
@@ -429,6 +621,62 @@ async function handleApi(req, res, pathname) {
     }
   }
 
+  if (pathname === "/api/memory/log" && req.method === "POST") {
+    const session = getSession(req);
+    if (!session) return sendJson(res, 401, { error: "Login required." });
+
+    let payload;
+    try {
+      payload = await readJsonBody(req);
+    } catch {
+      return sendJson(res, 400, { error: "Invalid JSON body." });
+    }
+
+    const { topic, quality } = payload;
+    if (!topic || typeof topic !== "string" || topic.trim().length < 1) {
+      return sendJson(res, 400, { error: "Topic is required." });
+    }
+    if (quality === undefined || isNaN(Number(quality)) || Number(quality) < 0 || Number(quality) > 5) {
+      return sendJson(res, 400, { error: "Quality must be a number between 0 and 5." });
+    }
+
+    const trimmedTopic = topic.trim();
+    const updatedCard = await updateMemoryStore((store) => {
+      const userCards = store[session.sub] || {};
+      const existing = userCards[trimmedTopic] || { topic: trimmedTopic };
+      const updated = applySM2(existing, quality);
+      userCards[trimmedTopic] = updated;
+      store[session.sub] = userCards;
+      return updated;
+    });
+
+    return sendJson(res, 200, { success: true, card: updatedCard });
+  }
+
+  if (pathname === "/api/memory/due" && req.method === "GET") {
+    const session = getSession(req);
+    if (!session) return sendJson(res, 401, { error: "Login required." });
+
+    const store = await readMemoryStore();
+    const userCards = store[session.sub] || {};
+    const now = new Date();
+    const due = Object.values(userCards).filter(
+      (card) => new Date(card.nextReviewDate) <= now
+    );
+
+    return sendJson(res, 200, { success: true, due });
+  }
+
+  if (pathname === "/api/memory/all" && req.method === "GET") {
+    const session = getSession(req);
+    if (!session) return sendJson(res, 401, { error: "Login required." });
+
+    const store = await readMemoryStore();
+    const userCards = store[session.sub] || {};
+
+    return sendJson(res, 200, { success: true, cards: Object.values(userCards) });
+  }
+
   return sendJson(res, 404, { error: "Not found." });
 }
 
@@ -443,8 +691,15 @@ function resolveStaticPath(pathname) {
     "/dbms-learning": "dbms-learning.html",
     "/powerbi-learning": "powerbi-learning.html",
     "/cplusplus-learning": "cplusplus-learning.html",
+    "/learning/php": "php-learning.html",
+    "/php-learning": "php-learning.html",
+    "/learning/oop": "oop-learning.html",
+    "/oop-learning": "oop-learning.html",
     "/feedback": "feedback.html",
     "/feedback.html": "feedback.html",
+    "/memory-scanner": "memory-scanner.html",
+    "/memory-scanner.html": "memory-scanner.html",
+    "/algorithm-timeline": "algorithm-timeline.html",
     "/support-page": "support-page/index.html",
     "/support-page/": "support-page/index.html",
   };
@@ -456,6 +711,39 @@ function resolveStaticPath(pathname) {
   const filePath = path.resolve(ROOT, mapped);
   const rel = path.relative(ROOT, filePath);
   if (rel.startsWith("..") || path.isAbsolute(rel)) return null;
+
+  // ── Arbitrary File Disclosure Prevention ──────────────────────────────────
+  const fileName = path.basename(filePath);
+
+  // 1. Block hidden files and sensitive directories
+  if (
+    fileName.startsWith(".") ||
+    rel.startsWith("data" + path.sep) ||
+    rel.startsWith("api" + path.sep) ||
+    rel.startsWith("node_modules" + path.sep)
+  ) {
+    return null;
+  }
+
+  // 2. Block specific sensitive root files
+  const sensitiveFiles = [
+    "server.js",
+    "firebase.js",
+    "package.json",
+    "package-lock.json",
+    "vercel.json",
+  ];
+  if (sensitiveFiles.includes(fileName)) {
+    return null;
+  }
+
+  // 3. Extension whitelist (only serve files with known mime types)
+  const ext = path.extname(filePath);
+  if (!mimeTypes[ext]) {
+    return null;
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   return filePath;
 }
 

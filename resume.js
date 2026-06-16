@@ -228,6 +228,96 @@ function initExportPdf() {
     });
   }
 }
+async function initResumeAnalyzer(){
+
+  const button = document.getElementById("analyzeResumeBtn");
+  const fileInput = document.getElementById("resumeUpload");
+
+
+  if(!button) return;
+
+
+  button.addEventListener("click", async ()=>{
+
+
+    const file = fileInput.files[0];
+
+
+    if(!file){
+      alert("Please upload your resume first");
+      return;
+    }
+
+
+    const formData = new FormData();
+
+    formData.append("resume", file);
+
+
+
+    try{
+
+
+      button.innerHTML = "Analyzing...";
+
+
+      const response = await fetch(
+        "http://localhost:5000/analyze-resume",
+        {
+          method:"POST",
+          body:formData
+        }
+      );
+
+
+      const data = await response.json();
+
+
+
+      document.getElementById("resumeAnalysisResult")
+      .style.display="block";
+
+
+
+      document.getElementById("atsScore")
+      .textContent=data.atsScore+"%";
+
+
+
+      document.getElementById("missingSkills")
+      .innerHTML=
+      data.missingSkills
+      .map(skill=>`<li>${skill}</li>`)
+      .join("");
+
+
+
+      document.getElementById("resumeSuggestions")
+      .innerHTML=
+      data.suggestions
+      .map(item=>`<li>${item}</li>`)
+      .join("");
+
+
+
+      button.innerHTML="Analyze Resume";
+
+
+    }
+    catch(error){
+
+      console.error(error);
+      alert("Something went wrong");
+
+      button.innerHTML="Analyze Resume";
+
+    }
+
+
+  });
+
+
+}
 
 // Page Initialization
 document.addEventListener("DOMContentLoaded", () => {
@@ -237,6 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initNavbar();
   initScrollTop();
+  initResumeAnalyzer();
 
   // Load and render user journey data
   loadUserData();
@@ -245,5 +336,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDSAMastery();
   renderBadges();
   initExportPdf();
+  
 
 });

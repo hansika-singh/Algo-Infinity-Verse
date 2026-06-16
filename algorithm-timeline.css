@@ -1,0 +1,488 @@
+/* Timeline-specific styles */
+
+/* ── Hero ──────────────────────────────────── */
+.timeline-hero .typing-text {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+/* ── Filter tabs ───────────────────────────── */
+.tl-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.tl-filter-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+.tl-filter-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary);
+}
+
+.tl-filter-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Loading screen must cover navbar (z-index conflict) */
+#loading-screen {
+  z-index: 10001;
+}
+
+/* ── Timeline container ────────────────────── */
+.tl-container {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem 0 3rem;
+}
+
+.tl-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--primary) 10%,
+    var(--accent) 50%,
+    var(--primary) 90%,
+    transparent 100%
+  );
+  border-radius: 3px;
+}
+
+/* ── Era group ─────────────────────────────── */
+.tl-era {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.tl-era-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.tl-era-badge {
+  display: inline-block;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: var(--primary);
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.tl-era-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.5rem 0 0.25rem;
+}
+
+.tl-era-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Timeline item ─────────────────────────── */
+.tl-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.tl-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tl-item.left {
+  flex-direction: row;
+  padding-right: calc(50% + 1.5rem);
+}
+
+.tl-item.right {
+  flex-direction: row;
+  padding-left: calc(50% + 1.5rem);
+  justify-content: flex-end;
+}
+
+.tl-item.full {
+  flex-direction: row;
+  padding: 0 1rem;
+  justify-content: center;
+}
+
+.tl-item.full .tl-card {
+  max-width: 600px;
+  width: 100%;
+}
+
+.tl-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+  width: 100%;
+}
+
+.tl-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+  transform: translateY(-2px);
+}
+
+.tl-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.tl-year {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(6, 182, 212, 0.12);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.tl-category-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--primary-light);
+}
+
+.tl-category-tag.cat-algorithm { background: rgba(6, 182, 212, 0.15); color: var(--accent); }
+.tl-category-tag.cat-datastructure { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.tl-category-tag.cat-person { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.tl-category-tag.cat-computing { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+
+.tl-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.tl-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.tl-card-desc strong {
+  color: var(--text-primary);
+}
+
+.tl-dot {
+  position: absolute;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid var(--dark-bg);
+  z-index: 1;
+  box-shadow: 0 0 0 3px var(--primary);
+}
+
+.tl-item.hidden-item {
+  display: none;
+}
+
+/* ── Scientists section ───────────────────── */
+.tl-scientists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.tl-scientist-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  cursor: default;
+}
+
+.tl-scientist-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.12);
+}
+
+.tl-scientist-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--primary-light);
+}
+
+.tl-scientist-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.15rem;
+}
+
+.tl-scientist-life {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.tl-scientist-contrib {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.tl-scientist-quote {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-style: italic;
+  padding: 0.75rem;
+  background: rgba(6, 182, 212, 0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+
+/* ── Milestones grid ───────────────────────── */
+.tl-milestones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.tl-milestone-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.tl-milestone-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.tl-milestone-year {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(6, 182, 212, 0.1);
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.tl-milestone-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.tl-milestone-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Tabs ──────────────────────────────────── */
+.tl-tabs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.tl-tab {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tl-tab i {
+  font-size: 1rem;
+}
+
+.tl-tab:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-light);
+}
+
+.tl-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.tl-tab-content {
+  display: none;
+}
+
+.tl-tab-content.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section headings ──────────────────────── */
+.tl-section-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.tl-section-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 768px) {
+  .tl-container::before {
+    left: 20px;
+  }
+
+  .tl-item.left,
+  .tl-item.right {
+    padding: 0 0 0 3rem;
+  }
+
+  .tl-item .tl-dot {
+    left: 20px;
+    transform: translateX(-50%);
+  }
+
+  .tl-item.full {
+    padding: 0 0 0 3rem;
+  }
+
+  .tl-era-title {
+    font-size: 1.2rem;
+  }
+
+  .tl-tabs {
+    gap: 0.35rem;
+  }
+
+  .tl-tab {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .tl-scientists {
+    grid-template-columns: 1fr;
+  }
+
+  .tl-milestones {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .tl-card {
+    padding: 1rem 1.15rem;
+  }
+
+  .tl-card-title {
+    font-size: 0.9rem;
+  }
+
+  .tl-filter-btn {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.9rem;
+  }
+
+  .tl-milestones {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Computer Architecture – Hardware &amp; Assembly Basics | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly Computer Architecture tutorial. Learn Von Neumann model, CPU organization, memory hierarchy, registers, and assembly cycles." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="computer-architecture.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item">
+          <a href="index.html#home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>Learn</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
+            <a href="index.html#practice" class="dropdown-item" role="menuitem">Practice Problems</a>
+            <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
+            <a href="index.html#roadmap" class="dropdown-item" role="menuitem">Learning Roadmap</a>
+            <a href="python-learning.html" class="dropdown-item" role="menuitem">Learn Python</a>
+            <a href="javascript-learning.html" class="dropdown-item" role="menuitem">Learn JavaScript</a>
+            <a href="java-learning.html" class="dropdown-item" role="menuitem">Learn Java</a>
+            <a href="cplusplus-learning.html" class="dropdown-item" role="menuitem">Learn C++</a>
+            <a href="c-learning.html" class="dropdown-item" role="menuitem">Learn C</a>
+            <a href="dbms-learning.html" class="dropdown-item" role="menuitem">Learn DBMS</a>
+            <a href="powerbi-learning.html" class="dropdown-item" role="menuitem">Learn Power BI</a>
+            <a href="php-learning.html" class="dropdown-item" role="menuitem">Learn PHP</a>
+            <a href="oop-learning.html" class="dropdown-item" role="menuitem">Learn OOP</a>
+            <a href="computer-architecture.html" class="dropdown-item" role="menuitem">Learn Architecture</a>
+            <a href="tree-traversal.html" class="dropdown-item" role="menuitem">Tree Traversal</a>
+            <a href="sorting-visualizer.html" class="dropdown-item" role="menuitem">Sorting Visualizer</a>
+            <a href="graph-visualizer.html" class="dropdown-item" role="menuitem">Graph Visualizer</a>
+            
+           
+          </div>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>Interview</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#interview" class="dropdown-item" role="menuitem">Interview Prep</a>
+            <a href="cheat-sheets.html" class="dropdown-item" role="menuitem">DSA Cheat Sheets</a>
+            <a href="system-design.html" class="dropdown-item" role="menuitem">System Design</a>
+            <a href="behavioral-questions.html" class="dropdown-item" role="menuitem">Behavioral Questions</a>
+          </div>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>Community</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="community.html" class="dropdown-item" role="menuitem">Discussions</a>
+            <a href="index.html#dashboard" class="dropdown-item" role="menuitem">Leaderboard</a>
+            <a href="support-page/index.html" class="dropdown-item" role="menuitem">Support</a>
+          </div>
+        </li>
+        <li class="nav-item has-dropdown nav-profile-dropdown">
+          <button class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span>Profile</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" role="menu">
+            <a href="index.html#dashboard" class="dropdown-item" role="menuitem">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+            <a href="index.html#profile" class="dropdown-item" role="menuitem">
+              <i class="fas fa-user"></i>
+              My Profile
+            </a>
+            <a href="resume.html" class="dropdown-item" role="menuitem">
+              <i class="fas fa-file-alt"></i>
+              Coding Resume
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="login.html" class="dropdown-item nav-auth-link" role="menuitem" id="navLoginBtn">
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In
+            </a>
+            <a href="signup.html" class="dropdown-item nav-auth-link" role="menuitem" id="navSignupBtn">
+              <i class="fas fa-user-plus"></i>
+              Sign Up
+            </a>
+          </div>
+        </li>
+        <li class="nav-item nav-cta desktop-only">
+          <a href="index.html#practice" class="btn btn-primary nav-cta-btn">
+            <i class="fas fa-rocket"></i>
+            Start Learning
+          </a>
+        </li>
+      </ul>
+      <div class="nav-buttons">
+        <button id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Explore the Foundation of</span>
+          <span class="main-title gradient-text">Computer Architecture</span>
+          <span class="subtitle">System Organization, CPU Cycles &amp; Data Flows</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_ca" id="typingTextCa"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Core Topics</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Practice Checks</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Interactive Quiz</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Learning Section -->
+    <section class="learning-section">
+      <div class="container">
+        <!-- Progress Bar -->
+        <div class="ca-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <span class="ca-progress-text">Your Progress: <span id="progressCount">0</span>/12 Topics Completed</span>
+          <div class="ca-progress-track">
+            <div class="ca-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="ca-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="ca-sidebar">
+            <h2 class="ca-sidebar-title">Architecture Guide</h2>
+            <nav>
+              <ul class="ca-sidebar-nav">
+                <li>
+                  <a href="#intro" class="active">
+                    <span class="nav-icon"><i class="fas fa-info-circle"></i></span>
+                    <span>1. Intro to Architecture</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#org-vs-arch">
+                    <span class="nav-icon"><i class="fas fa-sliders-h"></i></span>
+                    <span>2. Arch vs. Organization</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#cpu">
+                    <span class="nav-icon"><i class="fas fa-microchip"></i></span>
+                    <span>3. CPU Architecture</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#memory">
+                    <span class="nav-icon"><i class="fas fa-database"></i></span>
+                    <span>4. Memory Hierarchy</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#io">
+                    <span class="nav-icon"><i class="fas fa-keyboard"></i></span>
+                    <span>5. Input/Output (I/O)</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#data-rep">
+                    <span class="nav-icon"><i class="fas fa-binary"></i></span>
+                    <span>6. Data Representation</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#instruction-cycle">
+                    <span class="nav-icon"><i class="fas fa-redo"></i></span>
+                    <span>7. Instruction Cycle</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#buses">
+                    <span class="nav-icon"><i class="fas fa-project-diagram"></i></span>
+                    <span>8. System Buses</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#performance">
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span>9. Performance Metrics</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#modern-systems">
+                    <span class="nav-icon"><i class="fas fa-desktop"></i></span>
+                    <span>10. Modern Systems</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#exercises">
+                    <span class="nav-icon"><i class="fas fa-dumbbell"></i></span>
+                    <span>11. Practice Check</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#quiz">
+                    <span class="nav-icon"><i class="fas fa-question-circle"></i></span>
+                    <span>12. Knowledge Quiz</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="ca-main-content">
+            <!-- 1. Introduction to Computer Architecture -->
+            <article class="ca-lesson" id="intro" data-topic="1">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">01</span>
+                <h3>Introduction to Computer Architecture</h3>
+              </div>
+              <p>
+                <strong>Computer Architecture</strong> describes the structure, organization, and behavioral design of computer hardware systems. It outlines how instructions are parsed, how memory is laid out, and how computer components communicate.
+              </p>
+              <p>
+                Most modern general-purpose computers are designed according to the <strong>Von Neumann Architecture</strong>, published in 1945 by mathematician John von Neumann.
+              </p>
+
+              <div class="ca-svg-container">
+                <svg class="ca-svg-diagram" width="450" height="180" viewBox="0 0 450 180" aria-label="Von Neumann Model Diagram">
+                  <!-- CPU -->
+                  <rect class="ca-svg-node" x="20" y="20" width="120" height="100"/>
+                  <text class="ca-svg-text-bold" x="80" y="45">CPU</text>
+                  <text class="ca-svg-text" x="80" y="80">Control Unit</text>
+                  <text class="ca-svg-text" x="80" y="100">ALU &amp; Registers</text>
+
+                  <!-- Memory -->
+                  <rect class="ca-svg-node" x="180" y="20" width="100" height="100"/>
+                  <text class="ca-svg-text-bold" x="230" y="45">Memory</text>
+                  <text class="ca-svg-text" x="230" y="80">Instructions</text>
+                  <text class="ca-svg-text" x="230" y="100">&amp; Data</text>
+
+                  <!-- Input/Output -->
+                  <rect class="ca-svg-node" x="320" y="20" width="110" height="100"/>
+                  <text class="ca-svg-text-bold" x="375" y="45">I/O Devices</text>
+                  <text class="ca-svg-text" x="375" y="80">Input / Output</text>
+                  <text class="ca-svg-text" x="375" y="100">Peripherals</text>
+
+                  <!-- System Bus -->
+                  <rect class="ca-svg-node-highlight" x="20" y="140" width="410" height="30"/>
+                  <text class="ca-svg-text-bold" x="225" y="156">System Bus (Address, Data, Control)</text>
+
+                  <!-- Connectors -->
+                  <path class="ca-svg-line-solid" d="M80,120 L80,140" />
+                  <path class="ca-svg-line-solid" d="M230,120 L230,140" />
+                  <path class="ca-svg-line-solid" d="M375,120 L375,140" />
+                </svg>
+              </div>
+
+              <div class="ca-concept-card">
+                <h4>Von Neumann Bottleneck</h4>
+                <p>
+                  Because the Von Neumann architecture shares a single system bus for both instruction fetch and data transfer operations, the CPU is frequently idle while waiting for instructions/data to transit memory. This throughput limit is called the **Von Neumann Bottleneck**.
+                </p>
+              </div>
+              <div class="ca-exercise" id="exercise-intro">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Bottlenecks
+                </div>
+                <p>What defines the main drawback of the standard Von Neumann architecture?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-intro">
+                  <p><strong>Answer: Shared bus bottleneck</strong></p>
+                  <p>Explanation: Because a shared bus is used for fetching both instructions and data, data transfers block instruction fetches, causing CPU idle states.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Computer Organization vs. Architecture -->
+            <article class="ca-lesson" id="org-vs-arch" data-topic="2">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">02</span>
+                <h3>Computer Organization vs Computer Architecture</h3>
+              </div>
+              <p>
+                Although often used interchangeably, Computer Architecture and Computer Organization focus on distinct layers of system design:
+              </p>
+              <ul>
+                <li><strong>Computer Architecture (Abstract):</strong> Describes the programmer-visible attributes of a system (Instruction Set Architecture - ISA). It defines data formats, registers, and memory addressing modes. *Example:* Implementing a new ISA instruction called `ADD`.</li>
+                <li><strong>Computer Organization (Physical):</strong> Describes how architectural specifications are physically implemented using gate-level circuits, wires, clock cycles, and control signals. *Example:* Deciding whether to implement the `ADD` operation using a Carry-Lookahead Adder or Ripple-Carry Adder.</li>
+              </ul>
+              <div class="ca-exercise" id="exercise-org">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Arch vs. Org
+                </div>
+                <p>Is defining the size of a register block an architectural or organizational decision?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-org">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-org">
+                  <p><strong>Answer: Architectural</strong></p>
+                  <p>Explanation: Register quantities and sizes directly affect the programmer's visibility (ISA instructions reference these registers), meaning it is an architectural decision.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. CPU Architecture -->
+            <article class="ca-lesson" id="cpu" data-topic="3">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">03</span>
+                <h3>CPU Architecture</h3>
+              </div>
+              <p>
+                The <strong>Central Processing Unit (CPU)</strong> is the "brain" of the computer, executing instructions and managing component coordination. It contains three main sub-components:
+              </p>
+              <ul>
+                <li><strong>Arithmetic Logic Unit (ALU):</strong> Performs basic mathematical calculations (addition, subtraction) and logical comparisons (AND, OR, NOT).</li>
+                <li><strong>Control Unit (CU):</strong> The supervisor. It decodes instructions fetched from memory and routes control signals directing the ALU, registers, and memory blocks.</li>
+                <li><strong>Registers:</strong> Tiny, ultra-fast memory storage locations located directly inside the CPU core.</li>
+              </ul>
+
+              <div class="ca-concept-card">
+                <h4>Special Purpose Registers</h4>
+                <ul>
+                  <li><strong>Program Counter (PC):</strong> Holds the memory address of the next instruction to fetch.</li>
+                  <li><strong>Instruction Register (IR):</strong> Holds the instruction code currently being decoded/executed.</li>
+                  <li><strong>Memory Address Register (MAR):</strong> Holds the memory address currently being read from or written to.</li>
+                  <li><strong>Memory Data Register (MDR):</strong> Holds the actual data payload read from or written to memory.</li>
+                  <li><strong>Accumulator (ACC):</strong> Temporarily holds intermediate mathematical results calculated by the ALU.</li>
+                </ul>
+              </div>
+              <div class="ca-exercise" id="exercise-cpu">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Registers
+                </div>
+                <p>Which register holds the address of the next instruction to fetch?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-cpu">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-cpu">
+                  <p><strong>Answer: Program Counter (PC)</strong></p>
+                  <p>Explanation: The Program Counter (PC) increments after every fetch cycle, tracking the sequence of execution instructions in memory.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Memory Hierarchy -->
+            <article class="ca-lesson" id="memory" data-topic="4">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">04</span>
+                <h3>Memory Hierarchy</h3>
+              </div>
+              <p>
+                In a computer system, memory is organized in a hierarchy to balance **speed** and **cost**. Registers are fast but small and expensive, while mechanical/solid-state hard drives are slow but massive and cheap.
+              </p>
+
+              <div class="ca-svg-container">
+                <svg class="ca-svg-diagram" width="450" height="200" viewBox="0 0 450 200" aria-label="Memory Hierarchy Pyramid Diagram">
+                  <!-- Registers -->
+                  <polygon points="225,10 125,50 325,50" class="ca-svg-node" />
+                  <text class="ca-svg-text-bold" x="225" y="35">1. Registers (Inside CPU)</text>
+
+                  <!-- Cache -->
+                  <polygon points="125,50 90,100 360,100 325,50" class="ca-svg-node-highlight" />
+                  <text class="ca-svg-text-bold" x="225" y="75">2. Cache (L1, L2, L3)</text>
+
+                  <!-- RAM -->
+                  <polygon points="90,100 55,150 395,150 360,100" class="ca-svg-node" />
+                  <text class="ca-svg-text-bold" x="225" y="125">3. Main Memory (RAM)</text>
+
+                  <!-- Disk -->
+                  <polygon points="55,150 20,200 430,200 395,150" class="ca-svg-node" />
+                  <text class="ca-svg-text-bold" x="225" y="175">4. Secondary Storage (SSD/HDD)</text>
+                </svg>
+              </div>
+
+              <div class="ca-concept-card">
+                <h4>Cache Levels</h4>
+                <ul>
+                  <li><strong>L1 Cache:</strong> Smallest, fastest, and built directly into the individual CPU cores.</li>
+                  <li><strong>L2 Cache:</strong> Slightly larger and slower than L1, serving the core.</li>
+                  <li><strong>L3 Cache:</strong> Shared across all cores of a CPU chip, larger but slower than L2.</li>
+                </ul>
+              </div>
+              <div class="ca-exercise" id="exercise-memory">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Cache speed
+                </div>
+                <p>Which level of cache memory is typically the fastest?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-memory">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-memory">
+                  <p><strong>Answer: L1 Cache</strong></p>
+                  <p>Explanation: L1 Cache is located closest to the CPU core registers and operates at the internal clock frequency of the processor core, making it the fastest cache tier.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Input and Output Systems -->
+            <article class="ca-lesson" id="io" data-topic="5">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">05</span>
+                <h3>Input and Output Systems</h3>
+              </div>
+              <p>
+                I/O systems manage communication between the CPU/Memory and external peripheral devices (keyboards, monitors, network cards). There are three primary mechanisms for I/O operations:
+              </p>
+              <ul>
+                <li><strong>Programmed I/O (Polling):</strong> The CPU repeatedly queries the peripheral device to check if it has data ready. This keeps the CPU busy in a loop, wasting cycles.</li>
+                <li><strong>Interrupt-driven I/O:</strong> The peripheral device sends a hardware signal (Interrupt) to the CPU when it is ready. The CPU suspends its current work, runs an **Interrupt Service Routine (ISR)**, and resumes.</li>
+                <li><strong>Direct Memory Access (DMA):</strong> Used for high-speed transfers. A dedicated DMA controller copies blocks of data directly between peripheral devices and RAM, bypassing the CPU completely and notifying the CPU only when the transfer completes.</li>
+              </ul>
+              <div class="ca-exercise" id="exercise-io">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: DMA
+                </div>
+                <p>Why is Direct Memory Access (DMA) used instead of Programmed I/O for SSD transfers?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-io">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-io">
+                  <p><strong>Answer: It avoids CPU execution overhead.</strong></p>
+                  <p>Explanation: For high-speed devices, having the CPU copy byte-by-byte would saturate the CPU. DMA handles the transfer autonomously, freeing the CPU to execute other tasks.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Data Representation -->
+            <article class="ca-lesson" id="data-rep" data-topic="6">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">06</span>
+                <h3>Data Representation</h3>
+              </div>
+              <p>
+                Computers use electrical switches (on/off states) to represent data. As a result, all characters, numbers, and symbols are stored using the <strong>Binary System (Base 2)</strong>.
+              </p>
+              <div class="ca-concept-card">
+                <h4>Binary and Hexadecimal</h4>
+                <ul>
+                  <li><strong>Binary:</strong> States of `0` and `1`. Each digit represents a **bit**.</li>
+                  <li><strong>Hexadecimal (Base 16):</strong> Uses digits `0-9` and letters `A-F`. A single hex character represents exactly 4 binary bits (a nibble), making memory dumps readable.</li>
+                </ul>
+              </div>
+              <p>
+                Negative integers are represented using <strong>Two's Complement</strong> representation. To convert a positive binary number to negative: invert all bits and add `1`.
+              </p>
+              <div class="ca-code-block">
+                <div class="oop-code-header">
+                  <span class="ca-code-lang">Binary Conversion Example</span>
+                  <button class="ca-code-copy" data-code="Decimal: 5
+Binary (8-bit): 00000101
+
+Invert Bits: 11111010
+Add 1:        11111011
+Result (-5): 11111011">Copy</button>
+                </div>
+                <pre><code>Decimal: 5
+Binary (8-bit): 00000101
+
+Invert Bits: 11111010
+Add 1:        11111011
+Result (-5): 11111011</code></pre>
+              </div>
+              <div class="ca-exercise" id="exercise-datarep">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Hex translation
+                </div>
+                <p>Convert the binary byte <code>1010 1100</code> to Hexadecimal.</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-datarep">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-datarep">
+                  <p><strong>Answer: AC</strong></p>
+                  <p>Explanation: Splitting into nibbles: `1010` is 10 (which is hex `A`), and `1100` is 12 (which is hex `C`). Thus, it is represented as hex `AC` or `0xAC`.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Instruction Execution Cycle -->
+            <article class="ca-lesson" id="instruction-cycle" data-topic="7">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">07</span>
+                <h3>Instruction Execution Cycle</h3>
+              </div>
+              <p>
+                The CPU continuously executes a loop called the **Fetch-Decode-Execute Cycle** to process instructions:
+              </p>
+              <ol>
+                <li><strong>Fetch:</strong> The CPU copies the instruction address from the Program Counter (PC) to the MAR, triggers a memory read, loads the instruction data into the MDR, and moves it to the Instruction Register (IR). The PC then increments.</li>
+                <li><strong>Decode:</strong> The Control Unit (CU) parses the instruction code inside the IR to understand what operation (opcode) to run and identifies data operand locations.</li>
+                <li><strong>Execute:</strong> The Control Unit routes control signals, the ALU performs arithmetic or logical operations, and results are written back to registers or RAM.</li>
+              </ol>
+              <div class="ca-exercise" id="exercise-cycle">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Fetch Phase
+                </div>
+                <p>During the Fetch phase, which register transfers the memory address to the MAR?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-cycle">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-cycle">
+                  <p><strong>Answer: Program Counter (PC)</strong></p>
+                  <p>Explanation: The Program Counter (PC) stores the location of the next instruction. The CPU copies this address to the Memory Address Register (MAR) to request it from RAM.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. System Buses -->
+            <article class="ca-lesson" id="buses" data-topic="8">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">08</span>
+                <h3>System Buses</h3>
+              </div>
+              <p>
+                A <strong>Bus</strong> is a physical channel consisting of wires or copper tracks on a motherboard that transmits electronic signals between components. The main system bus consists of three sub-channels:
+              </p>
+              <ul>
+                <li><strong>Data Bus:</strong> Transmits actual data bits (bi-directional channel).</li>
+                <li><strong>Address Bus:</strong> Transmits memory locations to read/write (uni-directional channel pointing from CPU outward).</li>
+                <li><strong>Control Bus:</strong> Transmits command signals, synchronization clocks, and write/read indicators (bi-directional).</li>
+              </ul>
+              <div class="ca-exercise" id="exercise-buses">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Bus Directions
+                </div>
+                <p>True or False: The Address Bus is bi-directional.</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-buses">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-buses">
+                  <p><strong>Answer: False</strong></p>
+                  <p>Explanation: The Address Bus is uni-directional. Only the CPU (or DMA controller) generates memory addresses to select locations; memory chips do not generate address coordinates.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Performance Metrics -->
+            <article class="ca-lesson" id="performance" data-topic="9">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">09</span>
+                <h3>Performance Metrics</h3>
+              </div>
+              <p>
+                Evaluating processor speeds requires analyzing multiple execution variables:
+              </p>
+              <ul>
+                <li><strong>Clock Speed (Hz):</strong> The frequency of internal clock ticks per second. *Example:* A 3.2 GHz processor ticks 3.2 billion times per second.</li>
+                <li><strong>CPI (Cycles Per Instruction):</strong> The average number of clock cycles required to execute a single instruction.</li>
+                <li><strong>IPS (Instructions Per Second):</strong> Total instructions executed per second. Calculated as `Clock Speed / CPI`.</li>
+              </ul>
+              <div class="ca-concept-card">
+                <h4>CPU Time Equation</h4>
+                <p>The time required to run a program is calculated as:</p>
+                <p font-family="Fira Code" color="var(--ca-secondary)"><strong>CPU Time = Instruction Count × CPI × Clock Cycle Time</strong></p>
+              </div>
+              <div class="ca-exercise" id="exercise-performance">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: CPU speed
+                </div>
+                <p>If a processor executes a program with 1,000 instructions, taking an average CPI of 2 cycles, on a clock speed of 1 GHz (1,000,000,000 Hz), what is the total execution time in microseconds?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-performance">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-performance">
+                  <p><strong>Answer: 2 microseconds</strong></p>
+                  <p>Explanation: Cycles = 1,000 * 2 = 2,000 cycles. Time = 2,000 / 1,000,000,000 seconds = 0.000002 seconds = 2 microseconds.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. Modern Computer Systems -->
+            <article class="ca-lesson" id="modern-systems" data-topic="10">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">10</span>
+                <h3>Modern Computer Systems</h3>
+              </div>
+              <p>
+                Modern computers implement optimization architectures to maximize throughput:
+              </p>
+              <ul>
+                <li><strong>Pipelining:</strong> An execution strategy that overlaps instruction execution stages, similar to an assembly line. While instruction 2 is being decoded, instruction 1 is executing, and instruction 3 is being fetched.</li>
+                <li><strong>RISC (Reduced Instruction Set Computer):</strong> Uses small, simplified instruction sets that execute in exactly one cycle, relying on compiler efficiency. *Example:* ARM processors.</li>
+                <li><strong>CISC (Complex Instruction Set Computer):</strong> Uses large, complex instructions that can perform multi-cycle tasks directly (e.g. copying directly from RAM to RAM). *Example:* Intel x86 processors.</li>
+              </ul>
+              <div class="ca-exercise" id="exercise-modern">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: RISC vs CISC
+                </div>
+                <p>Which design strategy focuses on simple instructions executing in a single clock cycle?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-modern">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-modern">
+                  <p><strong>Answer: RISC (Reduced Instruction Set Computer)</strong></p>
+                  <p>Explanation: RISC architectures prioritize hardware simplicity and single-cycle instruction execution, delegating complexity to compiler software optimization.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 11. Practice Exercises -->
+            <article class="ca-lesson" id="exercises" data-topic="11">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">11</span>
+                <h3>Comprehensive Exercises</h3>
+              </div>
+              <p>
+                Solve these architecture assembly analysis questions to consolidate your knowledge:
+              </p>
+
+              <div class="ca-exercise" id="exercise-comp-1">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 1: Pipeline Hazards
+                </div>
+                <p>What is a <strong>Data Hazard</strong> in a CPU execution pipeline, and how does it occur?</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-comp-1">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-comp-1">
+                  <p><strong>Solution: Dependency delay</strong></p>
+                  <p>Explanation: A data hazard occurs when an instruction in the pipeline depends on the result of a previous instruction that has not yet completed execution. This causes pipeline stalls (bubbles) until the data becomes available.</p>
+                </div>
+              </div>
+
+              <div class="ca-exercise" id="exercise-comp-2">
+                <div class="ca-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 2: Cache Misses
+                </div>
+                <p>Explain the difference between a **Spatial Locality** and a **Temporal Locality** cache hit.</p>
+                <button class="ca-exercise-toggle" aria-expanded="false" aria-controls="solution-comp-2">Show Solution</button>
+                <div class="ca-exercise-solution" id="solution-comp-2">
+                  <p><strong>Solution: Locality differences</strong></p>
+                  <p>Explanation: **Temporal Locality** assumes that memory accessed once is likely to be accessed again soon (like a loop variable). **Spatial Locality** assumes that memory locations close to the recently accessed location are likely to be accessed soon (like array elements stored sequentially). Cache controllers preload neighboring lines to exploit spatial locality.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 12. Quiz and Knowledge Check -->
+            <article class="ca-lesson" id="quiz" data-topic="12">
+              <div class="oop-lesson-header">
+                <span class="ca-lesson-number">12</span>
+                <h3>Quiz &amp; Knowledge Check</h3>
+              </div>
+              <p>
+                Test your understanding of hardware design and computer organization concepts:
+              </p>
+
+              <div class="ca-quiz-container">
+                <!-- Question 1 -->
+                <div class="ca-quiz-question-card">
+                  <div class="ca-quiz-question-text">
+                    <span class="ca-quiz-question-num">Q1.</span>
+                    <span>Which channel carries physical hardware data blocks between the CPU and memory?</span>
+                  </div>
+                  <div class="ca-quiz-options">
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q1" value="address" />
+                      <span>A) Address Bus</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q1" value="bus" />
+                      <span>B) Data Bus</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q1" value="control" />
+                      <span>C) Control Bus</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q1" value="pci" />
+                      <span>D) PCIe expansion slot</span>
+                    </label>
+                  </div>
+                  <div class="ca-quiz-feedback" id="feedback-q1"></div>
+                  <div class="ca-quiz-explanation" id="explanation-q1">
+                    Explanation: The Data Bus is the bi-directional channel that carries the data payload between the processor, memory, and peripherals.
+                  </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="ca-quiz-question-card">
+                  <div class="ca-quiz-question-text">
+                    <span class="ca-quiz-question-num">Q2.</span>
+                    <span>Which cache level is typical smaller, faster, and integrated closest to individual CPU cores?</span>
+                  </div>
+                  <div class="ca-quiz-options">
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q2" value="l1" />
+                      <span>A) L1 Cache</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q2" value="l2" />
+                      <span>B) L2 Cache</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q2" value="l3" />
+                      <span>C) L3 Cache</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q2" value="ram" />
+                      <span>D) System RAM</span>
+                    </label>
+                  </div>
+                  <div class="ca-quiz-feedback" id="feedback-q2"></div>
+                  <div class="ca-quiz-explanation" id="explanation-q2">
+                    Explanation: L1 cache is built directly inside the CPU core circuitry and operates at core frequency, offering the fastest access speed.
+                  </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="ca-quiz-question-card">
+                  <div class="ca-quiz-question-text">
+                    <span class="ca-quiz-question-num">Q3.</span>
+                    <span>Which CPU sub-component decodes assembly instructions and routes routing control signals?</span>
+                  </div>
+                  <div class="ca-quiz-options">
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q3" value="alu" />
+                      <span>A) Arithmetic Logic Unit (ALU)</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q3" value="cu" />
+                      <span>B) Control Unit (CU)</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q3" value="pc" />
+                      <span>C) Program Counter (PC)</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q3" value="acc" />
+                      <span>D) Accumulator</span>
+                    </label>
+                  </div>
+                  <div class="ca-quiz-feedback" id="feedback-q3"></div>
+                  <div class="ca-quiz-explanation" id="explanation-q3">
+                    Explanation: The Control Unit (CU) manages instruction decoding and coordinates control signals across the computer components.
+                  </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="ca-quiz-question-card">
+                  <div class="ca-quiz-question-text">
+                    <span class="ca-quiz-question-num">Q4.</span>
+                    <span>Which peripheral communication strategy triggers CPU execution only when data transitions are active?</span>
+                  </div>
+                  <div class="ca-quiz-options">
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q4" value="polling" />
+                      <span>A) Programmed Polling</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q4" value="interrupts" />
+                      <span>B) Interrupt-Driven I/O</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q4" value="simplex" />
+                      <span>C) Simplex Communication</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q4" value="serial" />
+                      <span>D) Serial Bus polling</span>
+                    </label>
+                  </div>
+                  <div class="ca-quiz-feedback" id="feedback-q4"></div>
+                  <div class="ca-quiz-explanation" id="explanation-q4">
+                    Explanation: Interrupt-driven I/O allows devices to signal the CPU when they are ready, avoiding wasting CPU cycles on polling.
+                  </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="ca-quiz-question-card">
+                  <div class="ca-quiz-question-text">
+                    <span class="ca-quiz-question-num">Q5.</span>
+                    <span>What is the very first stage of the standard instruction execution cycle?</span>
+                  </div>
+                  <div class="ca-quiz-options">
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q5" value="decode" />
+                      <span>A) Decode</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q5" value="execute" />
+                      <span>B) Execute</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q5" value="fetch" />
+                      <span>C) Fetch</span>
+                    </label>
+                    <label class="ca-quiz-option">
+                      <input type="radio" name="q5" value="write" />
+                      <span>D) Write-back</span>
+                    </label>
+                  </div>
+                  <div class="ca-quiz-feedback" id="feedback-q5"></div>
+                  <div class="ca-quiz-explanation" id="explanation-q5">
+                    Explanation: The CPU must first fetch the instruction from memory before it can decode and execute it.
+                  </div>
+                </div>
+              </div>
+
+              <div class="ca-quiz-actions">
+                <button class="ca-quiz-btn" id="submitQuizBtn">Submit Quiz</button>
+                <button class="ca-quiz-btn-secondary" id="resetQuizBtn" style="display: none;">Reset Quiz</button>
+              </div>
+
+              <!-- Score Banner -->
+              <div class="ca-quiz-score-banner" id="quizScoreBanner">
+                <div class="ca-quiz-score-title">Quiz Results</div>
+                <div class="ca-quiz-score-text">
+                  You scored <span id="quizScoreValue" font-weight="700">0 / 5</span> <span id="quizScorePercent"></span>
+                </div>
+              </div>
+            </article>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>∞ Algo Infinity Verse</h3>
+            <p>Your ultimate destination for mastering Data Structures & Algorithms and acing technical interviews.</p>
+          </div>
+          <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="community.html">Community</a></li>
+              <li><a href="cheat-sheets.html">DSA Cheat Sheets</a></li>
+              <li><a href="python-learning.html">Learn Python</a></li>
+              <li><a href="javascript-learning.html">Learn JavaScript</a></li>
+              <li><a href="java-learning.html">Learn Java</a></li>
+              <li><a href="cplusplus-learning.html">Learn C++</a></li>
+              <li><a href="c-learning.html">Learn C</a></li>
+              <li><a href="dbms-learning.html">Learn DBMS</a></li>
+              <li><a href="php-learning.html">Learn PHP</a></li>
+              <li><a href="oop-learning.html">Learn OOP</a></li>
+              <li><a href="computer-architecture.html">Learn Architecture</a></li>
+              <li><a href="tree-traversal.html">Tree Traversal</a></li>
+              <li><a href="sorting-visualizer.html">Sorting Visualizer</a></li>
+              <li><a href="graph-visualizer.html">Graph Visualizer</a></li>
+              <li><a href="resume.html">Coding Resume</a></li>
+              <li><a href="support-page/index.html">Support</a></li>
+              <li><a href="feedback.html">Feedback</a></li>
+              <li><a href="about-us.html">About us</a></li>
+              <li><a href="privacy-policy.html">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 Algo Infinity Verse. Crafted with 💜 for learners worldwide.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="computer-architecture.js"></script>
+  </body>
+</html>
