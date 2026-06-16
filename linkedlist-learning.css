@@ -1,0 +1,632 @@
+/* =============================================================
+   linkedlist-learning.css
+   Mirrors array-learning.css structure exactly.
+   All classes use the ll- prefix to avoid collision with
+   array-learning.css if both are ever loaded together.
+   ============================================================= */
+
+/* ── Hero typing text ─────────────────────────────────────── */
+.typing-text_ll {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+/* ── Accessibility utility ────────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Two-column layout ────────────────────────────────────── */
+.ll-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.ll-sidebar {
+  position: sticky;
+  top: 90px;
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem 0;
+  backdrop-filter: blur(10px);
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.ll-sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  padding: 0 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 0.5rem;
+}
+
+.ll-sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ll-sidebar-nav .ll-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease, border-left-color 0.2s ease;
+  border-left: 3px solid transparent;
+  min-height: 40px;
+}
+
+.ll-sidebar-nav .ll-nav-link:hover,
+.ll-sidebar-nav .ll-nav-link.active {
+  color: var(--primary-light);
+  background: rgba(124, 58, 237, 0.08);
+  border-left-color: var(--primary);
+}
+
+.ll-sidebar-nav .ll-nav-link .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ── Main content column ──────────────────────────────────── */
+.ll-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Lesson card ──────────────────────────────────────────── */
+.ll-lesson {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  scroll-margin-top: 100px;
+}
+
+.ll-lesson:target {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.ll-lesson-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ll-lesson-number {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+}
+
+.ll-lesson-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ll-lesson p,
+.ll-lesson li {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.ll-lesson ul,
+.ll-lesson ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ll-lesson li {
+  margin-bottom: 0.4rem;
+}
+
+.ll-lesson strong {
+  color: var(--text-primary);
+}
+
+/* ── Concept card ─────────────────────────────────────────── */
+.ll-concept-card {
+  background: var(--dark-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+}
+
+.ll-concept-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+.ll-concept-card p {
+  margin-bottom: 0;
+}
+
+/* ── Node chain visual ────────────────────────────────────── */
+.ll-visual {
+  background: var(--dark-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+
+.ll-chain {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: max-content;
+}
+
+.ll-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 64px;
+}
+
+.ll-node-data {
+  background: rgba(124, 58, 237, 0.2);
+  color: var(--text-primary);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid var(--primary);
+}
+
+.ll-node-ptr {
+  color: var(--text-secondary);
+  font-family: "Fira Code", monospace;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.5rem;
+  text-align: center;
+}
+
+.ll-node-null {
+  border-color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.ll-node-null .ll-node-data {
+  background: rgba(255,255,255,0.04);
+  border-bottom: none;
+  border-color: var(--text-secondary);
+}
+
+.ll-arrow {
+  font-size: 1.4rem;
+  color: var(--primary-light);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ll-arrow-double {
+  color: var(--accent);
+}
+
+.ll-visual-label {
+  margin: 0.75rem 0 0;
+  font-family: "Fira Code", monospace;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* ── Code block ───────────────────────────────────────────── */
+.ll-code-block {
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.ll-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.ll-code-lang {
+  font-family: "Fira Code", monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Copy button ──────────────────────────────────────────── */
+.ll-code-copy {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.ll-code-copy:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-light);
+}
+
+.ll-code-copy.copied {
+  color: #22c55e;
+  border-color: #22c55e;
+}
+
+.ll-code-block pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: #0d1117;
+  overflow-x: auto;
+}
+
+.ll-code-block code {
+  font-family: "Fira Code", Consolas, Monaco, monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #e6edf3;
+  white-space: pre;
+}
+
+/* ── Exercise box ─────────────────────────────────────────── */
+.ll-exercise {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.ll-exercise-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22c55e;
+  margin-bottom: 0.75rem;
+}
+
+.ll-exercise-title i {
+  font-size: 1.1rem;
+}
+
+.ll-exercise-toggle {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ll-exercise-toggle:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+.ll-exercise-solution {
+  display: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.ll-exercise-solution.visible {
+  display: block;
+}
+
+.ll-exercise-solution p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Output / result block ────────────────────────────────── */
+.ll-output {
+  background: rgba(6, 182, 212, 0.06);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.ll-output-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.ll-output pre {
+  margin: 0;
+  font-family: "Fira Code", monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-x: auto;
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.ll-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.ll-progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--dark-surface);
+  border-radius: 99px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.ll-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gradient-4);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.ll-progress-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ll-progress-percent {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  white-space: nowrap;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* ── Callout / tip ────────────────────────────────────────── */
+.ll-callout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.ll-callout-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.ll-callout p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ── Table ────────────────────────────────────────────────── */
+.ll-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.ll-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.ll-table th {
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--primary-light);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.ll-table td {
+  padding: 0.65rem 1rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+
+.ll-table td.good {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.ll-table td.bad {
+  color: #f87171;
+}
+
+.ll-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .ll-sidebar {
+    display: none;
+  }
+  .ll-layout {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .ll-lesson {
+    padding: 1.5rem;
+  }
+  .ll-lesson-header h3 {
+    font-size: 1.15rem;
+  }
+  .ll-code-block pre {
+    padding: 1rem;
+  }
+  .ll-code-block code {
+    font-size: 0.78rem;
+  }
+  .ll-progress-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .ll-progress-track {
+    flex-basis: 100%;
+    order: 2;
+  }
+  .ll-progress-text {
+    order: 1;
+  }
+  .ll-progress-percent {
+    order: 3;
+    text-align: left;
+  }
+  .ll-callout {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .ll-chain {
+    gap: 0.25rem;
+  }
+  .ll-node {
+    min-width: 52px;
+  }
+  .ll-node-data {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ll-lesson {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+  .ll-lesson-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .ll-exercise {
+    padding: 1rem;
+  }
+  .ll-code-block code {
+    font-size: 0.72rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOCUS VISIBLE
+═══════════════════════════════════════════════════════════ */
+.ll-sidebar-nav .ll-nav-link:focus-visible,
+.ll-code-copy:focus-visible,
+.ll-exercise-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════════════════ */
+@media print {
+  .ll-sidebar,
+  .ll-progress-bar,
+  .ll-exercise-toggle,
+  .ll-code-copy,
+  .navbar,
+  .footer {
+    display: none !important;
+  }
+  .ll-lesson {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+  .ll-code-block pre {
+    background: #f5f5f5;
+    color: #333;
+  }
+  .ll-code-block code {
+    color: #333;
+  }
+}

@@ -1,0 +1,321 @@
+/* ─────────────────────────────────────────────
+   Dry Run Simulator – Scoped Styles
+   ───────────────────────────────────────────── */
+
+.drs-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.drs-hero .section-subtitle { max-width: 700px; margin: 0.5rem auto 0; }
+
+/* Algorithm selector tabs */
+.drs-algo-selector {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.drs-algo-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  font-family: Poppins, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.drs-algo-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-light);
+}
+
+.drs-algo-btn.active {
+  background: var(--gradient-1);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(124,58,237,0.35);
+}
+
+/* Panel title */
+.drs-panel-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Visual area — array boxes / graph nodes */
+.drs-visual-area {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  background: rgba(10,10,26,0.4);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* Array cells */
+.drs-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px solid var(--glass-border);
+  font-family: "Fira Code", monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--dark-surface);
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.drs-cell.active {
+  border-color: #a78bfa;
+  background: rgba(167,139,250,0.15);
+  box-shadow: 0 0 12px rgba(167,139,250,0.4);
+  transform: translateY(-4px);
+}
+
+.drs-cell.found {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.15);
+  box-shadow: 0 0 12px rgba(34,197,94,0.4);
+}
+
+.drs-cell.comparing {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.15);
+  box-shadow: 0 0 10px rgba(245,158,11,0.35);
+}
+
+.drs-cell.swapping {
+  border-color: #ef4444;
+  background: rgba(239,68,68,0.15);
+  box-shadow: 0 0 12px rgba(239,68,68,0.4);
+}
+
+.drs-cell.sorted {
+  border-color: #10b981;
+  background: rgba(16,185,129,0.12);
+}
+
+.drs-cell.eliminated {
+  opacity: 0.3;
+}
+
+/* Pointer label below cell */
+.drs-pointer {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #a78bfa;
+  white-space: nowrap;
+}
+
+/* Cell index above */
+.drs-cell-index {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  font-family: "Fira Code", monospace;
+}
+
+/* Graph nodes for BFS/DFS */
+.drs-graph-wrap {
+  width: 100%;
+  position: relative;
+  height: 200px;
+}
+
+.drs-node {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  background: var(--dark-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: all 0.25s ease;
+}
+
+.drs-node.visited {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.15);
+  box-shadow: 0 0 12px rgba(34,197,94,0.4);
+}
+
+.drs-node.current {
+  border-color: #a78bfa;
+  background: rgba(167,139,250,0.2);
+  box-shadow: 0 0 14px rgba(167,139,250,0.5);
+  transform: scale(1.15);
+}
+
+.drs-node.queued {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.12);
+}
+
+.drs-edge {
+  position: absolute;
+  background: var(--glass-border);
+  height: 2px;
+  transform-origin: 0 50%;
+  transition: background 0.25s ease;
+}
+
+.drs-edge.active {
+  background: #a78bfa;
+  box-shadow: 0 0 6px rgba(167,139,250,0.5);
+}
+
+/* Explanation bar */
+.drs-explanation {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #a78bfa;
+  background: rgba(167,139,250,0.06);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Code panel */
+.drs-code-panel {
+  font-family: "Fira Code", monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  background: #0d1117;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.drs-code-line {
+  display: flex;
+  align-items: center;
+  padding: 0.15rem 1rem;
+  transition: background 0.2s ease;
+  white-space: pre;
+}
+
+.drs-code-line:first-child { padding-top: 0.75rem; }
+.drs-code-line:last-child  { padding-bottom: 0.75rem; }
+
+.drs-line-num {
+  width: 28px;
+  color: #546e7a;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.drs-line-code { color: #e6edf3; }
+
+.drs-code-line.highlight {
+  background: rgba(167,139,250,0.15);
+  border-left: 3px solid #a78bfa;
+}
+
+.drs-code-line.highlight .drs-line-code { color: #fff; }
+
+/* Syntax colors */
+.drs-kw  { color: #c792ea; }
+.drs-fn  { color: #82aaff; }
+.drs-num { color: #f78c6c; }
+.drs-cmt { color: #546e7a; font-style: italic; }
+.drs-str { color: #c3e88d; }
+
+/* Step counter */
+.drs-step-counter {
+  text-align: center;
+  font-family: "Fira Code", monospace;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0.75rem 0;
+}
+.drs-step-counter span { color: var(--accent); font-weight: 700; }
+
+/* Variable table */
+.drs-var-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.drs-var-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-border);
+  font-family: "Fira Code", monospace;
+  font-size: 0.8rem;
+  transition: background 0.2s ease;
+}
+
+.drs-var-row.changed {
+  background: rgba(167,139,250,0.1);
+  border-color: rgba(167,139,250,0.3);
+}
+
+.drs-var-name { color: #82aaff; }
+.drs-var-val  { color: #f78c6c; font-weight: 700; }
+.drs-var-empty { color: var(--text-secondary); font-size: 0.82rem; font-style: italic; }
+
+/* Algo description */
+.drs-algo-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.75rem;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .drs-algo-selector { gap: 0.5rem; }
+  .drs-algo-btn { font-size: 0.8rem; padding: 0.5rem 0.9rem; }
+  .drs-cell { width: 40px; height: 40px; font-size: 0.85rem; }
+}

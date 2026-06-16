@@ -44,11 +44,92 @@ const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 const PBKDF2_ITERATIONS = 210000;
 const PASSWORD_KEY_LENGTH = 32;
 
+// ── Rate limiting ────────────────────────────────────────────────────────────
+const SIGNUP_RATE_LIMIT = 5;
+const SIGNUP_WINDOW_MS = 15 * 60 * 1000;
+const signupAttempts = new Map();
+
+// Periodic sweeper — runs every SIGNUP_WINDOW_MS and deletes any identifier
+// whose timestamps have all aged out of the window.  This bounds the Map to
+// only identifiers that have been active within the last window period and
+// prevents unbounded memory growth under a sustained stream of unique IPs.
+const _signupSweeper = setInterval(() => {
+  const now = Date.now();
+  for (const [identifier, timestamps] of signupAttempts) {
+    const fresh = timestamps.filter((t) => now - t < SIGNUP_WINDOW_MS);
+    if (fresh.length === 0) {
+      signupAttempts.delete(identifier);
+    } else {
+      signupAttempts.set(identifier, fresh);
+    }
+  }
+}, SIGNUP_WINDOW_MS);
+
+// Allow the process to exit cleanly even while the interval is live
+// (relevant in test environments and graceful-shutdown scenarios).
+if (_signupSweeper.unref) _signupSweeper.unref();
+
+// IPs of reverse-proxies / load-balancers that are allowed to set
+// X-Forwarded-For.  Add your proxy CIDRs / IPs here or populate via
+// the TRUSTED_PROXIES env var (comma-separated) at startup.
+const TRUSTED_PROXIES = new Set(
+  (process.env.TRUSTED_PROXIES || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
+
+function getClientIdentifier(req) {
+  const remoteAddress = req.socket?.remoteAddress || "unknown";
+
+  // Only honour X-Forwarded-For when the immediate TCP caller is a
+  // known trusted proxy — otherwise an attacker can supply any value
+  // they like and trivially bypass rate limiting.
+  if (
+    remoteAddress !== "unknown" &&
+    TRUSTED_PROXIES.has(remoteAddress) &&
+    req.headers["x-forwarded-for"]
+  ) {
+    // The left-most entry is the original client IP added by the
+    // first proxy in the chain; everything to the right can be spoofed.
+    const leftmost = req.headers["x-forwarded-for"].split(",")[0].trim();
+    if (leftmost) return leftmost;
+  }
+
+  return remoteAddress;
+}
+
+function isRateLimited(identifier) {
+  const now = Date.now();
+  const attempts = signupAttempts.get(identifier) || [];
+  // Trim stale timestamps on every read so the per-identifier array stays
+  // small even between sweeper runs.
+  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  signupAttempts.set(identifier, recentAttempts);
+  return recentAttempts.length >= SIGNUP_RATE_LIMIT;
+}
+
+function recordSignupAttempt(identifier) {
+  const now = Date.now();
+  const attempts = signupAttempts.get(identifier) || [];
+  // Trim before appending so the array never accumulates beyond
+  // SIGNUP_RATE_LIMIT + 1 entries between sweeper passes.
+  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  recentAttempts.push(now);
+  signupAttempts.set(identifier, recentAttempts);
+}
+
+async function normalizeAuthDelay() {
+  return new Promise((resolve) => setTimeout(resolve, 500));
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function sessionSecret() {
-  return (
-    process.env.SESSION_SECRET ||
-    "dev-only-change-me-with-SESSION_SECRET-before-deploying"
-  );
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("SESSION_SECRET is required in production.");
+  }
+  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
 }
 
 function sign(value) {
@@ -174,6 +255,21 @@ export default async function handler(req, res) {
     });
   }
 
+  // ── Rate limit check ───────────────────────────────────────────────────────
+  const clientId = getClientIdentifier(req);
+
+  if (isRateLimited(clientId)) {
+    await normalizeAuthDelay();
+    return res.status(429).json({
+      error: "Too many signup attempts. Please try again later.",
+    });
+  }
+
+  // Record the attempt before any async work so every request counts,
+  // including ones that ultimately fail validation or find a duplicate.
+  recordSignupAttempt(clientId);
+  // ──────────────────────────────────────────────────────────────────────────
+
   try {
     const {
       name,
@@ -196,9 +292,7 @@ export default async function handler(req, res) {
       });
     }
 
-    if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)
-    ) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       return res.status(400).json({
         error: "Enter a valid email address.",
       });
@@ -229,15 +323,20 @@ export default async function handler(req, res) {
 
     const users = await readUsers();
 
-    if (
-      users.some(
-        (user) => user.email === cleanEmail
-      )
-    ) {
-      return res.status(409).json({
-        error:
-          "An account with this email already exists.",
+    if (users.some((user) => user.email === cleanEmail)) {
+      // Normalize response time so a duplicate is indistinguishable from a
+      // real signup by timing — a real signup always runs PBKDF2 before
+      // responding, so we must delay here to match that latency profile.
+      await normalizeAuthDelay();
+      console.warn("[signup] duplicate email attempt", {
+        email: cleanEmail,
+        ip: clientId,
+        at: new Date().toISOString(),
       });
+      // Return a generic 200 that is indistinguishable from a real signup
+      // success so callers cannot enumerate registered email addresses.
+      // No session cookie is issued — the submitter has not authenticated.
+      return res.status(200).json({ ok: true });
     }
 
     const user = {
@@ -262,10 +361,7 @@ export default async function handler(req, res) {
 
       return res
         .status(201)
-        .setHeader(
-          "Set-Cookie",
-          sessionCookie(token)
-        )
+        .setHeader("Set-Cookie", sessionCookie(token))
         .json({
           user: {
             id: user.id,
@@ -277,10 +373,17 @@ export default async function handler(req, res) {
       await rollbackUserCreation(createdUserDoc);
 
       if (error.message === "DUPLICATE_USER") {
-        return res.status(409).json({
-          error:
-            "An account with this email already exists.",
+        await normalizeAuthDelay();
+        console.warn("[signup] duplicate email attempt", {
+          email: cleanEmail,
+          ip: clientId,
+          at: new Date().toISOString(),
         });
+       if (error.message === "DUPLICATE_USER") {
+         console.info(`Duplicate signup attempt (transaction) for email: ${cleanEmail}`);
+         // Same generic 200 as the non-Firestore path above.
+         return res.status(200).json({ ok: true });
+       }
       }
 
       throw error;

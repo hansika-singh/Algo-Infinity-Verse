@@ -1,0 +1,432 @@
+:root {
+  --graph-primary: #7c3aed;
+  --graph-secondary: #06b6d4;
+  --graph-gradient: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+  --graph-bg: rgba(124, 58, 237, 0.06);
+  --graph-bg-hover: rgba(124, 58, 237, 0.12);
+  --graph-active-node: #facc15; /* Discovered state (yellow) */
+  --graph-visited-node: #10b981; /* Visited state (green) */
+}
+
+.typing-text_graph {
+  color: var(--graph-secondary);
+  font-weight: 600;
+}
+
+/* Visualizer Layout overrides */
+.visualizer-container {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.visualizer-main-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.visualizer-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.visualizer-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+/* Canvas Area */
+.canvas-wrapper {
+  width: 100%;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  cursor: crosshair;
+}
+
+.canvas-placeholder-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  pointer-events: none;
+  text-align: center;
+}
+
+/* SVG nodes and lines */
+.svg-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.svg-node-group {
+  cursor: grab;
+}
+
+.svg-node-group:active {
+  cursor: grabbing;
+}
+
+.node-circle {
+  fill: var(--dark-surface);
+  stroke: var(--glass-border);
+  stroke-width: 2.5;
+  transition: fill 0.3s, stroke 0.3s, r 0.2s;
+}
+
+.node-circle:hover {
+  stroke: var(--graph-secondary);
+  r: 20;
+}
+
+.node-circle.active {
+  fill: rgba(250, 204, 21, 0.15);
+  stroke: var(--graph-active-node);
+  stroke-width: 3.5;
+}
+
+.node-circle.visited {
+  fill: rgba(16, 185, 129, 0.15);
+  stroke: var(--graph-visited-node);
+  stroke-width: 3;
+}
+
+.node-text {
+  fill: var(--text-primary);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.edge-line {
+  stroke: var(--glass-border);
+  stroke-width: 2.5;
+  transition: stroke 0.3s, stroke-width 0.3s;
+}
+
+.edge-line.active {
+  stroke: var(--graph-secondary);
+  stroke-width: 4;
+}
+
+.edge-line.visited {
+  stroke: var(--graph-visited-node);
+  stroke-width: 3.5;
+}
+
+.edge-weight-bg {
+  fill: var(--dark-bg);
+  stroke: var(--glass-border);
+  stroke-width: 1;
+  rx: 4;
+  ry: 4;
+}
+
+.edge-weight-text {
+  fill: var(--text-secondary);
+  font-family: "Fira Code", monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  user-select: none;
+}
+
+/* Controls Grid */
+.control-group {
+  margin-bottom: 1.25rem;
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.control-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.control-input:focus {
+  border-color: var(--graph-secondary);
+}
+
+.control-input option {
+  background: var(--dark-surface);
+  color: var(--text-primary);
+}
+
+.slider-custom {
+  width: 100%;
+  accent-color: var(--graph-secondary);
+  cursor: pointer;
+}
+
+.val-display {
+  float: right;
+  font-family: "Fira Code", monospace;
+  color: var(--graph-secondary);
+  font-size: 0.8rem;
+}
+
+/* Mode Buttons */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.mode-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover {
+  background: var(--graph-bg);
+  border-color: rgba(124, 58, 237, 0.4);
+  color: var(--text-primary);
+}
+
+.mode-btn.active {
+  background: var(--graph-gradient);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Toggles */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.toggle-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Switch styling */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: .4s;
+  border-radius: 34px;
+  border: 1px solid var(--glass-border);
+}
+
+.slider-switch:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-secondary);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider-switch {
+  background-color: var(--graph-primary);
+}
+
+input:checked + .slider-switch:before {
+  transform: translateX(22px);
+  background-color: white;
+}
+
+/* Playback Control Bar */
+.btn-control-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-control {
+  padding: 0.5rem;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+/* Visualizer logs */
+.log-panel {
+  max-height: 120px;
+  overflow-y: auto;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  font-family: "Fira Code", monospace;
+  font-size: 0.78rem;
+}
+
+.log-entry {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.25rem;
+}
+
+.log-entry.active {
+  color: var(--graph-secondary);
+}
+
+.log-entry.visited {
+  color: var(--graph-visited-node);
+}
+
+/* Visualizer Visited Queue/Stack list */
+.live-structure {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.structure-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--dark-surface);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  animation: scaleIn 0.2s ease forwards;
+}
+
+.structure-box.active {
+  border-color: var(--graph-active-node);
+  color: var(--graph-active-node);
+}
+
+.structure-box.visited {
+  border-color: var(--graph-visited-node);
+  color: var(--graph-visited-node);
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.structure-arrow {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* Complexity Grid */
+.complexity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.complexity-card-mini {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.complexity-card-mini h5 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.complexity-card-mini p {
+  font-family: "Fira Code", monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--graph-secondary);
+  margin: 0;
+}
+
+/* responsive overrides */
+@media (max-width: 1024px) {
+  .visualizer-container {
+    flex-direction: column;
+  }
+
+  .visualizer-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .canvas-wrapper {
+    height: 400px;
+  }
+}
