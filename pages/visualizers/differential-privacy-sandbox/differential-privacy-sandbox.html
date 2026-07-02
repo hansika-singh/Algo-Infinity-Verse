@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Differential Privacy Sandbox | Algo Infinity Verse</title>
+    <meta name="description" content="See how calibrated Laplace noise protects individual privacy while preserving statistical accuracy. Adjust epsilon, watch the privacy-utility tradeoff in real time." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="differential-privacy-sandbox.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="differential-privacy-sandbox">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="dp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="dp-hero-inner">
+        <div class="dp-hero-eyebrow">🔐 Privacy Engineering</div>
+        <h1 class="dp-hero-title">Differential Privacy Sandbox</h1>
+        <p class="dp-hero-sub">How do you publish statistics without revealing anyone's secret?</p>
+        <p class="dp-hero-desc">You lie. Just enough. Differential Privacy adds carefully calibrated noise to every query result so that no individual's data can be reverse-engineered from the output — while the aggregate statistic remains useful. It's the mechanism behind Apple's telemetry, Google's RAPPOR, and the US Census. Watch it work, break it, and tune it.</p>
+        <div class="dp-hero-btns">
+          <a href="#lab" class="btn btn-primary dp-btn-primary"><i class="fas fa-flask"></i> Open the Lab</a>
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> How It Works</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section dp-section">
+      <div class="container">
+
+        <!-- Top: Dataset + Query side by side -->
+        <div class="dp-top-layout">
+
+          <!-- Dataset panel -->
+          <div class="dp-dataset-panel">
+            <div class="dp-panel-header">
+              <span class="dp-panel-title"><i class="fas fa-database"></i> Dataset</span>
+              <div class="dp-dataset-controls">
+                <select id="dpAttrSelect" class="dp-select" aria-label="Attribute to query">
+                  <option value="salary">Salary ($k)</option>
+                  <option value="health">Health Flag (0/1)</option>
+                </select>
+                <button class="dp-btn-sm" id="dpShuffleBtn">
+                  <i class="fas fa-shuffle"></i> Regenerate
+                </button>
+              </div>
+            </div>
+            <div class="dp-table-wrap">
+              <table class="dp-table" id="dpDataTable">
+                <thead>
+                  <tr><th scope="col">#</th><th scope="col">Name</th><th scope="col" id="dpAttrHeader">Salary ($k)</th><th scope="col">Highlight</th></tr>
+                </thead>
+                <tbody id="dpDataBody"></tbody>
+              </table>
+            </div>
+            <div class="dp-dataset-footer">
+              <span class="dp-ds-stat">n = <strong id="dpN">20</strong> individuals</span>
+              <span class="dp-ds-stat">True mean: <strong id="dpTrueMean">—</strong></span>
+              <span class="dp-ds-stat">True count: <strong id="dpTrueCount">—</strong></span>
+            </div>
+          </div>
+
+          <!-- Query + Epsilon panel -->
+          <div class="dp-query-panel">
+
+            <!-- Epsilon controls -->
+            <div class="dp-epsilon-card">
+              <div class="dp-panel-title"><i class="fas fa-sliders"></i> Privacy Budget (ε)</div>
+              <div class="dp-epsilon-row">
+                <span class="dp-epsilon-label">High Privacy</span>
+                <input type="range" id="dpEpsilon" class="dp-eps-range" min="0.1" max="5.0" step="0.05" value="1.0" aria-label="Epsilon" />
+                <span class="dp-epsilon-label">High Accuracy</span>
+              </div>
+              <div class="dp-epsilon-display">
+                ε = <span id="dpEpsilonVal" class="dp-eps-val">1.0</span>
+                <span class="dp-eps-interp" id="dpEpsInterp">Balanced privacy & accuracy</span>
+              </div>
+              <div class="dp-sensitivity-row">
+                <span>Sensitivity (Δf)</span>
+                <span class="dp-sens-val" id="dpSensitivity">—</span>
+              </div>
+              <div class="dp-sensitivity-row">
+                <span>Laplace scale (b = Δf/ε)</span>
+                <span class="dp-sens-val" id="dpLaplaceScale">—</span>
+              </div>
+            </div>
+
+            <!-- Query runner -->
+            <div class="dp-query-card">
+              <div class="dp-panel-title"><i class="fas fa-magnifying-glass-chart"></i> Run Query</div>
+              <div class="dp-query-type-row" role="group" aria-label="Query type">
+                <button class="dp-query-type active" data-qtype="mean" aria-pressed="true">Mean</button>
+                <button class="dp-query-type" data-qtype="count" aria-pressed="false">Count (≥ threshold)</button>
+                <button class="dp-query-type" data-qtype="sum" aria-pressed="false">Sum</button>
+              </div>
+              <div class="dp-threshold-row" id="dpThresholdRow">
+                <label class="dp-threshold-label">Threshold:</label>
+                <input type="number" id="dpThreshold" class="dp-thresh-input" value="50" min="0" aria-label="Threshold" />
+              </div>
+              <button class="btn dp-btn-primary dp-query-btn" id="dpQueryBtn">
+                <i class="fas fa-bolt"></i> Query Once (with DP noise)
+              </button>
+              <button class="btn btn-secondary dp-query-btn" id="dpQuery100Btn">
+                <i class="fas fa-redo"></i> Query 100× (budget composition)
+              </button>
+            </div>
+
+            <!-- Query result -->
+            <div class="dp-result-card" id="dpResultCard">
+              <div class="dp-panel-title"><i class="fas fa-square-poll-vertical"></i> Query Result</div>
+              <div class="dp-placeholder" id="dpResultPlaceholder">Run a query above to see the noisy vs true answer.</div>
+              <div class="dp-result-inner hidden" id="dpResultInner">
+                <div class="dp-result-row">
+                  <span class="dp-result-label">True answer</span>
+                  <span class="dp-result-val dp-true-val" id="dpTrueAnswer">—</span>
+                </div>
+                <div class="dp-result-row">
+                  <span class="dp-result-label">Laplace noise added</span>
+                  <span class="dp-result-val dp-noise-val" id="dpNoiseAdded">—</span>
+                </div>
+                <div class="dp-result-row dp-result-highlight">
+                  <span class="dp-result-label">Noisy (released) answer</span>
+                  <span class="dp-result-val dp-noisy-val" id="dpNoisyAnswer">—</span>
+                </div>
+                <div class="dp-result-row">
+                  <span class="dp-result-label">Absolute error</span>
+                  <span class="dp-result-val" id="dpError">—</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Noise histogram -->
+        <div class="dp-histogram-card">
+          <div class="dp-card-title"><i class="fas fa-chart-bar"></i> Laplace Noise Distribution — Shape Changes With ε</div>
+          <canvas id="dpHistCanvas" class="dp-hist-canvas"></canvas>
+          <div class="dp-hist-info" id="dpHistInfo">Adjust ε above to see how the noise distribution narrows or widens.</div>
+        </div>
+
+        <!-- Privacy-utility tradeoff chart -->
+        <div class="dp-tradeoff-card">
+          <div class="dp-card-title"><i class="fas fa-chart-line"></i> Privacy-Utility Tradeoff — Error vs Epsilon (100 query average)</div>
+          <canvas id="dpTradeoffCanvas" class="dp-tradeoff-canvas"></canvas>
+          <div class="dp-tradeoff-legend">
+            <span class="dp-tl-item"><span class="dp-tl-dot" style="background:#ef4444"></span>← Low ε: high privacy, high error</span>
+            <span class="dp-tl-item"><span class="dp-tl-dot" style="background:#22c55e"></span>High ε: low error, less privacy →</span>
+          </div>
+        </div>
+
+        <!-- Attacker panel -->
+        <div class="dp-attacker-card">
+          <div class="dp-card-title"><i class="fas fa-user-secret"></i> Attacker Panel — "Remove One Person" Attack</div>
+          <p class="dp-attacker-desc">Without DP: an attacker queries the database with and without a specific person. If the results differ, they learn that person's value exactly. <strong>With DP:</strong> the noisy answers are so close that the attacker can't reliably distinguish whether Alice is in the dataset or not.</p>
+
+          <div class="dp-attacker-controls">
+            <span class="dp-att-label">Target individual:</span>
+            <select id="dpTargetPerson" class="dp-select" aria-label="Target person"></select>
+            <button class="btn dp-btn-primary dp-att-btn" id="dpAttackBtn">
+              <i class="fas fa-crosshairs"></i> Run Attack Demo
+            </button>
+          </div>
+
+          <div class="dp-attacker-result hidden" id="dpAttackerResult">
+            <div class="dp-attack-col">
+              <div class="dp-attack-col-title">Without Differential Privacy</div>
+              <div class="dp-attack-row"><span>Query with Alice</span><span id="dpAtkWithRaw">—</span></div>
+              <div class="dp-attack-row"><span>Query without Alice</span><span id="dpAtkWithoutRaw">—</span></div>
+              <div class="dp-attack-row dp-attack-diff"><span>Difference (Alice's exact value)</span><span id="dpAtkDiffRaw">—</span></div>
+              <div class="dp-attack-verdict dp-verdict-bad">❌ Attacker knows Alice's exact value</div>
+            </div>
+            <div class="dp-attack-vs">VS</div>
+            <div class="dp-attack-col">
+              <div class="dp-attack-col-title">With Differential Privacy (ε = <span id="dpAtkEps">—</span>)</div>
+              <div class="dp-attack-row"><span>Noisy query with Alice</span><span id="dpAtkWithDp">—</span></div>
+              <div class="dp-attack-row"><span>Noisy query without Alice</span><span id="dpAtkWithoutDp">—</span></div>
+              <div class="dp-attack-row dp-attack-diff"><span>Visible difference</span><span id="dpAtkDiffDp">—</span></div>
+              <div class="dp-attack-verdict dp-verdict-good" id="dpAtkVerdict">✅ Attacker can't distinguish — Alice protected</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget composition -->
+        <div class="dp-composition-card hidden" id="dpCompositionCard">
+          <div class="dp-card-title"><i class="fas fa-coins"></i> Privacy Budget Composition — Repeated Queries Cost More Privacy</div>
+          <p class="dp-comp-desc">Running the same query 100 times with ε=1.0 is equivalent to running it once with ε=100 — the attacker can average out the noise and recover the true answer. The chart below shows how accuracy of the averaged estimate improves (bad for privacy) as query count increases.</p>
+          <canvas id="dpCompositionCanvas" class="dp-comp-canvas"></canvas>
+          <div class="dp-comp-result" id="dpCompResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔐</span> The Math Behind Differential Privacy</h2>
+        <div class="dp-learn-grid">
+          <div class="dp-learn-card" style="--lc:#06b6d4">
+            <div class="dp-learn-icon">📐</div>
+            <h3>The Definition</h3>
+            <p>A mechanism M satisfies ε-differential privacy if for any two datasets D and D' differing by one person, and any output S: <strong>P[M(D)∈S] ≤ eᵉ × P[M(D')∈S]</strong>. Small ε = outputs barely differ regardless of any individual. The privacy guarantee is mathematical, not a policy promise.</p>
+          </div>
+          <div class="dp-learn-card" style="--lc:#a855f7">
+            <div class="dp-learn-icon">🔔</div>
+            <h3>The Laplace Mechanism</h3>
+            <p>For a numeric query with sensitivity Δf (max change one person can cause), add noise drawn from Laplace(0, Δf/ε). Sensitivity of mean of n values = max_value/n. Sensitivity of count = 1. Lower ε → wider Laplace → more noise → more privacy.</p>
+          </div>
+          <div class="dp-learn-card" style="--lc:#f59e0b">
+            <div class="dp-learn-icon">🏦</div>
+            <h3>Real Deployments</h3>
+            <p>Apple uses DP with ε≈1-4 for keyboard and emoji telemetry. The US Census 2020 used DP instead of suppression. Google's RAPPOR uses randomized response (local DP) for Chrome statistics. Each query into these systems costs some of a finite privacy budget.</p>
+          </div>
+          <div class="dp-learn-card" style="--lc:#22c55e">
+            <div class="dp-learn-icon">⚠️</div>
+            <h3>Budget Composition</h3>
+            <p>The fundamental limit: if you answer k queries each with privacy cost ε, the total cost is at most kε (sequential composition theorem). Averaging k noisy answers removes noise at rate 1/√k — so unlimited repeated queries eventually reveal the truth.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="differential-privacy-sandbox.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

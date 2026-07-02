@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Shortest Path Algorithms – Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Master Shortest Path Algorithms: Dijkstra's, Bellman-Ford, Floyd-Warshall with examples and practice exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="shortest-path-learning.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="shortest-path-learning">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master</span>
+          <span class="main-title gradient-text">Shortest Path Algorithms</span>
+          <span class="subtitle">Dijkstra's, Bellman-Ford & Floyd-Warshall</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_shortest_path" id="typingTextShortestPath"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary"><i class="fas fa-play"></i> Start Learning</a>
+          <a href="#practice" class="btn btn-secondary"><i class="fas fa-pen"></i> Practice Exercises</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box"><span class="stat-number" data-target="5">0</span><span class="stat-label">Topics</span></div>
+          <div class="stat-box"><span class="stat-number" data-target="10">0</span><span class="stat-label">Examples</span></div>
+          <div class="stat-box"><span class="stat-number" data-target="4">0</span><span class="stat-label">Exercises</span></div>
+        </div>
+      </div>
+      <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <section id="shortest-path-learning" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🛣️</span> Learn Shortest Path Algorithms</h2>
+        <p class="section-subtitle">Master the algorithms that power GPS, networking, and competitive programming.</p>
+
+        <div class="sp-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="sp-progress-text"><span id="progressCount">0</span> / 5 topics completed</span>
+          <div class="sp-progress-track"><div class="sp-progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="sp-layout">
+          <aside class="sp-sidebar" aria-label="Topic navigation">
+            <div class="sp-sidebar-title">Topics</div>
+            <ul class="sp-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#dijkstra"><span class="nav-icon">⚡</span> Dijkstra's Algorithm</a></li>
+              <li><a href="#bellman-ford"><span class="nav-icon">🔄</span> Bellman-Ford</a></li>
+              <li><a href="#floyd-warshall"><span class="nav-icon">🔢</span> Floyd-Warshall</a></li>
+              <li><a href="#practice"><span class="nav-icon">🏋️</span> Practice Exercises</a></li>
+            </ul>
+          </aside>
+
+          <main class="sp-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="sp-lesson" id="introduction" data-topic="1">
+              <div class="sp-lesson-header">
+                <span class="sp-lesson-number">01</span>
+                <h3>Introduction to Shortest Path</h3>
+              </div>
+              <p>A <strong>shortest path</strong> between two nodes in a graph is the path with the minimum total edge weight. These algorithms are fundamental in navigation, networking, and optimization problems.</p>
+              <div class="sp-concept-card">
+                <h4>Key Terminology</h4>
+                <p><strong>Source node:</strong> Starting vertex. <strong>Relaxation:</strong> Updating a node's distance if a shorter path is found. <strong>Negative cycle:</strong> A cycle whose total weight is negative — makes shortest path undefined.</p>
+              </div>
+              <div class="sp-table-wrap">
+                <table class="sp-table" aria-label="Algorithm Comparison">
+                  <thead>
+                    <tr><th>Algorithm</th><th>Time Complexity</th><th>Negative Weights</th><th>All Pairs</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Dijkstra's</td><td>O((V+E) log V)</td><td>❌ No</td><td>❌ No</td></tr>
+                    <tr><td>Bellman-Ford</td><td>O(V×E)</td><td>✅ Yes</td><td>❌ No</td></tr>
+                    <tr><td>Floyd-Warshall</td><td>O(V³)</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sp-exercise">
+                <div class="sp-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Introduction</div>
+                <p>Which algorithm would you use for a graph with negative edge weights but no negative cycles, finding single-source shortest paths?</p>
+                <button class="sp-exercise-toggle" aria-expanded="false" aria-controls="solution-introduction">Show Solution</button>
+                <div class="sp-exercise-solution" id="solution-introduction">
+                  <p><strong>Answer: Bellman-Ford</strong></p>
+                  <p>Dijkstra's fails with negative weights. Floyd-Warshall works but is O(V³) — overkill for single-source. Bellman-Ford handles negative weights in O(V×E).</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Dijkstra's -->
+            <article class="sp-lesson" id="dijkstra" data-topic="2">
+              <div class="sp-lesson-header">
+                <span class="sp-lesson-number">02</span>
+                <h3>Dijkstra's Algorithm</h3>
+              </div>
+              <p>Dijkstra's algorithm finds the shortest path from a source node to all other nodes in a graph with <strong>non-negative edge weights</strong>. It uses a min-heap (priority queue) to always process the nearest unvisited node.</p>
+              <div class="sp-concept-card">
+                <h4>Algorithm Steps</h4>
+                <p>1. Initialize all distances to ∞, source to 0. 2. Push source into min-heap. 3. Pop minimum distance node. 4. For each neighbor, if current distance + edge weight &lt; known distance, update and push to heap. 5. Repeat until heap is empty.</p>
+              </div>
+              <div class="sp-code-block">
+                <div class="sp-code-header">
+                  <span class="sp-code-lang">Python</span>
+                  <button class="sp-code-copy" aria-label="Copy code" data-code="import heapq
+
+def dijkstra(graph, src):
+    dist = {node: float('inf') for node in graph}
+    dist[src] = 0
+    heap = [(0, src)]
+
+    while heap:
+        d, u = heapq.heappop(heap)
+        if d > dist[u]:
+            continue
+        for v, w in graph[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(heap, (dist[v], v))
+    return dist">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">import</span> heapq
+
+<span class="tok-kw">def</span> <span class="tok-fn">dijkstra</span>(<span class="tok-var">graph</span>, <span class="tok-var">src</span>):
+    <span class="tok-var">dist</span> = {<span class="tok-var">node</span>: <span class="tok-fn">float</span>(<span class="tok-str">'inf'</span>) <span class="tok-kw">for</span> <span class="tok-var">node</span> <span class="tok-kw">in</span> <span class="tok-var">graph</span>}
+    <span class="tok-var">dist</span>[<span class="tok-var">src</span>] = <span class="tok-num">0</span>
+    <span class="tok-var">heap</span> = [(<span class="tok-num">0</span>, <span class="tok-var">src</span>)]
+
+    <span class="tok-kw">while</span> <span class="tok-var">heap</span>:
+        <span class="tok-var">d</span>, <span class="tok-var">u</span> = heapq.<span class="tok-fn">heappop</span>(<span class="tok-var">heap</span>)
+        <span class="tok-kw">if</span> <span class="tok-var">d</span> &gt; <span class="tok-var">dist</span>[<span class="tok-var">u</span>]:
+            <span class="tok-kw">continue</span>
+        <span class="tok-kw">for</span> <span class="tok-var">v</span>, <span class="tok-var">w</span> <span class="tok-kw">in</span> <span class="tok-var">graph</span>[<span class="tok-var">u</span>]:
+            <span class="tok-kw">if</span> <span class="tok-var">dist</span>[<span class="tok-var">u</span>] + <span class="tok-var">w</span> &lt; <span class="tok-var">dist</span>[<span class="tok-var">v</span>]:
+                <span class="tok-var">dist</span>[<span class="tok-var">v</span>] = <span class="tok-var">dist</span>[<span class="tok-var">u</span>] + <span class="tok-var">w</span>
+                heapq.<span class="tok-fn">heappush</span>(<span class="tok-var">heap</span>, (<span class="tok-var">dist</span>[<span class="tok-var">v</span>], <span class="tok-var">v</span>))
+    <span class="tok-kw">return</span> <span class="tok-var">dist</span></code></pre>
+              </div>
+              <div class="sp-callout">
+                <span class="sp-callout-icon">💡</span>
+                <p>The <code>if d &gt; dist[u]: continue</code> check is critical — it skips stale entries in the heap, keeping the algorithm correct and efficient.</p>
+              </div>
+            </article>
+
+            <!-- 3. Bellman-Ford -->
+            <article class="sp-lesson" id="bellman-ford" data-topic="3">
+              <div class="sp-lesson-header">
+                <span class="sp-lesson-number">03</span>
+                <h3>Bellman-Ford Algorithm</h3>
+              </div>
+              <p>Bellman-Ford handles graphs with <strong>negative edge weights</strong> and can detect <strong>negative cycles</strong>. It relaxes all edges <code>V-1</code> times, guaranteeing shortest paths in a graph with no negative cycles.</p>
+              <div class="sp-concept-card">
+                <h4>Algorithm Steps</h4>
+                <p>1. Initialize all distances to ∞, source to 0. 2. Repeat <code>V-1</code> times: for every edge (u,v,w), if <code>dist[u] + w &lt; dist[v]</code>, update <code>dist[v]</code>. 3. Run one more pass — if any distance still updates, a negative cycle exists.</p>
+              </div>
+              <div class="sp-code-block">
+                <div class="sp-code-header">
+                  <span class="sp-code-lang">Python</span>
+                  <button class="sp-code-copy" aria-label="Copy code" data-code="def bellman_ford(vertices, edges, src):
+    dist = [float('inf')] * vertices
+    dist[src] = 0
+
+    for _ in range(vertices - 1):
+        for u, v, w in edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+
+    for u, v, w in edges:
+        if dist[u] + w < dist[v]:
+            return None  # negative cycle detected
+
+    return dist">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">bellman_ford</span>(<span class="tok-var">vertices</span>, <span class="tok-var">edges</span>, <span class="tok-var">src</span>):
+    <span class="tok-var">dist</span> = [<span class="tok-fn">float</span>(<span class="tok-str">'inf'</span>)] * <span class="tok-var">vertices</span>
+    <span class="tok-var">dist</span>[<span class="tok-var">src</span>] = <span class="tok-num">0</span>
+
+    <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">vertices</span> - <span class="tok-num">1</span>):
+        <span class="tok-kw">for</span> <span class="tok-var">u</span>, <span class="tok-var">v</span>, <span class="tok-var">w</span> <span class="tok-kw">in</span> <span class="tok-var">edges</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">dist</span>[<span class="tok-var">u</span>] + <span class="tok-var">w</span> &lt; <span class="tok-var">dist</span>[<span class="tok-var">v</span>]:
+                <span class="tok-var">dist</span>[<span class="tok-var">v</span>] = <span class="tok-var">dist</span>[<span class="tok-var">u</span>] + <span class="tok-var">w</span>
+
+    <span class="tok-kw">for</span> <span class="tok-var">u</span>, <span class="tok-var">v</span>, <span class="tok-var">w</span> <span class="tok-kw">in</span> <span class="tok-var">edges</span>:
+        <span class="tok-kw">if</span> <span class="tok-var">dist</span>[<span class="tok-var">u</span>] + <span class="tok-var">w</span> &lt; <span class="tok-var">dist</span>[<span class="tok-var">v</span>]:
+            <span class="tok-kw">return</span> <span class="tok-bi">None</span>
+
+    <span class="tok-kw">return</span> <span class="tok-var">dist</span></code></pre>
+              </div>
+              <div class="sp-exercise">
+                <div class="sp-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Bellman-Ford</div>
+                <p>Why does Bellman-Ford relax edges exactly <code>V-1</code> times?</p>
+                <button class="sp-exercise-toggle" aria-expanded="false" aria-controls="solution-bf">Show Solution</button>
+                <div class="sp-exercise-solution" id="solution-bf">
+                  <p><strong>Answer: A shortest path in a graph with V vertices can have at most V-1 edges.</strong></p>
+                  <p>Each relaxation pass guarantees shortest paths using at most k edges. After V-1 passes, all shortest paths are found (assuming no negative cycles).</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Floyd-Warshall -->
+            <article class="sp-lesson" id="floyd-warshall" data-topic="4">
+              <div class="sp-lesson-header">
+                <span class="sp-lesson-number">04</span>
+                <h3>Floyd-Warshall Algorithm</h3>
+              </div>
+              <p>Floyd-Warshall computes <strong>all-pairs shortest paths</strong> — the shortest path between every pair of vertices. It works with negative weights but not negative cycles.</p>
+              <div class="sp-concept-card">
+                <h4>Core Idea</h4>
+                <p>For each intermediate vertex <code>k</code>, check if routing through <code>k</code> gives a shorter path between every pair <code>(i, j)</code>: <code>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])</code></p>
+              </div>
+              <div class="sp-code-block">
+                <div class="sp-code-header">
+                  <span class="sp-code-lang">Python</span>
+                  <button class="sp-code-copy" aria-label="Copy code" data-code="def floyd_warshall(matrix):
+    n = len(matrix)
+    dist = [row[:] for row in matrix]
+
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][k] + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    return dist">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">floyd_warshall</span>(<span class="tok-var">matrix</span>):
+    <span class="tok-var">n</span> = <span class="tok-fn">len</span>(<span class="tok-var">matrix</span>)
+    <span class="tok-var">dist</span> = [<span class="tok-var">row</span>[:] <span class="tok-kw">for</span> <span class="tok-var">row</span> <span class="tok-kw">in</span> <span class="tok-var">matrix</span>]
+
+    <span class="tok-kw">for</span> <span class="tok-var">k</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>):
+        <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>):
+            <span class="tok-kw">for</span> <span class="tok-var">j</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>):
+                <span class="tok-kw">if</span> <span class="tok-var">dist</span>[<span class="tok-var">i</span>][<span class="tok-var">k</span>] + <span class="tok-var">dist</span>[<span class="tok-var">k</span>][<span class="tok-var">j</span>] &lt; <span class="tok-var">dist</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>]:
+                    <span class="tok-var">dist</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>] = <span class="tok-var">dist</span>[<span class="tok-var">i</span>][<span class="tok-var">k</span>] + <span class="tok-var">dist</span>[<span class="tok-var">k</span>][<span class="tok-var">j</span>]
+    <span class="tok-kw">return</span> <span class="tok-var">dist</span></code></pre>
+              </div>
+              <div class="sp-callout">
+                <span class="sp-callout-icon">💡</span>
+                <p>Initialize the distance matrix with <code>0</code> on diagonal, actual edge weights where edges exist, and <code>∞</code> elsewhere. After running, <code>dist[i][i] &lt; 0</code> indicates a negative cycle.</p>
+              </div>
+            </article>
+
+            <!-- 5. Practice -->
+            <article class="sp-lesson" id="practice" data-topic="5">
+              <div class="sp-lesson-header">
+                <span class="sp-lesson-number">05</span>
+                <h3>Practice Exercises</h3>
+              </div>
+              <p>Test your understanding of shortest path algorithms.</p>
+
+              <div class="sp-exercise">
+                <div class="sp-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 1: Algorithm Selection</div>
+                <p>A graph has 1000 vertices, 5000 edges, all non-negative weights. Which algorithm is most efficient for single-source shortest paths?</p>
+                <button class="sp-exercise-toggle" aria-expanded="false" aria-controls="solution-ex1">Show Solution</button>
+                <div class="sp-exercise-solution" id="solution-ex1">
+                  <p><strong>Answer: Dijkstra's with a min-heap — O((V+E) log V)</strong></p>
+                  <p>No negative weights rules out the need for Bellman-Ford. Floyd-Warshall would be O(10⁹) — too slow. Dijkstra's gives O(6000 × log 1000) ≈ 60,000 operations.</p>
+                </div>
+              </div>
+
+              <div class="sp-exercise">
+                <div class="sp-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 2: Negative Cycle Detection</div>
+                <p>After running Bellman-Ford V-1 times, you do one more relaxation pass and find that <code>dist[3]</code> updates. What does this mean?</p>
+                <button class="sp-exercise-toggle" aria-expanded="false" aria-controls="solution-ex2">Show Solution</button>
+                <div class="sp-exercise-solution" id="solution-ex2">
+                  <p><strong>Answer: A negative cycle exists reachable from the source.</strong></p>
+                  <p>After V-1 passes all true shortest paths are settled. Any further update means there's a cycle with negative total weight — paths through it keep getting shorter infinitely.</p>
+                </div>
+              </div>
+
+              <div class="sp-exercise">
+                <div class="sp-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 3: Floyd-Warshall</div>
+                <p>For a graph with 4 vertices and edges: A→B=3, B→C=1, A→C=10. After Floyd-Warshall, what is the shortest distance from A to C?</p>
+                <button class="sp-exercise-toggle" aria-expanded="false" aria-controls="solution-ex3">Show Solution</button>
+                <div class="sp-exercise-solution" id="solution-ex3">
+                  <p><strong>Answer: 4</strong></p>
+                  <p>Direct path A→C = 10. Via B: A→B→C = 3+1 = 4. Floyd-Warshall finds the shorter route through intermediate vertex B.</p>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="shortest-path-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

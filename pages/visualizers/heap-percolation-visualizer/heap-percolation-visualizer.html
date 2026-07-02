@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heap Percolation Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive heap visualizer for min/max heaps, heapify, insert, extract root, and percolation playback." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="heap-percolation-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="heap-percolation-visualizer">
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Heap Percolation Visualizer</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="visualizer-section">
+      <div class="visualizer-container">
+        <aside class="control-panel">
+          <h2 class="panel-title"><i class="fas fa-layer-group"></i> Heap Controls</h2>
+
+          <div class="control-group">
+            <label for="heap-type">Heap Type</label>
+            <div class="tree-type-selector">
+              <button type="button" class="btn-type active" id="btn-min-heap" data-type="min" aria-label="Switch to min heap" title="Switch to min heap">Min Heap</button>
+              <button type="button" class="btn-type" id="btn-max-heap" data-type="max" aria-label="Switch to max heap" title="Switch to max heap">Max Heap</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="array-input">Array Input</label>
+            <input type="text" id="array-input" value="10,40,20,5,30" placeholder="e.g. 10,40,20,5,30" />
+            <div class="button-grid">
+              <button type="button" class="btn-vis" id="btn-heapify" aria-label="Heapify the input array" title="Heapify the input array"><i class="fas fa-sitemap"></i> Heapify</button>
+              <button type="button" class="btn-vis btn-danger" id="btn-reset" aria-label="Reset the visualizer" title="Reset the visualizer"><i class="fas fa-trash-alt"></i> Reset</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="insert-input">Insert Value</label>
+            <div class="input-row">
+              <input type="number" id="insert-input" min="0" max="999" step="1" placeholder="e.g. 25" />
+              <button type="button" class="btn-vis btn-insert" id="btn-insert" aria-label="Insert a value into the heap" title="Insert a value into the heap"><i class="fas fa-plus"></i> Insert</button>
+            </div>
+            <button type="button" class="btn-vis" id="btn-extract" aria-label="Extract the root node" title="Extract the root node"><i class="fas fa-minus"></i> Extract Root</button>
+          </div>
+
+          <div class="control-group">
+            <label>Playback</label>
+            <div class="simulation-controls">
+              <button type="button" class="btn-ctrl" id="btn-prev" title="Step backward" aria-label="Step backward" disabled><i class="fas fa-step-backward"></i></button>
+              <button type="button" class="btn-ctrl" id="btn-step" title="Advance one step" aria-label="Advance one step"><i class="fas fa-forward"></i></button>
+              <button type="button" class="btn-ctrl" id="btn-next" title="Step forward" aria-label="Step forward" disabled><i class="fas fa-step-forward"></i></button>
+              <button type="button" class="btn-ctrl" id="btn-play" title="Play animation" aria-label="Play animation"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="speed-slider">Speed</label>
+            <div class="speed-control">
+              <input type="range" id="speed-slider" min="250" max="2000" value="800" step="50" />
+              <span id="speed-val">800ms</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Status</label>
+            <div class="status-box" id="status-message" aria-live="polite">
+              Enter an array and heapify it to begin tracing the percolation process.
+            </div>
+          </div>
+
+          <div class="legend-panel">
+            <div class="legend-item"><span class="legend-color current"></span><span>Current comparison</span></div>
+            <div class="legend-item"><span class="legend-color swap"></span><span>Swap</span></div>
+            <div class="legend-item"><span class="legend-color finished"></span><span>Heap property satisfied</span></div>
+          </div>
+        </aside>
+
+        <main class="canvas-area">
+          <div class="canvas-toolbar">
+            <div class="array-chip-block">
+              <span class="chip-label">Heap Array</span>
+              <div id="array-display" class="array-display">[]</div>
+            </div>
+          </div>
+
+          <div id="tree-canvas" class="tree-canvas">
+            <svg id="edges-svg" class="edges-svg" width="100%" height="100%"></svg>
+            <div id="nodes-layer" class="nodes-layer"></div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="heap-percolation-visualizer.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

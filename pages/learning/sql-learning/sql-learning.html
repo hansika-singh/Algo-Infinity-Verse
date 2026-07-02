@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn SQL – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly SQL tutorial covering database fundamentals, table creation, SELECT, WHERE, JOINs, aggregate functions, and practice exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sql-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="sql-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">SQL & Databases</span>
+          <span class="subtitle">Beginner-Friendly Concepts, Queries &amp; Practice</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_sql" id="typingTextSql"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-intro" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="11">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="45">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="11">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- SQL Learning Section -->
+    <section id="sql-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🗄️</span>
+          Learn SQL
+        </h2>
+        <p class="section-subtitle">
+          Master the fundamentals of SQL and databases with clear explanations and practical queries.
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="sql-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="sql-progress-text"><span id="progressCount">0</span> / 11 topics completed</span>
+          <div class="sql-progress-track">
+            <div class="sql-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="sql-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="sql-sidebar" aria-label="Topic navigation">
+            <div class="sql-sidebar-title">Topics</div>
+            <ul class="sql-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#fundamentals"><span class="nav-icon">🏗️</span> Database Fundamentals</a></li>
+              <li><a href="#setup"><span class="nav-icon">⚙️</span> Installation &amp; Setup</a></li>
+              <li><a href="#create"><span class="nav-icon">📝</span> Databases &amp; Tables</a></li>
+              <li><a href="#datatypes"><span class="nav-icon">📦</span> Data Types</a></li>
+              <li><a href="#crud"><span class="nav-icon">🔄</span> INSERT, UPDATE, DELETE</a></li>
+              <li><a href="#select"><span class="nav-icon">🔎</span> SELECT Queries</a></li>
+              <li><a href="#where"><span class="nav-icon">🎯</span> WHERE, ORDER, LIMIT</a></li>
+              <li><a href="#aggregate"><span class="nav-icon">📊</span> Aggregate Functions</a></li>
+              <li><a href="#groupby"><span class="nav-icon">🗂️</span> GROUP BY &amp; HAVING</a></li>
+              <li><a href="#joins"><span class="nav-icon">🔗</span> JOINs</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="sql-main-content" id="mainContent">
+
+            <!-- 1. Introduction to SQL -->
+            <article class="sql-lesson" id="introduction" data-topic="1">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">01</span>
+                <h3>Introduction to SQL</h3>
+              </div>
+              <p>
+                <strong>SQL</strong> (Structured Query Language) is the standard language used to communicate with Relational Database Management Systems (RDBMS). It is used to store, manipulate, and retrieve data in databases.
+              </p>
+              <div class="sql-concept-card">
+                <h4>What Can SQL Do?</h4>
+                <ul>
+                  <li>Execute queries against a database</li>
+                  <li>Retrieve data from a database</li>
+                  <li>Insert, update, and delete records in a database</li>
+                  <li>Create new databases, tables, and views</li>
+                  <li>Set permissions on tables, procedures, and views</li>
+                </ul>
+              </div>
+              <p>Here is a basic SQL query to get you started:</p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT * FROM users;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> users;</code></pre>
+              </div>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">💡</span>
+                <p>SQL keywords are NOT case sensitive: <code>select</code> is the same as <code>SELECT</code>. However, it is a common convention to write SQL keywords in UPPERCASE for readability.</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-intro">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Introduction to SQL
+                </div>
+                <p>Write a query that selects all columns from a table named <code>employees</code>.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-intro">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT * FROM employees;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> employees;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Database Fundamentals -->
+            <article class="sql-lesson" id="fundamentals" data-topic="2">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">02</span>
+                <h3>Database Fundamentals</h3>
+              </div>
+              <p>
+                A <strong>Relational Database</strong> stores data in tables. A table is a collection of related data entries and it consists of columns and rows.
+              </p>
+              <div class="sql-concept-card">
+                <h4>Key Terms</h4>
+                <ul>
+                  <li><strong>Table:</strong> A structured format of rows and columns (e.g., <code>users</code> table).</li>
+                  <li><strong>Row (Record):</strong> A single data entry in a table.</li>
+                  <li><strong>Column (Field):</strong> A specific attribute of the data (e.g., <code>email</code>, <code>age</code>).</li>
+                  <li><strong>Primary Key:</strong> A unique identifier for each record in a table.</li>
+                  <li><strong>Foreign Key:</strong> A field in one table that uniquely identifies a row of another table.</li>
+                </ul>
+              </div>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">📚</span>
+                <p>SQL databases are known as RDBMS (Relational Database Management Systems). Examples include MySQL, PostgreSQL, Oracle, and Microsoft SQL Server.</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-fundamentals">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Database Fundamentals
+                </div>
+                <p>Identify which of the following is typically a Primary Key in a `users` table: <code>first_name</code>, <code>user_id</code>, <code>age</code>.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-fundamentals">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-fundamentals">
+                  <p><strong>user_id</strong> is the best candidate for a Primary Key because it uniquely identifies each user. <code>first_name</code> or <code>age</code> can have duplicate values.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Installation & Setup -->
+            <article class="sql-lesson" id="setup" data-topic="3">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">03</span>
+                <h3>Installation &amp; Setup</h3>
+              </div>
+              <p>
+                To practice SQL, you need a database system. There are many options ranging from lightweight local files to robust server software.
+              </p>
+              <div class="sql-concept-card">
+                <h4>Popular RDBMS Options</h4>
+                <ul>
+                  <li><strong>SQLite:</strong> Extremely lightweight, stores data in a local file. Ideal for beginners and mobile apps. No background server process required.</li>
+                  <li><strong>MySQL:</strong> Very popular, open-source RDBMS used widely in web development.</li>
+                  <li><strong>PostgreSQL:</strong> Advanced, open-source object-relational database known for robustness and complex querying.</li>
+                </ul>
+              </div>
+              <p>For beginners, <strong>SQLite</strong> is highly recommended. You can use DB Browser for SQLite or try an online compiler like SQL Fiddle.</p>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">🚀</span>
+                <p>You don't need to install anything right away! Many online platforms allow you to run SQL queries directly in your browser.</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-setup">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Setup
+                </div>
+                <p>Which database engine is best if you want a lightweight solution that runs without a server?</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-setup">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-setup">
+                  <p><strong>SQLite</strong> is the best choice for a lightweight, serverless database.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Creating Databases & Tables -->
+            <article class="sql-lesson" id="create" data-topic="4">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">04</span>
+                <h3>Creating Databases &amp; Tables</h3>
+              </div>
+              <p>
+                Before you can insert data, you must define the structure of your database and tables using Data Definition Language (DDL).
+              </p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="CREATE DATABASE company_db;
+USE company_db;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">CREATE DATABASE</span> company_db;
+<span class="tok-kw">USE</span> company_db;</code></pre>
+              </div>
+              <p>Now, let's create a table:</p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    age INT,
+    hire_date DATE
+);">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">CREATE TABLE</span> employees (
+    id <span class="tok-kw">INT PRIMARY KEY</span>,
+    first_name <span class="tok-kw">VARCHAR</span>(<span class="tok-num">50</span>),
+    last_name <span class="tok-kw">VARCHAR</span>(<span class="tok-num">50</span>),
+    age <span class="tok-kw">INT</span>,
+    hire_date <span class="tok-kw">DATE</span>
+);</code></pre>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-create">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Create Table
+                </div>
+                <p>Write a query to create a table named <code>products</code> with an <code>id</code> (INT, PRIMARY KEY), <code>name</code> (VARCHAR(100)), and <code>price</code> (DECIMAL).</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-create">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-create">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL
+);">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">CREATE TABLE</span> products (
+    id <span class="tok-kw">INT PRIMARY KEY</span>,
+    name <span class="tok-kw">VARCHAR</span>(<span class="tok-num">100</span>),
+    price <span class="tok-kw">DECIMAL</span>
+);</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Data Types -->
+            <article class="sql-lesson" id="datatypes" data-topic="5">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">05</span>
+                <h3>Data Types</h3>
+              </div>
+              <p>
+                When creating a table, you must specify the data type for each column. This defines what kind of data can be stored.
+              </p>
+              <div class="sql-table-wrap">
+                <table class="sql-table" aria-label="SQL Data Types">
+                  <thead>
+                    <tr>
+                      <th scope="col">Data Type</th>
+                      <th scope="col">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>INT</code></td><td>Numeric value without a decimal (e.g., 42).</td></tr>
+                    <tr><td><code>VARCHAR(n)</code></td><td>Variable-length character string. Max length is n.</td></tr>
+                    <tr><td><code>DECIMAL(p, s)</code></td><td>Exact fixed-point number. p is precision, s is scale (e.g. DECIMAL(10,2) stores 99999999.99).</td></tr>
+                    <tr><td><code>DATE</code></td><td>Date value in format YYYY-MM-DD.</td></tr>
+                    <tr><td><code>BOOLEAN</code></td><td>True or False. Often represented as 1 and 0 in databases like MySQL.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">💡</span>
+                <p>Data types can vary slightly between different databases (e.g., SQL Server uses <code>DATETIME</code> while Postgres uses <code>TIMESTAMP</code>).</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-datatypes">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Data Types
+                </div>
+                <p>What data type would you use to store a user's biography (which could be long text)?</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-datatypes">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-datatypes">
+                  <p>You would typically use <code>TEXT</code> or <code>VARCHAR(n)</code> with a large number for <em>n</em>.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. INSERT, UPDATE, DELETE -->
+            <article class="sql-lesson" id="crud" data-topic="6">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">06</span>
+                <h3>INSERT, UPDATE, DELETE</h3>
+              </div>
+              <p>
+                Data Manipulation Language (DML) commands allow you to modify data within your tables.
+              </p>
+              <div class="sql-concept-card">
+                <h4>Inserting Data</h4>
+                <p>Add new rows into a table.</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="INSERT INTO employees (id, first_name, last_name, age, hire_date)
+VALUES (1, 'John', 'Doe', 28, '2023-01-15');">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">INSERT INTO</span> employees (id, first_name, last_name, age, hire_date)
+<span class="tok-kw">VALUES</span> (<span class="tok-num">1</span>, <span class="tok-str">'John'</span>, <span class="tok-str">'Doe'</span>, <span class="tok-num">28</span>, <span class="tok-str">'2023-01-15'</span>);</code></pre>
+              </div>
+
+              <div class="sql-concept-card">
+                <h4>Updating Data</h4>
+                <p>Modify existing data. <strong>Always use a WHERE clause</strong>, otherwise all rows will be updated!</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="UPDATE employees
+SET age = 29
+WHERE id = 1;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">UPDATE</span> employees
+<span class="tok-kw">SET</span> age = <span class="tok-num">29</span>
+<span class="tok-kw">WHERE</span> id = <span class="tok-num">1</span>;</code></pre>
+              </div>
+
+              <div class="sql-concept-card">
+                <h4>Deleting Data</h4>
+                <p>Remove rows from a table. Again, use a WHERE clause to avoid deleting everything.</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="DELETE FROM employees
+WHERE id = 1;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">DELETE FROM</span> employees
+<span class="tok-kw">WHERE</span> id = <span class="tok-num">1</span>;</code></pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-crud">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: INSERT
+                </div>
+                <p>Write an <code>INSERT</code> statement to add a product to the <code>products</code> table with id 10, name 'Laptop', and price 1200.50.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-crud">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-crud">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="INSERT INTO products (id, name, price)
+VALUES (10, 'Laptop', 1200.50);">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">INSERT INTO</span> products (id, name, price)
+<span class="tok-kw">VALUES</span> (<span class="tok-num">10</span>, <span class="tok-str">'Laptop'</span>, <span class="tok-num">1200.50</span>);</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. SELECT Queries -->
+            <article class="sql-lesson" id="select" data-topic="7">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">07</span>
+                <h3>SELECT Queries</h3>
+              </div>
+              <p>
+                The <code>SELECT</code> statement is used to select data from a database. The result is stored in a result table, called the result-set.
+              </p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="-- Select specific columns
+SELECT first_name, last_name FROM employees;
+
+-- Select all columns
+SELECT * FROM employees;">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">-- Select specific columns</span>
+<span class="tok-kw">SELECT</span> first_name, last_name <span class="tok-kw">FROM</span> employees;
+
+<span class="tok-cmt">-- Select all columns</span>
+<span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> employees;</code></pre>
+              </div>
+              <p>You can also use the <code>DISTINCT</code> keyword to return only distinct (different) values.</p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT DISTINCT age FROM employees;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT DISTINCT</span> age <span class="tok-kw">FROM</span> employees;</code></pre>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-select">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: SELECT
+                </div>
+                <p>Write a query to fetch only the <code>name</code> and <code>price</code> of all products from the <code>products</code> table.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-select">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-select">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT name, price FROM products;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> name, price <span class="tok-kw">FROM</span> products;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. WHERE, ORDER BY, LIMIT -->
+            <article class="sql-lesson" id="where" data-topic="8">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">08</span>
+                <h3>WHERE, ORDER BY, LIMIT</h3>
+              </div>
+              <p>
+                These clauses help you filter, sort, and restrict the amount of data returned by a SELECT query.
+              </p>
+              <div class="sql-concept-card">
+                <h4>Filtering with WHERE</h4>
+                <p>Extract only those records that fulfill a specified condition.</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT * FROM employees
+WHERE age >= 30 AND last_name = 'Smith';">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> employees
+<span class="tok-kw">WHERE</span> age >= <span class="tok-num">30</span> <span class="tok-kw">AND</span> last_name = <span class="tok-str">'Smith'</span>;</code></pre>
+              </div>
+
+              <div class="sql-concept-card">
+                <h4>Sorting with ORDER BY</h4>
+                <p>Sort the result-set in ascending (ASC) or descending (DESC) order.</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT * FROM employees
+ORDER BY age DESC;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> employees
+<span class="tok-kw">ORDER BY</span> age <span class="tok-kw">DESC</span>;</code></pre>
+              </div>
+
+              <div class="sql-concept-card">
+                <h4>Restricting with LIMIT</h4>
+                <p>Specify the number of records to return. Useful for large tables or pagination.</p>
+              </div>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT * FROM employees
+ORDER BY hire_date DESC
+LIMIT 5;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> * <span class="tok-kw">FROM</span> employees
+<span class="tok-kw">ORDER BY</span> hire_date <span class="tok-kw">DESC</span>
+<span class="tok-kw">LIMIT</span> <span class="tok-num">5</span>;</code></pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-where">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Filtering and Sorting
+                </div>
+                <p>Write a query to select the names of products that cost more than 500, ordered by price from highest to lowest, and limit the result to 10 rows.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-where">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-where">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT name FROM products
+WHERE price &gt; 500
+ORDER BY price DESC
+LIMIT 10;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> name <span class="tok-kw">FROM</span> products
+<span class="tok-kw">WHERE</span> price > <span class="tok-num">500</span>
+<span class="tok-kw">ORDER BY</span> price <span class="tok-kw">DESC</span>
+<span class="tok-kw">LIMIT</span> <span class="tok-num">10</span>;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Aggregate Functions -->
+            <article class="sql-lesson" id="aggregate" data-topic="9">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">09</span>
+                <h3>Aggregate Functions</h3>
+              </div>
+              <p>
+                Aggregate functions perform a calculation on a set of values and return a single value.
+              </p>
+              <ul>
+                <li><code>COUNT()</code> - Returns the number of rows</li>
+                <li><code>SUM()</code> - Returns the total sum of a numeric column</li>
+                <li><code>AVG()</code> - Returns the average value</li>
+                <li><code>MIN()</code> - Returns the smallest value</li>
+                <li><code>MAX()</code> - Returns the largest value</li>
+              </ul>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT 
+    COUNT(*) as total_employees,
+    AVG(age) as average_age,
+    MAX(age) as oldest_employee
+FROM employees;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> 
+    <span class="tok-fn">COUNT</span>(*) <span class="tok-kw">as</span> total_employees,
+    <span class="tok-fn">AVG</span>(age) <span class="tok-kw">as</span> average_age,
+    <span class="tok-fn">MAX</span>(age) <span class="tok-kw">as</span> oldest_employee
+<span class="tok-kw">FROM</span> employees;</code></pre>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-aggregate">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Aggregate Functions
+                </div>
+                <p>Write a query to find the total (SUM) price of all products in the <code>products</code> table.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-aggregate">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-aggregate">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT SUM(price) FROM products;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> <span class="tok-fn">SUM</span>(price) <span class="tok-kw">FROM</span> products;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. GROUP BY & HAVING -->
+            <article class="sql-lesson" id="groupby" data-topic="10">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">10</span>
+                <h3>GROUP BY &amp; HAVING</h3>
+              </div>
+              <p>
+                The <code>GROUP BY</code> statement groups rows that have the same values into summary rows, like "find the number of customers in each country". The <code>HAVING</code> clause was added to SQL because the <code>WHERE</code> keyword cannot be used with aggregate functions.
+              </p>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT department, COUNT(id) as emp_count
+FROM employees
+GROUP BY department
+HAVING COUNT(id) > 5;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> department, <span class="tok-fn">COUNT</span>(id) <span class="tok-kw">as</span> emp_count
+<span class="tok-kw">FROM</span> employees
+<span class="tok-kw">GROUP BY</span> department
+<span class="tok-kw">HAVING</span> <span class="tok-fn">COUNT</span>(id) > <span class="tok-num">5</span>;</code></pre>
+              </div>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">⚡</span>
+                <p>Execution order: <code>WHERE</code> filters before grouping. <code>HAVING</code> filters after grouping.</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-groupby">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: GROUP BY
+                </div>
+                <p>Group a <code>sales</code> table by <code>category</code> and select the category along with the SUM of <code>revenue</code> for each.</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-groupby">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-groupby">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT category, SUM(revenue) 
+FROM sales
+GROUP BY category;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> category, <span class="tok-fn">SUM</span>(revenue) 
+<span class="tok-kw">FROM</span> sales
+<span class="tok-kw">GROUP BY</span> category;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 11. JOINs -->
+            <article class="sql-lesson" id="joins" data-topic="11">
+              <div class="sql-lesson-header">
+                <span class="sql-lesson-number">11</span>
+                <h3>JOINs</h3>
+              </div>
+              <p>
+                A <code>JOIN</code> clause is used to combine rows from two or more tables, based on a related column between them.
+              </p>
+              <ul>
+                <li><strong>INNER JOIN:</strong> Returns records that have matching values in both tables.</li>
+                <li><strong>LEFT JOIN:</strong> Returns all records from the left table, and the matched records from the right table.</li>
+                <li><strong>RIGHT JOIN:</strong> Returns all records from the right table, and the matched records from the left table.</li>
+              </ul>
+              <div class="sql-code-block">
+                <div class="sql-code-header">
+                  <span class="sql-code-lang">SQL</span>
+                  <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT orders.order_id, customers.customer_name
+FROM orders
+INNER JOIN customers ON orders.customer_id = customers.customer_id;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> orders.order_id, customers.customer_name
+<span class="tok-kw">FROM</span> orders
+<span class="tok-kw">INNER JOIN</span> customers <span class="tok-kw">ON</span> orders.customer_id = customers.customer_id;</code></pre>
+              </div>
+              <div class="sql-callout">
+                <span class="sql-callout-icon">🔗</span>
+                <p>When selecting columns with the same name from different tables, prefix the column name with the table name (e.g., <code>table_name.column_name</code>).</p>
+              </div>
+              <!-- Exercise -->
+              <div class="sql-exercise" id="exercise-joins">
+                <div class="sql-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: JOINs
+                </div>
+                <p>Write a query using a LEFT JOIN to list all <code>students</code> and any <code>courses</code> they are enrolled in (using an <code>enrollments</code> table on student_id).</p>
+                <button class="sql-exercise-toggle" aria-expanded="false" aria-controls="solution-joins">Show Solution</button>
+                <div class="sql-exercise-solution" id="solution-joins">
+                  <div class="sql-code-block">
+                    <div class="sql-code-header">
+                      <span class="sql-code-lang">SQL</span>
+                      <button class="sql-code-copy" aria-label="Copy code" data-code="SELECT students.name, enrollments.course_id
+FROM students
+LEFT JOIN enrollments ON students.student_id = enrollments.student_id;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> students.name, enrollments.course_id
+<span class="tok-kw">FROM</span> students
+<span class="tok-kw">LEFT JOIN</span> enrollments <span class="tok-kw">ON</span> students.student_id = enrollments.student_id;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="sql-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Operating Systems – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly Operating Systems tutorial covering OS types, process management, CPU scheduling, memory management, deadlocks, file systems, I/O management, and security with examples and exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="os-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="os-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #0d9488 0%, #2dd4bf 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Operating Systems</span>
+          <span class="subtitle">Beginner-Friendly Concepts, Diagrams &amp; Practice</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_os" id="typingTextOs"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #0d9488 0%, #2dd4bf 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-quiz" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="11">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="40">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="11">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- OS Learning Section -->
+    <section id="os-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🖥️</span>
+          Learn Operating Systems
+        </h2>
+        <p class="section-subtitle">
+          Master the fundamentals of Operating Systems with clear explanations, diagrams, and hands-on examples
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="os-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="os-progress-text"><span id="progressCount">0</span> / 11 topics completed</span>
+          <div class="os-progress-track">
+            <div class="os-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="os-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="os-sidebar" aria-label="Topic navigation">
+            <div class="os-sidebar-title">Topics</div>
+            <ul class="os-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#types"><span class="nav-icon">📂</span> Types of OS</a></li>
+              <li><a href="#functions"><span class="nav-icon">⚙️</span> Functions of OS</a></li>
+              <li><a href="#process-management"><span class="nav-icon">🔄</span> Process Management</a></li>
+              <li><a href="#cpu-scheduling"><span class="nav-icon">⏱️</span> CPU Scheduling</a></li>
+              <li><a href="#memory-management"><span class="nav-icon">💾</span> Memory Management</a></li>
+              <li><a href="#deadlocks"><span class="nav-icon">🔒</span> Deadlocks</a></li>
+              <li><a href="#file-system"><span class="nav-icon">📁</span> File Systems</a></li>
+              <li><a href="#io-management"><span class="nav-icon">🖨️</span> I/O Management</a></li>
+              <li><a href="#security"><span class="nav-icon">🛡️</span> Security &amp; Protection</a></li>
+              <li><a href="#quiz"><span class="nav-icon">❓</span> Practice Quiz</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="os-main-content" id="mainContent">
+
+            <!-- 1. Introduction to Operating Systems -->
+            <article class="os-lesson" id="introduction" data-topic="1">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">01</span>
+                <h3>Introduction to Operating Systems</h3>
+              </div>
+              <p>
+                An <strong>Operating System (OS)</strong> is system software that manages computer hardware and software resources and provides common services for computer programs. It acts as an intermediary between users and the computer hardware.
+              </p>
+              <div class="os-concept-card">
+                <h4>What is an Operating System?</h4>
+                <p>An OS is a software layer that manages hardware resources (CPU, memory, storage, I/O devices) and provides a convenient interface for users and applications to interact with the system.</p>
+              </div>
+              <div class="os-concept-card">
+                <h4>Why is an OS Important?</h4>
+                <ul>
+                  <li><strong>Resource Management</strong> – Efficiently allocates CPU time, memory, and I/O</li>
+                  <li><strong>Abstraction</strong> – Hides complex hardware details from users</li>
+                  <li><strong>Multitasking</strong> – Runs multiple programs simultaneously</li>
+                  <li><strong>Security</strong> – Protects data and resources from unauthorized access</li>
+                  <li><strong>User Interface</strong> – Provides CLI or GUI for interaction</li>
+                </ul>
+              </div>
+              <p>An OS sits between hardware and application software:</p>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>  ┌─────────────────────────────┐
+  │     Application Software    │
+  │  (Browser, Editor, Games)   │
+  ├─────────────────────────────┤
+  │     Operating System        │
+  │  (Windows, Linux, macOS)    │
+  ├─────────────────────────────┤
+  │      Hardware               │
+  │  (CPU, RAM, Disk, I/O)      │
+  └─────────────────────────────┘</code></pre>
+              </div>
+              <div class="os-callout">
+                <span class="os-callout-icon">💡</span>
+                <p>Popular OS examples: <strong>Windows</strong> (desktop), <strong>Linux</strong> (servers/embedded), <strong>macOS</strong> (Apple), <strong>Android</strong> (mobile), and <strong>iOS</strong> (Apple mobile).</p>
+              </div>
+            </article>
+
+            <!-- 2. Types of Operating Systems -->
+            <article class="os-lesson" id="types" data-topic="2">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">02</span>
+                <h3>Types of Operating Systems</h3>
+              </div>
+              <p>Operating Systems can be categorized based on how they manage users, tasks, and resources.</p>
+
+              <div class="os-table-wrap">
+                <table class="os-table" aria-label="Types of Operating Systems">
+                  <thead>
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Example</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Batch OS</strong></td><td>Jobs with similar needs are grouped and executed without user interaction</td><td>IBM OS/360</td></tr>
+                    <tr><td><strong>Time-Sharing OS</strong></td><td>CPU time is sliced and shared among multiple users giving illusion of dedicated system</td><td>UNIX, Linux</td></tr>
+                    <tr><td><strong>Distributed OS</strong></td><td>Multiple interconnected computers share resources and appear as a single system</td><td>Google File System, LOCUS</td></tr>
+                    <tr><td><strong>Real-Time OS (RTOS)</strong></td><td>Guarantees task completion within strict time constraints</td><td>FreeRTOS, VxWorks</td></tr>
+                    <tr><td><strong>Mobile OS</strong></td><td>Designed for mobile devices with touch input and power efficiency</td><td>Android, iOS</td></tr>
+                    <tr><td><strong>Network OS</strong></td><td>Runs on servers and manages network resources, users, and permissions</td><td>Windows Server, Novell NetWare</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">💡</span>
+                <p><strong>Hybrid OS</strong> combine features from multiple types. Modern OS like Linux and Windows use elements of time-sharing, real-time, and network OS all at once.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="os-exercise" id="exercise-types">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Types of OS
+                </div>
+                <ol>
+                  <li>Which type of OS is best suited for a nuclear power plant control system? Why?</li>
+                  <li>What makes Time-Sharing OS different from Batch OS?</li>
+                  <li>Name two examples of Mobile Operating Systems.</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-types">Show Solution</button>
+                <div class="os-exercise-solution" id="solution-types">
+                  <p><strong>1.</strong> Real-Time OS (RTOS) – because it guarantees task completion within strict deadlines, which is critical for safety.</p>
+                  <p><strong>2.</strong> Time-Sharing OS provides interactive response to multiple users simultaneously by slicing CPU time, whereas Batch OS executes jobs in groups without user interaction.</p>
+                  <p><strong>3.</strong> Android and iOS.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Functions of an Operating System -->
+            <article class="os-lesson" id="functions" data-topic="3">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">03</span>
+                <h3>Functions of an Operating System</h3>
+              </div>
+              <p>An OS provides several essential functions that manage system resources and enable smooth operation.</p>
+
+              <div class="os-concept-card">
+                <h4>1. Process Management</h4>
+                <p>Handles creation, scheduling, and termination of processes. Manages synchronization and communication between processes.</p>
+              </div>
+              <div class="os-concept-card">
+                <h4>2. Memory Management</h4>
+                <p>Allocates and deallocates memory to processes. Implements virtual memory and handles paging/segmentation.</p>
+              </div>
+              <div class="os-concept-card">
+                <h4>3. File System Management</h4>
+                <p>Organizes files into directories, manages file permissions, and handles read/write operations on storage devices.</p>
+              </div>
+              <div class="os-concept-card">
+                <h4>4. Device Management</h4>
+                <p>Manages I/O devices through drivers, handles interrupts, and buffers data transfers between devices and memory.</p>
+              </div>
+              <div class="os-concept-card">
+                <h4>5. Security &amp; Protection</h4>
+                <p>Controls access to resources through authentication, authorization, and encryption mechanisms.</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>  ┌───────────────────────────────────────────────────────────┐
+  │                Operating System Functions                 │
+  ├───────────────────┬───────────────────┬───────────────────┤
+  │      Process      │      Memory       │       File        │
+  │    Management     │    Management     │    Management     │
+  ├───────────────────┼───────────────────┼───────────────────┤
+  │        I/O        │     Security      │      Network      │
+  │    Management     │   &amp; Protection    │    Management     │
+  └───────────────────┴───────────────────┴───────────────────┘</code></pre>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">✅</span>
+                <p>The OS manages all these functions simultaneously. When you open a file, the OS verifies permissions, loads data from disk into memory, and makes it available to your application — all behind the scenes.</p>
+              </div>
+            </article>
+
+            <!-- 4. Process Management -->
+            <article class="os-lesson" id="process-management" data-topic="4">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">04</span>
+                <h3>Process Management</h3>
+              </div>
+              <p>A <strong>process</strong> is a program in execution. Each process has its own memory space, program counter, and system resources.</p>
+
+              <div class="os-concept-card">
+                <h4>Processes vs Threads</h4>
+                <ul>
+                  <li><strong>Process</strong> – Heavyweight, isolated memory space, independent execution</li>
+                  <li><strong>Thread</strong> – Lightweight, shares memory within a process, multiple threads per process</li>
+                </ul>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Process States</h4>
+                <p>A process goes through several states during its lifecycle:</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>      ┌──────────┐
+      │   New    │
+      └────┬─────┘
+           ▼
+    ┌──────────────┐
+    │    Ready     │←──────────┐
+    └──────┬───────┘           │
+           ▼                   │
+    ┌──────────────┐    ┌──────┴───────┐
+    │   Running    │───→│   Waiting    │
+    └──────┬───────┘    └──────┬───────┘
+           │                   │
+           ▼                   │
+    ┌──────────────┐           │
+    │  Terminated  │           │
+    └──────────────┘           │
+                               │
+        (I/O or event wait)────┘</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Context Switching</h4>
+                <p>When the CPU switches from one process to another, it saves the current process state (registers, program counter) and loads the saved state of the next process. This is called <strong>context switching</strong>.</p>
+              </div>
+
+              <div class="os-table-wrap">
+                <table class="os-table" aria-label="Process vs Thread">
+                  <thead>
+                    <tr>
+                      <th scope="col">Aspect</th>
+                      <th scope="col">Process</th>
+                      <th scope="col">Thread</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Memory</td><td>Separate address space</td><td>Shared within process</td></tr>
+                    <tr><td>Creation Time</td><td>Slower</td><td>Faster</td></tr>
+                    <tr><td>Context Switch</td><td>Expensive</td><td>Cheap</td></tr>
+                    <tr><td>Isolation</td><td>Fully isolated</td><td>Can affect sibling threads</td></tr>
+                    <tr><td>Communication</td><td>IPC (pipes, sockets)</td><td>Shared memory</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Exercise -->
+              <div class="os-exercise" id="exercise-process">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Process Management
+                </div>
+                <ol>
+                  <li>List the five states a process can be in.</li>
+                  <li>What is the difference between a process and a thread?</li>
+                  <li>Why is context switching considered overhead?</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-process">Show Solution</button>
+                <div class="os-exercise-solution" id="solution-process">
+                  <p><strong>1.</strong> New, Ready, Running, Waiting (Blocked), Terminated.</p>
+                  <p><strong>2.</strong> A process has its own separate memory space while threads share memory within a process. Processes are heavyweight; threads are lightweight.</p>
+                  <p><strong>3.</strong> Context switching takes CPU time to save and restore process states. During this time, no useful work is done, which is why it's considered overhead.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. CPU Scheduling Basics -->
+            <article class="os-lesson" id="cpu-scheduling" data-topic="5">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">05</span>
+                <h3>CPU Scheduling Basics</h3>
+              </div>
+              <p>
+                <strong>CPU Scheduling</strong> determines which process gets the CPU and for how long. The goal is to maximize CPU utilization, throughput, and fairness while minimizing wait time and response time.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>1. First-Come, First-Served (FCFS)</h4>
+                <p>The simplest algorithm. Processes are executed in the order they arrive. Non-preemptive — once a process gets the CPU, it runs to completion.</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Example</span>
+                </div>
+                <pre><code>Process  Burst Time  Arrival Time
+P1       5           0
+P2       3           1
+P3       8           2
+
+FCFS Order: P1 → P2 → P3
+Completion Times: P1=5, P2=8, P3=16
+Avg Wait Time: (0 + 4 + 6) / 3 = 3.33 ms</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>2. Shortest Job First (SJF)</h4>
+                <p>Executes the process with the smallest burst time first. Can be preemptive (SRTF) or non-preemptive. Minimizes average waiting time.</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Example</span>
+                </div>
+                <pre><code>Process  Burst Time
+P1       6
+P2       2
+P3       8
+P4       3
+
+SJF Order: P2 → P4 → P1 → P3
+Avg Wait Time: (0 + 0 + 4 + 10) / 4 = 3.5 ms</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>3. Round Robin (RR)</h4>
+                <p>Each process gets a fixed time quantum (e.g., 4ms). Processes are scheduled in a circular queue. If a process doesn't finish within its quantum, it's preempted and moved to the end of the queue.</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Example (Quantum = 4ms)</span>
+                </div>
+                <pre><code>Process  Burst Time
+P1       5
+P2       3
+P3       8
+
+Order: P1(4) → P2(3) → P3(4) → P1(1) → P3(4)
+Completion Times: P1=9, P2=7, P3=16</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>4. Priority Scheduling</h4>
+                <p>Each process has a priority. The CPU is allocated to the process with the highest priority. Can be preemptive or non-preemptive. May cause <strong>starvation</strong> for low-priority processes.</p>
+              </div>
+
+              <div class="os-table-wrap">
+                <table class="os-table" aria-label="CPU Scheduling Algorithms Comparison">
+                  <thead>
+                    <tr>
+                      <th scope="col">Algorithm</th>
+                      <th scope="col">Preemptive</th>
+                      <th scope="col">Starvation</th>
+                      <th scope="col">Avg Waiting Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>FCFS</td><td>No</td><td>No</td><td>High (convoy effect)</td></tr>
+                    <tr><td>SJF</td><td>Optional</td><td>Possible</td><td>Optimal</td></tr>
+                    <tr><td>Round Robin</td><td>Yes</td><td>No</td><td>Depends on quantum</td></tr>
+                    <tr><td>Priority</td><td>Optional</td><td>Yes (low priority)</td><td>Moderate</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Exercise -->
+              <div class="os-exercise" id="exercise-scheduling">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: CPU Scheduling
+                </div>
+                <p>Three processes arrive at time 0: P1 (burst 10ms), P2 (burst 5ms), P3 (burst 8ms).</p>
+                <ol>
+                  <li>What is the FCFS order and average waiting time?</li>
+                  <li>What is the SJF order and average waiting time?</li>
+                  <li>With Round Robin (quantum = 4ms), what is the order of execution?</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-scheduling">Show Solution</button>
+                <div class="os-exercise-solution" id="solution-scheduling">
+                  <p><strong>1.</strong> FCFS order: P1 → P2 → P3. Avg wait = (0 + 10 + 15) / 3 = 8.33ms.</p>
+                  <p><strong>2.</strong> SJF order: P2 → P3 → P1. Avg wait = (0 + 5 + 13) / 3 = 6ms.</p>
+                  <p><strong>3.</strong> RR (q=4): P1(4) → P2(4) → P3(4) → P1(4) → P3(4) → P1(2) → P3(0 done).</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Memory Management -->
+            <article class="os-lesson" id="memory-management" data-topic="6">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">06</span>
+                <h3>Memory Management</h3>
+              </div>
+              <p>
+                <strong>Memory Management</strong> handles how memory is allocated to processes, how addressing works, and how the system maximizes memory utilization.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>Paging</h4>
+                <p>Physical memory is divided into fixed-size blocks called <strong>frames</strong>. Process memory is divided into blocks of the same size called <strong>pages</strong>. A page table maps logical pages to physical frames, eliminating external fragmentation.</p>
+              </div>
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>  Logical Address Space         Physical Memory
+  ┌────────┬──────┐          ┌────────┬────────┐
+  │ Page 0 │  0   │─────────→│ Frame │  Data  │
+  ├────────┼──────┤          ├────────┼────────┤
+  │ Page 1 │  1   │────┐     │ Frame │  Data  │
+  ├────────┼──────┤    │     ├────────┼────────┤
+  │ Page 2 │  2   │    │     │ Frame │  Data  │
+  ├────────┼──────┤    │     ├────────┼────────┤
+  │ Page 3 │  3   │    │     │ Frame │  Data  │
+  └────────┴──────┘    │     └────────┴────────┘
+                       │
+          Page Table   │
+          ┌────┬───┐   │
+          │  0 │ 3 │───┤
+          ├────┼───┤   │
+          │  1 │ 0 │───┘
+          ├────┼───┤
+          │  2 │ 4 │
+          ├────┼───┤
+          │  3 │ 1 │
+          └────┴───┘</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Segmentation</h4>
+                <p>Memory is divided into variable-sized segments (code, data, stack, heap). Each segment has a base address and limit. Supports logical division of a program but can cause external fragmentation.</p>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Virtual Memory</h4>
+                <p>Allows execution of processes that are not entirely in memory. Uses paging with <strong>demand paging</strong> — pages are loaded only when needed. This enables running larger programs than physical RAM allows.</p>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">💡</span>
+                <p>Virtual memory is supported by the <strong>MMU (Memory Management Unit)</strong> hardware. When a required page is not in RAM, a <strong>page fault</strong> occurs and the OS loads it from disk.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="os-exercise" id="exercise-memory">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Memory Management
+                </div>
+                <ol>
+                  <li>What is the difference between paging and segmentation?</li>
+                  <li>What happens during a page fault?</li>
+                  <li>Why is virtual memory useful?</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-memory">Show Solution</button>
+                <div class="os-exercise-solution" id="solution-memory">
+                  <p><strong>1.</strong> Paging uses fixed-size blocks and eliminates external fragmentation. Segmentation uses variable-sized logical segments (code, data, stack) but can cause external fragmentation.</p>
+                  <p><strong>2.</strong> A page fault occurs when a process tries to access a page not in RAM. The OS loads the required page from disk (swap space) into a free frame and updates the page table.</p>
+                  <p><strong>3.</strong> Virtual memory allows running programs larger than physical RAM, enables efficient memory sharing, and simplifies memory management for programmers.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Deadlocks Introduction -->
+            <article class="os-lesson" id="deadlocks" data-topic="7">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">07</span>
+                <h3>Deadlocks Introduction</h3>
+              </div>
+              <p>
+                A <strong>deadlock</strong> is a situation where two or more processes are unable to proceed because each is waiting for a resource held by another.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>Four Necessary Conditions for Deadlock</h4>
+                <ol>
+                  <li><strong>Mutual Exclusion</strong> – Resources cannot be shared; only one process at a time</li>
+                  <li><strong>Hold and Wait</strong> – A process holds at least one resource while waiting for others</li>
+                  <li><strong>No Preemption</strong> – Resources cannot be forcibly taken from a process</li>
+                  <li><strong>Circular Wait</strong> – A circular chain of processes exists where each holds a resource needed by the next</li>
+                </ol>
+              </div>
+
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>  Resource Allocation Graph (Deadlock)
+
+      ┌─────────┐     R1     ┌─────────┐
+      │  Process│◄═══════════│ Process │
+      │    P1   │═══════════►│   P2    │
+      └─────────┘     R2     └─────────┘
+           ▲                      │
+           │    R3                │ R4
+           │                      ▼
+      ┌─────────┐              ┌─────────┐
+      │ Process │◄═════════════│ Process │
+      │   P4    │              │   P3    │
+      └─────────┘              └─────────┘
+
+  (Circular wait: P1→R1→P2→R2→P3→R3→P4→R4→P1)</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Deadlock Prevention</h4>
+                <p>Prevent at least one of the four conditions:</p>
+                <ul>
+                  <li><strong>Mutual Exclusion</strong> – Use spooling or shareable resources (not always possible)</li>
+                  <li><strong>Hold and Wait</strong> – Require processes to request all resources at once</li>
+                  <li><strong>No Preemption</strong> – Allow preemption of resources</li>
+                  <li><strong>Circular Wait</strong> – Impose a total ordering of resource types</li>
+                </ul>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Deadlock Avoidance — Banker's Algorithm</h4>
+                <p>The OS simulates resource allocation and only grants a request if the resulting state is <strong>safe</strong> (all processes can eventually complete). This is known as the Banker's Algorithm.</p>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">⚠️</span>
+                <p>Deadlock <strong>detection</strong> allows deadlocks to occur but identifies them using wait-for graphs. Deadlock <strong>recovery</strong> involves killing processes or preempting resources.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="os-exercise" id="exercise-deadlocks">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Deadlocks
+                </div>
+                <ol>
+                  <li>What are the four necessary conditions for a deadlock?</li>
+                  <li>How does deadlock prevention differ from deadlock avoidance?</li>
+                  <li>Can a system with only one resource of each type deadlock? Explain.</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-deadlocks">Show Solution</button>
+                <div class="os-exercise-solution" id="solution-deadlocks">
+                  <p><strong>1.</strong> Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.</p>
+                  <p><strong>2.</strong> Prevention ensures at least one condition never occurs. Avoidance uses the Banker's Algorithm to check for safe states before allocating resources.</p>
+                  <p><strong>3.</strong> Yes — if each process holds one resource and waits for another held by another process, creating a circular wait, a deadlock can occur.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. File System Management -->
+            <article class="os-lesson" id="file-system" data-topic="8">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">08</span>
+                <h3>File System Management</h3>
+              </div>
+              <p>
+                A <strong>file system</strong> organizes and stores data on storage devices. It provides a logical way to create, read, write, and delete files.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>Files and Directories</h4>
+                <ul>
+                  <li><strong>File</strong> – A named collection of related data stored on disk</li>
+                  <li><strong>Directory</strong> – A container that holds files and other directories (folders)</li>
+                  <li><strong>Path</strong> – The location of a file in the directory tree (absolute or relative)</li>
+                  <li><strong>Metadata</strong> – File attributes like size, permissions, timestamps, owner</li>
+                </ul>
+              </div>
+
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Diagram</span>
+                </div>
+                <pre><code>  Directory Structure (Tree)
+
+       ┌───────┴───────┐
+       │      /        │  Root
+       ├───────┬───────┤
+       ▼       ▼       ▼
+     /bin    /home    /usr
+       │       │       │
+       ▼       ▼       ▼
+     /bash   /user1   /local
+               │       │
+               ▼       ▼
+            /docs    /bin
+            /pics</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>File Allocation Methods</h4>
+                <ul>
+                  <li><strong>Contiguous Allocation</strong> – Each file occupies a contiguous block of disk space. Fast access but causes external fragmentation.</li>
+                  <li><strong>Linked Allocation</strong> – Each file is a linked list of disk blocks. No fragmentation but slow random access.</li>
+                  <li><strong>Indexed Allocation</strong> – An index block contains pointers to all data blocks. Supports direct access with minimal overhead.</li>
+                </ul>
+              </div>
+
+              <div class="os-table-wrap">
+                <table class="os-table" aria-label="File Allocation Methods">
+                  <thead>
+                    <tr>
+                      <th scope="col">Method</th>
+                      <th scope="col">Fragmentation</th>
+                      <th scope="col">Random Access</th>
+                      <th scope="col">Disk Util</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Contiguous</td><td>External</td><td>Fast</td><td>Low</td></tr>
+                    <tr><td>Linked</td><td>None</td><td>Slow</td><td>High</td></tr>
+                    <tr><td>Indexed</td><td>Minor</td><td>Fast</td><td>High</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">💡</span>
+                <p>Modern file systems like <strong>ext4</strong> (Linux), <strong>NTFS</strong> (Windows), and <strong>APFS</strong> (macOS) use hybrid approaches combining indexed allocation with extents for efficiency.</p>
+              </div>
+            </article>
+
+            <!-- 9. Input/Output Management -->
+            <article class="os-lesson" id="io-management" data-topic="9">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">09</span>
+                <h3>Input/Output Management</h3>
+              </div>
+              <p>
+                <strong>I/O Management</strong> handles communication between the system and peripheral devices like keyboards, mice, disks, printers, and network interfaces.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>I/O Hardware</h4>
+                <ul>
+                  <li><strong>Device Controller</strong> – Electronic component that manages a specific device</li>
+                  <li><strong>I/O Port</strong> – Communication channel between CPU and device</li>
+                  <li><strong>Interrupts</strong> – Signals sent by devices to get CPU attention</li>
+                  <li><strong>DMA (Direct Memory Access)</strong> – Allows devices to transfer data directly to/from memory without CPU involvement</li>
+                </ul>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>I/O Software Layers</h4>
+                <ul>
+                  <li><strong>User-level I/O</strong> – Library calls (e.g., <code>fread()</code>, <code>write()</code>)</li>
+                  <li><strong>Kernel I/O Subsystem</strong> – Buffering, caching, spooling, scheduling</li>
+                  <li><strong>Device Drivers</strong> – Low-level code that communicates with device controllers</li>
+                </ul>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Disk Scheduling Algorithms</h4>
+                <p>When multiple I/O requests are pending, the OS uses scheduling to minimize seek time:</p>
+                <ul>
+                  <li><strong>FCFS</strong> – Serves requests in arrival order</li>
+                  <li><strong>SSTF (Shortest Seek Time First)</strong> – Serves the closest request first</li>
+                  <li><strong>SCAN (Elevator)</strong> – Disk arm moves in one direction, servicing requests, then reverses</li>
+                  <li><strong>C-SCAN</strong> – Like SCAN but only services requests in one direction</li>
+                </ul>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">✅</span>
+                <p><strong>Spooling</strong> (Simultaneous Peripheral Operation On-Line) is used for devices like printers where multiple jobs queue up. The OS writes output to disk first, then sends to the printer one job at a time.</p>
+              </div>
+            </article>
+
+            <!-- 10. Security and Protection Basics -->
+            <article class="os-lesson" id="security" data-topic="10">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">10</span>
+                <h3>Security &amp; Protection Basics</h3>
+              </div>
+              <p>
+                <strong>Security</strong> protects system resources from unauthorized access, malware, and attacks. <strong>Protection</strong> controls how processes access resources.
+              </p>
+
+              <div class="os-concept-card">
+                <h4>Authentication</h4>
+                <p>Verifying the identity of a user or process. Common methods:</p>
+                <ul>
+                  <li><strong>Passwords</strong> – Knowledge-based (what you know)</li>
+                  <li><strong>Biometrics</strong> – Fingerprint, face, iris (what you are)</li>
+                  <li><strong>Two-Factor Auth (2FA)</strong> – Combines password with a code (what you have)</li>
+                  <li><strong>Kerberos</strong> – Network authentication protocol using tickets</li>
+                </ul>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>Access Control</h4>
+                <p>Determines who can access what resources and how:</p>
+                <ul>
+                  <li><strong>Discretionary Access Control (DAC)</strong> – Owner decides permissions (Linux file permissions)</li>
+                  <li><strong>Mandatory Access Control (MAC)</strong> – System-wide policy enforced by the OS (SELinux)</li>
+                  <li><strong>Role-Based Access Control (RBAC)</strong> – Permissions assigned to roles, users are assigned roles</li>
+                </ul>
+              </div>
+
+              <div class="os-code-block">
+                <div class="os-code-header">
+                  <span class="os-code-lang">Example (Linux Permissions)</span>
+                </div>
+                <pre><code>  $ ls -l myfile.txt
+  -rw-r--r--  1 user group  1024 Jun 12 10:00 myfile.txt
+
+  ┌─┬─────┬─────┬─────┐
+  │d│rwx  │rwx  │rwx  │
+  │ │user │group│other│
+  ├─┼─────┼─────┼─────┤
+  │-│rw-  │r--  │r--  │  → Regular file
+  │ │R/W  │Read │Read │
+  └─┴─────┴─────┴─────┘
+
+  chmod 755 script.sh   # rwxr-xr-x
+  chown user:group file # Change owner/group</code></pre>
+              </div>
+
+              <div class="os-concept-card">
+                <h4>User Permissions</h4>
+                <ul>
+                  <li><strong>Read (r)</strong> – View file contents or list directory</li>
+                  <li><strong>Write (w)</strong> – Modify file or directory contents</li>
+                  <li><strong>Execute (x)</strong> – Run as program or traverse directory</li>
+                </ul>
+              </div>
+
+              <div class="os-callout">
+                <span class="os-callout-icon">🛡️</span>
+                <p>The <strong>principle of least privilege</strong> states that users and processes should have only the minimum permissions needed to perform their tasks. This limits damage from bugs or attacks.</p>
+              </div>
+            </article>
+
+            <!-- 11. Practice Exercises / Quiz -->
+            <article class="os-lesson" id="quiz" data-topic="11">
+              <div class="os-lesson-header">
+                <span class="os-lesson-number">11</span>
+                <h3>Practice Quiz</h3>
+              </div>
+              <p>Test your knowledge of Operating Systems with these practice questions covering all topics.</p>
+
+              <div class="os-exercise" id="exercise-quiz">
+                <div class="os-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Quiz Questions
+                </div>
+                <ol>
+                  <li>What is the primary role of an Operating System?</li>
+                  <li>Which type of OS guarantees task completion within strict time constraints?</li>
+                  <li>Name three core functions of an Operating System.</li>
+                  <li>What is the difference between a process and a program?</li>
+                  <li>Which CPU scheduling algorithm can cause the convoy effect?</li>
+                  <li>What technique allows running programs larger than physical RAM?</li>
+                  <li>What are the four conditions required for a deadlock?</li>
+                  <li>Which file allocation method provides the fastest random access?</li>
+                  <li>What does DMA stand for and why is it important?</li>
+                  <li>What is the principle of least privilege?</li>
+                </ol>
+                <button class="os-exercise-toggle" aria-expanded="false" aria-controls="solution-quiz">Show Solutions</button>
+                <div class="os-exercise-solution" id="solution-quiz">
+                  <p><strong>1.</strong> To manage hardware resources and provide services for application programs.</p>
+                  <p><strong>2.</strong> Real-Time OS (RTOS).</p>
+                  <p><strong>3.</strong> Process Management, Memory Management, File System Management (also I/O Management, Security).</p>
+                  <p><strong>4.</strong> A program is a static set of instructions on disk. A process is a program in execution with its own memory, registers, and state.</p>
+                  <p><strong>5.</strong> FCFS (First-Come, First-Served) — long processes delay shorter ones behind them.</p>
+                  <p><strong>6.</strong> Virtual Memory (using demand paging).</p>
+                  <p><strong>7.</strong> Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.</p>
+                  <p><strong>8.</strong> Contiguous allocation provides the fastest random access (direct block addressing).</p>
+                  <p><strong>9.</strong> Direct Memory Access — allows devices to transfer data directly to/from memory without CPU involvement, improving performance.</p>
+                  <p><strong>10.</strong> Users and processes should have only the minimum permissions needed to perform their tasks, limiting potential damage.</p>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div><!-- /.os-layout -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./os-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

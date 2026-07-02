@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Algorithm Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualization of BFS, DFS, Dijkstra, and Bellman-Ford algorithms." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="graph-visualizer.css" />
+</head>
+<body class="graph-body">
+
+    <nav class="navbar graph-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-project-diagram"></i> Graph Engine: Idle
+        </div>
+    </nav>
+
+    <main class="graph-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> Configuration</h3>
+            </div>
+            
+            <div class="control-section">
+                <!-- Algorithm Selection -->
+                <div class="input-group">
+                    <label>Algorithm</label>
+                    <select id="algoSelect">
+                        <option value="bfs">Breadth-First Search (BFS)</option>
+                        <option value="dfs">Depth-First Search (DFS)</option>
+                        <option value="dijkstra" selected>Dijkstra's Shortest Path</option>
+                        <option value="bellman">Bellman-Ford (Negative Weights)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Starting Node</label>
+                    <select id="startNodeSelect">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Animation Speed</label>
+                    <input type="range" id="speedSlider" min="100" max="2000" value="800" step="100" style="direction: rtl;">
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-primary w-100" id="btnStart">
+                        <i class="fas fa-play"></i> Run Algorithm
+                    </button>
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset State
+                    </button>
+                </div>
+            </div>
+
+            <!-- Graph Editor Tools -->
+            <div class="editor-tools">
+                <h4><i class="fas fa-edit"></i> Graph Editor</h4>
+                <div class="tool-grid">
+                    <button class="tool-btn active" data-mode="move"><i class="fas fa-hand-pointer"></i> Move</button>
+                    <button class="tool-btn" data-mode="node"><i class="fas fa-circle"></i> Add Node</button>
+                    <button class="tool-btn" data-mode="edge"><i class="fas fa-external-link-alt"></i> Add Edge</button>
+                </div>
+                <button class="btn btn-danger w-100" id="btnClearGraph" style="margin-top: 0.5rem; padding: 0.4rem;">Clear Graph</button>
+            </div>
+
+            <!-- Distances / Telemetry Table -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-table"></i> Distance Table</h4>
+                <div class="table-wrapper">
+                    <table class="dist-table">
+                        <thead>
+                            <tr>
+                                <th>Node</th>
+                                <th>Distance</th>
+                                <th>Previous</th>
+                            </tr>
+                        </thead>
+                        <tbody id="distTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Execution Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Execution Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Graph visualizer initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Area -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch unvisited"></span> Unvisited</span>
+                    <span class="legend-item"><span class="node-swatch current"></span> Current</span>
+                    <span class="legend-item"><span class="node-swatch visited"></span> Visited</span>
+                    <span class="legend-item"><span class="node-swatch path"></span> Shortest Path</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <!-- SVG Layer for Edges -->
+                <svg id="edgeLayer" class="edge-layer">
+                    <defs>
+                        <marker id="arrowhead" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                        </marker>
+                        <marker id="arrowhead-active" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                        </marker>
+                        <marker id="arrowhead-path" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#ec4899" />
+                        </marker>
+                    </defs>
+                    <g id="edgesGroup"></g>
+                    <g id="weightsGroup"></g>
+                    <!-- Temporary edge for drawing -->
+                    <line id="tempEdge" class="temp-edge hidden" x1="0" y1="0" x2="0" y2="0" marker-end="url(#arrowhead)"></line>
+                </svg>
+                
+                <!-- HTML Layer for Nodes -->
+                <div id="nodeLayer" class="node-layer"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Edge Weight Modal -->
+    <div class="modal-overlay hidden" id="weightModal">
+        <div class="modal-content">
+            <h3>Set Edge Weight</h3>
+            <p>Enter the distance/cost for this edge. (Use negative numbers to test Bellman-Ford).</p>
+            <input type="number" id="edgeWeightInput" value="1" />
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="btnCancelEdge">Cancel</button>
+                <button class="btn btn-primary" id="btnSaveEdge">Save Edge</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="graph-visualizer.js"></script>
+</body>
+</html>

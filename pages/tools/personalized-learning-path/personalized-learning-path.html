@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personalized Learning Path Generator | Algo Infinity Verse</title>
+    <meta name="description" content="Generate a customized DSA learning roadmap for Beginner, Placement, or FAANG preparation. Track your progress, set daily goals, and celebrate milestones." />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="personalized-learning-path.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <!-- Toast Container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+
+
+    <!-- Hero -->
+    <section class="hero learning-path-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Plan Your Journey</span>
+          <span class="main-title">Personalized Learning Path</span>
+          <span class="subtitle">Build Your Roadmap To Success</span>
+        </h1>
+        <p class="section-subtitle">
+          Generate a customized step-by-step roadmap for Beginner, Placement, or FAANG preparation.
+          Track your daily progress, earn streaks, and reach your goals faster.
+        </p>
+        <div class="hero-buttons">
+          <a href="#goalSelector" class="btn btn-primary">
+            <i class="fas fa-map-signs"></i> Get My Path
+          </a>
+          <a href="#roadmapSection" class="btn btn-secondary">
+            <i class="fas fa-chart-line"></i> View Progress
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+      <div class="container">
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number">3</span>
+            <span class="stat-label">Learning Tracks</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">26+</span>
+            <span class="stat-label">Curated Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Progress Tracked</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">∞</span>
+            <span class="stat-label">Learning Potential</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" style="padding-top: 2rem;">
+      <div class="container">
+        <h2 class="section-title">What You Get</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-icon"><i class="fas fa-map-marked-alt" style="color: var(--primary);" aria-hidden="true" focusable="false"></i></span>
+            <h3>Visual Roadmap</h3>
+            <p>Step-by-step interactive timeline with progress indicators and direct links to resources.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon"><i class="fas fa-calendar-alt" style="color: var(--accent);" aria-hidden="true" focusable="false"></i></span>
+            <h3>ETA Calculator</h3>
+            <p>Set your daily study hours and get a realistic estimated completion date.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon"><i class="fas fa-fire" style="color: #fb923c;" aria-hidden="true" focusable="false"></i></span>
+            <h3>Streak Tracking</h3>
+            <p>Build momentum with daily streaks that keep you accountable and motivated.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon"><i class="fas fa-trophy" style="color: #fbbf24;" aria-hidden="true" focusable="false"></i></span>
+            <h3>Milestone Rewards</h3>
+            <p>Celebrate completing 25%, 50%, 75%, and 100% of your chosen path.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Goal Selector -->
+    <section id="goalSelector" class="goal-selector-section">
+      <div class="container">
+        <h2 class="section-title">Choose Your Goal</h2>
+
+        <!-- Goal Cards -->
+        <div class="goal-cards" role="radiogroup" aria-label="Select learning goal">
+          <div class="goal-card" data-goal="beginner" role="radio" aria-checked="false" tabindex="0">
+            <span class="goal-card-icon"><i class="fas fa-seedling" style="color: #4ade80;" aria-hidden="true" focusable="false"></i></span>
+            <h3>Beginner → Advanced</h3>
+            <p>Master DSA from scratch with a structured, beginner-friendly roadmap covering all core topics.</p>
+            <span class="goal-topics-count">9 Topics · ~80h</span>
+          </div>
+          <div class="goal-card" data-goal="placement" role="radio" aria-checked="false" tabindex="0">
+            <span class="goal-card-icon"><i class="fas fa-briefcase" style="color: #38bdf8;" aria-hidden="true" focusable="false"></i></span>
+            <h3>Placement Preparation</h3>
+            <p>Company-focused prep covering CS fundamentals, OOP, DBMS, and targeted DSA practice.</p>
+            <span class="goal-topics-count">8 Topics · ~84h</span>
+          </div>
+          <div class="goal-card" data-goal="faang" role="radio" aria-checked="false" tabindex="0">
+            <span class="goal-card-icon"><i class="fas fa-rocket" style="color: #f472b6;" aria-hidden="true" focusable="false"></i></span>
+            <h3>FAANG Preparation</h3>
+            <p>Advanced roadmap for top-tier companies — complex algorithms, system design, and mock rounds.</p>
+            <span class="goal-topics-count">9 Topics · ~130h</span>
+          </div>
+          <div class="goal-card" data-goal="personalized" role="radio" aria-checked="false" tabindex="0">
+            <span class="goal-card-icon"><i class="fas fa-magic" style="color: #a855f7;" aria-hidden="true" focusable="false"></i></span>
+            <h3>Dynamic Learning Path (AI)</h3>
+            <p>A dynamically calculated curriculum targeting your weaknesses, retry history, and custom prep time window.</p>
+            <span class="goal-topics-count">Adaptive · Custom Hours</span>
+          </div>
+        </div>
+
+        <!-- Prep Time Selector (visible only when personalized path is chosen) -->
+        <div id="personalizedInputRow" class="daily-goal-row" style="display: none; flex-direction: column; gap: 0.75rem; align-items: flex-start; margin-top: 1rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1.25rem; border-radius: 12px;">
+          <div style="display:flex; align-items:center; gap:0.5rem; width:100%; flex-wrap:wrap;">
+            <label for="prepWeeksInput" style="font-weight:600;">Preparation Time Horizon:</label>
+            <div class="daily-input-wrap" style="margin:0;">
+              <input type="number" id="prepWeeksInput" min="1" max="12" value="2" style="width: 80px; text-align:center;">
+              <span>weeks prep</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.5rem; width:100%; margin-top:0.5rem; flex-wrap:wrap;">
+            <label for="customRefinementText" style="font-weight:600;">Custom prep constraint / focus:</label>
+            <input type="text" id="customRefinementText" class="control-input" placeholder="e.g. Focus on graph algorithms for Google" style="flex:1; max-width: 400px; padding:0.4rem 0.6rem; background:rgba(0,0,0,0.2); border:1px solid var(--glass-border); border-radius:6px; color:white; font-size:0.9rem;">
+          </div>
+        </div>
+
+        <!-- Daily Goal -->
+        <div class="daily-goal-row">
+          <label for="dailyHoursInput">Daily study goal:</label>
+          <div class="daily-input-wrap">
+            <input
+              type="number"
+              id="dailyHoursInput"
+              min="0.5"
+              max="16"
+              step="0.5"
+              value="2"
+              aria-label="Daily study hours"
+            />
+            <span>hours / day</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="generate-actions">
+          <button id="generateBtn" class="btn btn-primary">
+            <i class="fas fa-route"></i> Generate My Roadmap
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap & Progress -->
+    <section id="roadmapSection" class="section">
+      <div class="container">
+        <h2 class="section-title">Your Learning Roadmap</h2>
+
+        <!-- Progress Dashboard -->
+        <div class="progress-dashboard" id="progressDashboard">
+          <!-- SVG Ring -->
+          <div class="progress-ring-wrap">
+            <svg class="progress-ring-svg" viewBox="0 0 140 140" aria-hidden="true">
+              <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7c3aed" />
+                  <stop offset="100%" stop-color="#06b6d4" />
+                </linearGradient>
+              </defs>
+              <circle class="progress-ring-bg" cx="70" cy="70" r="56" />
+              <circle class="progress-ring-fill" cx="70" cy="70" r="56" />
+            </svg>
+            <div class="progress-ring-label">
+              <span class="progress-ring-pct">0%</span>
+              <span class="progress-ring-sub">Complete</span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="progress-stats">
+            <div class="progress-stat-row">
+              <div class="progress-stat">
+                <span class="progress-stat-value" id="statDone">0</span>
+                <span class="progress-stat-label">Completed</span>
+              </div>
+              <div class="progress-stat">
+                <span class="progress-stat-value" id="statTotal">—</span>
+                <span class="progress-stat-label">Total Topics</span>
+              </div>
+              <div class="progress-stat">
+                <span class="progress-stat-value" id="statRemaining">—</span>
+                <span class="progress-stat-label">Remaining</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+              <div class="streak-badge">
+                🔥 <span id="streakCount">0</span> day streak
+              </div>
+              <div class="eta-badge">
+                📅 ETA: <strong id="statEta" style="margin-left: 0.25rem;">—</strong>
+              </div>
+            </div>
+
+            <div class="dashboard-controls">
+              <button id="resetBtn" class="btn btn-danger">
+                <i class="fas fa-redo"></i> Reset Path
+              </button>
+              <button id="printBtn" class="btn btn-ghost">
+                <i class="fas fa-print"></i> Export
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roadmap Timeline -->
+        <div id="roadmapTimeline" class="roadmap-timeline" role="list" aria-label="Learning path steps">
+          <!-- Empty state -->
+          <div class="roadmap-empty">
+            <span class="empty-icon"><i class="fas fa-map-marked-alt" style="color: var(--primary);" aria-hidden="true" focusable="false"></i></span>
+            <p>Select a learning goal above and click <strong>Generate My Roadmap</strong> to get started!</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" style="padding-top: 2rem;">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="how-it-works-grid">
+          <div class="how-step">
+            <div class="how-step-num">1</div>
+            <h3>Pick Your Goal</h3>
+            <p>Choose from Beginner, Placement, or FAANG preparation tracks.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">2</div>
+            <h3>Set Daily Hours</h3>
+            <p>Tell us how many hours per day you can study to get your ETA.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">3</div>
+            <h3>Follow the Roadmap</h3>
+            <p>Study each topic in order with direct links to learning resources.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">4</div>
+            <h3>Track & Celebrate</h3>
+            <p>Check off topics, build streaks, and earn milestone rewards.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="personalized-learning-path.js" defer></script>
+  
+    <script>
+      if (typeof loadPartial === 'function') {
+          loadPartial('navbar-placeholder', '/partials/navbar.html');
+          loadPartial('footer-placeholder', '/partials/footer.html');
+      } else {
+          console.error("loadPartial is not defined. Ensure script.js is loaded.");
+      }
+    </script>
+  </body>
+</html>

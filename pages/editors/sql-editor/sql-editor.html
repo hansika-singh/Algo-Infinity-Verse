@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SQL Editor – Live Database Queries | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sql-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="sql-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero sq-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write SQL.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Query Instantly.</span>
+          <span class="subtitle">In-Browser SQL Editor</span>
+        </h1>
+        <p class="sq-hero-desc">Write SQL queries, manage tables, and see results instantly. Syntax highlighting, multiple examples, table output.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/sql-learning/sql-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn SQL</a>
+        </div>
+        <div class="sq-note">
+          <i class="fas fa-info-circle"></i>
+          Execution is simulated in-memory using a mock engine.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section sq-section">
+      <div class="sq-container">
+        <div class="sq-toolbar">
+          <div class="sq-toolbar-left">
+            <span class="sq-label"><i class="fas fa-database sq-db-icon"></i> SQL Editor</span>
+            <select id="sqExampleSelect" class="sq-select" aria-label="Load example">
+              <option value="select_all">SELECT All Employees</option>
+              <option value="where_clause">WHERE Filtering</option>
+              <option value="insert_row">INSERT New Data</option>
+              <option value="update_row">UPDATE Existing Data</option>
+              <option value="delete_row">DELETE Record</option>
+              <option value="group_by">GROUP BY & Aggregates</option>
+              <option value="create_table">CREATE New Table</option>
+            </select>
+          </div>
+          <div class="sq-toolbar-right">
+            <button id="sqNewFileBtn" class="sq-icon-btn" title="New file" aria-label="Create new SQL file"><i class="fas fa-file"></i></button>
+            <button id="sqDownloadBtn" class="sq-icon-btn" title="Download .sql file" aria-label="Download SQL file"><i class="fas fa-download"></i></button>
+            <button id="sqRunBtn" class="btn btn-primary sq-run-btn"><i class="fas fa-play"></i> Run Query</button>
+            <button id="sqResetBtn" class="sq-icon-btn" title="Reset" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="sqCopyBtn" class="sq-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="sqSaveBtn" class="sq-icon-btn" title="Save to localStorage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="sq-split">
+          <div class="sq-editor-pane">
+            <div class="sq-pane-header">
+              <span><i class="fas fa-code"></i> Query Editor</span>
+              <span class="sq-lang-badge">SQL</span>
+            </div>
+            <div class="sq-editor-wrap">
+              <div class="sq-line-numbers" id="sqLineNumbers">1</div>
+              <textarea id="sqEditor" class="sq-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="SQL code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="sq-output-pane">
+            <div class="sq-pane-header">
+              <span><i class="fas fa-table"></i> Result Set</span>
+              <span id="sqStatusBadge" class="sq-status-badge sq-status-ready">Ready</span>
+            </div>
+            <div class="sq-output-body" id="sqOutputBody">
+              <div class="sq-table-container">
+                <span class="sq-output-placeholder">Run a query to see results here...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sq-console">
+          <div class="sq-console-header">
+            <span><i class="fas fa-terminal"></i> Messages / Errors</span>
+            <button class="sq-console-clear" id="sqConsoleClear"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="sq-console-body" id="sqConsoleBody">
+            <span class="sq-console-placeholder">No messages to display.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./sql-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

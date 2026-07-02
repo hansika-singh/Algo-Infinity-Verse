@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P Decentralized Workspace | Algo Infinity Verse</title>
+    <meta name="description" content="Serverless, Peer-to-Peer collaborative coding using WebRTC Data Channels." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror Core and Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-ocean.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="p2p-workspace.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="p2p-body">
+
+    <nav class="navbar p2p-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="network-badge" id="networkBadge">
+            <i class="fas fa-wifi"></i> P2P Network: Offline
+        </div>
+    </nav>
+
+    <!-- Workspace Toolbar -->
+    <div class="p2p-toolbar">
+        <div class="toolbar-left">
+            <button class="btn btn-primary" id="btnShareInvite"><i class="fas fa-link"></i> Share Invite Link</button>
+            <div class="status-indicator">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">Disconnected</span>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <div class="latency-meter hidden" id="latencyMeter">
+                <i class="fas fa-tachometer-alt"></i> Ping: <span id="pingValue">--</span> ms
+            </div>
+            <button class="btn btn-danger hidden" id="btnDisconnect"><i class="fas fa-times"></i> Disconnect</button>
+        </div>
+    </div>
+
+    <!-- Main Workspace Area -->
+    <main class="p2p-workspace">
+        
+        <!-- Left Panel: Chat / P2P Logs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> Data Channel Logs</h3>
+            </div>
+            
+            <div class="system-logs" id="systemLogs">
+                <div class="log-entry sys">>> P2P Engine initialized. Awaiting WebRTC Handshake...</div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Send P2P message..." disabled>
+                    <button id="btnSendChat" disabled><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor -->
+        <div class="panel-right">
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="editor-tab active"><i class="fab fa-js" style="color: #f1fa8c;"></i> p2p_sync.js</button>
+                </div>
+                <div class="editor-controls">
+                    <span class="sync-badge" id="syncBadge"><i class="fas fa-lock"></i> End-to-End Encrypted</span>
+                </div>
+            </div>
+            
+            <div class="editor-wrapper" id="editorContainer">
+                <!-- CodeMirror injects here -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- WebRTC Modal removed as y-webrtc handles this automatically -->
+    
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <!-- Main Logic -->
+    <script type="module" src="p2p-workspace.js"></script>
+</body>
+</html>

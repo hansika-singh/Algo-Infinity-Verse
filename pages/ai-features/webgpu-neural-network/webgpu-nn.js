@@ -1,0 +1,1 @@
+console.log('WebGPU NN feature coming soon');

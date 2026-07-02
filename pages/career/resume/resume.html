@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Resume - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="resume.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="resume">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="spacer" style="height: 80px;"></div>
+
+    <!-- Hero Background for starfield effect -->
+    <div class="hero-background" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+
+    <!-- Main Content Section -->
+    <section class="section resume-section">
+      <div class="container">
+        <!-- Resume Header Actions -->
+        <div class="resume-header-actions animate-in">
+          <h1 class="section-title">
+            <span class="title-icon">📄</span>
+            Coding Resume
+          </h1>
+          <p class="section-subtitle">
+            Visualize your progress, statistics, DSA mastery, and accomplishments in a resume layout.
+          </p>
+          <div class="header-actions">
+            <button id="exportPdfBtn" class="btn btn-primary">
+              <i class="fas fa-file-pdf"></i> Export to PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Glassmorphic Resume Layout -->
+        <div class="resume-container glass-card animate-in">
+          <!-- Resume Header Section -->
+          <div class="resume-header">
+            <div class="resume-avatar-container">
+              <span id="resumeAvatar" class="resume-avatar">🚀</span>
+            </div>
+            <div class="resume-info">
+              <h2 id="resumeName" class="gradient-text">Learner</h2>
+              <p class="resume-title"><i class="fas fa-code"></i> Algorithm Enthusiast & Software Engineer</p>
+              <div class="resume-meta">
+                <span id="resumeEmail"><i class="fas fa-envelope"></i> Not Provided</span>
+                <span id="resumeJoinDate"><i class="fas fa-calendar-alt"></i> Joined: June 2026</span>
+              </div>
+            </div>
+          </div>
+          <!-- Import JSON Profile Section -->
+          <div class="resume-card json-upload-card">
+            <h3>
+              <i class="fas fa-file-import"></i>
+              Import Resume Data
+            </h3>
+            <p>
+              Upload your profile data (JSON) to automatically populate your resume fields.
+            </p>
+
+            <div id="jsonDropZone" class="resume-upload-box drag-drop-zone">
+              <div class="drag-drop-content">
+                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                <p>Drag & Drop your JSON file here or</p>
+                <input 
+                  type="file" 
+                  id="jsonUploadInput"
+                  accept=".json"
+                  style="display: none;"
+                />
+                <button id="browseJsonBtn" class="btn btn-secondary">
+                  Browse Files
+                </button>
+              </div>
+            </div>
+            <div id="jsonUploadMessage" class="upload-message" style="display: none; margin-top: 1rem; padding: 0.75rem; border-radius: 8px;"></div>
+          </div>
+
+          <!-- AI Resume Analyzer Section -->
+<div class="resume-card ai-analyzer-card">
+  <h3>
+    <i class="fas fa-robot"></i>
+    AI Resume Analyzer
+  </h3>
+
+  <p>
+    Upload your resume and get ATS score, missing skills and improvement tips.
+  </p>
+
+  <div class="resume-upload-box">
+    <input 
+      type="file" 
+      id="resumeUpload"
+      accept=".pdf,.docx"
+    />
+
+    <button id="analyzeResumeBtn" class="btn btn-primary">
+      <i class="fas fa-search"></i>
+      Analyze Resume
+    </button>
+  </div>
+
+
+  <div
+    id="resumeAnalysisResult"
+    style="display:none;"
+    class="analysis-results-container"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div class="ats-score-wrapper">
+      <div class="ats-circle">
+        <span id="atsScore" class="gradient-text"></span>
+      </div>
+      <div class="ats-label">ATS Score</div>
+    </div>
+    
+    <div class="analysis-details">
+      <div class="analysis-section">
+        <h4 class="analysis-title"><i class="fas fa-exclamation-circle"></i> Missing Skills</h4>
+        <ul id="missingSkills" class="analysis-list skills-list"></ul>
+      </div>
+
+      <div class="analysis-section">
+        <h4 class="analysis-title"><i class="fas fa-lightbulb"></i> Suggestions</h4>
+        <ul id="resumeSuggestions" class="analysis-list suggestions-list"></ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+          <!-- Audit History & Trends Section -->
+          <div class="resume-card history-trends-card" id="auditHistoryCard" style="display: none;">
+            <h3>
+              <i class="fas fa-history"></i>
+              Audit History & Trends
+            </h3>
+     
+          <p id="auditHistorySummary">
+              Track your resume ATS score improvements over time.
+            </p>
+            <div class="trends-chart-container" style="position: relative; height: 300px; width: 100%; margin-bottom: 2rem;">
+              <canvas id="trendsChart"></canvas>
+            </div>
+            
+            <div class="history-table-container" style="overflow-x: auto;">
+              <table class="history-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <th style="padding: 10px;">Date</th>
+                    <th style="padding: 10px;">Score</th>
+                    <th style="padding: 10px;">Issues</th>
+                    <th style="padding: 10px;">Delta</th>
+                  </tr>
+                </thead>
+                <tbody id="auditHistoryTableBody">
+                  <!-- Generated dynamically in resume.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="resume-body-grid">
+            <!-- Left Side / Sidebar -->
+            <div class="resume-sidebar">
+              <!-- Statistics Section -->
+              <div class="resume-card">
+                <h3><i class="fas fa-chart-bar"></i> Coding Stats</h3>
+                <div class="resume-stats-grid">
+                  <div class="resume-stat-item">
+                    <span class="stat-icon"><i class="fas fa-star"></i></span>
+                    <div class="stat-details">
+                      <span id="resumeXP" class="stat-val">0</span>
+                      <span class="stat-lbl">Total XP</span>
+                    </div>
+                  </div>
+                  <div class="resume-stat-item">
+                    <span class="stat-icon"><i class="fas fa-chevron-up"></i></span>
+                    <div class="stat-details">
+                      <span id="resumeLevel" class="stat-val">1</span>
+                      <span class="stat-lbl">Current Level</span>
+                    </div>
+                  </div>
+                  <div class="resume-stat-item">
+                    <span class="stat-icon"><i class="fas fa-check-circle"></i></span>
+                    <div class="stat-details">
+                      <span id="resumeSolved" class="stat-val">0</span>
+                      <span class="stat-lbl">Solved Problems</span>
+                    </div>
+                  </div>
+                  <div class="resume-stat-item">
+                    <span class="stat-icon"><i class="fas fa-fire"></i></span>
+                    <div class="stat-details">
+                      <span id="resumeStreak" class="stat-val">0</span>
+                      <span class="stat-lbl">Day Streak</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skills Section -->
+              <div class="resume-card">
+                <h3><i class="fas fa-laptop-code"></i> Tech Stack</h3>
+                <div class="skills-category">
+                  <h4>Programming Languages</h4>
+                  <div class="skills-tags">
+                    <span class="skill-tag"><i class="fab fa-js-square"></i> JavaScript</span>
+                    <span class="skill-tag"><i class="fab fa-python"></i> Python</span>
+                    <span class="skill-tag"><i class="fab fa-java"></i> Java</span>
+                    <span class="skill-tag"><i class="fas fa-terminal"></i> C++</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side / Main Body -->
+            <div class="resume-main">
+              <!-- DSA Progress Section -->
+              <div class="resume-card">
+                <h3><i class="fas fa-project-diagram"></i> DSA Mastery</h3>
+                <div id="dsaProgressContainer" class="dsa-progress-container">
+                  <!-- Generated dynamically in resume.js -->
+                  <div class="loading-placeholder">Computing mastery...</div>
+                </div>
+              </div>
+
+              <!-- Badges Section -->
+              <div class="resume-card">
+                <h3><i class="fas fa-award"></i> Achievements & Badges</h3>
+                <div id="badgesGrid" class="resume-badges-grid">
+                  <!-- Generated dynamically in resume.js -->
+                  <div class="loading-placeholder">Loading achievements...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script type="module" src="resume.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Arrays | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Learn Arrays from beginner to advanced with examples, visual explanations, interview tips, and practice problems." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="array-learning.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="array-learning">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Bar — matches python-learning.html exactly -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Master Data Structures With</span>
+        <span class="main-title gradient-text">Arrays</span>
+        <span class="subtitle">The Foundation of DSA</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_array" id="typingTextArray"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Learning
+        </a>
+        <a href="#searching" class="btn btn-secondary">
+          <i class="fas fa-code"></i> Jump to Searching
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <span class="stat-number" data-target="9">0</span>
+          <span class="stat-label">Topics</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="25">0</span>
+          <span class="stat-label">Examples</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="15">0</span>
+          <span class="stat-label">Interview Questions</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Array Learning Section -->
+  <section id="array-learning" class="section">
+    <div class="container">
+
+      <h2 class="section-title">
+        <span class="title-icon">📦</span>
+        Learn Arrays
+      </h2>
+      <p class="section-subtitle">
+        Build a strong foundation in arrays before moving to advanced DSA topics.
+      </p>
+
+      <!-- Progress Bar — mirrors python-learning.html structure exactly -->
+      <div class="arr-progress-bar" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Learning progress">
+        <span class="arr-progress-text">
+          <span id="progressCount">0</span> / 9 topics completed
+        </span>
+        <div class="arr-progress-track">
+          <div class="arr-progress-fill" id="progressFill"></div>
+        </div>
+        <span class="arr-progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div class="arr-layout">
+
+        <!-- Sidebar Navigation -->
+        <aside class="arr-sidebar" aria-label="Topic navigation">
+          <div class="arr-sidebar-title">Topics</div>
+            <ul class="arr-sidebar-nav" id="topicNav">
+            <li><a href="#introduction" class="arr-nav-link"><span class="nav-icon">📖</span> Introduction</a></li>
+            <li><a href="#basics"       class="arr-nav-link"><span class="nav-icon">📦</span> Array Basics</a></li>
+            <li><a href="#traversal"    class="arr-nav-link"><span class="nav-icon">🔄</span> Traversal</a></li>
+            <li><a href="#insertion"    class="arr-nav-link"><span class="nav-icon">➕</span> Insertion</a></li>
+            <li><a href="#deletion"     class="arr-nav-link"><span class="nav-icon">➖</span> Deletion</a></li>
+            <li><a href="#searching"    class="arr-nav-link"><span class="nav-icon">🔍</span> Searching</a></li>
+            <li><a href="#sorting"      class="arr-nav-link"><span class="nav-icon">📊</span> Sorting</a></li>
+            <li><a href="#twod"         class="arr-nav-link"><span class="nav-icon">🧩</span> 2D Arrays</a></li>
+            <li><a href="#interview"    class="arr-nav-link"><span class="nav-icon">⭐</span> Interview Tips</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="arr-main-content" id="mainContent">
+
+          <!-- ═══════════════════════════════════════
+               1. Introduction to Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="introduction" data-topic="1">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">01</span>
+              <h3>Introduction to Arrays</h3>
+            </div>
+
+            <p>
+              Arrays are one of the most important data structures in computer science.
+              They store multiple values of the same type in contiguous memory locations,
+              making element access extremely fast.
+            </p>
+
+            <div class="arr-concept-card">
+              <h4>Why Learn Arrays?</h4>
+              <ul>
+                <li><strong>Foundation of DSA</strong> — most advanced topics build on arrays</li>
+                <li><strong>Fast element access</strong> — O(1) random access by index</li>
+                <li><strong>Used everywhere</strong> — searching, sorting, DP, graphs</li>
+                <li><strong>Frequently asked</strong> — core topic in every coding interview</li>
+              </ul>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="int arr[5] = {10, 20, 30, 40, 50};">Copy</button>
+              </div>
+              <pre><code>int arr[5] = {10, 20, 30, 40, 50};</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Output</div>
+              <pre>Index :  0   1   2   3   4
+Value : 10  20  30  40  50</pre>
+            </div>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">💡</span>
+              <p>Arrays use <strong>0-based indexing</strong> — the first element is at index 0, not 1.
+                 Accessing an element by index is always O(1) regardless of array size.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               2. Array Basics
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="basics" data-topic="2">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">02</span>
+              <h3>Array Basics</h3>
+            </div>
+
+            <p>
+              Arrays store elements sequentially in memory. Every element is accessed
+              using an index. Understanding the time complexity of each operation is
+              essential for writing efficient code.
+            </p>
+
+            <div class="arr-table-wrap">
+              <table class="arr-table" aria-label="Array operation complexities">
+                <thead>
+                  <tr>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Time Complexity</th>
+                    <th scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Access</td><td>O(1)</td><td>Direct index lookup</td></tr>
+                  <tr><td>Search</td><td>O(n)</td><td>Linear scan required</td></tr>
+                  <tr><td>Insertion</td><td>O(n)</td><td>Shift elements right</td></tr>
+                  <tr><td>Deletion</td><td>O(n)</td><td>Shift elements left</td></tr>
+                  <tr><td>Append (end)</td><td>O(1)</td><td>No shifting needed</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">⚡</span>
+              <p>Array size must be defined at <strong>compile time</strong> in C/C++.
+                 For dynamic sizing, use dynamic arrays (<code>vector</code> in C++,
+                 <code>ArrayList</code> in Java, or <code>list</code> in Python).</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               3. Array Traversal
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="traversal" data-topic="3">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">03</span>
+              <h3>Array Traversal</h3>
+            </div>
+
+            <p>
+              Traversal means visiting every element of the array exactly once.
+              It is the foundation of almost every array algorithm — searching,
+              printing, and computing sums all rely on traversal.
+            </p>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="int arr[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = 0; i < n; i++)
+{
+    printf(&quot;arr[%d] = %d\n&quot;, i, arr[i]);
+}">Copy</button>
+              </div>
+              <pre><code>int arr[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = 0; i &lt; n; i++)
+{
+    printf("arr[%d] = %d\n", i, arr[i]);
+}</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Output</div>
+              <pre>arr[0] = 10
+arr[1] = 20
+arr[2] = 30
+arr[3] = 40
+arr[4] = 50</pre>
+            </div>
+
+            <!-- Exercise -->
+            <div class="arr-exercise" id="exercise-traversal">
+              <div class="arr-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Traversal
+              </div>
+              <p>Write a traversal that prints the <strong>sum</strong> and
+                 <strong>maximum</strong> element of this array:</p>
+              <pre>{3, 7, 1, 9, 4, 6}</pre>
+              <button class="arr-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-traversal">Show Solution</button>
+              <div class="arr-exercise-solution" id="solution-traversal">
+                <div class="arr-code-block">
+                  <div class="arr-code-header">
+                    <span class="arr-code-lang">C</span>
+                    <button class="arr-code-copy" type="button" aria-label="Copy code"
+                      data-code="int arr[] = {3, 7, 1, 9, 4, 6};
+int n = 6, sum = 0, max = arr[0];
+
+for (int i = 0; i < n; i++) {
+    sum += arr[i];
+    if (arr[i] > max) max = arr[i];
+}
+printf(&quot;Sum = %d, Max = %d\n&quot;, sum, max);
+/* Sum = 30, Max = 9 */">Copy</button>
+                  </div>
+                  <pre><code>int arr[] = {3, 7, 1, 9, 4, 6};
+int n = 6, sum = 0, max = arr[0];
+
+for (int i = 0; i &lt; n; i++) {
+    sum += arr[i];
+    if (arr[i] > max) max = arr[i];
+}
+printf("Sum = %d, Max = %d\n", sum, max);
+/* Sum = 30, Max = 9 */</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               4. Insertion in Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="insertion" data-topic="4">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">04</span>
+              <h3>Insertion In Arrays</h3>
+            </div>
+
+            <p>
+              To insert an element at a given position, all elements from that
+              position onward must be shifted one place to the right to create space.
+            </p>
+
+            <div class="arr-concept-card">
+              <h4>Steps for Insertion</h4>
+              <ul>
+                <li>Start from the last element and shift each element right</li>
+                <li>Stop when you reach the target position</li>
+                <li>Place the new value at the target position</li>
+                <li>Increment the array size counter by 1</li>
+              </ul>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="// Insert value at position pos in array of current size n
+for (int i = n; i > pos; i--)
+{
+    arr[i] = arr[i - 1];   // shift right
+}
+arr[pos] = value;
+n++;  // update size">Copy</button>
+              </div>
+              <pre><code>// Insert value at position pos in array of current size n
+for (int i = n; i &gt; pos; i--)
+{
+    arr[i] = arr[i - 1];   // shift right
+}
+arr[pos] = value;
+n++;  // update size</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Example</div>
+              <pre>Before : 10  20  40  50   (n = 4)
+Insert   30  at pos 2
+After  : 10  20  30  40  50  (n = 5)</pre>
+            </div>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">⚠️</span>
+              <p>Always ensure the array has enough allocated capacity before inserting.
+                 Inserting into a full fixed-size array causes a buffer overflow.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               5. Deletion in Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="deletion" data-topic="5">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">05</span>
+              <h3>Deletion In Arrays</h3>
+            </div>
+
+            <p>
+              Deletion requires shifting every element after the deleted position
+              one place to the left to fill the gap. The array size shrinks by one.
+            </p>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">⚡</span>
+              <p>Worst-case time complexity is <strong>O(n)</strong> — deleting the first
+                 element requires shifting all remaining elements.</p>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="// Delete element at position pos
+for (int i = pos; i < n - 1; i++)
+{
+    arr[i] = arr[i + 1];   // shift left
+}
+n--;  // update size">Copy</button>
+              </div>
+              <pre><code>// Delete element at position pos
+for (int i = pos; i &lt; n - 1; i++)
+{
+    arr[i] = arr[i + 1];   // shift left
+}
+n--;  // update size</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Example</div>
+              <pre>Before : 10  20  30  40  50
+Delete   30  (pos = 2)
+After  : 10  20  40  50</pre>
+            </div>
+
+            <!-- Exercise -->
+            <div class="arr-exercise" id="exercise-deletion">
+              <div class="arr-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Deletion
+              </div>
+              <p>Delete the element <strong>50</strong> from the array below and print the result:</p>
+              <pre>{10, 30, 50, 70, 90}</pre>
+              <button class="arr-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-deletion">Show Solution</button>
+              <div class="arr-exercise-solution" id="solution-deletion">
+                <div class="arr-code-block">
+                  <div class="arr-code-header">
+                    <span class="arr-code-lang">C</span>
+                    <button class="arr-code-copy" type="button" aria-label="Copy code"
+                      data-code="int arr[] = {10, 30, 50, 70, 90};
+int n = 5, pos = 2;  // 50 is at index 2
+
+for (int i = pos; i < n - 1; i++)
+    arr[i] = arr[i + 1];
+n--;
+
+for (int i = 0; i < n; i++)
+    printf(&quot;%d &quot;, arr[i]);
+// Output: 10 30 70 90">Copy</button>
+                  </div>
+                  <pre><code>int arr[] = {10, 30, 50, 70, 90};
+int n = 5, pos = 2;  // 50 is at index 2
+
+for (int i = pos; i &lt; n - 1; i++)
+    arr[i] = arr[i + 1];
+n--;
+
+for (int i = 0; i &lt; n; i++)
+    printf("%d ", arr[i]);
+// Output: 10 30 70 90</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               6. Searching in Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="searching" data-topic="6">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">06</span>
+              <h3>Searching In Arrays</h3>
+            </div>
+
+            <p>
+              Searching means finding the position (index) of a target element
+              inside an array. There are two fundamental approaches: Linear Search
+              and Binary Search.
+            </p>
+
+            <div class="arr-concept-card">
+              <h4>Linear Search</h4>
+              <p>
+                Scan every element from left to right until the key is found
+                or the array is exhausted. Works on <strong>unsorted</strong> arrays.
+              </p>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="int linearSearch(int arr[], int n, int key)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        if (arr[i] == key)
+            return i;   // found: return index
+    }
+    return -1;          // not found
+}">Copy</button>
+              </div>
+              <pre><code>int linearSearch(int arr[], int n, int key)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        if (arr[i] == key)
+            return i;   // found: return index
+    }
+    return -1;          // not found
+}</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Example</div>
+              <pre>Array  : 10  20  30  40  50
+Key    : 40
+Output : Found at index 3</pre>
+            </div>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">🔍</span>
+              <p>Linear Search: <strong>O(n)</strong> time, <strong>O(1)</strong> space.
+                 For sorted arrays, Binary Search achieves <strong>O(log n)</strong> by
+                 halving the search space each step.</p>
+            </div>
+
+            <!-- Exercise -->
+            <div class="arr-exercise" id="exercise-searching">
+              <div class="arr-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Searching
+              </div>
+              <p>Find the position of <strong>75</strong> in the array below using Linear Search:</p>
+              <pre>{25, 50, 75, 100, 125}</pre>
+              <button class="arr-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-searching">Show Solution</button>
+              <div class="arr-exercise-solution" id="solution-searching">
+                <div class="arr-code-block">
+                  <div class="arr-code-header">
+                    <span class="arr-code-lang">C</span>
+                    <button class="arr-code-copy" type="button" aria-label="Copy code"
+                      data-code="int arr[] = {25, 50, 75, 100, 125};
+int n = 5, key = 75;
+
+int result = linearSearch(arr, n, key);
+if (result != -1)
+    printf(&quot;Found at index %d\n&quot;, result);
+else
+    printf(&quot;Not found\n&quot;);
+// Output: Found at index 2">Copy</button>
+                  </div>
+                  <pre><code>int arr[] = {25, 50, 75, 100, 125};
+int n = 5, key = 75;
+
+int result = linearSearch(arr, n, key);
+if (result != -1)
+    printf("Found at index %d\n", result);
+else
+    printf("Not found\n");
+// Output: Found at index 2</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               7. Sorting Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="sorting" data-topic="7">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">07</span>
+              <h3>Sorting Arrays</h3>
+            </div>
+
+            <p>
+              Sorting arranges elements in ascending or descending order.
+              It is a prerequisite for Binary Search and many other efficient algorithms.
+            </p>
+
+            <div class="arr-table-wrap">
+              <table class="arr-table" aria-label="Sorting algorithm complexities">
+                <thead>
+                  <tr>
+                    <th scope="col">Algorithm</th>
+                    <th scope="col">Best</th>
+                    <th scope="col">Average</th>
+                    <th scope="col">Worst</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Bubble Sort</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td></tr>
+                  <tr><td>Selection Sort</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td></tr>
+                  <tr><td>Insertion Sort</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td></tr>
+                  <tr><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td></tr>
+                  <tr><td>Quick Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="arr-concept-card">
+              <h4>Bubble Sort — Compare Adjacent Pairs</h4>
+              <p>Repeatedly swap adjacent elements if they are in the wrong order.
+                 The largest element "bubbles up" to the end in each pass.</p>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C — Bubble Sort</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="for (int i = 0; i &lt; n - 1; i++)
+{
+    for (int j = 0; j &lt; n - i - 1; j++)
+    {
+        if (arr[j] &gt; arr[j + 1])
+        {
+            int temp   = arr[j];
+            arr[j]     = arr[j + 1];
+            arr[j + 1] = temp;
+        }
+    }
+}">Copy</button>
+              </div>
+              <pre><code>for (int i = 0; i &lt; n - 1; i++)
+{
+    for (int j = 0; j &lt; n - i - 1; j++)
+    {
+        if (arr[j] &gt; arr[j + 1])
+        {
+            int temp   = arr[j];
+            arr[j]     = arr[j + 1];
+            arr[j + 1] = temp;
+        }
+    }
+}</code></pre>
+            </div>
+
+            <!-- Exercise -->
+            <div class="arr-exercise" id="exercise-sorting">
+              <div class="arr-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Sorting
+              </div>
+              <p>Sort the following array in ascending order using Bubble Sort and trace the first pass:</p>
+              <pre>{64, 34, 25, 12, 22}</pre>
+              <button class="arr-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-sorting">Show Solution</button>
+              <div class="arr-exercise-solution" id="solution-sorting">
+                <div class="arr-code-block">
+                  <div class="arr-code-header">
+                    <span class="arr-code-lang">C</span>
+                    <button class="arr-code-copy" type="button" aria-label="Copy code"
+                      data-code="/* First pass trace:
+   64 34 25 12 22
+   34 64 25 12 22  (swap 64,34)
+   34 25 64 12 22  (swap 64,25)
+   34 25 12 64 22  (swap 64,12)
+   34 25 12 22 64  (swap 64,22) ← 64 is in final position
+
+   After all passes: 12 22 25 34 64 */
+
+int arr[] = {64, 34, 25, 12, 22};
+int n = 5;
+bubbleSort(arr, n);   // use the function above">Copy</button>
+                  </div>
+                  <pre><code>/* First pass trace:
+   64 34 25 12 22
+   34 64 25 12 22  (swap 64,34) 
+   34 25 64 12 22  (swap 64,25)
+   34 25 12 64 22  (swap 64,12)
+   34 25 12 22 64  (swap 64,22) ← 64 is in final position
+
+   After all passes: 12 22 25 34 64 */
+
+int arr[] = {64, 34, 25, 12, 22};
+int n = 5;
+bubbleSort(arr, n);   // use the function above</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               8. 2D Arrays
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="twod" data-topic="8">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">08</span>
+              <h3>2D Arrays</h3>
+            </div>
+
+            <p>
+              A 2D Array is a collection of rows and columns — essentially an array
+              of arrays. It is the natural way to represent matrices, grids, and
+              board-based problems.
+            </p>
+
+            <div class="arr-concept-card">
+              <h4>Common Use Cases</h4>
+              <p>
+                2D arrays are used in matrix math, image pixel buffers, game boards,
+                graph adjacency matrices, and dynamic programming tables.
+              </p>
+            </div>
+
+            <div class="arr-code-block">
+              <div class="arr-code-header">
+                <span class="arr-code-lang">C</span>
+                <button class="arr-code-copy" type="button" aria-label="Copy code"
+                  data-code="int matrix[3][3] =
+{
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// Print the matrix
+for (int r = 0; r &lt; 3; r++) {
+    for (int c = 0; c &lt; 3; c++)
+        printf(&quot;%d &quot;, matrix[r][c]);
+    printf(&quot;\n&quot;);
+}">Copy</button>
+              </div>
+              <pre><code>int matrix[3][3] =
+{
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// Print the matrix
+for (int r = 0; r &lt; 3; r++) {
+    for (int c = 0; c &lt; 3; c++)
+        printf("%d ", matrix[r][c]);
+    printf("\n");
+}</code></pre>
+            </div>
+
+            <div class="arr-output">
+              <div class="arr-output-label">Matrix Output</div>
+              <pre>1  2  3
+4  5  6
+7  8  9</pre>
+            </div>
+
+            <div class="arr-callout">
+              <span class="arr-callout-icon">🧩</span>
+              <p>Access any element with <code>matrix[row][col]</code>.
+                 Row-major storage means <code>matrix[0][0]</code>, <code>matrix[0][1]</code>,
+                 <code>matrix[0][2]</code> are contiguous in memory.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               9. Interview Tips
+               ═══════════════════════════════════════ -->
+          <article class="arr-lesson" id="interview" data-topic="9">
+            <div class="arr-lesson-header">
+              <span class="arr-lesson-number">09</span>
+              <h3>Array Interview Tips</h3>
+            </div>
+
+            <p>
+              Arrays appear in nearly every technical interview. Here is what
+              you need to master to solve them confidently.
+            </p>
+
+            <div class="arr-concept-card">
+              <h4>Must-Know Techniques</h4>
+              <ul>
+                <li><strong>Two Pointers</strong> — solve in-place problems in O(n)</li>
+                <li><strong>Sliding Window</strong> — max/min subarray of fixed or variable size</li>
+                <li><strong>Prefix Sum</strong> — range sum queries in O(1) after O(n) prep</li>
+                <li><strong>Kadane's Algorithm</strong> — maximum subarray sum in O(n)</li>
+                <li><strong>Binary Search</strong> — O(log n) search on sorted arrays</li>
+              </ul>
+            </div>
+
+            <ul>
+              <li>Always clarify: is the array sorted? Can you modify it in-place?</li>
+              <li>Watch for off-by-one errors at boundaries.</li>
+              <li>Consider edge cases: empty array, single element, all duplicates.</li>
+              <li>Know time and space complexity of every built-in sort.</li>
+              <li>Practice at least one array problem every day until interviews.</li>
+            </ul>
+
+            <!-- Exercise -->
+            <div class="arr-exercise" id="exercise-interview">
+              <div class="arr-exercise-title">
+                <i class="fas fa-dumbbell"></i> Classic Interview Problem
+              </div>
+              <p>
+                <strong>Maximum Subarray (Kadane's Algorithm):</strong>
+                Find the contiguous subarray with the largest sum.
+              </p>
+              <pre>Input : {-2, 1, -3, 4, -1, 2, 1, -5, 4}
+Output: 6  (subarray [4, -1, 2, 1])</pre>
+              <button class="arr-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-interview">Show Solution</button>
+              <div class="arr-exercise-solution" id="solution-interview">
+                <div class="arr-code-block">
+                  <div class="arr-code-header">
+                    <span class="arr-code-lang">C</span>
+                    <button class="arr-code-copy" type="button" aria-label="Copy code"
+                      data-code="int maxSubArray(int arr[], int n)
+{
+    int maxSum = arr[0];
+    int current = arr[0];
+
+    for (int i = 1; i &lt; n; i++)
+    {
+        // Either extend the current subarray or start fresh
+        current = (arr[i] &gt; current + arr[i]) ? arr[i] : current + arr[i];
+        if (current &gt; maxSum) maxSum = current;
+    }
+    return maxSum;
+}
+// Returns 6 for the example above">Copy</button>
+                  </div>
+                  <pre><code>int maxSubArray(int arr[], int n)
+{
+    int maxSum  = arr[0];
+    int current = arr[0];
+
+    for (int i = 1; i &lt; n; i++)
+    {
+        // Either extend the current subarray or start fresh
+        current = (arr[i] &gt; current + arr[i]) ? arr[i] : current + arr[i];
+        if (current &gt; maxSum) maxSum = current;
+    }
+    return maxSum;
+}
+// Returns 6 for the example above</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </main>
+      </div><!-- /.arr-layout -->
+    </div>
+  </section>
+
+  <!-- Footer — mirrors python-learning.html exactly -->
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./array-learning.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

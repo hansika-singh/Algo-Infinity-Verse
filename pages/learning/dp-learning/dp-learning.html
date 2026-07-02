@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Dynamic Programming | Algo Infinity Verse</title>
+    <meta name="description" content="Master Dynamic Programming from fundamentals to advanced patterns including knapsack variations, LIS/LCS optimizations, tree DP, and digit DP." />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="dp-learning.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="dp-learning">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero">
+        <div class="hero-background">
+          <div class="stars"></div>
+          <div class="stars2"></div>
+          <div class="stars3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Stop Recomputing, Start Remembering</span>
+                <span class="main-title gradient-text" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Master Dynamic Programming</span>
+                <span class="subtitle">
+                    From Knapsack to Tree DP &amp; Digit DP — Identify States, Build Transitions, Optimize Space
+                </span>
+            </h1>
+            <div class="typing-container">
+                <span class="typing-text-dp" id="typingTextDP"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#introduction" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Learning
+                </a>
+                <a href="#practice" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Practice Exercises
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="8">0</span>
+                    <span class="stat-label">Core Patterns</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="15">0</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="dp-learning" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">🧮</span>
+                Learn Dynamic Programming
+            </h2>
+            <p class="section-subtitle">
+                Identify overlapping subproblems, define states cleanly, and convert recursion into efficient
+                tabulated solutions.
+            </p>
+
+            <div class="dp-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+                <span class="dp-progress-text"><span id="dpProgressCount">0</span> / 6 topics completed</span>
+                <div class="dp-progress-track">
+                    <div class="dp-progress-fill" id="dpProgressFill"></div>
+                </div>
+                <span class="dp-progress-percent" id="dpProgressPercent">0%</span>
+            </div>
+
+            <div class="dp-layout">
+                <aside class="dp-sidebar" aria-label="Topic navigation">
+                    <div class="dp-sidebar-title">Topics</div>
+                    <ul class="dp-sidebar-nav" id="topicNav">
+                        <li><a href="#introduction" class="active"><span class="nav-icon">📖</span> Introduction</a></li>
+                        <li><a href="#knapsack-01"><span class="nav-icon">🎒</span> 0/1 Knapsack</a></li>
+                        <li><a href="#knapsack-unbounded"><span class="nav-icon">♾️</span> Unbounded Knapsack</a></li>
+                        <li><a href="#lis"><span class="nav-icon">📈</span> LIS Pattern</a></li>
+                        <li><a href="#lcs"><span class="nav-icon">🔗</span> LCS Pattern</a></li>
+                        <li><a href="#tree-dp"><span class="nav-icon">🌳</span> Tree DP</a></li>
+                        <li><a href="#digit-dp"><span class="nav-icon">🔢</span> Digit DP</a></li>
+                        <li><a href="#practice"><span class="nav-icon">🏋️</span> Exercises</a></li>
+                    </ul>
+                </aside>
+
+                <main class="dp-main-content" id="mainContent">
+                    <!-- ============ INTRODUCTION ============ -->
+                    <article class="dp-lesson" id="introduction" data-topic="0">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">00</span>
+                            <h3>Introduction to Dynamic Programming</h3>
+                        </div>
+                        <p>
+                            <strong>Dynamic Programming (DP)</strong> is an optimization technique for problems that
+                            have two key properties: <strong>optimal substructure</strong> (the optimal solution to a
+                            problem can be built from optimal solutions of its subproblems) and
+                            <strong>overlapping subproblems</strong> (the same subproblems are solved repeatedly in a
+                            naive recursive solution).
+                        </p>
+                        <div class="dp-callout">
+                            <span class="dp-callout-icon">💡</span>
+                            <p>The core DP workflow is always the same three steps: write the <strong>brute-force
+                                recursion</strong> first, identify which calls repeat and add <strong>memoization</strong>
+                                (top-down caching), then convert to <strong>tabulation</strong> (bottom-up, iterative)
+                                for the best performance and to eliminate stack overhead.</p>
+                        </div>
+                        <div class="dp-complexity-grid">
+                            <div class="dp-complexity-box recursive">
+                                <h5>Plain Recursion</h5>
+                                <span class="dp-chip">Re-solves same states</span>
+                                <span class="dp-chip">Often exponential time</span>
+                            </div>
+                            <div class="dp-complexity-box memo">
+                                <h5>Memoization (Top-Down)</h5>
+                                <span class="dp-chip">Cache results by state</span>
+                                <span class="dp-chip">Recursion + cache = O(states)</span>
+                            </div>
+                            <div class="dp-complexity-box tab">
+                                <h5>Tabulation (Bottom-Up)</h5>
+                                <span class="dp-chip">Iterative, fills a table</span>
+                                <span class="dp-chip">No call stack overhead</span>
+                            </div>
+                        </div>
+                        <div class="dp-state-box">
+                            <h4><i class="fas fa-key"></i> How to Identify a DP State</h4>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Ask:</span>
+                                <span class="dp-state-value">"What changes between recursive calls?"</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Ask:</span>
+                                <span class="dp-state-value">"What's the minimum info needed to describe a subproblem?"</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Result:</span>
+                                <span class="dp-state-value">Those changing variables become your DP state — usually an index plus 1-2 constraints</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ 0/1 KNAPSACK ============ -->
+                    <article class="dp-lesson" id="knapsack-01" data-topic="1">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">01</span>
+                            <h3>0/1 Knapsack</h3>
+                        </div>
+                        <p>
+                            Given <code>n</code> items with weights and values, and a knapsack of capacity
+                            <code>W</code>, choose a subset of items maximizing total value without exceeding
+                            <code>W</code>. Each item can be picked <strong>at most once</strong> (hence "0/1" — take
+                            it or leave it).
+                        </p>
+                        <div class="dp-state-box">
+                            <h4><i class="fas fa-key"></i> Identifying the State</h4>
+                            <div class="dp-state-row"><span class="dp-state-label">State:</span><span class="dp-state-value">dp[i][w] = max value using first i items with capacity w</span></div>
+                            <div class="dp-state-row"><span class="dp-state-label">Transition:</span><span class="dp-state-value">dp[i][w] = max(dp[i-1][w], val[i] + dp[i-1][w-wt[i]])</span></div>
+                            <div class="dp-state-row"><span class="dp-state-label">Base case:</span><span class="dp-state-value">dp[0][w] = 0 for all w (no items = no value)</span></div>
+                        </div>
+                        <h4 style="color:var(--text-primary); margin: 1.25rem 0 0.5rem;">Tabulation (Bottom-Up)</h4>
+                        <div class="dp-code-block dp-lang-container">
+                            <div class="dp-lang-switcher-tabs">
+                                <button class="dp-lang-tab-btn active" onclick="switchDPLang(this, 'py')">Python</button>
+                                <button class="dp-lang-tab-btn" onclick="switchDPLang(this, 'cpp')">C++</button>
+                            </div>
+                            <div class="dp-lang-pane active" data-lang="py">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">Python</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">knapsack_tab</span>(<span class="tok-var">wt</span>, <span class="tok-var">val</span>, <span class="tok-var">W</span>, <span class="tok-var">n</span>):
+    <span class="tok-var">dp</span> = [[<span class="tok-num">0</span>] * (<span class="tok-var">W</span> + <span class="tok-num">1</span>) <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span> + <span class="tok-num">1</span>)]
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">1</span>, <span class="tok-var">n</span> + <span class="tok-num">1</span>):
+        <span class="tok-kw">for</span> <span class="tok-var">w</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">W</span> + <span class="tok-num">1</span>):
+            <span class="tok-kw">if</span> <span class="tok-var">wt</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] &lt;= <span class="tok-var">w</span>:
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">w</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>], <span class="tok-var">val</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] + <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>-<span class="tok-var">wt</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>]])
+            <span class="tok-kw">else</span>:
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">w</span>] = <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>]
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">n</span>][<span class="tok-var">W</span>]</code></pre>
+                            </div>
+                            <div class="dp-lang-pane" data-lang="cpp">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">C++</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">knapsackTab</span>(<span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">wt</span>, <span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">val</span>, <span class="tok-kw">int</span> <span class="tok-var">W</span>, <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">vector&lt;vector&lt;int&gt;&gt;</span> <span class="tok-var">dp</span>(<span class="tok-var">n</span>+<span class="tok-num">1</span>, <span class="tok-kw">vector&lt;int&gt;</span>(<span class="tok-var">W</span>+<span class="tok-num">1</span>, <span class="tok-num">0</span>));
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">1</span>; <span class="tok-var">i</span> &lt;= <span class="tok-var">n</span>; <span class="tok-var">i</span>++) {
+        <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">w</span> = <span class="tok-num">0</span>; <span class="tok-var">w</span> &lt;= <span class="tok-var">W</span>; <span class="tok-var">w</span>++) {
+            <span class="tok-kw">if</span> (<span class="tok-var">wt</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] &lt;= <span class="tok-var">w</span>) {
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">w</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>], <span class="tok-var">val</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] + <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>-<span class="tok-var">wt</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>]]);
+            } <span class="tok-kw">else</span> {
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">w</span>] = <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">w</span>];
+            }
+        }
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">n</span>][<span class="tok-var">W</span>];
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ UNBOUNDED KNAPSACK ============ -->
+                    <article class="dp-lesson" id="knapsack-unbounded" data-topic="2">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">02</span>
+                            <h3>Unbounded Knapsack</h3>
+                        </div>
+                        <p>
+                            Same setup as 0/1 Knapsack, but now each item can be used <strong>unlimited times</strong>.
+                            This is the same pattern behind "Coin Change" and "Rod Cutting" problems.
+                        </p>
+                        <div class="dp-state-box">
+                            <h4><i class="fas fa-key"></i> The Key Difference from 0/1 Knapsack</h4>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">0/1:</span>
+                                <span class="dp-state-value">dp[i-1][w-wt[i-1]] — move to previous item after taking it</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Unbounded:</span>
+                                <span class="dp-state-value">dp[i][w-wt[i-1]] — stay on the SAME item, since it can be reused</span>
+                            </div>
+                        </div>
+                        <div class="dp-code-block dp-lang-container">
+                            <div class="dp-lang-switcher-tabs">
+                                <button class="dp-lang-tab-btn active" onclick="switchDPLang(this, 'py')">Python</button>
+                                <button class="dp-lang-tab-btn" onclick="switchDPLang(this, 'cpp')">C++</button>
+                            </div>
+                            <div class="dp-lang-pane active" data-lang="py">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">Python</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">unbounded_knapsack</span>(<span class="tok-var">wt</span>, <span class="tok-var">val</span>, <span class="tok-var">W</span>, <span class="tok-var">n</span>):
+    <span class="tok-var">dp</span> = [<span class="tok-num">0</span>] * (<span class="tok-var">W</span> + <span class="tok-num">1</span>)
+    <span class="tok-kw">for</span> <span class="tok-var">w</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">1</span>, <span class="tok-var">W</span> + <span class="tok-num">1</span>):
+        <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>):
+            <span class="tok-kw">if</span> <span class="tok-var">wt</span>[<span class="tok-var">i</span>] &lt;= <span class="tok-var">w</span>:
+                <span class="tok-var">dp</span>[<span class="tok-var">w</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">w</span>], <span class="tok-var">val</span>[<span class="tok-var">i</span>] + <span class="tok-var">dp</span>[<span class="tok-var">w</span> - <span class="tok-var">wt</span>[<span class="tok-var">i</span>]])
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">W</span>]</code></pre>
+                            </div>
+                            <div class="dp-lang-pane" data-lang="cpp">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">C++</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">unboundedKnapsack</span>(<span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">wt</span>, <span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">val</span>, <span class="tok-kw">int</span> <span class="tok-var">W</span>, <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">dp</span>(<span class="tok-var">W</span>+<span class="tok-num">1</span>, <span class="tok-num">0</span>);
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">w</span> = <span class="tok-num">1</span>; <span class="tok-var">w</span> &lt;= <span class="tok-var">W</span>; <span class="tok-var">w</span>++) {
+        <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">n</span>; <span class="tok-var">i</span>++) {
+            <span class="tok-kw">if</span> (<span class="tok-var">wt</span>[<span class="tok-var">i</span>] &lt;= <span class="tok-var">w</span>) {
+                <span class="tok-var">dp</span>[<span class="tok-var">w</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">w</span>], <span class="tok-var">val</span>[<span class="tok-var">i</span>] + <span class="tok-var">dp</span>[<span class="tok-var">w</span> - <span class="tok-var">wt</span>[<span class="tok-var">i</span>]]);
+            }
+        }
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">W</span>];
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ LIS ============ -->
+                    <article class="dp-lesson" id="lis" data-topic="3">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">03</span>
+                            <h3>Longest Increasing Subsequence (LIS)</h3>
+                        </div>
+                        <p>
+                            Given an array, find the length of the longest subsequence (not necessarily contiguous)
+                            where every element is strictly greater than the previous one.
+                        </p>
+                        <div class="dp-callout">
+                            <span class="dp-callout-icon">🚀</span>
+                            <p><strong>O(N log N) Optimization:</strong> Maintain a <code>tails</code> array where <code>tails[k]</code> = smallest possible tail value of an increasing subsequence of length <code>k+1</code>. For each new number, binary search for its position in <code>tails</code> and replace it. The length of <code>tails</code> at the end is the LIS length.</p>
+                        </div>
+                        <div class="dp-code-block dp-lang-container">
+                            <div class="dp-lang-switcher-tabs">
+                                <button class="dp-lang-tab-btn active" onclick="switchDPLang(this, 'py')">Python</button>
+                                <button class="dp-lang-tab-btn" onclick="switchDPLang(this, 'cpp')">C++</button>
+                            </div>
+                            <div class="dp-lang-pane active" data-lang="py">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">Python</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">import</span> <span class="tok-var">bisect</span>
+<span class="tok-kw">def</span> <span class="tok-fn">lis_nlogn</span>(<span class="tok-var">arr</span>):
+    <span class="tok-var">tails</span> = []
+    <span class="tok-kw">for</span> <span class="tok-var">num</span> <span class="tok-kw">in</span> <span class="tok-var">arr</span>:
+        <span class="tok-var">pos</span> = <span class="tok-var">bisect</span>.bisect_left(<span class="tok-var">tails</span>, <span class="tok-var">num</span>)
+        <span class="tok-kw">if</span> <span class="tok-var">pos</span> == <span class="tok-fn">len</span>(<span class="tok-var">tails</span>):
+            <span class="tok-var">tails</span>.append(<span class="tok-var">num</span>)
+        <span class="tok-kw">else</span>:
+            <span class="tok-var">tails</span>[<span class="tok-var">pos</span>] = <span class="tok-var">num</span>
+    <span class="tok-kw">return</span> <span class="tok-fn">len</span>(<span class="tok-var">tails</span>)</code></pre>
+                            </div>
+                            <div class="dp-lang-pane" data-lang="cpp">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">C++</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">lisNLogN</span>(<span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">arr</span>) {
+    <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">tails</span>;
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">num</span> : <span class="tok-var">arr</span>) {
+        <span class="tok-kw">auto</span> <span class="tok-var">it</span> = <span class="tok-fn">lower_bound</span>(<span class="tok-var">tails</span>.begin(), <span class="tok-var">tails</span>.end(), <span class="tok-var">num</span>);
+        <span class="tok-kw">if</span> (<span class="tok-var">it</span> == <span class="tok-var">tails</span>.end()) {
+            <span class="tok-var">tails</span>.push_back(<span class="tok-var">num</span>);
+        } <span class="tok-kw">else</span> {
+            *<span class="tok-var">it</span> = <span class="tok-var">num</span>;
+        }
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">tails</span>.size();
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ LCS ============ -->
+                    <article class="dp-lesson" id="lcs" data-topic="4">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">04</span>
+                            <h3>Longest Common Subsequence (LCS)</h3>
+                        </div>
+                        <p>
+                            Given two strings, find the length of their longest common subsequence. A subsequence is formed by deleting some characters without changing the order of remaining characters.
+                        </p>
+                        <div class="dp-state-box">
+                            <h4><i class="fas fa-key"></i> Identifying the State</h4>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">State:</span>
+                                <span class="dp-state-value">dp[i][j] = LCS of string A[0..i-1] and string B[0..j-1]</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Match:</span>
+                                <span class="dp-state-value">If A[i-1] == B[j-1]: dp[i][j] = dp[i-1][j-1] + 1</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">No Match:</span>
+                                <span class="dp-state-value">If A[i-1] != B[j-1]: dp[i][j] = max(dp[i-1][j], dp[i][j-1])</span>
+                            </div>
+                        </div>
+                        <div class="dp-code-block dp-lang-container">
+                            <div class="dp-lang-switcher-tabs">
+                                <button class="dp-lang-tab-btn active" onclick="switchDPLang(this, 'py')">Python</button>
+                                <button class="dp-lang-tab-btn" onclick="switchDPLang(this, 'cpp')">C++</button>
+                            </div>
+                            <div class="dp-lang-pane active" data-lang="py">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">Python</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">longest_common_subsequence</span>(<span class="tok-var">text1</span>, <span class="tok-var">text2</span>):
+    <span class="tok-var">n</span>, <span class="tok-var">m</span> = <span class="tok-fn">len</span>(<span class="tok-var">text1</span>), <span class="tok-fn">len</span>(<span class="tok-var">text2</span>)
+    <span class="tok-var">dp</span> = [[<span class="tok-num">0</span>] * (<span class="tok-var">m</span> + <span class="tok-num">1</span>) <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span> + <span class="tok-num">1</span>)]
+    
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">1</span>, <span class="tok-var">n</span> + <span class="tok-num">1</span>):
+        <span class="tok-kw">for</span> <span class="tok-var">j</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">1</span>, <span class="tok-var">m</span> + <span class="tok-num">1</span>):
+            <span class="tok-kw">if</span> <span class="tok-var">text1</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] == <span class="tok-var">text2</span>[<span class="tok-var">j</span>-<span class="tok-num">1</span>]:
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>] = <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">j</span>-<span class="tok-num">1</span>] + <span class="tok-num">1</span>
+            <span class="tok-kw">else</span>:
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">j</span>], <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>-<span class="tok-num">1</span>])
+                
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">n</span>][<span class="tok-var">m</span>]</code></pre>
+                            </div>
+                            <div class="dp-lang-pane" data-lang="cpp">
+                                <div class="dp-code-header">
+                                    <span class="dp-code-lang">C++</span>
+                                    <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">longestCommonSubsequence</span>(<span class="tok-kw">string</span> <span class="tok-var">text1</span>, <span class="tok-var">text2</span>) {
+    <span class="tok-kw">int</span> <span class="tok-var">n</span> = <span class="tok-var">text1</span>.length(), <span class="tok-var">m</span> = <span class="tok-var">text2</span>.length();
+    <span class="tok-kw">vector&lt;vector&lt;int&gt;&gt;</span> <span class="tok-var">dp</span>(<span class="tok-var">n</span> + <span class="tok-num">1</span>, <span class="tok-kw">vector&lt;int&gt;</span>(<span class="tok-var">m</span> + <span class="tok-num">1</span>, <span class="tok-num">0</span>));
+    
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">1</span>; <span class="tok-var">i</span> &lt;= <span class="tok-var">n</span>; <span class="tok-var">i</span>++) {
+        <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">j</span> = <span class="tok-num">1</span>; <span class="tok-var">j</span> &lt;= <span class="tok-var">m</span>; <span class="tok-var">j</span>++) {
+            <span class="tok-kw">if</span> (<span class="tok-var">text1</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] == <span class="tok-var">text2</span>[<span class="tok-var">j</span>-<span class="tok-num">1</span>]) {
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>] = <span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">j</span>-<span class="tok-num">1</span>] + <span class="tok-num">1</span>;
+            } <span class="tok-kw">else</span> {
+                <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>] = <span class="tok-fn">max</span>(<span class="tok-var">dp</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>][<span class="tok-var">j</span>], <span class="tok-var">dp</span>[<span class="tok-var">i</span>][<span class="tok-var">j</span>-<span class="tok-num">1</span>]);
+            }
+        }
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">dp</span>[<span class="tok-var">n</span>][<span class="tok-var">m</span>];
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ TREE DP ============ -->
+                    <article class="dp-lesson" id="tree-dp" data-topic="5">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">05</span>
+                            <h3>Tree DP</h3>
+                        </div>
+                        <p>
+                            Dynamic Programming on Trees involves traversing the tree (usually using DFS) and solving the subproblems defined at each node based on the solutions of its children. 
+                        </p>
+                        <div class="dp-callout">
+                            <span class="dp-callout-icon">🌳</span>
+                            <p><strong>Common Pattern:</strong> At node `u`, compute an answer assuming `u` is included in the solution, and compute another answer assuming `u` is excluded. Return both to the parent.</p>
+                        </div>
+                    </article>
+
+                    <!-- ============ DIGIT DP ============ -->
+                    <article class="dp-lesson" id="digit-dp" data-topic="6">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">06</span>
+                            <h3>Digit DP</h3>
+                        </div>
+                        <p>
+                            Digit DP is used for problems that ask for the count or sum of numbers in a given range <code>[L, R]</code> that satisfy a specific property (e.g., sum of digits is a prime number).
+                        </p>
+                        <div class="dp-state-box">
+                            <h4><i class="fas fa-key"></i> Standard State Template</h4>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">Parameters:</span>
+                                <span class="dp-state-value">dp(idx, tight, sum)</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">idx:</span>
+                                <span class="dp-state-value">Current position from left to right</span>
+                            </div>
+                            <div class="dp-state-row">
+                                <span class="dp-state-label">tight:</span>
+                                <span class="dp-state-value">Boolean. If true, the upper bound for the current digit is limited by the original number.</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ PRACTICE ============ -->
+                    <article class="dp-lesson" id="practice">
+                        <div class="dp-lesson-header">
+                            <span class="dp-lesson-number">✨</span>
+                            <h3>Practice Exercises</h3>
+                        </div>
+                        
+                        <div class="dp-exercise">
+                            <div class="dp-exercise-title"><i class="fas fa-dumbbell"></i> 1. Climbing Stairs</div>
+                            <p>You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?</p>
+                            <button class="dp-exercise-toggle" aria-controls="sol-1" aria-expanded="false">Show Solution</button>
+                            <div class="dp-exercise-solution" id="sol-1">
+                                <p><strong>Hint:</strong> This is perfectly equivalent to the Fibonacci sequence. The number of ways to reach step <code>i</code> is the sum of ways to reach step <code>i-1</code> and step <code>i-2</code>.</p>
+                                <div class="dp-code-block">
+                                    <div class="dp-code-header">
+                                        <span class="dp-code-lang">Python</span>
+                                        <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">climbStairs</span>(<span class="tok-var">n</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">2</span>: <span class="tok-kw">return</span> <span class="tok-var">n</span>
+    <span class="tok-var">a</span>, <span class="tok-var">b</span> = <span class="tok-num">1</span>, <span class="tok-num">2</span>
+    <span class="tok-kw">for</span> <span class="tok-var">_</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">3</span>, <span class="tok-var">n</span> + <span class="tok-num">1</span>):
+        <span class="tok-var">a</span>, <span class="tok-var">b</span> = <span class="tok-var">b</span>, <span class="tok-var">a</span> + <span class="tok-var">b</span>
+    <span class="tok-kw">return</span> <span class="tok-var">b</span></code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dp-exercise">
+                            <div class="dp-exercise-title"><i class="fas fa-dumbbell"></i> 2. House Robber</div>
+                            <p>You are a professional robber planning to rob houses along a street. You cannot rob adjacent houses. Given an integer array <code>nums</code> representing the money in each house, return the maximum amount of money you can rob.</p>
+                            <button class="dp-exercise-toggle" aria-controls="sol-2" aria-expanded="false">Show Solution</button>
+                            <div class="dp-exercise-solution" id="sol-2">
+                                <p><strong>Hint:</strong> For each house <code>i</code>, you either rob it (money[i] + max from <code>i-2</code>) or skip it (max from <code>i-1</code>).</p>
+                                <div class="dp-code-block">
+                                    <div class="dp-code-header">
+                                        <span class="dp-code-lang">C++</span>
+                                        <button class="dp-code-copy" type="button" aria-label="Copy code">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">int</span> <span class="tok-fn">rob</span>(<span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">nums</span>) {
+    <span class="tok-kw">int</span> <span class="tok-var">rob1</span> = <span class="tok-num">0</span>, <span class="tok-var">rob2</span> = <span class="tok-num">0</span>;
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">n</span> : <span class="tok-var">nums</span>) {
+        <span class="tok-kw">int</span> <span class="tok-var">temp</span> = <span class="tok-fn">max</span>(<span class="tok-var">n</span> + <span class="tok-var">rob1</span>, <span class="tok-var">rob2</span>);
+        <span class="tok-var">rob1</span> = <span class="tok-var">rob2</span>;
+        <span class="tok-var">rob2</span> = <span class="tok-var">temp</span>;
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">rob2</span>;
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                </main>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./dp-learning.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

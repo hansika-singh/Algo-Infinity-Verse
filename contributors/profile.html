@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contributor Profile - Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-container { max-width: 600px; margin: 6rem auto 2rem; padding: 0 1.5rem; }
+    .profile-card { background: #1f2937; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center; }
+    .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 1.5rem; background: #374151; overflow: hidden; border: 3px solid #667eea; }
+    .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; color: #f3f4f6; }
+    .profile-username { color: #9ca3af; margin-bottom: 1.5rem; }
+    .profile-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
+    .profile-stat { background: #374151; border-radius: 12px; padding: 1.2rem; }
+    .profile-stat-value { font-size: 1.5rem; font-weight: 700; display: block; color: #667eea; }
+    .profile-stat-label { font-size: 0.85rem; color: #9ca3af; }
+    .profile-buttons { margin-top: 2rem; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.2s; border: none; font-size: 0.9rem; }
+    .btn-primary { background: #667eea; color: #fff; }
+    .btn-primary:hover { background: #5a67d8; }
+    .btn-secondary { background: #374151; color: #f3f4f6; }
+    .btn-secondary:hover { background: #4b5563; }
+    .error-text { color: #f87171; text-align: center; font-size: 1.1rem; padding: 2rem; }
+    .loading { text-align: center; padding: 2rem; color: #667eea; }
+
+    .light-mode .profile-card { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .light-mode .profile-name { color: #111827; }
+    .light-mode .profile-stat { background: #f3f4f6; }
+    .light-mode .btn-secondary { background: #e5e7eb; color: #111827; }
+    @media (max-width: 640px) {
+      .profile-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="contributor-profile">
+  <div id="navbar-placeholder"></div>
+  <main class="contributors-container">
+    <div class="profile-container" id="profileContainer">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading profile...</div>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+  <script>
+    const REPO_OWNER = 'Eshajha19';
+    const REPO_NAME = 'Algo-Infinity-Verse';
+
+    async function gh(url) {
+      const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+      if (!res.ok) {
+        if (res.status === 403 || res.status === 429) throw new Error('RATE_LIMIT');
+        throw new Error('GitHub API error: ' + res.status);
+      }
+      return res;
+    }
+
+    async function ghJSON(url) {
+      const res = await gh(url);
+      return res.json();
+    }
+
+    async function fetchProfile(username) {
+      const [user, commits] = await Promise.all([
+        ghJSON('https://api.github.com/users/' + username).catch(() => null),
+        ghJSON('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/commits?author=' + encodeURIComponent(username) + '&per_page=1').catch(() => null)
+      ]);
+
+      if (!user) return { notFound: true };
+
+      let totalCommits = 0;
+      if (commits && Array.isArray(commits)) {
+        const linkRes = await fetch('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/commits?author=' + encodeURIComponent(username) + '&per_page=1', { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+        const link = linkRes.headers.get('Link') || '';
+        const last = link.split(',').find(s => s.includes('rel="last"'));
+        if (last) {
+          const m = last.match(/page=(\d+)/);
+          if (m) totalCommits = parseInt(m[1], 10);
+        } else {
+          totalCommits = commits.length;
+        }
+      }
+
+      return {
+        username: user.login,
+        name: user.name || user.login,
+        avatar: user.avatar_url,
+        profile: user.html_url,
+        location: user.location || 'N/A',
+        bio: user.bio || '',
+        totalCommits
+      };
+    }
+
+    async function getRank(username) {
+      try {
+        const data = await ghJSON('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contributors?per_page=100');
+        const filtered = data.filter(c => c.type === 'User').sort((a, b) => b.contributions - a.contributions);
+        const idx = filtered.findIndex(c => c.login === username);
+        if (idx >= 0) return idx + 1;
+      } catch {}
+      try {
+        const fallback = await fetch('/contributors/contributors.json').then(r => r.json());
+        const sorted = (fallback || []).sort((a, b) => (b.contributions || 0) - (a.contributions || 0));
+        const idx = sorted.findIndex(c => c.login === username);
+        if (idx >= 0) return idx + 1;
+      } catch {}
+      return null;
+    }
+
+    function renderProfile(info, rank) {
+      const container = document.getElementById('profileContainer');
+
+      if (info.notFound) {
+        container.innerHTML = '<div class="profile-card"><h2>Contributor not found</h2><button onclick="window.location.href=\'/contributors/index.html\'" class="btn btn-secondary">Back to Contributors</button></div>';
+        return;
+      }
+
+      container.innerHTML = '<div class="profile-card">' +
+        '<div class="profile-avatar-large"><img loading="lazy" src="' + info.avatar + '" alt="' + info.name + '"></div>' +
+        '<h1 class="profile-name">' + info.name + '</h1>' +
+        '<p class="profile-username">@' + info.username + '</p>' +
+        '<div class="profile-stats">' +
+          '<div class="profile-stat"><span class="profile-stat-value">#' + (rank || '?') + '</span><span class="profile-stat-label">Rank</span></div>' +
+          '<div class="profile-stat"><span class="profile-stat-value">' + info.totalCommits + '</span><span class="profile-stat-label">Total Commits</span></div>' +
+        '</div>' +
+        '<div class="profile-buttons">' +
+          '<a href="' + info.profile + '" target="_blank" rel="noopener" class="btn btn-primary">View GitHub Profile</a>' +
+          '<button onclick="window.location.href=\'/contributors/index.html\'" class="btn btn-secondary">Back</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    (async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('username');
+      if (!username) window.location.href = '/contributors/index.html';
+      try {
+        const info = await fetchProfile(username);
+        const rank = await getRank(username);
+        renderProfile(info, rank);
+      } catch (err) {
+        const container = document.getElementById('profileContainer');
+        let msg = 'Failed to load profile.';
+        if (err.message === 'RATE_LIMIT') {
+          const fallback = await fetch('/contributors/contributors.json').then(r => r.json()).catch(() => []);
+          const cached = (fallback || []).find(c => c.login === username);
+          if (cached) {
+            const sorted = (fallback || []).sort((a, b) => (b.contributions || 0) - (a.contributions || 0));
+            const rank = sorted.findIndex(c => c.login === username) + 1;
+            renderProfile({
+              username: cached.login,
+              name: cached.login,
+              avatar: cached.avatar_url,
+              profile: cached.html_url,
+              location: 'N/A',
+              bio: '',
+              totalCommits: cached.contributions || 0
+            }, rank > 0 ? rank : '?');
+            return;
+          }
+          msg = 'GitHub API rate limit reached and no local fallback found.';
+        }
+        container.innerHTML = '<div class="profile-card"><p class="error-text">' + msg + '</p><button onclick="window.location.href=\'/contributors/index.html\'" class="btn btn-secondary">Back</button></div>';
+      }
+    })();
+  </script>
+</body>
+</html>

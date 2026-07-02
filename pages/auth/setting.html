@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Enforced server-side: unauthenticated requests are redirected to /login. -->
+    <meta name="auth-required" content="true">
+    <title>Account Settings</title>  
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="setting.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+    <div class="settings-container">
+
+    <div class="settings-icon">
+        ⚙
+    </div>
+
+    <h1>Settings</h1>
+
+    <p class="subtitle">
+        Manage your account preferences and security
+    </p>
+
+    <!-- Profile Information -->
+         <div class="section">
+        <h2>Profile Information</h2>
+
+        <input type="text" placeholder="Full Name">
+
+        <input type="email" placeholder="Email Address">
+
+        <input type="text" placeholder="Phone Number">
+
+        <button class="btn">
+            Save Changes
+        </button>
+    </div>
+
+    <!-- Security -->
+    <div class="section">
+        <h2>Security</h2>
+
+        <div class="password-box">
+            <input type="password" id="currentPassword" placeholder="Current Password">
+            <span class="eye" data-target="currentPassword">👁</span>
+        </div>
+
+        <div class="password-box">
+            <input type="password" id="newPassword" placeholder="New Password">
+            <span class="eye" data-target="newPassword">👁</span>
+        </div>
+
+        <div class="password-box">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <span class="eye" data-target="confirmPassword">👁</span>
+        </div>
+
+        <button class="btn">
+            Update Password
+        </button>
+    </div>
+
+    <!-- Notifications -->
+    <div class="section">
+        <h2>Notification Preferences</h2>
+
+        <div class="setting-item">
+            <span>Email Notifications</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <span>Practice Reminders</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <span>Community Updates</span>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <span>Contest Alerts</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Delete-btn  -->
+        <button class="delete-btn" id="deleteAccountBtn">
+            Delete Account
+        </button>
+    </div>
+
+
+<script src="/interceptors.js"></script><script src="/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+});
+</script>
+<script src="setting.js"></script>
+</body>
+</html>

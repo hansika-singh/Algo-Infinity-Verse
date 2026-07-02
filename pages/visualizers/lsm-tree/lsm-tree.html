@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSM-Tree Storage Engine | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize Log-Structured Merge-Trees, SSTables, Bloom Filters, and Compaction." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="lsm-tree.css" />
+</head>
+<body class="lsm-body">
+
+    <nav class="navbar lsm-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-database"></i> NoSQL Engine: Active
+        </div>
+    </nav>
+
+    <main class="lsm-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Database Client</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    <strong>LSM-Trees</strong> optimize for heavy writes. Data is written to a volatile <strong>MemTable</strong> and sequentially flushed to immutable <strong>SSTables</strong> on disk. Background <strong>Compaction</strong> merges and deduplicates them.
+                </p>
+
+                <!-- Input Controls -->
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Key (ID)</label>
+                        <input type="number" id="inputKey" placeholder="e.g. 42" />
+                    </div>
+                    <div class="input-group">
+                        <label>Value</label>
+                        <input type="text" id="inputValue" placeholder="e.g. Alice" />
+                    </div>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-primary" id="btnInsert">
+                        <i class="fas fa-pen"></i> Write (Put)
+                    </button>
+                    <button class="btn btn-danger" id="btnDelete">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button class="btn btn-success" id="btnRead" style="grid-column: span 2;">
+                        <i class="fas fa-search"></i> Read (Get)
+                    </button>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="sim-controls mt-3">
+                    <button class="btn btn-outline w-100" id="btnSimulateLoad">
+                        <i class="fas fa-bolt"></i> Simulate Write-Heavy Workload
+                    </button>
+                </div>
+            </div>
+
+            <!-- Write-Ahead Log (WAL) Viewer -->
+            <div class="wal-section">
+                <div class="section-title">
+                    <h4><i class="fas fa-list-alt"></i> Write-Ahead Log (WAL)</h4>
+                </div>
+                <div class="wal-container" id="walLog">
+                    <div class="empty-state-text" id="walEmpty">WAL is empty.</div>
+                    <!-- Logs injected via JS -->
+                </div>
+            </div>
+
+            <!-- Telemetry & Search Logs -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-satellite-dish"></i> Query Router Logs</h4>
+                <div class="query-logs" id="queryLogs">
+                    <div class="log-entry sys">> Waiting for queries...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Architecture Visualization -->
+        <div class="panel-right">
+            
+            <!-- RAM Zone -->
+            <div class="arch-tier ram-tier">
+                <div class="tier-header">
+                    <span><i class="fas fa-memory"></i> RAM (Volatile)</span>
+                    <span class="tier-stats">Size: <span id="memSizeDisplay">0</span> / 4</span>
+                </div>
+                <div class="memtable-container" id="memTableContainer">
+                    <div class="empty-state-text" id="memTableEmpty">MemTable is empty. Waiting for writes.</div>
+                    <div class="key-value-list" id="memTableList"></div>
+                </div>
+            </div>
+
+            <!-- Disk Level 0 -->
+            <div class="arch-tier disk-tier level-0">
+                <div class="tier-header">
+                    <span><i class="fas fa-hdd"></i> Disk: Level 0 (L0)</span>
+                    <span class="tier-stats">Compaction Trigger: 4 SSTables</span>
+                </div>
+                <div class="sstable-track" id="level0Track">
+                    <!-- SSTables injected here -->
+                </div>
+            </div>
+
+            <!-- Disk Level 1 -->
+            <div class="arch-tier disk-tier level-1">
+                <div class="tier-header">
+                    <span><i class="fas fa-server"></i> Disk: Level 1 (L1)</span>
+                    <span class="tier-stats">Capacity: 10 SSTables</span>
+                </div>
+                <div class="sstable-track" id="level1Track">
+                    <!-- SSTables injected here -->
+                </div>
+            </div>
+
+            <!-- Disk Level 2 -->
+            <div class="arch-tier disk-tier level-2">
+                <div class="tier-header">
+                    <span><i class="fas fa-archive"></i> Disk: Level 2 (L2)</span>
+                    <span class="tier-stats">Deep Archive</span>
+                </div>
+                <div class="sstable-track" id="level2Track">
+                    <!-- SSTables injected here -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="lsm-tree.js"></script>
+</body>
+</html>

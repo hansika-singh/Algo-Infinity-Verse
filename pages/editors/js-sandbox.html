@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Execution Sandbox (Visual Debugging MVP) | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <main class="sandbox-page">
+      <header class="sandbox-header">
+        <h1>JS Execution Sandbox</h1>
+        <p>
+          Run sample tests in a time-limited sandbox, show failing cases with expected vs actual,
+          and optionally show captured debug transcript.
+        </p>
+      </header>
+
+      <section class="sandbox-grid">
+        <section class="sandbox-card">
+          <h2>1) Your Code</h2>
+          <div class="field">
+            <label for="exportName">Function to call</label>
+            <input id="exportName" type="text" value="solve" />
+          </div>
+
+          <div class="field">
+            <label for="userCode">JavaScript code</label>
+            <textarea id="userCode" spellcheck="false" rows="18">
+function solve(arr) {
+  // Sample task: return arr reversed
+  return [...arr].reverse();
+}
+            </textarea>
+          </div>
+
+          <div class="row">
+            <button id="runSample" class="btn">Run sample tests</button>
+            <label class="checkbox">
+              <input id="showSteps" type="checkbox" />
+              Show my steps (debug transcript)
+            </label>
+          </div>
+
+          <div class="row">
+            <button id="runHidden" class="btn btn-secondary">Run hidden tests (practice)</button>
+          </div>
+        </section>
+
+        <section class="sandbox-card">
+          <h2>2) Results</h2>
+          <div id="summary" class="summary">Run tests to see results.</div>
+
+          <div id="testsList" class="tests-list"></div>
+
+          <div id="runtimeError" class="runtime-error" style="display:none"></div>
+        </section>
+      </section>
+
+      <section class="sandbox-card sandbox-transcript-card">
+        <h2>Debug transcript</h2>
+        <pre id="transcript" class="transcript">(toggle “Show my steps” to enable)</pre>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="/auth-gate.js"></script>
+    <script type="module" src="./js-sandbox.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Experiences | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="interview-experience.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="interview-experience">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="iep-hero">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+      <div class="container">
+        <div class="iep-hero-content">
+          <h1 class="iep-gradient">Interview Experiences</h1>
+          <p class="section-subtitle">Learn from real interview experiences shared by the community. Share your own to help others succeed.</p>
+          <div class="iep-hero-stats">
+            <div class="stat-box">
+              <span class="stat-number" id="iepTotalExperiences">0</span>
+              <span class="stat-label">Experiences</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" id="iepCompaniesCovered">0</span>
+              <span class="stat-label">Companies</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" id="iepTotalUpvotes">0</span>
+              <span class="stat-label">Upvotes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section iep-section">
+      <div class="container">
+        <div class="iep-layout">
+          <div class="iep-main">
+            <div class="iep-filters glass-card">
+              <div class="iep-filter-row">
+                <div class="iep-search-bar">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="iepSearch" placeholder="Search experiences..." aria-label="Search experiences" />
+                </div>
+              </div>
+              <div class="iep-filter-row">
+                <div class="iep-filter-group">
+                  <label class="iep-filter-label">Company</label>
+                  <div class="filter-buttons" id="iepCompanyFilters">
+                    <button class="filter-btn active" data-company="all">All</button>
+                    <button class="filter-btn" data-company="Amazon"><i class="fab fa-amazon"></i> Amazon</button>
+                    <button class="filter-btn" data-company="Google"><i class="fab fa-google"></i> Google</button>
+                    <button class="filter-btn" data-company="Microsoft"><i class="fab fa-microsoft"></i> Microsoft</button>
+                    <button class="filter-btn" data-company="Meta"><i class="fab fa-meta"></i> Meta</button>
+                    <button class="filter-btn" data-company="Adobe"><i class="fas fa-bezier-curve"></i> Adobe</button>
+                    <button class="filter-btn" data-company="Walmart"><i class="fas fa-shopping-cart"></i> Walmart</button>
+                    <button class="filter-btn" data-company="Flipkart"><i class="fas fa-shopping-bag"></i> Flipkart</button>
+                    <button class="filter-btn" data-company="Other">Other</button>
+                  </div>
+                </div>
+              </div>
+              <div class="iep-filter-row">
+                <div class="iep-filter-group">
+                  <label class="iep-filter-label">Difficulty</label>
+                  <div class="filter-buttons" id="iepDiffFilters">
+                    <button class="filter-btn active" data-diff="all">All</button>
+                    <button class="filter-btn" data-diff="easy">Easy</button>
+                    <button class="filter-btn" data-diff="medium">Medium</button>
+                    <button class="filter-btn" data-diff="hard">Hard</button>
+                  </div>
+                </div>
+                <div class="iep-filter-group">
+                  <label class="iep-filter-label">Sort By</label>
+                  <select id="iepSort" class="iep-sort-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="most_upvotes">Most Upvotes</option>
+                    <option value="highest_rated">Highest Rated</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="iep-experiences-header">
+              <h3><i class="fas fa-briefcase"></i> Shared Experiences</h3>
+              <span id="iepResultCount" class="iep-result-count"></span>
+            </div>
+
+            <div id="iepList" class="iep-list">
+              <div class="iep-empty" id="iepEmpty">
+                <i class="fas fa-inbox"></i>
+                <p>No experiences yet. Be the first to share!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="iep-sidebar">
+            <div class="glass-card iep-submit-card">
+              <h3><i class="fas fa-pen"></i> Share Your Experience</h3>
+              <p class="iep-submit-desc">Help fellow developers by sharing your interview journey.</p>
+              <form id="iepForm" class="iep-form">
+                <div class="iep-form-group">
+                  <label for="iepCompany">Company <span class="required">*</span></label>
+                  <select id="iepCompany" required>
+                    <option value="">Select Company</option>
+                    <option value="Amazon">Amazon</option>
+                    <option value="Google">Google</option>
+                    <option value="Microsoft">Microsoft</option>
+                    <option value="Meta">Meta</option>
+                    <option value="Adobe">Adobe</option>
+                    <option value="Walmart">Walmart</option>
+                    <option value="Flipkart">Flipkart</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="iep-form-group">
+                  <label for="iepCompanyOther">If Other, specify</label>
+                  <input type="text" id="iepCompanyOther" placeholder="Company name" disabled />
+                </div>
+                <div class="iep-form-group">
+                  <label for="iepRole">Role Applied <span class="required">*</span></label>
+                  <input type="text" id="iepRole" placeholder="e.g., SDE-1, Frontend Engineer" required />
+                </div>
+                <div class="iep-form-row">
+                  <div class="iep-form-group">
+                    <label for="iepDifficulty">Difficulty <span class="required">*</span></label>
+                    <select id="iepDifficulty" required>
+                      <option value="">Select</option>
+                      <option value="easy">Easy</option>
+                      <option value="medium">Medium</option>
+                      <option value="hard">Hard</option>
+                    </select>
+                  </div>
+                  <div class="iep-form-group">
+                    <label for="iepRounds">Rounds</label>
+                    <input type="number" id="iepRounds" min="1" max="15" placeholder="e.g., 4" />
+                  </div>
+                  <div class="iep-form-group">
+                    <label for="iepOffer">Offer Status</label>
+                    <select id="iepOffer">
+                      <option value="">Not specified</option>
+                      <option value="selected">Selected</option>
+                      <option value="rejected">Rejected</option>
+                      <option value="waiting">Waiting</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="iep-form-group">
+                  <label class="iep-filter-label">Overall Rating <span class="required">*</span></label>
+                  <div class="iep-star-rating" id="iepStarRating">
+                    <i class="far fa-star" data-star="1"></i>
+                    <i class="far fa-star" data-star="2"></i>
+                    <i class="far fa-star" data-star="3"></i>
+                    <i class="far fa-star" data-star="4"></i>
+                    <i class="far fa-star" data-star="5"></i>
+                  </div>
+                  <input type="hidden" id="iepRating" required />
+                  <div class="iep-rating-labels">
+                    <span>Very Difficult</span>
+                    <span>Very Smooth</span>
+                  </div>
+                </div>
+                <div class="iep-form-group">
+                  <label for="iepTitle">Title <span class="required">*</span></label>
+                  <input type="text" id="iepTitle" placeholder="e.g., My Amazon SDE-1 Interview Journey" required />
+                </div>
+                <div class="iep-form-group">
+                  <label for="iepContent">Experience Details <span class="required">*</span></label>
+                  <textarea id="iepContent" placeholder="Describe the interview process, questions asked, preparation tips, and overall experience..." rows="6" required></textarea>
+                </div>
+                <div class="iep-form-group">
+                  <label for="iepTopics">Topics / Tags</label>
+                  <input type="text" id="iepTopics" placeholder="e.g., arrays, dp, system-design, oops" />
+                  <span class="iep-hint">Comma-separated topics asked in the interview</span>
+                </div>
+                <button type="submit" class="btn btn-primary iep-submit-btn">
+                  <i class="fas fa-paper-plane"></i> Share Experience
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="interview-experience.js"></script>
+  
+
+  <script src="/script.js"></script>
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+  </body>
+</html>

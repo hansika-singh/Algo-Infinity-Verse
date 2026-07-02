@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadtree Collision Visualizer | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="quadtree-collision.css" />
+</head>
+<body class="quadtree-body">
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="workspace">
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> Collision Engine</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Compare <strong>Naive O(N²)</strong> collision detection against <strong>Quadtree Spatial Partitioning O(N log N)</strong> in real time.
+                </p>
+
+                <div class="input-group">
+                    <label>Algorithm Mode</label>
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" data-mode="quadtree"><i class="fas fa-sitemap"></i> Quadtree</button>
+                        <button class="mode-btn" data-mode="naive"><i class="fas fa-infinity"></i> Naive O(N²)</button>
+                    </div>
+                </div>
+
+                <div class="config-grid">
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Particles: <span class="slider-val text-accent" id="particleVal">500</span></label>
+                        <input type="range" id="particleCount" min="50" max="2500" step="50" value="500" />
+                    </div>
+                    <div class="input-group">
+                        <label>Speed: <span class="slider-val" id="speedVal">1x</span></label>
+                        <input type="range" id="particleSpeed" min="0.1" max="5" step="0.1" value="1" />
+                    </div>
+                    <div class="input-group">
+                        <label>Size: <span class="slider-val" id="sizeVal">3px</span></label>
+                        <input type="range" id="particleSize" min="1" max="10" step="1" value="3" />
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showGridToggle" checked>
+                        <span class="slider"></span>
+                        <span class="toggle-label">Show Quadtree Grid</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Telemetry & Benchmarks -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-tachometer-alt"></i> Live Metrics</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box warning" id="fpsBox">
+                        <span class="tel-label">Frames Per Sec</span>
+                        <span class="tel-value text-accent"><span id="fpsCount">60</span></span>
+                    </div>
+                    <div class="tel-box info">
+                        <span class="tel-label">Active Collisions</span>
+                        <span class="tel-value"><span id="collisionCount">0</span></span>
+                    </div>
+                </div>
+
+                <div class="results-box">
+                    <div class="result-row">
+                        <span>Collision Checks / Frame:</span>
+                        <strong class="text-primary checks-counter" id="checksCount">0</strong>
+                    </div>
+                    <div class="efficiency-indicator">
+                        <i class="fas fa-info-circle"></i> Quadtrees drastically reduce unnecessary distance calculations.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-braille"></i> Particle Simulator</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="dot normal"></span> Normal</span>
+                    <span class="legend-item"><span class="dot collided"></span> Colliding</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="simulationCanvas"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="quadtree-collision.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

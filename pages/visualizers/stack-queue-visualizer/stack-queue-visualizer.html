@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stack & Queue Visualizer | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Interactive Stack and Queue Visualizer to learn LIFO and FIFO operations through real-time animations." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="stack-queue-visualizer.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+
+<body>
+<body data-page="stack-queue-visualizer">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-placeholder"></div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Stack & Queue Visualizer</h1>
+      <p>
+        Learn LIFO and FIFO operations through interactive visualizations.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#stack-section" class="btn btn-primary">Explore Stack</a>
+        <a href="#queue-section" class="btn btn-secondary">Explore Queue</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sqv-section">
+  <div class="container sqv-container">
+
+    <!-- Stack Visualizer -->
+    <div class="sqv-card" id="stack-section">
+      <h2>Stack Visualizer</h2>
+
+      <div class="sqv-controls">
+        <input
+    type="number"
+    id="stackInput"
+    class="sqv-input"
+    placeholder="Enter value"
+/>
+
+<button id="pushBtn" class="sqv-btn">Push</button>
+<button id="popBtn" class="sqv-btn">Pop</button>
+<button id="peekBtn" class="sqv-btn">Peek</button>
+<button id="resetStackBtn" class="sqv-btn">Reset</button>
+      </div>
+
+      <h3 class="sqv-label">TOP</h3>
+
+<div id="stackContainer" class="stack-column"></div>
+<p id="stackMessage"></p>
+    </div>
+
+    <!-- Queue Visualizer -->
+    <div class="sqv-card" id="queue-section">
+      <h2>Queue Visualizer</h2>
+
+      <div class="sqv-controls">
+        <input
+    type="number"
+    id="queueInput"
+    class="sqv-input"
+    placeholder="Enter value"
+/>
+
+<button id="enqueueBtn" class="sqv-btn">Enqueue</button>
+<button id="dequeueBtn" class="sqv-btn">Dequeue</button>
+<button id="frontBtn" class="sqv-btn">Front</button>
+<button id="resetQueueBtn" class="sqv-btn">Reset</button>
+      </div>
+
+      <div class="queue-labels">
+  <span>Front</span>
+  <span>Rear</span>
+</div>
+
+<div id="queueContainer" class="queue-row"></div>
+<p id="queueMessage"></p>
+    </div>
+
+    <!-- History -->
+    <div class="sqv-card" id="history-section">
+    <h2>Operation History</h2>
+      <ul id="historyList"></ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>∞ Algo Infinity Verse</h3>
+          <p>
+            Your ultimate destination for mastering Data Structures &amp;
+            Algorithms and acing technical interviews.
+          </p>
+          <div class="social-links">
+            <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/index.html#topics">DSA Topics</a></li>
+            <li><a href="/index.html#practice">Practice Problems</a></li>
+            <li><a href="/index.html#roadmap">Learning Roadmap</a></li>
+            <li><a href="/index.html#interview">Interview Prep</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="/pages/learning/array-learning/array-learning.html">Learn Arrays</a></li>
+            <li><a href="/pages/learning/linkedlist-learning/linkedlist-learning.html">Learn Linked Lists</a></li>
+            <li><a href="/pages/learning/stack-learning/stack-learning.html">Learn Stacks</a></li>
+            <li><a href="/pages/learning/python-learning/python-learning.html">Learn Python</a></li>
+            <li><a href="/pages/learning/javascript-learning/javascript-learning.html">Learn JavaScript</a></li>
+            <li><a href="/pages/visualizers/sorting-visualizer/sorting-visualizer.html">Sorting Visualizer</a></li>
+            <li><a href="/pages/visualizers/graph-visualizer/graph-visualizer.html">Graph Visualizer</a></li>
+            <li><a href="/pages/resources/cheat-sheets/cheat-sheets.html">DSA Cheat Sheets</a></li>
+            <li><a href="/pages/resources/system-design/system-design.html">System Design</a></li>
+            <li><a href="/pages/learning/api-design-learning/api-design-learning.html">Learn API Design</a></li>
+            <li><a href="/pages/community/community/community.html">Community</a></li>
+            <li><a href="/pages/resources/about-us.html">About Us</a></li>
+            <li><a href="/pages/resources/privacy-policy.html">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Questions</h4>
+          <div class="footer-questions">
+            <button class="footer-question" type="button"
+              data-question="What is the time complexity of this problem?">Time Complexity</button>
+            <button class="footer-question" type="button"
+              data-question="Can you give me a hint for this problem?">Hint</button>
+            <button class="footer-question" type="button"
+              data-question="What approach should I use?">Approach</button>
+            <button class="footer-question" type="button"
+              data-question="Are there any edge cases I should consider?">Edge Cases</button>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Newsletter</h4>
+          <p>Subscribe to get weekly problem sets and tips</p>
+          <form class="newsletter-form" id="newsletterForm" novalidate>
+            <label for="newsletterEmail" class="visually-hidden">Your email address</label>
+            <input type="email" id="newsletterEmail" name="email"
+              placeholder="Your email" autocomplete="email" required />
+            <button type="submit" aria-label="Subscribe">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Algo Infinity Verse. Crafted with 💜 for learners worldwide.</p>
+      </div>
+    </div>
+  </footer>
+  <div id="footer-placeholder"></div>
+
+  
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="stack-queue-visualizer.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

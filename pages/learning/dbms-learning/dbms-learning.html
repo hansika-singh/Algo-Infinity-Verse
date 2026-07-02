@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn DBMS – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly Database Management Systems (DBMS) tutorial covering architecture, ER models, keys, normalization, SQL, transactions, ACID, locking, and indexes." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="dbms-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="dbms-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text">Database Systems</span>
+          <span class="subtitle">Beginner-Friendly Concepts, SQL &amp; Practice</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_dbms" id="typingTextDbms"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-introduction" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="35">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- DBMS Learning Section -->
+    <section id="dbms-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🗄️</span>
+          Learn DBMS
+        </h2>
+        <p class="section-subtitle">
+          Master the core tenets of database systems with step-by-step theories and SQL sandboxes.
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="dbms-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="dbms-progress-text"><span id="progressCount">0</span> / 10 topics completed</span>
+          <div class="dbms-progress-track">
+            <div class="dbms-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="dbms-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="dbms-sidebar" aria-label="Topic navigation">
+            <div class="dbms-sidebar-title">Topics</div>
+            <ul class="dbms-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#architecture"><span class="nav-icon">🏗️</span> Architecture</a></li>
+              <li><a href="#types"><span class="nav-icon">🗂️</span> Database Types</a></li>
+              <li><a href="#er-model"><span class="nav-icon">📊</span> ER Model &amp; Diagrams</a></li>
+              <li><a href="#keys"><span class="nav-icon">🔑</span> Keys in DBMS</a></li>
+              <li><a href="#normalization"><span class="nav-icon">⚖️</span> Normalization</a></li>
+              <li><a href="#sql-basics"><span class="nav-icon">💻</span> SQL Basics</a></li>
+              <li><a href="#transactions"><span class="nav-icon">🔄</span> Transactions &amp; ACID</a></li>
+              <li><a href="#concurrency"><span class="nav-icon">🔒</span> Concurrency Control</a></li>
+              <li><a href="#indexing"><span class="nav-icon">⚡</span> Indexing &amp; Optimization</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="dbms-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="dbms-lesson" id="introduction" data-topic="1">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">01</span>
+                <h3>Introduction to DBMS</h3>
+              </div>
+
+              <p>
+                A <strong>Database Management System (DBMS)</strong> is software designed to store, retrieve, define, and manage data in databases. It acts as an interface between the database and its end-users or programs, ensuring that data is consistently organized and easily accessible.
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>Advantages of using a DBMS</h4>
+                <ul>
+                  <li><strong>Reduced Data Redundancy:</strong> Minimizes duplication of data, saving disk storage.</li>
+                  <li><strong>Data Integrity & Security:</strong> Enforces security policies and database constraints (e.g., age cannot be negative).</li>
+                  <li><strong>Concurrent Access:</strong> Allows multiple users to read and update data at the same time without conflicts.</li>
+                  <li><strong>Backup & Recovery:</strong> Automatically backs up data and recovers it in case of system crashes.</li>
+                </ul>
+              </div>
+
+              <h4>DBMS vs File System</h4>
+              <p>Before DBMS, data was stored in simple operating system files. Here is why we moved to DBMS:</p>
+              
+              <div class="dbms-table-wrap">
+                <table class="dbms-table" aria-label="DBMS vs File System Comparison">
+                  <thead>
+                    <tr>
+                      <th scope="col">Feature</th>
+                      <th scope="col">File System</th>
+                      <th scope="col">DBMS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Redundancy</strong></td>
+                      <td>High; same data is repeated across different files.</td>
+                      <td>Low; redundant data is controlled through relations.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Data Sharing</strong></td>
+                      <td>Difficult; requires manual file transfer.</td>
+                      <td>Easy; handled concurrently by the server interface.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Concurrency</strong></td>
+                      <td>No concurrent locking. Updates overwrite each other.</td>
+                      <td>Highly supported; concurrent transactions use locks.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Integrity Constraints</strong></td>
+                      <td>Must be enforced inside application code manually.</td>
+                      <td>Enforced natively by the database schema.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-introduction">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Introduction to DBMS
+                </div>
+                <p>Which of the following is NOT a benefit of a DBMS over a traditional File System?</p>
+                <ul>
+                  <li>A) Enforcing column-level check constraints automatically.</li>
+                  <li>B) Storing data in flat files that are directly readable by text editors without software.</li>
+                  <li>C) Providing transactional rollbacks during database crashes.</li>
+                  <li>D) Restricting database access to authorized users via roles.</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-introduction">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-introduction">
+                  <p><strong>Correct Answer: B</strong></p>
+                  <p>Explanation: Flat file readability is a characteristic of File Systems. A DBMS compiles data into binary formats (pages, blocks) optimized for storage and indexing, requiring DBMS interfaces or SQL engines to query it, rather than direct text editors.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Database Architecture -->
+            <article class="dbms-lesson" id="architecture" data-topic="2">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">02</span>
+                <h3>Database Architecture</h3>
+              </div>
+
+              <p>
+                The <strong>Three-Level ANSI-SPARC Architecture</strong> separates the user's view of data from its physical representation. This abstraction ensures <strong>Data Independence</strong> (changes to physical storage don't break user-facing queries).
+              </p>
+
+              <div class="dbms-svg-container">
+                <svg class="dbms-svg-diagram" width="500" height="280" viewBox="0 0 500 280">
+                  <!-- External Views -->
+                  <rect class="dbms-svg-node" x="40" y="20" width="100" height="40"/>
+                  <text class="dbms-svg-text" x="90" y="45">View 1</text>
+                  
+                  <rect class="dbms-svg-node" x="200" y="20" width="100" height="40"/>
+                  <text class="dbms-svg-text" x="250" y="45">View 2</text>
+                  
+                  <rect class="dbms-svg-node" x="360" y="20" width="100" height="40"/>
+                  <text class="dbms-svg-text" x="410" y="45">View 3</text>
+                  
+                  <text class="dbms-svg-text-title" x="250" y="75">External Level</text>
+                  
+                  <!-- Connectors from External to Conceptual -->
+                  <path class="dbms-svg-line-active" d="M90,60 L250,110"/>
+                  <path class="dbms-svg-line-active" d="M250,60 L250,110"/>
+                  <path class="dbms-svg-line-active" d="M410,60 L250,110"/>
+
+                  <!-- Conceptual Schema -->
+                  <rect class="dbms-svg-node-alt" x="150" y="110" width="200" height="40"/>
+                  <text class="dbms-svg-text" x="250" y="135">Conceptual Schema (Tables, Views)</text>
+                  <text class="dbms-svg-text-title" x="250" y="165">Conceptual Level</text>
+
+                  <!-- Connector Conceptual to Internal -->
+                  <path class="dbms-svg-line-active" d="M250,150 L250,190"/>
+
+                  <!-- Internal Schema -->
+                  <rect class="dbms-svg-node-green" x="150" y="190" width="200" height="40"/>
+                  <text class="dbms-svg-text" x="250" y="215">Internal Schema (B-Trees, Files)</text>
+                  <text class="dbms-svg-text-title" x="250" y="245">Internal Level</text>
+
+                  <!-- Connector Internal to Database -->
+                  <path class="dbms-svg-line" d="M250,230 L250,250"/>
+                  <circle cx="250" cy="255" r="5" fill="#22c55e" />
+                </svg>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>Understanding the Levels</h4>
+                <ul>
+                  <li><strong>External Level (Views):</strong> What the end-users see (e.g., individual screens, customized summaries).</li>
+                  <li><strong>Conceptual Level:</strong> The logical structure of the entire database. It defines tables, attributes, primary keys, and relations.</li>
+                  <li><strong>Internal Level (Physical):</strong> How data is actually stored (e.g., B+ Trees, sequential files, hashing strategies, clustering).</li>
+                </ul>
+              </div>
+
+              <h4>Schema vs. Instance</h4>
+              <ul>
+                <li><strong>Schema:</strong> The skeleton structure / blueprint of the database. It is defined once and rarely changes (e.g., table columns and datatypes).</li>
+                <li><strong>Instance:</strong> The snapshot collection of actual data stored in the database at a specific moment. It changes constantly as rows are added, edited, or deleted.</li>
+              </ul>
+
+              <div class="dbms-exercise" id="exercise-architecture">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Schema &amp; Instance
+                </div>
+                <p>If you execute <code>ALTER TABLE Students ADD COLUMN email VARCHAR(100);</code>, are you modifying the database <strong>Schema</strong> or the database <strong>Instance</strong>?</p>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-architecture">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-architecture">
+                  <p><strong>Answer: Schema</strong></p>
+                  <p>Explanation: Running `ALTER TABLE` changes the structural blueprint (the columns available in the table definition). Changes to the actual row records (e.g., adding a student's record) modify the database instance.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Types of Databases -->
+            <article class="dbms-lesson" id="types" data-topic="3">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">03</span>
+                <h3>Types of Databases</h3>
+              </div>
+
+              <p>
+                Databases are grouped by how they organize data. Choosing the correct type is critical for application performance.
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>1. Relational Databases (RDBMS)</h4>
+                <p>Data is organized into tabular structures with rows and columns. They enforce strict relations using primary and foreign keys, supporting complex transactions and standardized queries via SQL. Examples: PostgreSQL, MySQL, SQLite.</p>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>2. NoSQL Databases (Not Only SQL)</h4>
+                <p>Designed for horizontal scaling, high write velocities, and semi-structured or unstructured data. They avoid rigid tables and use four main models:</p>
+                <ul>
+                  <li><strong>Document:</strong> Stores data as JSON documents (e.g., MongoDB).</li>
+                  <li><strong>Key-Value:</strong> Ultra-fast caches storing binary data pairs (e.g., Redis).</li>
+                  <li><strong>Column-Family:</strong> Optimized for scanning large analytical datasets (e.g., Cassandra).</li>
+                  <li><strong>Graph:</strong> Represents highly connected nodes and relationships (e.g., Neo4j).</li>
+                </ul>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>3. Distributed Databases</h4>
+                <p>Data is physically split (partitioned or sharded) or duplicated (replicated) across multiple distinct machines or cloud data centers. This ensures high system availability and disaster tolerance. Examples: Google Spanner, CockroachDB.</p>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-types">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Database Types
+                </div>
+                <p>Scenario: You are building a real-time chat dashboard showing live active-user counts and message delivery locks. Performance must be sub-millisecond, and the schema will expand constantly. Which database model is best suited?</p>
+                <ul>
+                  <li>A) Relational database (PostgreSQL)</li>
+                  <li>B) Document database (MongoDB)</li>
+                  <li>C) Key-Value memory store (Redis)</li>
+                  <li>D) Graph database (Neo4j)</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-types">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-types">
+                  <p><strong>Correct Answer: C</strong></p>
+                  <p>Explanation: For sub-millisecond real-time tracking, an in-memory key-value cache (like Redis) is ideal. Relational and document databases query disks which introduces read latency, whereas Key-Value memory caches operate directly inside RAM.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. ER Model & Diagrams -->
+            <article class="dbms-lesson" id="er-model" data-topic="4">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">04</span>
+                <h3>ER Model &amp; ER Diagrams</h3>
+              </div>
+
+              <p>
+                The <strong>Entity-Relationship (ER) Model</strong> is a conceptual framework used to design databases. It represents real-world concepts as Entities, Attributes, and Relationships.
+              </p>
+
+              <div class="dbms-svg-container">
+                <svg class="dbms-svg-diagram" width="500" height="200" viewBox="0 0 500 200">
+                  <!-- Student Entity (Rectangle) -->
+                  <rect class="dbms-svg-node" x="40" y="80" width="100" height="40"/>
+                  <text class="dbms-svg-text" x="90" y="105">STUDENT</text>
+                  
+                  <!-- Attributes of Student (Ovals) -->
+                  <ellipse cx="90" cy="30" rx="40" ry="18" fill="none" stroke="var(--primary-light)" stroke-width="1.5"/>
+                  <text class="dbms-svg-text" x="90" y="34" font-size="10"><u>StudentID</u></text>
+                  <line x1="90" y1="48" x2="90" y2="80" stroke="var(--glass-border)" stroke-width="1.5"/>
+
+                  <!-- Enrolls Relationship (Diamond) -->
+                  <polygon points="250,65 295,100 250,135 205,100" fill="none" stroke="var(--accent)" stroke-width="2"/>
+                  <text class="dbms-svg-text" x="250" y="104" font-size="11">Enrolls</text>
+                  
+                  <!-- Course Entity (Rectangle) -->
+                  <rect class="dbms-svg-node" x="360" y="80" width="100" height="40"/>
+                  <text class="dbms-svg-text" x="410" y="105">COURSE</text>
+
+                  <!-- Attributes of Course (Ovals) -->
+                  <ellipse cx="410" cy="30" rx="40" ry="18" fill="none" stroke="var(--primary-light)" stroke-width="1.5"/>
+                  <text class="dbms-svg-text" x="410" y="34" font-size="10">CourseID</text>
+                  <line x1="410" y1="48" x2="410" y2="80" stroke="var(--glass-border)" stroke-width="1.5"/>
+
+                  <!-- Connection lines Entity to Relationship -->
+                  <line x1="140" y1="100" x2="205" y2="100" stroke="var(--primary)" stroke-width="2"/>
+                  <line x1="295" y1="100" x2="360" y2="100" stroke="var(--primary)" stroke-width="2"/>
+                  <text class="dbms-svg-text" x="170" y="92" font-size="10">N</text>
+                  <text class="dbms-svg-text" x="330" y="92" font-size="10">M</text>
+                </svg>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>Core Concepts of the ER Model</h4>
+                <ul>
+                  <li><strong>Entities:</strong> Objects or concepts (e.g., <code>Student</code>, <code>Course</code>). Weak entities depend on another entity for identity.</li>
+                  <li><strong>Attributes:</strong> Attributes are characteristics of entities:
+                    <ul>
+                      <li><em>Simple:</em> Atomic values (e.g., Gender).</li>
+                      <li><em>Composite:</em> Can be divided (e.g., Name -> First Name, Last Name).</li>
+                      <li><em>Multi-valued:</em> Can have multiple values (e.g., PhoneNumbers).</li>
+                      <li><em>Derived:</em> Calculated from other fields (e.g., Age derived from BirthDate).</li>
+                    </ul>
+                  </li>
+                  <li><strong>Relationships:</strong> Associations between entities (e.g., a Student <em>enrolls</em> in a Course). Relationships have cardinalities: One-to-One (1:1), One-to-Many (1:N), or Many-to-Many (N:M).</li>
+                </ul>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-er-model">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: ER Model
+                </div>
+                <p>If a student can enroll in multiple courses, and each course can contain multiple students, what is the cardinality of the <code>Enrolls</code> relationship?</p>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-er-model">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-er-model">
+                  <p><strong>Answer: Many-to-Many (N:M)</strong></p>
+                  <p>Explanation: Since entities on both sides are associated with multiple instances of the other, it represents an N:M relationship. In relational mapping, this results in a separate junction/association table.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Keys in DBMS -->
+            <article class="dbms-lesson" id="keys" data-topic="5">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">05</span>
+                <h3>Keys in DBMS</h3>
+              </div>
+
+              <p>
+                Keys are attributes or sets of attributes that uniquely identify rows in a table. They establish and enforce relationships between tables.
+              </p>
+
+              <div class="dbms-table-wrap">
+                <table class="dbms-table" aria-label="Types of Keys Summary">
+                  <thead>
+                    <tr>
+                      <th scope="col">Key Type</th>
+                      <th scope="col">Definition</th>
+                      <th scope="col">Allows NULL?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Super Key</strong></td>
+                      <td>A set of one or more columns that uniquely identifies a row.</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Candidate Key</strong></td>
+                      <td>A minimal Super Key (no redundant attributes).</td>
+                      <td>No (typically)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Primary Key</strong></td>
+                      <td>The candidate key chosen by the database designer to uniquely identify rows.</td>
+                      <td>No</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Foreign Key</strong></td>
+                      <td>A column that references a Primary Key in another table, establishing a relationship.</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Composite Key</strong></td>
+                      <td>A Primary Key consisting of two or more columns.</td>
+                      <td>No</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="dbms-callout">
+                <span class="dbms-callout-icon">💡</span>
+                <p>A table can have multiple **Candidate Keys**, but only one can be chosen as the **Primary Key**. Any candidate keys not chosen as the primary key are called **Alternate Keys**.</p>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-keys">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Keys
+                </div>
+                <p>Given a table schema: <code>Enrollments(StudentID, CourseID, DateEnrolled, Grade)</code>. If a student can enroll in multiple courses, and multiple students can take the same course, which of the following acts as the Primary Key?</p>
+                <ul>
+                  <li>A) StudentID</li>
+                  <li>B) CourseID</li>
+                  <li>C) Composite Key of (StudentID, CourseID)</li>
+                  <li>D) DateEnrolled</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-keys">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-keys">
+                  <p><strong>Correct Answer: C</strong></p>
+                  <p>Explanation: Because StudentID alone repeats (a student takes multiple courses) and CourseID repeats (multiple students enroll), neither can be unique alone. The combination of (StudentID, CourseID) is unique for each enrollment, making it a composite primary key.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Normalization -->
+            <article class="dbms-lesson" id="normalization" data-topic="6">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">06</span>
+                <h3>Normalization</h3>
+              </div>
+
+              <p>
+                <strong>Normalization</strong> is the process of structuring relational database tables to reduce redundancy and prevent **data anomalies** (Insertion, Deletion, and Update anomalies).
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>The Anomalies</h4>
+                <ul>
+                  <li><strong>Insertion Anomaly:</strong> Cannot add data because some unrelated columns are missing.</li>
+                  <li><strong>Deletion Anomaly:</strong> Deleting a record unintentionally deletes unrelated crucial information.</li>
+                  <li><strong>Update Anomaly:</strong> Modifying a value requires editing multiple redundant rows, risking inconsistencies.</li>
+                </ul>
+              </div>
+
+              <h4>Normal Forms (1NF to BCNF)</h4>
+              
+              <div class="dbms-concept-card">
+                <h4>1. First Normal Form (1NF)</h4>
+                <p>Rules: All column values must be **atomic** (no multi-valued attributes / lists), and each column must contain values of the same type.</p>
+                <p><em>Example:</em> If column <code>Phones</code> contains <code>"555-0192, 555-0143"</code>, it must be split into separate rows.</p>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>2. Second Normal Form (2NF)</h4>
+                <p>Rules: Must be in **1NF**, and there must be **no partial dependency** (non-prime attributes must depend on the <em>entire</em> candidate primary key, not a subset of a composite primary key).</p>
+                <p><em>Example:</em> In a table with key <code>(EmpID, ProjectID)</code>, if employee name depends solely on <code>EmpID</code>, it violates 2NF and employee data must be moved to a separate table.</p>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>3. Third Normal Form (3NF)</h4>
+                <p>Rules: Must be in **2NF**, and there must be **no transitive dependency** (non-prime attributes cannot depend on other non-prime attributes; they must depend only on the primary key).</p>
+                <p><em>Example:</em> In a table with key <code>StudentID</code>, if <code>City</code> depends on <code>ZipCode</code>, which depends on <code>StudentID</code>, it violates 3NF. Move <code>ZipCode -> City</code> to a separate table.</p>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>4. Boyce-Codd Normal Form (BCNF)</h4>
+                <p>Rules: Must be in **3NF**, and for every functional dependency <code>X → Y</code>, <code>X</code> must be a **super key**. BCNF is a stronger version of 3NF.</p>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-normalization">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Normalization
+                </div>
+                <p>Suppose you have a table: <code>Store(StoreID, ManagerID, ManagerPhone, ZipCode)</code> where <code>StoreID</code> is the Primary Key. If <code>ManagerPhone</code> depends directly on <code>ManagerID</code> (a non-prime attribute), which normal form does this table violate?</p>
+                <ul>
+                  <li>A) 1NF</li>
+                  <li>B) 2NF</li>
+                  <li>C) 3NF</li>
+                  <li>D) It is already in BCNF</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-normalization">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-normalization">
+                  <p><strong>Correct Answer: C</strong></p>
+                  <p>Explanation: Since <code>ManagerPhone</code> depends on <code>ManagerID</code>, which depends on the primary key <code>StoreID</code>, this forms a transitive dependency (<code>StoreID -> ManagerID -> ManagerPhone</code>). This violates 3NF rules.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. SQL Basics -->
+            <article class="dbms-lesson" id="sql-basics" data-topic="7">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">07</span>
+                <h3>SQL Basics</h3>
+              </div>
+
+              <p>
+                <strong>SQL (Structured Query Language)</strong> is the standard programming language used to interact with relational databases.
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>SQL Statements classification</h4>
+                <ul>
+                  <li><strong>DDL (Data Definition Language):</strong> Define schema structures. Commands: <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>.</li>
+                  <li><strong>DML (Data Manipulation Language):</strong> Modify and query database rows. Commands: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>.</li>
+                </ul>
+              </div>
+
+              <h4>Core CRUD Commands with Examples:</h4>
+
+              <!-- CREATE TABLE -->
+              <div class="dbms-code-block">
+                <div class="dbms-code-header">
+                  <span class="dbms-code-lang">SQL - CREATE</span>
+                  <button class="dbms-code-copy" aria-label="Copy code" data-code="CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    salary DECIMAL(10, 2)
+);">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">CREATE TABLE</span> <span class="tok-var">employees</span> (
+    <span class="tok-var">id</span> <span class="tok-bi">INT</span> <span class="tok-kw">PRIMARY KEY</span>,
+    <span class="tok-var">name</span> <span class="tok-bi">VARCHAR</span>(<span class="tok-num">50</span>) <span class="tok-kw">NOT NULL</span>,
+    <span class="tok-var">salary</span> <span class="tok-bi">DECIMAL</span>(<span class="tok-num">10</span>, <span class="tok-num">2</span>)
+);</code></pre>
+              </div>
+
+              <!-- INSERT -->
+              <div class="dbms-code-block">
+                <div class="dbms-code-header">
+                  <span class="dbms-code-lang">SQL - INSERT</span>
+                  <button class="dbms-code-copy" aria-label="Copy code" data-code="INSERT INTO employees (id, name, salary) VALUES
+(1, 'Alice', 75000.00),
+(2, 'Bob', 62000.00),
+(3, 'Charlie', 80000.00);">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">INSERT INTO</span> <span class="tok-var">employees</span> (<span class="tok-var">id</span>, <span class="tok-var">name</span>, <span class="tok-var">salary</span>) <span class="tok-kw">VALUES</span>
+(<span class="tok-num">1</span>, <span class="tok-str">'Alice'</span>, <span class="tok-num">75000.00</span>),
+(<span class="tok-num">2</span>, <span class="tok-str">'Bob'</span>, <span class="tok-num">62000.00</span>),
+(<span class="tok-num">3</span>, <span class="tok-str">'Charlie'</span>, <span class="tok-num">80000.00</span>);</code></pre>
+              </div>
+
+              <!-- SELECT -->
+              <div class="dbms-code-block">
+                <div class="dbms-code-header">
+                  <span class="dbms-code-lang">SQL - SELECT</span>
+                  <button class="dbms-code-copy" aria-label="Copy code" data-code="SELECT name, salary FROM employees WHERE salary >= 70000 ORDER BY salary DESC;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">SELECT</span> <span class="tok-var">name</span>, <span class="tok-var">salary</span> 
+<span class="tok-kw">FROM</span> <span class="tok-var">employees</span> 
+<span class="tok-kw">WHERE</span> <span class="tok-var">salary</span> <span class="tok-op">&gt;=</span> <span class="tok-num">70000</span> 
+<span class="tok-kw">ORDER BY</span> <span class="tok-var">salary</span> <span class="tok-kw">DESC</span>;</code></pre>
+              </div>
+              <div class="dbms-output">
+                <div class="dbms-output-label">Output Result</div>
+                <pre>+---------+----------+
+| name    | salary   |
++---------+----------+
+| Charlie | 80000.00 |
+| Alice   | 75000.00 |
++---------+----------+</pre>
+              </div>
+
+              <!-- UPDATE -->
+              <div class="dbms-code-block">
+                <div class="dbms-code-header">
+                  <span class="dbms-code-lang">SQL - UPDATE</span>
+                  <button class="dbms-code-copy" aria-label="Copy code" data-code="UPDATE employees SET salary = 65000.00 WHERE id = 2;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">UPDATE</span> <span class="tok-var">employees</span> 
+<span class="tok-kw">SET</span> <span class="tok-var">salary</span> <span class="tok-op">=</span> <span class="tok-num">65000.00</span> 
+<span class="tok-kw">WHERE</span> <span class="tok-var">id</span> <span class="tok-op">=</span> <span class="tok-num">2</span>;</code></pre>
+              </div>
+
+              <!-- DELETE -->
+              <div class="dbms-code-block">
+                <div class="dbms-code-header">
+                  <span class="dbms-code-lang">SQL - DELETE</span>
+                  <button class="dbms-code-copy" aria-label="Copy code" data-code="DELETE FROM employees WHERE id = 3;">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">DELETE FROM</span> <span class="tok-var">employees</span> <span class="tok-kw">WHERE</span> <span class="tok-var">id</span> <span class="tok-op">=</span> <span class="tok-num">3</span>;</code></pre>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-sql-basics">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: SQL Basics
+                </div>
+                <p>Write an SQL query to retrieve the <code>name</code> and <code>salary</code> of all employees who earn less than <code>70000</code>.</p>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-sql-basics">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-sql-basics">
+                  <div class="dbms-code-block">
+                    <div class="dbms-code-header">
+                      <span class="dbms-code-lang">SQL Solution</span>
+                    </div>
+                    <pre><code><span class="tok-kw">SELECT</span> <span class="tok-var">name</span>, <span class="tok-var">salary</span> 
+<span class="tok-kw">FROM</span> <span class="tok-var">employees</span> 
+<span class="tok-kw">WHERE</span> <span class="tok-var">salary</span> <span class="tok-op">&lt;</span> <span class="tok-num">70000</span>;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. Transactions & ACID -->
+            <article class="dbms-lesson" id="transactions" data-topic="8">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">08</span>
+                <h3>Transactions and ACID Properties</h3>
+              </div>
+
+              <p>
+                A <strong>Transaction</strong> is a single logical unit of database processing. All database operations within a transaction must be executed as a pack. To preserve database consistency, DBMS engines enforce the four <strong>ACID Properties</strong>.
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>The ACID Rules</h4>
+                <ul>
+                  <li><strong>Atomicity:</strong> "All or nothing". If any part of a transaction fails, the entire transaction is rolled back, leaving the database unchanged.</li>
+                  <li><strong>Consistency:</strong> Ensures that a transaction moves the database from one valid state to another valid state, maintaining all constraints (e.g., non-negative balances).</li>
+                  <li><strong>Isolation:</strong> Transactions executing concurrently must run as if they are executing sequentially. Intermediate states of a transaction are hidden from other transactions.</li>
+                  <li><strong>Durability:</strong> Once a transaction commits, its changes are written to persistent storage (disk) and will survive any subsequent system failures.</li>
+                </ul>
+              </div>
+
+              <h4>The Banking Example</h4>
+              <p>Consider transferring $100 from Account A to Account B:</p>
+              <ol>
+                <li>Read balance A</li>
+                <li>Deduct $100 from A</li>
+                <li>Read balance B</li>
+                <li>Add $100 to B</li>
+              </ol>
+              <p>If the system crashes after step 2, <strong>Atomicity</strong> ensures the $100 is returned to A instead of disappearing into thin air.</p>
+
+              <div class="dbms-exercise" id="exercise-transactions">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Transactions &amp; ACID
+                </div>
+                <p>Which ACID property is violated if database transactions executing at the same time read uncommitted variables from each other, resulting in incorrect calculations?</p>
+                <ul>
+                  <li>A) Atomicity</li>
+                  <li>B) Consistency</li>
+                  <li>C) Isolation</li>
+                  <li>D) Durability</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-transactions">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-transactions">
+                  <p><strong>Correct Answer: C</strong></p>
+                  <p>Explanation: Isolation guarantees that concurrently running transactions do not interfere or read uncommitted states of each other. Violating this rule leads to Isolation anomalies (like Dirty Reads).</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Concurrency Control -->
+            <article class="dbms-lesson" id="concurrency" data-topic="9">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">09</span>
+                <h3>Concurrency Control Basics</h3>
+              </div>
+
+              <p>
+                When multiple transactions run concurrently, conflicts arise. <strong>Concurrency Control</strong> prevents anomalies such as **Dirty Reads**, **Non-Repeatable Reads**, and **Phantom Reads**.
+              </p>
+
+              <div class="dbms-concept-card">
+                <h4>Lock-Based Protocols</h4>
+                <p>Locks prevent multiple transactions from editing the same data simultaneously:</p>
+                <ul>
+                  <li><strong>Shared Lock (S):</strong> Acquired for reading. Multiple transactions can hold S-locks on the same data item simultaneously.</li>
+                  <li><strong>Exclusive Lock (X):</strong> Acquired for writing/updating. Only one transaction can hold an X-lock. S-locks and other X-locks are blocked.</li>
+                </ul>
+              </div>
+
+              <h4>Deadlocks</h4>
+              <p>A <strong>Deadlock</strong> occurs when Transaction 1 holds a lock on resource A and waits for resource B, while Transaction 2 holds a lock on resource B and waits for resource A. Neither can proceed.</p>
+              
+              <div class="dbms-callout">
+                <span class="dbms-callout-icon">⚠️</span>
+                <p>To handle deadlocks, DBMS engines use **prevention** algorithms (like Wait-Die or Wound-Wait schemes based on timestamps) or run background **deadlock detection** loops that abort one of the transactions (the victim) to resolve the block.</p>
+              </div>
+
+              <h4>Isolation Levels</h4>
+              <p>Standard SQL engines define four isolation levels (from least strict to most strict):</p>
+              <ul>
+                <li><strong>Read Uncommitted:</strong> Allows dirty reads (reading uncommitted changes from other transactions).</li>
+                <li><strong>Read Committed:</strong> Prevents dirty reads, but allows non-repeatable reads (data changes between two reads in the same transaction).</li>
+                <li><strong>Repeatable Read:</strong> Prevents non-repeatable reads, but allows phantom reads (new rows are inserted by other transactions).</li>
+                <li><strong>Serializable:</strong> Highest isolation level. Full lock protection, simulating sequential execution.</li>
+              </ul>
+
+              <div class="dbms-exercise" id="exercise-concurrency">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Concurrency Control
+                </div>
+                <p>If Transaction T1 holds a <strong>Shared Lock (S)</strong> on row 10, which lock can Transaction T2 acquire on row 10 immediately?</p>
+                <ul>
+                  <li>A) Exclusive Lock (X)</li>
+                  <li>B) Shared Lock (S)</li>
+                  <li>C) Neither</li>
+                  <li>D) Both X and S</li>
+                </ul>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-concurrency">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-concurrency">
+                  <p><strong>Correct Answer: B</strong></p>
+                  <p>Explanation: Shared locks are compatible with each other, meaning multiple transactions can read the same row at the same time. Exclusive locks are incompatible with any locks.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. Indexing & Optimization -->
+            <article class="dbms-lesson" id="indexing" data-topic="10">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">10</span>
+                <h3>Indexing and Query Optimization</h3>
+              </div>
+
+              <p>
+                Indexes are data structures used to speed up data retrieval. Without an index, the database engine must perform a slow **Full Table Scan** (reading every row on disk).
+              </p>
+
+              <div class="dbms-svg-container">
+                <svg class="dbms-svg-diagram" width="450" height="180" viewBox="0 0 450 180">
+                  <!-- Root Node -->
+                  <rect class="dbms-svg-node" x="190" y="20" width="70" height="30"/>
+                  <text class="dbms-svg-text" x="225" y="39">[ 50 ]</text>
+
+                  <!-- Connectors Root to Intermediate -->
+                  <path class="dbms-svg-line" d="M190,35 L100,80"/>
+                  <path class="dbms-svg-line" d="M260,35 L350,80"/>
+
+                  <!-- Intermediate Nodes -->
+                  <rect class="dbms-svg-node" x="65" y="80" width="70" height="30"/>
+                  <text class="dbms-svg-text" x="100" y="99">[ 25 ]</text>
+                  
+                  <rect class="dbms-svg-node" x="315" y="80" width="70" height="30"/>
+                  <text class="dbms-svg-text" x="350" y="99">[ 75 ]</text>
+
+                  <!-- Connectors Intermediate to Leaves -->
+                  <path class="dbms-svg-line" d="M65,95 L40,140"/>
+                  <path class="dbms-svg-line" d="M135,95 L160,140"/>
+                  <path class="dbms-svg-line" d="M315,95 L290,140"/>
+                  <path class="dbms-svg-line" d="M385,95 L410,140"/>
+
+                  <!-- Leaf Nodes -->
+                  <rect class="dbms-svg-node-green" x="10" y="140" width="60" height="30"/>
+                  <text class="dbms-svg-text" x="40" y="159">[10, 20]</text>
+                  
+                  <rect class="dbms-svg-node-green" x="130" y="140" width="60" height="30"/>
+                  <text class="dbms-svg-text" x="160" y="159">[30, 40]</text>
+                  
+                  <rect class="dbms-svg-node-green" x="260" y="140" width="60" height="30"/>
+                  <text class="dbms-svg-text" x="290" y="159">[60, 70]</text>
+                  
+                  <rect class="dbms-svg-node-green" x="380" y="140" width="60" height="30"/>
+                  <text class="dbms-svg-text" x="410" y="159">[80, 90]</text>
+
+                  <text class="dbms-svg-text-title" x="225" y="125">B+ Tree Structure</text>
+                </svg>
+              </div>
+
+              <div class="dbms-concept-card">
+                <h4>Clustered vs. Non-Clustered Indexes</h4>
+                <ul>
+                  <li><strong>Clustered Index:</strong> Dictates the physical order of data rows on the disk. Because data can only be sorted in one way, there can be only **one clustered index** per table (usually on the Primary Key).</li>
+                  <li><strong>Non-Clustered Index:</strong> Creates a separate structure containing copy of key columns and a pointer to the physical data rows. You can create **multiple non-clustered indexes** on a table.</li>
+                </ul>
+              </div>
+
+              <h4>B-Trees and B+ Trees</h4>
+              <p>Relational databases heavily use <strong>B+ Trees</strong> for indexing. The advantages are:</p>
+              <ul>
+                <li><strong>Balanced Tree:</strong> Guaranteed O(log N) search, insert, and delete times.</li>
+                <li><strong>Range Queries:</strong> Leaf nodes are linked together sequentially (like a linked list), making range queries (e.g., <code>WHERE age BETWEEN 20 AND 30</code>) extremely fast.</li>
+              </ul>
+
+              <div class="dbms-exercise" id="exercise-indexing">
+                <div class="dbms-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Indexing
+                </div>
+                <p>Why can a relational database table have only one <strong>Clustered Index</strong>?</p>
+                <button class="dbms-exercise-toggle" aria-expanded="false" aria-controls="solution-indexing">Show Solution</button>
+                <div class="dbms-exercise-solution" id="solution-indexing">
+                  <p><strong>Answer: Physical sorting constraints</strong></p>
+                  <p>Explanation: Since a clustered index dictates the physical sorting and organization of rows on disk blocks, and data rows can physically be sorted in only one sequence (e.g., by ID or Surname), only one clustered index is physically possible. Non-clustered indexes, however, are separate index tables that point back to the raw rows, allowing multiples.</p>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="dbms-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

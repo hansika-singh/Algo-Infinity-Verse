@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="feedback.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="feedback">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Feedback Content Section -->
+    <section class="feedback-page">
+      <div class="feedback-hero-bg">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      
+      <div class="feedback-container">
+        <div class="feedback-header">
+          <h1 class="gradient-text">Share Your Feedback</h1>
+          <p class="subtitle">Help us improve Algo Infinity Verse. Suggest features, report issues, or tell us what you love.</p>
+        </div>
+
+        <div class="feedback-card-wrapper glass-card">
+          <!-- Session notice widget -->
+          <div class="session-notice" id="sessionNotice">
+            <i class="fas fa-circle-notch fa-spin"></i> Checking authentication status...
+          </div>
+
+          <form id="feedbackForm" class="feedback-form" novalidate>
+            <!-- Feedback Type Cards Selector -->
+            <div class="form-group">
+              <label class="field-label">What kind of feedback do you have?</label>
+              <div class="feedback-type-selector" role="radiogroup" aria-label="Feedback Type Selector">
+                <div class="type-card" data-value="Suggestion" tabindex="0" role="radio" aria-checked="false">
+                  <div class="card-icon" style="--card-color: #fbbf24;"><i class="fas fa-lightbulb"></i></div>
+                  <span class="card-label">Suggestion</span>
+                </div>
+                <div class="type-card" data-value="Bug Report" tabindex="0" role="radio" aria-checked="false">
+                  <div class="card-icon" style="--card-color: #ef4444;"><i class="fas fa-bug"></i></div>
+                  <span class="card-label">Bug Report</span>
+                </div>
+                <div class="type-card" data-value="Feature Request" tabindex="0" role="radio" aria-checked="false">
+                  <div class="card-icon" style="--card-color: #06b6d4;"><i class="fas fa-rocket"></i></div>
+                  <span class="card-label">Feature Request</span>
+                </div>
+                <div class="type-card" data-value="General Feedback" tabindex="0" role="radio" aria-checked="false">
+                  <div class="card-icon" style="--card-color: #a78bfa;"><i class="fas fa-comments"></i></div>
+                  <span class="card-label">General Feedback</span>
+                </div>
+              </div>
+              <input type="hidden" name="feedbackType" id="selectedFeedbackType" required />
+              <div class="error-message" id="typeError" role="alert">Please select a feedback type.</div>
+            </div>
+
+            <!-- Subject Input -->
+            <div class="form-group">
+              <label for="subject" class="field-label">Subject</label>
+              <div class="input-wrapper">
+                <i class="fas fa-heading field-icon"></i>
+                <input 
+                  type="text" 
+                  id="subject" 
+                  name="subject" 
+                  placeholder="Summarize your feedback in a few words" 
+                  required 
+                  minlength="3" 
+                  maxlength="100"
+                />
+              </div>
+              <div class="error-message" id="subjectError" role="alert">Subject must be at least 3 characters.</div>
+            </div>
+
+            <!-- Message Textarea -->
+            <div class="form-group">
+              <div class="label-row">
+                <label for="message" class="field-label">Feedback Details</label>
+                <span class="char-counter" id="charCounter">0 / 1000 characters</span>
+              </div>
+              <div class="input-wrapper textarea-wrapper">
+                <i class="fas fa-pen-alt field-icon textarea-icon"></i>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  placeholder="Provide a detailed description of your suggestion, bug report, or feature request..." 
+                  required 
+                  minlength="10" 
+                  maxlength="1000"
+                ></textarea>
+              </div>
+              <div class="error-message" id="messageError" role="alert">Message must be at least 10 characters.</div>
+            </div>
+
+            <!-- Form Message Box (for submission failures) -->
+            <div class="form-submit-message hidden" id="formSubmitMessage" role="alert"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary submit-btn" id="submitBtn">
+              <span class="btn-text"><i class="fas fa-paper-plane"></i> Submit Feedback</span>
+              <span class="btn-loader hidden"><i class="fas fa-circle-notch fa-spin"></i> Submitting...</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Modal Overlay -->
+    <div class="modal-overlay hidden" id="successModalOverlay" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <div class="success-modal glass-card">
+        <div class="success-icon-wrapper">
+          <div class="success-icon-circle">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+        <h2 id="successTitle">Thank You!</h2>
+        <p>Your feedback has been successfully submitted and stored. We appreciate you taking the time to help improve Algo Infinity Verse!</p>
+        <button class="btn btn-primary" id="successModalCloseBtn">Go back to Home</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script type="module" src="/modules/domSanitizer.js"></script>
+    <script src="feedback.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

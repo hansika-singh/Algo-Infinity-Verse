@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post-Quantum Cryptography: CRYSTALS-Kyber | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive simulator for ML-KEM (CRYSTALS-Kyber) lattice-based encryption." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pqc-kyber.css" />
+</head>
+<body class="pqc-body">
+
+    <nav class="navbar pqc-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-shield-alt"></i> PQC Engine: ML-KEM
+        </div>
+    </nav>
+
+    <!-- Header Config -->
+    <header class="pqc-header">
+        <div class="header-info">
+            <h2><i class="fas fa-atom"></i> CRYSTALS-Kyber (Lattice Cryptography)</h2>
+            <p>
+                Quantum computers use Shor's Algorithm to break RSA/ECC. Kyber relies on the <strong>Module Learning With Errors (MLWE)</strong> problem, utilizing polynomial matrices and intentional "noise" to encapsulate secrets securely against quantum attacks.
+            </p>
+        </div>
+        <div class="math-params">
+            <div class="param-box">Modulus (q): <span>3329</span></div>
+            <div class="param-box">Polynomial Degree (N): <span>16</span></div>
+            <div class="param-box">Rank (k): <span>2</span></div>
+        </div>
+    </header>
+
+    <main class="pqc-workspace">
+        
+        <!-- Left Panel: ALICE (Key Generation & Decapsulation) -->
+        <div class="panel alice-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-user-shield"></i> Alice (Server)</h3>
+                <span class="step-badge" id="aliceStatus">Step 1: Setup</span>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Step 1: KeyGen -->
+                <div class="step-container active" id="aliceKeyGen">
+                    <h4>1. Generate Secret & Error</h4>
+                    <p class="desc">Alice generates small secret polynomial vector <code>s</code> and error vector <code>e</code>.</p>
+                    
+                    <div class="poly-vec-display">
+                        <div class="vec-col">
+                            <span class="vec-label">Secret (s)</span>
+                            <div id="grid-s" class="grid-wrapper"></div>
+                        </div>
+                        <div class="vec-col">
+                            <span class="vec-label">Error (e)</span>
+                            <div id="grid-e" class="grid-wrapper"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mt-3" id="btnAliceKeyGen">Generate Keys</button>
+                </div>
+
+                <!-- Step 3: Decapsulation -->
+                <div class="step-container hidden" id="aliceDecaps">
+                    <h4>4. Decapsulate Ciphertext</h4>
+                    <p class="desc">Alice receives <code>(u, v)</code>. She removes the mask by computing <code>noisy_m = v - s^T * u</code>.</p>
+                    
+                    <div class="calc-box">
+                        <span class="vec-label">Recovered Noisy Message (v - s^T u)</span>
+                        <div id="grid-noisy-m" class="grid-wrapper single"></div>
+                    </div>
+
+                    <p class="desc mt-3">By rounding coefficients closer to <code>q/2 (1664)</code> to 1, and <code>0/3329</code> to 0, she filters out the quantum-resistant noise!</p>
+                    
+                    <button class="btn btn-success w-100" id="btnAliceDecaps">Round & Recover Secret</button>
+                    
+                    <div class="final-secret hidden" id="aliceFinalSecret">
+                        <strong>Shared Binary Secret:</strong>
+                        <div class="binary-string" id="aliceBinary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: PUBLIC CHANNEL (The Lattice Math) -->
+        <div class="panel public-panel">
+            <div class="panel-header public-header">
+                <h3><i class="fas fa-wifi"></i> Public Channel</h3>
+            </div>
+            
+            <div class="panel-content public-content">
+                <p class="desc text-center">Data intercepted here is mathematically quantum-safe due to LWE noise.</p>
+                
+                <div class="channel-section" id="pubKeySection">
+                    <h4>Public Key: (A, t)</h4>
+                    <p class="math-eq"><code>t = A * s + e</code></p>
+                    <div class="matrix-display">
+                        <div class="mat-box">
+                            <span class="vec-label">Matrix A (Random)</span>
+                            <div id="grid-A" class="grid-wrapper matrix"></div>
+                        </div>
+                        <div class="mat-operator">* s + e = </div>
+                        <div class="mat-box">
+                            <span class="vec-label">Vector t (Noisy)</span>
+                            <div id="grid-t" class="grid-wrapper"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="channel-divider"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="channel-section hidden" id="cipherSection">
+                    <h4>Ciphertext: (u, v)</h4>
+                    <p class="math-eq"><code>u = A^T * r + e1</code> <br> <code>v = t^T * r + e2 + Encode(m)</code></p>
+                    <div class="matrix-display">
+                        <div class="mat-box">
+                            <span class="vec-label">Vector u</span>
+                            <div id="grid-u" class="grid-wrapper"></div>
+                        </div>
+                        <div class="mat-box">
+                            <span class="vec-label">Polynomial v</span>
+                            <div id="grid-v" class="grid-wrapper single"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-overlay" id="publicOverlay">
+                    Awaiting Alice...
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: BOB (Encapsulation) -->
+        <div class="panel bob-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-laptop-code"></i> Bob (Client)</h3>
+                <span class="step-badge disabled" id="bobStatus">Waiting</span>
+            </div>
+            
+            <div class="panel-content">
+                <div class="step-container hidden" id="bobEncaps">
+                    <h4>2. Message Encoding</h4>
+                    <p class="desc">Bob generates a 16-bit shared secret and encodes it into a polynomial (0s stay 0, 1s become <code>q/2 = 1664</code>).</p>
+                    
+                    <div class="binary-string" id="bobBinary"></div>
+                    <div id="grid-encode-m" class="grid-wrapper single mt-2"></div>
+
+                    <h4 class="mt-3">3. Generate Noise & Encapsulate</h4>
+                    <p class="desc">Bob creates small random vectors <code>r, e1, e2</code> to obscure the message using the Public Key <code>(A, t)</code>.</p>
+                    
+                    <div class="poly-vec-display small-grids">
+                        <div class="vec-col">
+                            <span class="vec-label">r</span>
+                            <div id="grid-r" class="grid-wrapper"></div>
+                        </div>
+                        <div class="vec-col">
+                            <span class="vec-label">e1</span>
+                            <div id="grid-e1" class="grid-wrapper"></div>
+                        </div>
+                        <div class="vec-col">
+                            <span class="vec-label">e2</span>
+                            <div id="grid-e2" class="grid-wrapper single"></div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-accent w-100 mt-3" id="btnBobEncaps">Compute (u, v) & Send</button>
+                </div>
+                
+                <div class="waiting-state" id="bobWaiting">
+                    <i class="fas fa-hourglass-half"></i>
+                    <p>Waiting for Alice to publish her Public Key...</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Tooltip -->
+    <div class="poly-tooltip hidden" id="polyTooltip">
+        Value: <span id="ttVal">0</span>
+    </div>
+
+    <script src="pqc-kyber.js"></script>
+</body>
+</html>

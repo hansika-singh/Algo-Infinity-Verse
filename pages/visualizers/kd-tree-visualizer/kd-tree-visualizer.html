@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K-D Tree & Nearest Neighbor Search | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for K-D Tree spatial partitioning and nearest neighbor search algorithm." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="kd-tree-visualizer.css" />
+    
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/pages/visualizers/visualizers.html"><i class="fas fa-shapes"></i> Visualizers</a>
+        </div>
+    </nav>
+
+    <main class="vis-workspace">
+        
+        <!-- Left Panel: Controls -->
+        <aside class="vis-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-project-diagram"></i> K-D Tree</h3>
+            </div>
+            
+            <div class="sidebar-content">
+                
+                <div class="control-group">
+                    <label>Interaction Mode:</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button class="btn-primary" id="modeAdd" title="Click on the canvas to add nodes to the K-D Tree"><i class="fas fa-plus"></i> Add Points</button>
+                        <button class="btn-secondary" id="modeSearch" title="Click on the canvas to search for the nearest neighbor"><i class="fas fa-search"></i> Nearest Neighbor</button>
+                    </div>
+                </div>
+
+                <div class="control-group instruction-box" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent-color); font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+                    <i class="fas fa-info-circle" style="color: var(--accent-color);"></i> 
+                    <strong>Tip:</strong> Generate some points first, then switch to 'Nearest Neighbor' mode and click anywhere on the canvas to watch the algorithm prune distant branches!
+                </div>
+                
+                <div class="control-group">
+                    <label>Data Generation:</label>
+                    <button class="btn-secondary" id="btnRandomize" style="width: 100%; margin-bottom: 8px;">
+                        <i class="fas fa-random"></i> Generate 15 Points
+                    </button>
+                    <button class="btn-secondary" id="btnClear" style="width: 100%;">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+                
+                <hr style="border-color: var(--border-color); margin: 20px 0;">
+
+                <div class="control-group">
+                    <label>Animation Speed:</label>
+                    <div class="speed-control">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <input type="range" id="speedSlider" min="1" max="5" value="3">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Search Playback:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="btnPlayPause" class="btn-secondary" disabled style="flex:1"><i class="fas fa-play"></i> Play</button>
+                        <button id="btnStep" class="btn-secondary" disabled style="flex:1"><i class="fas fa-step-forward"></i> Step</button>
+                    </div>
+                </div>
+                
+                <div class="metrics-panel mt-3">
+                    <h4 style="margin-top:0; margin-bottom:10px; font-size: 14px; text-transform:uppercase;">Search Stats</h4>
+                    <div class="metric-row">Nodes Visited: <span id="statVisited" class="highlight-text">0</span></div>
+                    <div class="metric-row">Branches Pruned: <span id="statPruned" class="highlight-text">0</span></div>
+                    <div class="metric-row">Best Distance: <span id="statDist" class="highlight-text">-</span></div>
+                </div>
+
+            </div>
+        </aside>
+        
+        <!-- Main Area: Split vertically or horizontally -->
+        <section class="vis-main" style="display: flex; flex-direction: column;">
+            
+            <!-- Spatial Canvas -->
+            <div class="panel canvas-panel" style="flex: 1; border-bottom: 2px solid var(--border-color); display: flex; flex-direction: column;">
+                <div class="panel-header">
+                    <h4>2D Spatial Partitioning</h4>
+                    <small style="color: var(--text-muted);">Click to Add/Search based on mode</small>
+                </div>
+                <div style="flex: 1; position: relative; overflow: hidden; display:flex; align-items:center; justify-content:center;" id="canvasContainer">
+                    <canvas id="kdCanvas" style="background: var(--bg-primary); cursor: crosshair; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></canvas>
+                </div>
+            </div>
+            
+            <!-- D3 Tree Graph -->
+            <div class="panel tree-panel" style="flex: 1; display: flex; flex-direction: column; position: relative; border-top: 1px solid var(--border-color);">
+                <div class="panel-header" style="padding: 10px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-color);">
+                    <h4 style="margin: 0; font-family: 'Orbitron', sans-serif;">Internal Binary Tree (D3)</h4>
+                </div>
+                <div id="treeContainer" style="flex: 1; background: var(--bg-secondary); overflow: hidden; position: relative;">
+                    <svg id="treeSvg" width="100%" height="100%"></svg>
+                    <div id="treeOverlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                        <h2 style="color: var(--text-muted); opacity: 0.5;">Add points to construct tree</h2>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+    </main>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="kd-tree-visualizer.js"></script>
+</body>
+</html>

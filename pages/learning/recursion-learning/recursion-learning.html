@@ -1,0 +1,2444 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Recursion – Complete Recursion Guide | Algo Infinity Verse</title>
+    <meta name="description"
+        content="Master Recursion from the ground up. Learn base cases, recursive functions, recursion trees, call stacks, common recursion patterns, and practice problems." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="recursion-learning.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Multi-language Tab Switching Logic & Layout */
+        .lang-switcher-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.25rem 0.5rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 0.25rem;
+        }
+
+        .lang-tab-btn {
+            background: none;
+            border: 1px solid transparent;
+            border-bottom: none;
+            color: var(--text-secondary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: -1px;
+        }
+
+        .lang-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .lang-tab-btn.active {
+            color: var(--recursion-primary);
+            background: #0d1117;
+            border-color: var(--glass-border);
+        }
+
+        .lang-pane {
+            display: none;
+        }
+
+        .lang-pane.active {
+            display: block;
+        }
+    </style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="recursion-learning">
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="infinity-loader">∞</div>
+            <h2>Algo Infinity Verse</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="stars"></div>
+            <div class="stars2"></div>
+            <div class="stars3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Think Recursively, Solve Efficiently</span>
+                <span class="main-title gradient-text">Master Recursion</span>
+                <span class="subtitle">
+                    Learn Base Cases, Recursive Functions, Call Stacks &amp; Problem Solving Patterns
+                </span>
+            </h1>
+            <div class="typing-container">
+                <span class="typing-text_recursion" id="typingTextRecursion"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#introduction" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Learning
+                </a>
+                <a href="#practice" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Practice Exercises
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="7">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="7">0</span>
+                    <span class="stat-label">Examples</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="15">0</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="recursion-learning" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">🔁</span>
+                Learn Recursion
+            </h2>
+            <p class="section-subtitle">
+                Break down complex problems by having functions call themselves — elegantly and efficiently.
+            </p>
+
+            <div class="recursion-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                aria-valuemax="100" aria-label="Learning progress">
+                <span class="recursion-progress-text"><span id="progressCount">0</span> / 7 topics completed</span>
+                <div class="recursion-progress-track">
+                    <div class="recursion-progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="recursion-layout">
+                <aside class="recursion-sidebar" aria-label="Topic navigation">
+                    <div class="recursion-sidebar-title">Topics</div>
+                    <ul class="recursion-sidebar-nav" id="topicNav">
+                        <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+                        <li><a href="#base-recursive-case"><span class="nav-icon">🎯</span> Base &amp; Recursive
+                                Case</a></li>
+                        <li><a href="#call-stack"><span class="nav-icon">📚</span> Call Stack</a></li>
+                        <li><a href="#recursion-tree"><span class="nav-icon">🌳</span> Recursion Tree</a></li>
+                        <li><a href="#common-problems"><span class="nav-icon">🧩</span> Common Problems</a></li>
+                        <li><a href="#advantages-limitations"><span class="nav-icon">⚖️</span> Pros &amp; Cons</a></li>
+                        <li><a href="#practice"><span class="nav-icon">🏋️</span> Practice Exercises</a></li>
+                    </ul>
+                </aside>
+
+                <main class="recursion-main-content" id="mainContent">
+
+                    <article class="recursion-lesson" id="introduction" data-topic="1">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">01</span>
+                            <h3>Introduction to Recursion</h3>
+                        </div>
+
+                        <p>
+                            <strong>Recursion</strong> is a programming technique where a function calls <em>itself</em>
+                            to solve a smaller version of the same problem. Instead of using explicit loops, we break a
+                            problem into sub-problems until we reach a simple case we can solve directly.
+                        </p>
+
+                        <div class="recursion-concept-card">
+                            <h4>Real-World Analogy</h4>
+                            <p>Imagine you're in a line of people and you want to know your position. You ask the person
+                                in front, who asks the person in front of them, and so on — until the first person says
+                                "I'm #1." Each person then adds 1 and passes the answer back. That chain of asking and
+                                answering is recursion.</p>
+                        </div>
+
+                        <div class="recursion-callout">
+                            <span class="recursion-callout-icon">💡</span>
+                            <p>Every recursive solution has two parts: a <strong>base case</strong> (the stopping
+                                condition) and a <strong>recursive case</strong> (where the function calls itself with a
+                                simpler input). Without a base case, you get infinite recursion and a stack overflow.
+                            </p>
+                        </div>
+
+                        <div class="recursion-code-block font-lang-container">
+                            <div class="lang-switcher-tabs">
+                                <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Python</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="def countdown(n):
+    if n <= 0:          # base case
+        print('Go!')
+    else:
+        print(n)
+        countdown(n - 1)  # recursive case
+
+countdown(3)">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">countdown</span>(<span class="tok-var">n</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">0</span>:          <span class="tok-cmt"># base case</span>
+        <span class="tok-fn">print</span>(<span class="tok-str">'Go!'</span>)
+    <span class="tok-kw">else</span>:
+        <span class="tok-fn">print</span>(<span class="tok-var">n</span>)
+        <span class="tok-fn">countdown</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>)  <span class="tok-cmt"># recursive case</span>
+
+<span class="tok-fn">countdown</span>(<span class="tok-num">3</span>)</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="java">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Java</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void countdown(int n) {
+    if (n <= 0) {       // base case
+        System.out.println(&quot;Go!&quot;);
+    } else {
+        System.out.println(n);
+        countdown(n - 1); // recursive case
+    }
+}">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">countdown</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">0</span>) {       <span class="tok-cmt">// base case</span>
+        System.out.println(<span class="tok-str">"Go!"</span>);
+    } <span class="tok-kw">else</span> {
+        System.out.println(<span class="tok-var">n</span>);
+        <span class="tok-fn">countdown</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>); <span class="tok-cmt">// recursive case</span>
+    }
+}</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">C++</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="void countdown(int n) {
+    if (n <= 0) {       // base case
+        std::cout << &quot;Go!&quot; << std::endl;
+    } else {
+        std::cout << n << std::endl;
+        countdown(n - 1); // recursive case
+    }
+}">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">void</span> <span class="tok-fn">countdown</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">0</span>) {       <span class="tok-cmt">// base case</span>
+        std::cout &lt;&lt; <span class="tok-str">"Go!"</span> &lt;&lt; std::endl;
+    } <span class="tok-kw">else</span> {
+        std::cout &lt;&lt; <span class="tok-var">n</span> &lt;&lt; std::endl;
+        <span class="tok-fn">countdown</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>); <span class="tok-cmt">// recursive case</span>
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="recursion-lesson" id="base-recursive-case" data-topic="2">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">02</span>
+                            <h3>Base Case &amp; Recursive Case</h3>
+                        </div>
+
+                        <p>
+                            These are the two pillars of every recursive function. Getting them right is the key to
+                            writing correct recursion.
+                        </p>
+
+                        <div class="recursion-concept-card">
+                            <h4>🛑 Base Case</h4>
+                            <p>The condition under which the function <strong>stops</strong> calling itself and returns
+                                a direct answer. Without it, the function recurses forever. Think of it as the simplest
+                                problem you already know the answer to.</p>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>🔄 Recursive Case</h4>
+                            <p>The part where the function calls <strong>itself</strong> with a slightly simpler or
+                                smaller input, moving closer to the base case with every call. Each recursive call must
+                                make progress toward the base case.</p>
+                        </div>
+
+                        <p>Classic example: <strong>Factorial</strong> — <code>n! = n × (n-1)!</code></p>
+
+                        <div class="recursion-code-block font-lang-container">
+                            <div class="lang-switcher-tabs">
+                                <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Python</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">factorial</span>(<span class="tok-var">n</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>:
+        <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>)</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="java">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Java</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">factorial</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">C++</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">factorial</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="recursion-output">
+                            <div class="recursion-output-label">Execution Trace</div>
+                            <pre>factorial(5)
+  → 5 * factorial(4)
+       → 4 * factorial(3)
+            → 3 * factorial(2)
+                 → 2 * factorial(1)
+                      → 1  ← base case
+                 Locating values back up: 120</pre>
+                        </div>
+                    </article>
+
+                    <article class="recursion-lesson" id="call-stack" data-topic="3">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">03</span>
+                            <h3>The Call Stack</h3>
+                        </div>
+
+                        <p>
+                            When a function calls itself, the computer must <em>remember</em> where it was so it can
+                            continue after the inner call returns. It does this using a <strong>call stack</strong> — a
+                            stack of frames, each storing the local variables and return address of one function call.
+                        </p>
+
+                        <div class="recursion-concept-card">
+                            <h4>How it works</h4>
+                            <ul>
+                                <li>Each new recursive call <strong>pushes</strong> a frame onto the stack.</li>
+                                <li>When a call returns, its frame is <strong>popped</strong> off and execution resumes
+                                    in the caller.</li>
+                                <li>If recursion goes too deep without hitting a base case, the stack runs out of space
+                                    — a <strong>stack overflow</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <div class="recursion-svg-container" aria-label="Call stack diagram for factorial(3)">
+                            <svg class="recursion-svg-diagram" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="stackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+                                        <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0.4" />
+                                    </linearGradient>
+                                </defs>
+                                <rect x="160" y="30" width="200" height="48" rx="8" fill="url(#stackGrad)"
+                                    stroke="#8b5cf6" stroke-width="1.5" />
+                                <text x="260" y="50" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code, monospace" font-size="13">factorial(1)</text>
+                                <text x="260" y="68" text-anchor="middle" fill="#a78bfa"
+                                    font-family="Poppins, sans-serif" font-size="11">returns 1 ← base case</text>
+
+                                <rect x="140" y="98" width="240" height="48" rx="8" fill="rgba(139,92,246,0.35)"
+                                    stroke="#8b5cf6" stroke-width="1.5" />
+                                <text x="260" y="118" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code, monospace" font-size="13">factorial(2)</text>
+                                <text x="260" y="136" text-anchor="middle" fill="#a78bfa"
+                                    font-family="Poppins, sans-serif" font-size="11">waiting for factorial(1)</text>
+
+                                <rect x="120" y="166" width="280" height="48" rx="8" fill="rgba(139,92,246,0.2)"
+                                    stroke="#8b5cf6" stroke-width="1.5" />
+                                <text x="260" y="186" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code, monospace" font-size="13">factorial(3)</text>
+                                <text x="260" y="204" text-anchor="middle" fill="#a78bfa"
+                                    font-family="Poppins, sans-serif" font-size="11">waiting for factorial(2)</text>
+
+                                <rect x="100" y="234" width="320" height="48" rx="8" fill="rgba(139,92,246,0.1)"
+                                    stroke="#6d28d9" stroke-width="1.5" stroke-dasharray="5" />
+                                <text x="260" y="258" text-anchor="middle" fill="#94a3b8"
+                                    font-family="Fira Code, monospace" font-size="13">main()</text>
+                                <text x="260" y="274" text-anchor="middle" fill="#64748b"
+                                    font-family="Poppins, sans-serif" font-size="11">called factorial(3)</text>
+
+                                <text x="50" y="56" text-anchor="middle" fill="#f59e0b"
+                                    font-family="Poppins, sans-serif" font-size="11" font-weight="600">TOP</text>
+                                <text x="50" y="260" text-anchor="middle" fill="#64748b"
+                                    font-family="Poppins, sans-serif" font-size="11">BOTTOM</text>
+                                <line x1="50" y1="70" x2="50" y2="245" stroke="#475569" stroke-width="1.5"
+                                    stroke-dasharray="4" />
+                                <polygon points="50,252 46,242 54,242" fill="#475569" />
+                            </svg>
+                        </div>
+
+                        <div class="recursion-callout">
+                            <span class="recursion-callout-icon">⚠️</span>
+                            <p>Most languages have a default recursion depth limit (Python: ~1000 frames). For very deep
+                                recursion, consider an iterative approach or <strong>tail recursion</strong> if your
+                                language supports it.</p>
+                        </div>
+                    </article>
+
+                    <article class="recursion-lesson" id="recursion-tree" data-topic="4">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">04</span>
+                            <h3>Recursion Tree Visualization</h3>
+                        </div>
+
+                        <p>
+                            A <strong>recursion tree</strong> maps out every call a recursive function makes. Each node
+                            is one function call, and its children are the calls it spawns. This is especially useful
+                            for analyzing time complexity.
+                        </p>
+
+                        <p>Example: <strong>Fibonacci</strong> — <code>fib(n) = fib(n-1) + fib(n-2)</code></p>
+
+                        <div class="recursion-code-block font-lang-container">
+                            <div class="lang-switcher-tabs">
+                                <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Python</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="def fib(n):
+            if n <= 1:
+                return n
+            return fib(n-1) + fib(n-2)">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">fib</span>(<span class="tok-var">n</span>):
+            <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>:
+                <span class="tok-kw">return</span> <span class="tok-var">n</span>
+            <span class="tok-kw">return</span> <span class="tok-fn">fib</span>(<span class="tok-var">n</span>-<span class="tok-num">1</span>) + <span class="tok-fn">fib</span>(<span class="tok-var">n</span>-<span class="tok-num">2</span>)</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="java">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">Java</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int fib(int n) {
+            if (n <= 1) {
+                return n;
+            }
+            return fib(n - 1) + fib(n - 2);
+        }">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">fib</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+            <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) {
+                <span class="tok-kw">return</span> <span class="tok-var">n</span>;
+            }
+            <span class="tok-kw">return</span> <span class="tok-fn">fib</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>) + <span class="tok-fn">fib</span>(<span class="tok-var">n</span> - <span class="tok-num">2</span>);
+        }</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="recursion-code-header">
+                                    <span class="recursion-code-lang">C++</span>
+                                    <button class="recursion-code-copy" aria-label="Copy code" data-code="int fib(int n) {
+            if (n <= 1) {
+                return n;
+            }
+            return fib(n - 1) + fib(n - 2);
+        }">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">int</span> <span class="tok-fn">fib</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+            <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) {
+                <span class="tok-kw">return</span> <span class="tok-var">n</span>;
+            }
+            <span class="tok-kw">return</span> <span class="tok-fn">fib</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>) + <span class="tok-fn">fib</span>(<span class="tok-var">n</span> - <span class="tok-num">2</span>);
+        }</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="recursion-svg-container" aria-label="Recursion tree for fib(4)">
+                            <svg class="recursion-svg-diagram" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="300" y1="45" x2="175" y2="115" stroke="#6d28d9" stroke-width="2" />
+                                <line x1="300" y1="45" x2="425" y2="115" stroke="#6d28d9" stroke-width="2" />
+
+                                <line x1="175" y1="115" x2="95" y2="185" stroke="#6d28d9" stroke-width="2" />
+                                <line x1="175" y1="115" x2="255" y2="185" stroke="#6d28d9" stroke-width="2" />
+                                <line x1="425" y1="115" x2="345" y2="185" stroke="#6d28d9" stroke-width="2" />
+                                <line x1="425" y1="115" x2="505" y2="185" stroke="#6d28d9" stroke-width="2" />
+
+                                <line x1="95" y1="185" x2="50" y2="255" stroke="#6d28d9" stroke-width="2" />
+                                <line x1="95" y1="185" x2="140" y2="255" stroke="#6d28d9" stroke-width="2" />
+
+                                <circle cx="300" cy="45" r="34" fill="rgba(139,92,246,0.25)" stroke="#8b5cf6"
+                                    stroke-width="2.5" />
+                                <text x="300" y="50" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code,monospace" font-size="13" font-weight="600">fib(4)</text>
+
+                                <circle cx="175" cy="115" r="32" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6"
+                                    stroke-width="2.2" />
+                                <text x="175" y="120" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code,monospace" font-size="13">fib(3)</text>
+
+                                <circle cx="425" cy="115" r="32" fill="rgba(139,92,246,0.2)" stroke="#8b5cf6"
+                                    stroke-width="2.2" />
+                                <text x="425" y="120" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code,monospace" font-size="13">fib(2)</text>
+
+                                <circle cx="95" cy="185" r="30" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6"
+                                    stroke-width="2" />
+                                <text x="95" y="190" text-anchor="middle" fill="#e2e8f0"
+                                    font-family="Fira Code,monospace" font-size="12">fib(2)</text>
+
+                                <circle cx="255" cy="185" r="30" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="2" />
+                                <text x="255" y="190" text-anchor="middle" fill="#f9a8d4"
+                                    font-family="Fira Code,monospace" font-size="11" font-weight="600">fib(1)=1</text>
+
+                                <circle cx="345" cy="185" r="30" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="2" />
+                                <text x="345" y="190" text-anchor="middle" fill="#f9a8d4"
+                                    font-family="Fira Code,monospace" font-size="11" font-weight="600">fib(1)=1</text>
+
+                                <circle cx="505" cy="185" r="30" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="2" />
+                                <text x="505" y="190" text-anchor="middle" fill="#f9a8d4"
+                                    font-family="Fira Code,monospace" font-size="11" font-weight="600">fib(0)=0</text>
+
+                                <circle cx="50" cy="255" r="28" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="2" />
+                                <text x="50" y="260" text-anchor="middle" fill="#f9a8d4"
+                                    font-family="Fira Code,monospace" font-size="10" font-weight="600">fib(1)=1</text>
+
+                                <circle cx="140" cy="255" r="28" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="2" />
+                                <text x="140" y="260" text-anchor="middle" fill="#f9a8d4"
+                                    font-family="Fira Code,monospace" font-size="10" font-weight="600">fib(0)=0</text>
+
+                                <circle cx="360" cy="295" r="8" fill="rgba(139,92,246,0.25)" stroke="#8b5cf6"
+                                    stroke-width="1.5" />
+                                <text x="374" y="299" fill="#94a3b8" font-family="Poppins,sans-serif"
+                                    font-size="11">Recursive call</text>
+
+                                <circle cx="480" cy="295" r="8" fill="rgba(236,72,153,0.2)" stroke="#ec4899"
+                                    stroke-width="1.5" />
+                                <text x="494" y="299" fill="#94a3b8" font-family="Poppins,sans-serif"
+                                    font-size="11">Base case</text>
+                            </svg>
+                        </div>
+                    </article>
+
+                    <article class="recursion-lesson" id="common-problems" data-topic="5">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">05</span>
+                            <h3>Common Recursion Problems</h3>
+                        </div>
+                        <p>Recursion shines in certain problem categories. Here are the most important ones you'll
+                            encounter:</p>
+
+                        <div class="recursion-concept-card">
+                            <h4>1. Factorial &amp; Power</h4>
+                            <p>Direct mathematical calculation pipelines processing linear reduction transitions towards
+                                base evaluation limits.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def factorial(n):
+    if n <= 1: return 1
+    return n * factorial(n - 1)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">factorial</span>(<span class="tok-var">n</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>: <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>)</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">factorial</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">int</span> <span class="tok-fn">factorial</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">n</span> * <span class="tok-fn">factorial</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>2. Binary Search</h4>
+                            <p>Divide tracking spaces in half cleanly down to O(log n) execution thresholds.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def binary_search(arr, target, low, high):
+    if low > high: return -1
+    mid = (low + high) // 2
+    if arr[mid] == target: return mid
+    if arr[mid] > target: return binary_search(arr, target, low, mid - 1)
+    return binary_search(arr, target, mid + 1, high)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">low</span>, <span class="tok-var">high</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">low</span> &gt; <span class="tok-var">high</span>: <span class="tok-kw">return</span> -<span class="tok-num">1</span>
+    <span class="tok-var">mid</span> = (<span class="tok-var">low</span> + <span class="tok-var">high</span>) // <span class="tok-num">2</span>
+    <span class="tok-kw">if</span> <span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>: <span class="tok-kw">return</span> <span class="tok-var">mid</span>
+    <span class="tok-kw">if</span> <span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &gt; <span class="tok-var">target</span>: <span class="tok-kw">return</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">low</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>)
+    <span class="tok-kw">return</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">high</span>)</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int binarySearch(int[] arr, int target, int low, int high) {
+    if (low > high) return -1;
+    int mid = low + (high - low) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] > target) return binarySearch(arr, target, low, mid - 1);
+    return binarySearch(arr, target, mid + 1, high);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">binarySearch</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">target</span>, <span class="tok-kw">int</span> <span class="tok-var">low</span>, <span class="tok-kw">int</span> <span class="tok-var">high</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">low</span> &gt; <span class="tok-var">high</span>) <span class="tok-kw">return</span> -<span class="tok-num">1</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> = <span class="tok-var">low</span> + (<span class="tok-var">high</span> - <span class="tok-var">low</span>) / <span class="tok-num">2</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-var">mid</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &gt; <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">low</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>);
+    <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">high</span>);
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="int binarySearch(int arr[], int target, int low, int high) {
+    if (low > high) return -1;
+    int mid = low + (high - low) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] > target) return binarySearch(arr, target, low, mid - 1);
+    return binarySearch(arr, target, mid + 1, high);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">int</span> <span class="tok-fn">binarySearch</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">target</span>, <span class="tok-kw">int</span> <span class="tok-var">low</span>, <span class="tok-kw">int</span> <span class="tok-var">high</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">low</span> &gt; <span class="tok-var">high</span>) <span class="tok-kw">return</span> -<span class="tok-num">1</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> = <span class="tok-var">low</span> + (<span class="tok-var">high</span> - <span class="tok-var">low</span>) / <span class="tok-num">2</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-var">mid</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &gt; <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">low</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>);
+    <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">high</span>);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>3. Merge Sort &amp; Quick Sort</h4>
+                            <p>Divide-and-conquer processing architectures that break an unsorted collection down into
+                                single individual items before assembling sorted frameworks sequentially.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def merge_sort(arr):
+    if len(arr) <= 1: return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>):
+    <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">arr</span>) &lt;= <span class="tok-num">1</span>: <span class="tok-kw">return</span> <span class="tok-var">arr</span>
+    <span class="tok-var">mid</span> = <span class="tok-fn">len</span>(<span class="tok-var">arr</span>) // <span class="tok-num">2</span>
+    <span class="tok-var">left</span> = <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>[:<span class="tok-var">mid</span>])
+    <span class="tok-var">right</span> = <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>[<span class="tok-var">mid</span>:])
+    <span class="tok-kw">return</span> <span class="tok-fn">merge</span>(<span class="tok-var">left</span>, <span class="tok-var">right</span>)</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void mergeSort(int[] arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">mergeSort</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">l</span>, <span class="tok-kw">int</span> <span class="tok-var">r</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">l</span> &lt; <span class="tok-var">r</span>) {
+        <span class="tok-kw">int</span> <span class="tok-var">m</span> = <span class="tok-var">l</span> + (<span class="tok-var">r</span> - <span class="tok-var">l</span>) / <span class="tok-num">2</span>;
+        <span class="tok-fn">mergeSort</span>(<span class="tok-var">arr</span>, <span class="tok-var">l</span>, <span class="tok-var">m</span>);
+        <span class="tok-fn">mergeSort</span>(<span class="tok-var">arr</span>, <span class="tok-var">m</span> + <span class="tok-num">1</span>, <span class="tok-var">r</span>);
+        <span class="tok-fn">merge</span>(<span class="tok-var">arr</span>, <span class="tok-var">l</span>, <span class="tok-var">m</span>, <span class="tok-var">r</span>);
+    }
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">void</span> <span class="tok-fn">mergeSort</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">l</span>, <span class="tok-kw">int</span> <span class="tok-var">r</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">l</span> &lt; <span class="tok-var">r</span>) {
+        <span class="tok-kw">int</span> <span class="tok-var">m</span> = <span class="tok-var">l</span> + (<span class="tok-var">r</span> - <span class="tok-var">l</span>) / <span class="tok-num">2</span>;
+        <span class="tok-fn">mergeSort</span>(<span class="tok-var">arr</span>, <span class="tok-var">l</span>, <span class="tok-var">m</span>);
+        <span class="tok-fn">mergeSort</span>(<span class="tok-var">arr</span>, <span class="tok-var">m</span> + <span class="tok-num">1</span>, <span class="tok-var">r</span>);
+        <span class="tok-fn">merge</span>(<span class="tok-var">arr</span>, <span class="tok-var">l</span>, <span class="tok-var">m</span>, <span class="tok-var">r</span>);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>4. Tree Traversals (Inorder, Preorder, Postorder)</h4>
+                            <p>Navigating inherently recursive data structures. Because every sub-tree is itself a valid
+                                standalone tree, processing nodes via Depth-First Search (DFS) maps cleanly to call
+                                stack operations.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def inorder(root):
+    if root:
+        inorder(root.left)
+        print(root.val)
+        inorder(root.right)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">root</span>:
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>.<span class="tok-var">left</span>)
+        <span class="tok-fn">print</span>(<span class="tok-var">root</span>.<span class="tok-var">val</span>)
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>.<span class="tok-var">right</span>)</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void inorder(Node root) {
+    if (root != null) {
+        inorder(root.left);
+        System.out.println(root.val);
+        inorder(root.right);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">inorder</span>(<span class="tok-kw">Node</span> <span class="tok-var">root</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">root</span> != <span class="tok-kw">null</span>) {
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>.<span class="tok-var">left</span>);
+        System.out.println(<span class="tok-var">root</span>.<span class="tok-var">val</span>);
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>.<span class="tok-var">right</span>);
+    }
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="void inorder(Node* root) {
+    if (root != nullptr) {
+        inorder(root->left);
+        std::cout << root->val << std::endl;
+        inorder(root->right);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">void</span> <span class="tok-fn">inorder</span>(<span class="tok-kw">Node</span>* <span class="tok-var">root</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">root</span> != <span class="tok-kw">nullptr</span>) {
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>-&gt;<span class="tok-var">left</span>);
+        std::cout &lt;&lt; <span class="tok-var">root</span>-&gt;<span class="tok-var">val</span> &lt;&lt; std::endl;
+        <span class="tok-fn">inorder</span>(<span class="tok-var">root</span>-&gt;<span class="tok-var">right</span>);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>5. Backtracking (Permutations)</h4>
+                            <p>Brute-force state space tree exploration where the function builds a solution
+                                step-by-step and systematically retracts choices choices the moment validation bounds
+                                fail.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def backtrack(choices, path):
+    if not choices:
+        print(path)
+        return
+    for i in range(len(choices)):
+        backtrack(choices[:i] + choices[i+1:], path + [choices[i]])">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">backtrack</span>(<span class="tok-var">choices</span>, <span class="tok-var">path</span>):
+    <span class="tok-kw">if not</span> <span class="tok-var">choices</span>:
+        <span class="tok-fn">print</span>(<span class="tok-var">path</span>)
+        <span class="tok-kw">return</span>
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-fn">len</span>(<span class="tok-var">choices</span>)):
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">choices</span>[:<span class="tok-var">i</span>] + <span class="tok-var">choices</span>[<span class="tok-var">i</span>+<span class="tok-num">1</span>:], <span class="tok-var">path</span> + [<span class="tok-var">choices</span>[<span class="tok-var">i</span>]])</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void backtrack(List<Integer> choices, List<Integer> path) {
+    if (choices.isEmpty()) {
+        System.out.println(path);
+        return;
+    }
+    for (int i = 0; i < choices.size(); i++) {
+        List<Integer> remaining = new ArrayList<>(choices);
+        remaining.remove(i);
+        List<Integer> nextPath = new ArrayList<>(path);
+        nextPath.add(choices.get(i));
+        backtrack(remaining, nextPath);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">backtrack</span>(<span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">choices</span>, <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">path</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">choices</span>.isEmpty()) {
+        System.out.println(<span class="tok-var">path</span>);
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">choices</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">remaining</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">choices</span>);
+        <span class="tok-var">remaining</span>.remove(<span class="tok-var">i</span>);
+        <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">nextPath</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">path</span>);
+        <span class="tok-var">nextPath</span>.add(<span class="tok-var">choices</span>.get(<span class="tok-var">i</span>));
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">remaining</span>, <span class="tok-var">nextPath</span>);
+    }
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="void backtrack(vector<int> choices, vector<int> path) {
+    if (choices.empty()) {
+        for(int x : path) std::cout << x << " ";
+        std::cout << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < choices.size(); i++) {
+        vector<int> remaining = choices;
+        remaining.erase(remaining.begin() + i);
+        vector<int> nextPath = path;
+        nextPath.push_back(choices[i]);
+        backtrack(remaining, nextPath);
+    }
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">void</span> <span class="tok-fn">backtrack</span>(<span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">choices</span>, <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">path</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">choices</span>.empty()) {
+        <span class="tok-kw">for</span>(<span class="tok-kw">int</span> <span class="tok-var">x</span> : <span class="tok-var">path</span>) std::cout &lt;&lt; <span class="tok-var">x</span> &lt;&lt; <span class="tok-str">" "</span>;
+        std::cout &lt;&lt; std::endl;
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">size_t</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">choices</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">remaining</span> = <span class="tok-var">choices</span>;
+        <span class="tok-var">remaining</span>.erase(<span class="tok-var">remaining</span>.begin() + <span class="tok-var">i</span>);
+        <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">nextPath</span> = <span class="tok-var">path</span>;
+        <span class="tok-var">nextPath</span>.push_back(<span class="tok-var">choices</span>[<span class="tok-var">i</span>]);
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">remaining</span>, <span class="tok-var">nextPath</span>);
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>6. Subset &amp; Combinatorial Generation</h4>
+                            <p>The "Include/Exclude" pattern. At every recursive decision milestone, the code branches
+                                into two paths: one tracking states with the current item, and one without it.</p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def subsets(arr, index, current_path):
+    if index == len(arr):
+        print(current_path)
+        return
+    subsets(arr, index + 1, current_path + [arr[index]])
+    subsets(arr, index + 1, current_path)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span>, <span class="tok-var">current_path</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">index</span> == <span class="tok-fn">len</span>(<span class="tok-var">arr</span>):
+        <span class="tok-fn">print</span>(<span class="tok-var">current_path</span>)
+        <span class="tok-kw">return</span>
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">current_path</span> + [<span class="tok-var">arr</span>[<span class="tok-var">index</span>]]) <span class="tok-cmt"># Include</span>
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">current_path</span>)                  <span class="tok-cmt"># Exclude</span></code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void subsets(int[] arr, int index, List<Integer> currentPath) {
+    if (index == arr.length) {
+        System.out.println(currentPath);
+        return;
+    }
+    currentPath.add(arr[index]);
+    subsets(arr, index + 1, currentPath);
+    currentPath.remove(currentPath.size() - 1);
+    subsets(arr, index + 1, currentPath);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">subsets</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">index</span>, <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">currentPath</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">index</span> == <span class="tok-var">arr</span>.length) {
+        System.out.println(<span class="tok-var">currentPath</span>);
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-var">currentPath</span>.add(<span class="tok-var">arr</span>[<span class="tok-var">index</span>]);
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">currentPath</span>);  <span class="tok-cmt">// Include</span>
+    <span class="tok-var">currentPath</span>.remove(<span class="tok-var">currentPath</span>.size() - <span class="tok-num">1</span>);
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">currentPath</span>);  <span class="tok-cmt">// Exclude</span>
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="void subsets(const vector<int>& arr, size_t index, vector<int> currentPath) {
+    if (index == arr.size()) {
+        for(int x : currentPath) std::cout << x << " ";
+        std::cout << std::endl;
+        return;
+    }
+    currentPath.push_back(arr[index]);
+    subsets(arr, index + 1, currentPath);
+    currentPath.pop_back();
+    subsets(arr, index + 1, currentPath);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">void</span> <span class="tok-fn">subsets</span>(<span class="tok-kw">const vector&lt;int&gt;&amp;</span> <span class="tok-var">arr</span>, <span class="tok-kw">size_t</span> <span class="tok-var">index</span>, <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">currentPath</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">index</span> == <span class="tok-var">arr</span>.size()) {
+        <span class="tok-kw">for</span>(<span class="tok-kw">int</span> <span class="tok-var">x</span> : <span class="tok-var">currentPath</span>) std::cout &lt;&lt; <span class="tok-var">x</span> &lt;&lt; <span class="tok-str">" "</span>;
+        std::cout &lt;&lt; std::endl;
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-var">currentPath</span>.push_back(<span class="tok-var">arr</span>[<span class="tok-var">index</span>]);
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">currentPath</span>);  <span class="tok-cmt">// Include</span>
+    <span class="tok-var">currentPath</span>.pop_back();
+    <span class="tok-fn">subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">currentPath</span>);  <span class="tok-cmt">// Exclude</span>
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-concept-card">
+                            <h4>7. Flood Fill &amp; Grid Exploration</h4>
+                            <p>Graph traversal variants where every cell triggers multi-directional recursive branches
+                                to discover contiguous areas while avoiding infinite tracking loops via tracking states.
+                            </p>
+
+                            <div class="recursion-code-block font-lang-container">
+                                <div class="lang-switcher-tabs">
+                                    <button class="lang-tab-btn active" onclick="switchLang(this, 'py')">Python</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                    <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                </div>
+
+                                <div class="lang-pane active" data-lang="py">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Python</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="def dfs_grid(r, c, grid, visited):
+    if (r < 0 or c < 0 or r >= len(grid) or c >= len(grid[0]) or visited[r][c]):
+        return
+    visited[r][c] = True
+    dfs_grid(r + 1, c, grid, visited)
+    dfs_grid(r - 1, c, grid, visited)
+    dfs_grid(r, c + 1, grid, visited)
+    dfs_grid(r, c - 1, grid, visited)">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">dfs_grid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>):
+    <span class="tok-kw">if</span> (<span class="tok-var">r</span> &lt; <span class="tok-num">0</span> <span class="tok-kw">or</span> <span class="tok-var">c</span> &lt; <span class="tok-num">0</span> <span class="tok-kw">or</span> <span class="tok-var">r</span> &gt;= <span class="tok-fn">len</span>(<span class="tok-var">grid</span>) <span class="tok-kw">or</span> <span class="tok-var">c</span> &gt;= <span class="tok-fn">len</span>(<span class="tok-var">grid</span>[<span class="tok-num">0</span>]) <span class="tok-kw">or</span> <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>]):
+        <span class="tok-kw">return</span>
+    <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-kw">True</span>
+    <span class="tok-fn">dfs_grid</span>(<span class="tok-var">r</span> + <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>) <span class="tok-cmt"># Down</span>
+    <span class="tok-fn">dfs_grid</span>(<span class="tok-var">r</span> - <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>) <span class="tok-cmt"># Up</span>
+    <span class="tok-fn">dfs_grid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> + <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>) <span class="tok-cmt"># Right</span>
+    <span class="tok-fn">dfs_grid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> - <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>) <span class="tok-cmt"># Left</span></code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="java">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">Java</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void dfsGrid(int r, int c, int[][] grid, boolean[][] visited) {
+    if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length || visited[r][c]) {
+        return;
+    }
+    visited[r][c] = true;
+    dfsGrid(r + 1, c, grid, visited);
+    dfsGrid(r - 1, c, grid, visited);
+    dfsGrid(r, c + 1, grid, visited);
+    dfsGrid(r, c - 1, grid, visited);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">dfsGrid</span>(<span class="tok-kw">int</span> <span class="tok-var">r</span>, <span class="tok-kw">int</span> <span class="tok-var">c</span>, <span class="tok-kw">int</span>[][] <span class="tok-var">grid</span>, <span class="tok-kw">boolean</span>[][] <span class="tok-var">visited</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">r</span> &lt; <span class="tok-num">0</span> || <span class="tok-var">c</span> &lt; <span class="tok-num">0</span> || <span class="tok-var">r</span> &gt;= <span class="tok-var">grid</span>.length || <span class="tok-var">c</span> &gt;= <span class="tok-var">grid</span>[<span class="tok-num">0</span>].length || <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>]) {
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-kw">true</span>;
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span> + <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Down</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span> - <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Up</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> + <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Right</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> - <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); // Left
+}</code></pre>
+                                </div>
+
+                                <div class="lang-pane" data-lang="cpp">
+                                    <div class="recursion-code-header">
+                                        <span class="recursion-code-lang">C++</span>
+                                        <button class="recursion-code-copy" aria-label="Copy code" data-code="void dfsGrid(int r, int c, const vector<vector<int>>& grid, vector<vector<bool>>& visited) {
+    if (r < 0 || c < 0 || r >= (int)grid.size() || c >= (int)grid[0].size() || visited[r][c]) {
+        return;
+    }
+    visited[r][c] = true;
+    dfsGrid(r + 1, c, grid, visited);
+    dfsGrid(r - 1, c, grid, visited);
+    dfsGrid(r, c + 1, grid, visited);
+    dfsGrid(r, c - 1, grid, visited);
+}">Copy</button>
+                                    </div>
+                                    <pre><code><span class="tok-kw">void</span> <span class="tok-fn">dfsGrid</span>(<span class="tok-kw">int</span> <span class="tok-var">r</span>, <span class="tok-kw">int</span> <span class="tok-var">c</span>, <span class="tok-kw">const vector&lt;vector&lt;int&gt;&gt;&amp;</span> <span class="tok-var">grid</span>, <span class="tok-kw">vector&lt;vector&lt;bool&gt;&gt;&amp;</span> <span class="tok-var">visited</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">r</span> &lt; <span class="tok-num">0</span> || <span class="tok-var">c</span> &lt; <span class="tok-num">0</span> || <span class="tok-var">r</span> &gt;= (<span class="tok-kw">int</span>)<span class="tok-var">grid</span>.size() || <span class="tok-var">c</span> &gt;= (<span class="tok-kw">int</span>)<span class="tok-var">grid</span>[<span class="tok-num">0</span>].size() || <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>]) {
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-var">visited</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-kw">true</span>;
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span> + <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Down</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span> - <span class="tok-num">1</span>, <span class="tok-var">c</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Up</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> + <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); <span class="tok-cmt">// Right</span>
+    <span class="tok-fn">dfsGrid</span>(<span class="tok-var">r</span>, <span class="tok-var">c</span> - <span class="tok-num">1</span>, <span class="tok-var">grid</span>, <span class="tok-var">visited</span>); // Left
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recursion-table-wrap">
+                            <table class="recursion-table" aria-label="Recursion problem patterns">
+                                <thead>
+                                    <tr>
+                                        <th>Problem</th>
+                                        <th>Pattern</th>
+                                        <th>Time Complexity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Factorial</td>
+                                        <td>Linear Recursion</td>
+                                        <td>O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fibonacci (naïve)</td>
+                                        <td>Tree Recursion</td>
+                                        <td>O(2ⁿ)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Binary Search</td>
+                                        <td>Divide &amp; Conquer</td>
+                                        <td>O(log n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Merge Sort</td>
+                                        <td>Divide &amp; Conquer</td>
+                                        <td>O(n log n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tree Traversals</td>
+                                        <td>Data Structure DFS</td>
+                                        <td>O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Permutations (Backtracking)</td>
+                                        <td>State Space Search</td>
+                                        <td>O(n!)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subset Generation</td>
+                                        <td>Include / Exclude Branching</td>
+                                        <td>O(2ⁿ)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Flood Fill / Grid Search</td>
+                                        <td>Multi-Directional Matrix DFS</td>
+                                        <td>O(V + E)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="recursion-lesson" id="advantages-limitations" data-topic="6">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">06</span>
+                            <h3>Advantages &amp; Limitations</h3>
+                        </div>
+                        <p>Recursion is a powerful tool, but knowing when not to use it is equally important.</p>
+                        <div class="rec-pros-cons">
+                            <div class="recursion-concept-card rec-pros">
+                                <h4>Advantages</h4>
+                                <ul>
+                                    <li><strong>Elegance &amp; Readability</strong> — Recursive solutions often mirror
+                                        the mathematical definitions or logic paths directly, significantly reducing
+                                        code bloat.</li>
+                                    <li><strong>Natural Data Structure Mapping</strong> — Problems involving
+                                        hierarchical architectures like trees, graphs, and nested folder structures are
+                                        inherently recursive and much simpler to process without manual stack tracking.
+                                    </li>
+                                    <li><strong>Divide and Conquer Friendly</strong> — Algorithms like Merge Sort, Quick
+                                        Sort, and Binary Search split problems into independent tracking boundaries
+                                        naturally, making them cleaner to implement recursively.</li>
+                                    <li><strong>State Immutability</strong> — Instead of updating global or outer scope
+                                        variables through loops, each recursive call creates its own local scope
+                                        parameters, minimizing state contamination risks.</li>
+                                </ul>
+                            </div>
+                            <div class="recursion-concept-card rec-cons">
+                                <h4>Limitations</h4>
+                                <ul>
+                                    <li><strong>Stack Overflow Risks</strong> — Deep recursion levels can exhaust the
+                                        program's call stack boundaries, causing instant crashes if base conditions
+                                        aren't perfectly met or if the input scales excessively.</li>
+                                    <li><strong>Memory Footprint Overhead</strong> — Unlike iterative loops which run in
+                                        $O(1)$ space, each recursive layer pushes a new stack frame onto memory,
+                                        resulting in $O(N)$ auxiliary space scaling.</li>
+                                    <li><strong>Performance Call Overhead</strong> — Activating functions introduces
+                                        context-switching delays behind the scenes (pushing registers, maintaining
+                                        pointers), making it slower than basic loop executions.</li>
+                                    <li><strong>Complex Debugging Pipelines</strong> — Tracing bugs across dozens of
+                                        identical, nested stack frames makes reading logs and mapping variables
+                                        considerably harder during diagnostic tests.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="recursion-lesson" id="practice" data-topic="7">
+                        <div class="recursion-lesson-header">
+                            <span class="recursion-lesson-number">07</span>
+                            <h3>Practice Exercises</h3>
+                        </div>
+                        <p>Put your recursive thinking to the test. Try each problem before revealing the solution.</p>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 1: Sum of Array
+                            </div>
+                            <p>Given an array of integers, write a recursive function sum_array(arr) that returns the
+                                sum of all elements in the array. Do not use loops or built-in summation functions.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex1">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex1">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def sum_array(arr):
+    if not arr: return 0
+    return arr[0] + sum_array(arr[1:])">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">sum_array</span>(<span class="tok-var">arr</span>):
+    <span class="tok-kw">if not</span> <span class="tok-var">arr</span>: <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-kw">return</span> <span class="tok-var">arr</span>[<span class="tok-num">0</span>] + <span class="tok-fn">sum_array</span>(<span class="tok-var">arr</span>[<span class="tok-num">1</span>:])</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int sumArray(int[] arr, int index) {
+    if (index == arr.length) return 0;
+    return arr[index] + sumArray(arr, index + 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">sumArray</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">index</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">index</span> == <span class="tok-var">arr</span>.length) <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">arr</span>[<span class="tok-var">index</span>] + <span class="tok-fn">sumArray</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int sumArray(int arr[], int n) {
+    if (n <= 0) return 0;
+    return sumArray(arr, n - 1) + arr[n - 1];
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">sumArray</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">sumArray</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>) + <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>];
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 2: Reverse a String
+                            </div>
+                            <p>Given a string s, write a recursive function that returns the reverse of the string
+                                without using iterative constructs or built-in reverse methods.
+                            </p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex2">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex2">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def reverse(s):
+    if len(s) <= 1: return s
+    return reverse(s[1:]) + s[0]">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">reverse</span>(<span class="tok-var">s</span>):
+    <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">s</span>) &lt;= <span class="tok-num">1</span>: <span class="tok-kw">return</span> <span class="tok-var">s</span>
+    <span class="tok-kw">return</span> <span class="tok-fn">reverse</span>(<span class="tok-var">s</span>[<span class="tok-num">1</span>:]) + <span class="tok-var">s</span>[<span class="tok-num">0</span>]</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static String reverse(String s) {
+    if (s.isEmpty()) return s;
+    return reverse(s.substring(1)) + s.charAt(0);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static String</span> <span class="tok-fn">reverse</span>(<span class="tok-kw">String</span> <span class="tok-var">s</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>.isEmpty()) <span class="tok-kw">return</span> <span class="tok-var">s</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">reverse</span>(<span class="tok-var">s</span>.substring(<span class="tok-num">1</span>)) + <span class="tok-var">s</span>.charAt(<span class="tok-num">0</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="string reverse(string s) {
+    if (s.length() <= 1) return s;
+    return reverse(s.substr(1)) + s[0];
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">string</span> <span class="tok-fn">reverse</span>(<span class="tok-kw">string</span> <span class="tok-var">s</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>.length() &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-var">s</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">reverse</span>(<span class="tok-var">s</span>.substr(<span class="tok-num">1</span>)) + <span class="tok-var">s</span>[<span class="tok-num">0</span>];
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 3: Power Function
+                            </div>
+                            <p>Write a recursive function power(base, exp) that computes and returns base raised to the
+                                power exp, where exp is a non-negative integer.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex3">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex3">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def power(base, exp):
+    if exp == 0: return 1
+    return base * power(base, exp - 1)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">exp</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-fn">power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> - <span class="tok-num">1</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int power(int base, int exp) {
+    if (exp == 0) return 1;
+    return base * power(base, exp - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">power</span>(<span class="tok-kw">int</span> <span class="tok-var">base</span>, <span class="tok-kw">int</span> <span class="tok-var">exp</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-fn">power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int power(int base, int exp) {
+    if (exp == 0) return 1;
+    return base * power(base, exp - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">power</span>(<span class="tok-kw">int</span> <span class="tok-var">base</span>, <span class="tok-kw">int</span> <span class="tok-var">exp</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-fn">power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 4: Palindrome Check
+                            </div>
+                            <p>Given a string s, determine recursively whether it is a palindrome. A palindrome reads
+                                the same forwards and backwards.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex4">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex4">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def is_palindrome(s):
+    if len(s) <= 1: return True
+    if s[0] != s[-1]: return False
+    return is_palindrome(s[1:-1])">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">is_palindrome</span>(<span class="tok-var">s</span>):
+    <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">s</span>) &lt;= <span class="tok-num">1</span>: <span class="tok-kw">return</span> <span class="tok-var">True</span>
+    <span class="tok-kw">if</span> <span class="tok-var">s</span>[<span class="tok-num">0</span>] != <span class="tok-var">s</span>[-<span class="tok-num">1</span>]: <span class="tok-kw">return</span> <span class="tok-var">False</span>
+    <span class="tok-kw">return</span> <span class="tok-fn">is_palindrome</span>(<span class="tok-var">s</span>[<span class="tok-num">1</span>:-<span class="tok-num">1</span>])</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static boolean isPalindrome(String s) {
+    if (s.length() <= 1) return true;
+    if (s.charAt(0) != s.charAt(s.length() - 1)) return false;
+    return isPalindrome(s.substring(1, s.length() - 1));
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static boolean</span> <span class="tok-fn">isPalindrome</span>(<span class="tok-kw">String</span> <span class="tok-var">s</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>.length() &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-var">true</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>.charAt(<span class="tok-num">0</span>) != <span class="tok-var">s</span>.charAt(<span class="tok-var">s</span>.length() - <span class="tok-num">1</span>)) <span class="tok-kw">return</span> <span class="tok-var">false</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">isPalindrome</span>(<span class="tok-var">s</span>.substring(<span class="tok-num">1</span>, <span class="tok-var">s</span>.length() - <span class="tok-num">1</span>));
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="bool isPalindrome(string s) {
+    if (s.length() <= 1) return true;
+    if (s[0] != s[s.length() - 1]) return false;
+    return isPalindrome(s.substr(1, s.length() - 2));
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">bool</span> <span class="tok-fn">isPalindrome</span>(<span class="tok-kw">string</span> <span class="tok-var">s</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>.length() &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-var">true</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">s</span>[<span class="tok-num">0</span>] != <span class="tok-var">s</span>[<span class="tok-var">s</span>.length() - <span class="tok-num">1</span>]) <span class="tok-kw">return</span> <span class="tok-var">false</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">isPalindrome</span>(<span class="tok-var">s</span>.substr(<span class="tok-num">1</span>, <span class="tok-var">s</span>.length() - <span class="tok-num">2</span>));
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 5: Binary Search
+                            </div>
+                            <p>Given a sorted array and a target value, implement a recursive binary search function
+                                that returns the index of the target if found, otherwise returns -1.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex5">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex5">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def binary_search(arr, target, lo, hi):
+    if lo > hi: return -1
+    mid = (lo + hi) // 2
+    if arr[mid] == target: return mid
+    elif arr[mid] < target: return binary_search(arr, target, mid + 1, hi)
+    else: return binary_search(arr, target, lo, mid - 1)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">lo</span>, <span class="tok-var">hi</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">lo</span> &gt; <span class="tok-var">hi</span>: <span class="tok-kw">return</span> -<span class="tok-num">1</span>
+    <span class="tok-var">mid</span> = (<span class="tok-var">lo</span> + <span class="tok-var">hi</span>) // <span class="tok-num">2</span>
+    <span class="tok-kw">if</span> <span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>: <span class="tok-kw">return</span> <span class="tok-var">mid</span>
+    <span class="tok-kw">elif</span> <span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &lt; <span class="tok-var">target</span>: <span class="tok-kw">return</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">hi</span>)
+    <span class="tok-kw">else]: <span class="tok-kw">return</span> <span class="tok-fn">binary_search</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">lo</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>)</span></code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int binarySearch(int[] arr, int target, int lo, int hi) {
+    if (lo > hi) return -1;
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] < target) return binarySearch(arr, target, mid + 1, hi);
+    return binarySearch(arr, target, lo, mid - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">binarySearch</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">target</span>, <span class="tok-kw">int</span> <span class="tok-var">lo</span>, <span class="tok-kw">int</span> <span class="tok-var">hi</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">lo</span> &gt; <span class="tok-var">hi</span>) <span class="tok-kw">return</span> -<span class="tok-num">1</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> = <span class="tok-var">lo</span> + (<span class="tok-var">hi</span> - <span class="tok-var">lo</span>) / <span class="tok-num">2</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-var">mid</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &lt; <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">hi</span>);
+    <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">lo</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int binarySearch(int arr[], int target, int lo, int hi) {
+    if (lo > hi) return -1;
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] < target) return binarySearch(arr, target, mid + 1, hi);
+    return binarySearch(arr, target, lo, mid - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">binarySearch</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">target</span>, <span class="tok-kw">int</span> <span class="tok-var">lo</span>, <span class="tok-kw">int</span> <span class="tok-var">hi</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">lo</span> &gt; <span class="tok-var">hi</span>) <span class="tok-kw">return</span> -<span class="tok-num">1</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> = <span class="tok-var">lo</span> + (<span class="tok-var">hi</span> - <span class="tok-var">lo</span>) / <span class="tok-num">2</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] == <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-var">mid</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &lt; <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">mid</span> + <span class="tok-num">1</span>, <span class="tok-var">hi</span>);
+    <span class="tok-kw">return</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>, <span class="tok-var">lo</span>, <span class="tok-var">mid</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 6: Permutations via Backtracking
+                            </div>
+                            <p>Given a list of distinct integers, generate all possible permutations of the list using
+                                recursion and backtracking.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex6">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex6">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def permutations(arr, path=[]):
+    if not arr:
+        print(path)
+        return
+    for i in range(len(arr)):
+        permutations(arr[:i] + arr[i+1:], path + [arr[i]])">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">permutations</span>(<span class="tok-var">arr</span>, <span class="tok-var">path</span>=[]):
+    <span class="tok-kw">if not</span> <span class="tok-var">arr</span>:
+        <span class="tok-fn">print</span>(<span class="tok-var">path</span>)
+        <span class="tok-kw">return</span>
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-fn">len</span>(<span class="tok-var">arr</span>)):
+        <span class="tok-fn">permutations</span>(<span class="tok-var">arr</span>[:<span class="tok-var">i</span>] + <span class="tok-var">arr</span>[<span class="tok-var">i</span>+<span class="tok-num">1</span>:], <span class="tok-var">path</span> + [<span class="tok-var">arr</span>[<span class="tok-var">i</span>]])</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void getPermutations(List<Integer> arr, List<Integer> path) {
+    if (arr.isEmpty()) {
+        System.out.println(path);
+        return;
+    }
+    for (int i = 0; i < arr.size(); i++) {
+        List<Integer> rem = new ArrayList<>(arr);
+        rem.remove(i);
+        List<Integer> nextPath = new ArrayList<>(path);
+        nextPath.add(arr.get(i));
+        getPermutations(rem, nextPath);
+    }
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">getPermutations</span>(<span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">arr</span>, <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">path</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>.isEmpty()) {
+        System.out.println(<span class="tok-var">path</span>);
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">arr</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">rem</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">arr</span>);
+        <span class="tok-var">rem</span>.remove(<span class="tok-var">i</span>);
+        <span class="tok-kw">List&lt;Integer&gt;</span> <span class="tok-var">nextPath</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">path</span>);
+        <span class="tok-var">nextPath</span>.add(<span class="tok-var">arr</span>.get(<span class="tok-var">i</span>));
+        <span class="tok-fn">getPermutations</span>(<span class="tok-var">rem</span>, <span class="tok-var">nextPath</span>);
+    }
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="void permutations(vector<int> arr, vector<int> path) {
+    if (arr.empty()) {
+        for (int x : path) std::cout << x << " ";
+        std::cout << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < arr.size(); i++) {
+        vector<int> rem = arr;
+        rem.erase(rem.begin() + i);
+        vector<int> nextPath = path;
+        nextPath.push_back(arr[i]);
+        permutations(rem, nextPath);
+    }
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">void</span> <span class="tok-fn">permutations</span>(<span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">arr</span>, <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">path</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>.empty()) {
+        <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">x</span> : <span class="tok-var">path</span>) std::cout &lt;&lt; <span class="tok-var">x</span> &lt;&lt; <span class="tok-str">" "</span>;
+        std::cout &lt;&lt; std::endl;
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">size_t</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">arr</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">rem</span> = <span class="tok-var">arr</span>;
+        <span class="tok-var">rem</span>.erase(<span class="tok-var">rem</span>.begin() + <span class="tok-var">i</span>);
+        <span class="tok-kw">vector&lt;int&gt;</span> <span class="tok-var">nextPath</span> = <span class="tok-var">path</span>;
+        <span class="tok-var">nextPath</span>.push_back(<span class="tok-var">arr</span>[<span class="tok-var">i</span>]);
+        <span class="tok-fn">permutations</span>(<span class="tok-var">rem</span>, <span class="tok-var">nextPath</span>);
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 7: Flatten Nested List
+                            </div>
+                            <p>Given a nested list containing integers and other lists, write a recursive function that
+                                returns a single flattened list containing all elements in their original order.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex7">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex7">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list): result.extend(flatten(item))
+        else: result.append(item)
+    return result">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">flatten</span>(<span class="tok-var">lst</span>):
+    <span class="tok-var">result</span> = []
+    <span class="tok-kw">for</span> <span class="tok-var">item</span> <span class="tok-kw">in</span> <span class="tok-var">lst</span>:
+        <span class="tok-kw">if</span> <span class="tok-fn">isinstance</span>(<span class="tok-var">item</span>, <span class="tok-fn">list</span>): <span class="tok-var">result</span>.<span class="tok-fn">extend</span>(<span class="tok-fn">flatten</span>(<span class="tok-var">item</span>))
+        <span class="tok-kw">else]: <span class="tok-var">result</span>.<span class="tok-fn">append</span>(<span class="tok-var">item</span>)</span>
+    <span class="tok-kw">return</span> <span class="tok-var">result</span></code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static List<Object> flatten(List<Object> nestedList) {
+    List<Object> result = new ArrayList<>();
+    for (Object item : nestedList) {
+        if (item instanceof List) {
+            result.addAll(flatten((List<Object>) item));
+        } else {
+            result.add(item);
+        }
+    }
+    return result;
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static List&lt;Object&gt;</span> <span class="tok-fn">flatten</span>(<span class="tok-kw">List&lt;Object&gt;</span> <span class="tok-var">nestedList</span>) {
+    <span class="tok-kw">List&lt;Object&gt;</span> <span class="tok-var">result</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;();
+    <span class="tok-kw">for</span> (<span class="tok-kw">Object</span> <span class="tok-var">item</span> : <span class="tok-var">nestedList</span>) {
+        <span class="tok-kw">if</span> (<span class="tok-var">item</span> <span class="tok-kw">instanceof</span> List) {
+            <span class="tok-var">result</span>.addAll(flatten((<span class="tok-kw">List&lt;Object&gt;</span>) <span class="tok-var">item</span>));
+        } <span class="tok-kw">else</span> {
+            <span class="tok-var">result</span>.add(<span class="tok-var">item</span>);
+        }
+    }
+    <span class="tok-kw">return</span> <span class="tok-var">result</span>;
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="// Simple structured node tracking representation inside C++ ecosystem
+struct Node {
+    bool isList;
+    int value;
+    vector<Node> list;
+};
+
+void flatten(const vector<Node>& nodes, vector<int>& result) {
+    for (const auto& node : nodes) {
+        if (node.isList) flatten(node.list, result);
+        else result.push_back(node.value);
+    }
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-cmt">// Simple structured node tracking representation inside C++ ecosystem</span>
+<span class="tok-kw">struct</span> <span class="tok-kw">Node</span> {
+    <span class="tok-kw">bool</span> <span class="tok-var">isList</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">value</span>;
+    <span class="tok-kw">vector&lt;Node&gt;</span> <span class="tok-var">list</span>;
+};
+
+<span class="tok-kw">void</span> <span class="tok-fn">flatten</span>(<span class="tok-kw">const vector&lt;Node&gt;&amp;</span> <span class="tok-var">nodes</span>, <span class="tok-kw">vector&lt;int&gt;&amp;</span> <span class="tok-var">result</span>) {
+    <span class="tok-kw">for</span> (<span class="tok-kw">const auto&amp;</span> <span class="tok-var">node</span> : <span class="tok-var">nodes</span>) {
+        <span class="tok-kw">if</span> (<span class="tok-var">node</span>.<span class="tok-var">isList</span>) <span class="tok-fn">flatten</span>(<span class="tok-var">node</span>.<span class="tok-var">list</span>, <span class="tok-var">result</span>);
+        <span class="tok-kw">else</span> <span class="tok-var">result</span>.push_back(<span class="tok-var">node</span>.<span class="tok-var">value</span>);
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 8: Count Occurrences
+                            </div>
+                            <p>Given an array and a target value, write a recursive function that counts how many times
+                                the target appears in the array.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex8">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex8">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def count(lst, target):
+    if not lst: return 0
+    match = 1 if lst[0] == target else 0
+    return match + count(lst[1:], target)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">count</span>(<span class="tok-var">lst</span>, <span class="tok-var">target</span>):
+    <span class="tok-kw">if not</span> <span class="tok-var">lst</span>: <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-var">match</span> = <span class="tok-num">1</span> <span class="tok-kw">if</span> <span class="tok-var">lst</span>[<span class="tok-num">0</span>] == <span class="tok-var">target</span> <span class="tok-kw">else</span> <span class="tok-num">0</span>
+    <span class="tok-kw">return</span> <span class="tok-var">match</span> + <span class="tok-fn">count</span>(<span class="tok-var">lst</span>[<span class="tok-num">1</span>:], <span class="tok-var">target</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int count(int[] arr, int index, int target) {
+    if (index == arr.length) return 0;
+    int match = (arr[index] == target) ? 1 : 0;
+    return match + count(arr, index + 1, target);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">count</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">index</span>, <span class="tok-kw">int</span> <span class="tok-var">target</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">index</span> == <span class="tok-var">arr</span>.length) <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">match</span> = (<span class="tok-var">arr</span>[<span class="tok-var">index</span>] == <span class="tok-var">target</span>) ? <span class="tok-num">1</span> : <span class="tok-num">0</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">match</span> + <span class="tok-fn">count</span>(<span class="tok-var">arr</span>, <span class="tok-var">index</span> + <span class="tok-num">1</span>, <span class="tok-var">target</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int count(int arr[], int n, int target) {
+    if (n <= 0) return 0;
+    int match = (arr[n - 1] == target) ? 1 : 0;
+    return match + count(arr, n - 1, target);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">count</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">n</span>, <span class="tok-kw">int</span> <span class="tok-var">target</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">match</span> = (<span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] == <span class="tok-var">target</span>) ? <span class="tok-num">1</span> : <span class="tok-num">0</span>;
+    <span class="tok-kw">return</span> <span class="tok-var">match</span> + <span class="tok-fn">count</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">target</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 9: Tower of Hanoi
+                            </div>
+                            <p>Given n disks and three rods, write a recursive solution that prints the sequence of
+                                moves required to transfer all disks from the source rod to the target
+                                rod while following the Tower of Hanoi rules.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false" aria-controls="sol-ex9">Show
+                                Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex9">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-header">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def hanoi(n, source='A', target='C', helper='B'):
+    if n == 1:
+        print(f" Move disk 1: {source} -> {target}")
+                                                return
+                                                hanoi(n - 1, source, helper, target)
+                                                print(f"Move disk {n}: {source} -> {target}")
+                                                hanoi(n - 1, helper, target, source)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span>, <span class="tok-var">source</span>=<span class="tok-str">'A'</span>, <span class="tok-var">target</span>=<span class="tok-str">'C'</span>, <span class="tok-var">helper</span>=<span class="tok-str">'B'</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> == <span class="tok-num">1</span>:
+        <span class="tok-fn">print</span>(<span class="tok-str">f"Move disk 1: {source} -&gt; {target}"</span>)
+        <span class="tok-kw">return</span>
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">source</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>)
+    <span class="tok-fn">print</span>(<span class="tok-str">f"Move disk {n}: {source} -&gt; {target}"</span>)
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>, <span class="tok-var">source</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void hanoi(int n, char source, char target, char helper) {
+    if (n == 1) {
+        System.out.println(" Move disk 1: " + source + " -> " + target);
+                                                return;
+                                                }
+                                                hanoi(n - 1, source, helper, target);
+                                                System.out.println("Move disk " + n + ": " + source + " -> " + target);
+                                                hanoi(n - 1, helper, target, source);
+                                                }">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">hanoi</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>, <span class="tok-kw">char</span> <span class="tok-var">source</span>, <span class="tok-kw">char</span> <span class="tok-var">target</span>, <span class="tok-kw">char</span> <span class="tok-var">helper</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> == <span class="tok-num">1</span>) {
+        System.out.println(<span class="tok-str">"Move disk 1: "</span> + <span class="tok-var">source</span> + <span class="tok-str">" -&gt; "</span> + <span class="tok-var">target</span>);
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">source</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>);
+    System.out.println(<span class="tok-str">"Move disk "</span> + <span class="tok-var">n</span> + <span class="tok-str">": "</span> + <span class="tok-var">source</span> + <span class="tok-str">" -&gt; "</span> + <span class="tok-var">target</span>);
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>, <span class="tok-var">source</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="void hanoi(int n, char source, char target, char helper) {
+    if (n == 1) {
+        std::cout << " Move disk 1: " << source << " -> " << target << std::endl; return; } hanoi(n - 1, source,
+                                                    helper, target); std::cout << "Move disk " << n << ": " << source
+                                                    << " -> " << target << std::endl; hanoi(n - 1, helper, target,
+                                                    source); }">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">void</span> <span class="tok-fn">hanoi</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>, <span class="tok-kw">char</span> <span class="tok-var">source</span>, <span class="tok-kw">char</span> <span class="tok-var">target</span>, <span class="tok-kw">char</span> <span class="tok-var">helper</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> == <span class="tok-num">1</span>) {
+        std::cout &lt;&lt; <span class="tok-str">"Move disk 1: "</span> &lt;&lt; <span class="tok-var">source</span> &lt;&lt; <span class="tok-str">" -&gt; "</span> &lt;&lt; <span class="tok-var">target</span> &lt;&lt; std::endl;
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">source</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>);
+    std::cout &lt;&lt; <span class="tok-str">"Move disk "</span> &lt;&lt; <span class="tok-var">n</span> &lt;&lt; <span class="tok-str">": "</span> &lt;&lt; <span class="tok-var">source</span> &lt;&lt; <span class="tok-str">" -&gt; "</span> &lt;&lt; <span class="tok-var">target</span> &lt;&lt; std::endl;
+    <span class="tok-fn">hanoi</span>(<span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">helper</span>, <span class="tok-var">target</span>, <span class="tok-var">source</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 10: Greatest Common Divisor (GCD)
+                            </div>
+                            <p>Implement Euclid's Algorithm recursively to find the Greatest Common Divisor (GCD) of two
+                                positive integers.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex10">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex10">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def gcd(a, b):
+    if b == 0: return a
+    return gcd(b, a % b)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">gcd</span>(<span class="tok-var">a</span>, <span class="tok-var">b</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">b</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-var">a</span>
+    <span class="tok-kw">return</span> <span class="tok-fn">gcd</span>(<span class="tok-var">b</span>, <span class="tok-var">a</span> % <span class="tok-var">b</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int gcd(int a, int b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">gcd</span>(<span class="tok-kw">int</span> <span class="tok-var">a</span>, <span class="tok-kw">int</span> <span class="tok-var">b</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">b</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-var">a</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">gcd</span>(<span class="tok-var">b</span>, <span class="tok-var">a</span> % <span class="tok-var">b</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int gcd(int a, int b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">gcd</span>(<span class="tok-kw">int</span> <span class="tok-var">a</span>, <span class="tok-kw">int</span> <span class="tok-var">b</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">b</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-var">a</span>;
+    <span class="tok-kw">return</span> <span class="tok-fn">gcd</span>(<span class="tok-var">b</span>, <span class="tok-var">a</span> % <span class="tok-var">b</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 11: String Permutations
+                            </div>
+                            <p>Given a string containing unique characters, generate all possible permutations of the
+                                string using recursion.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex11">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex11">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def string_permutations(s, ans=&quot;&quot;):
+    if len(s) == 0:
+        print(ans)
+        return
+    for i in range(len(s)):
+        ch = s[i]
+        left_substr = s[0:i] + s[i+1:]
+        string_permutations(left_substr, ans + ch)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">string_permutations</span>(<span class="tok-var">s</span>, <span class="tok-var">ans</span>=<span class="tok-str">""</span>):
+    <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">s</span>) == <span class="tok-num">0</span>:
+        <span class="tok-fn">print</span>(<span class="tok-var">ans</span>)
+        <span class="tok-kw">return</span>
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-fn">len</span>(<span class="tok-var">s</span>)):
+        <span class="tok-var">ch</span> = <span class="tok-var">s</span>[<span class="tok-var">i</span>]
+        <span class="tok-var">left_substr</span> = <span class="tok-var">s</span>[<span class="tok-num">0</span>:<span class="tok-var">i</span>] + <span class="tok-var">s</span>[<span class="tok-var">i</span>+<span class="tok-num">1</span>:]
+        <span class="tok-fn">string_permutations</span>(<span class="tok-var">left_substr</span>, <span class="tok-var">ans</span> + <span class="tok-var">ch</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void printPermutations(String str, String ans) {
+    if (str.length() == 0) {
+        System.out.print(ans + " ");
+        return;
+    }
+    for (int i = 0; i < str.length(); i++) {
+        char ch = str.charAt(i);
+        String ros = str.substring(0, i) + str.substring(i + 1);
+        printPermutations(ros, ans + ch);
+    }
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">printPermutations</span>(<span class="tok-kw">String</span> <span class="tok-var">str</span>, <span class="tok-kw">String</span> <span class="tok-var">ans</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">str</span>.length() == <span class="tok-num">0</span>) {
+        System.out.print(<span class="tok-var">ans</span> + <span class="tok-str">" "</span>);
+        <span class="tok-kw">return</span>
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">str</span>.length(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">char</span> <span class="tok-var">ch</span> = <span class="tok-var">str</span>.charAt(<span class="tok-var">i</span>);
+        <span class="tok-kw">String</span> <span class="tok-var">ros</span> = <span class="tok-var">str</span>.substring(<span class="tok-num">0</span>, <span class="tok-var">i</span>) + <span class="tok-var">str</span>.substring(<span class="tok-var">i</span> + <span class="tok-num">1</span>);
+        <span class="tok-fn">printPermutations</span>(<span class="tok-var">ros</span>, <span class="tok-var">ans</span> + <span class="tok-var">ch</span>);
+    }
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="void printPermutations(string str, string ans = &quot;&quot;) {
+    if (str.length() == 0) {
+        std::cout << ans << " ";
+        return;
+    }
+    for (size_t i = 0; i < str.length(); i++) {
+        char ch = str[i];
+        string ros = str.substr(0, i) + str.substr(i + 1);
+        printPermutations(ros, ans + ch);
+    }
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">void</span> <span class="tok-fn">printPermutations</span>(<span class="tok-kw">string</span> <span class="tok-var">str</span>, <span class="tok-kw">string</span> <span class="tok-var">ans</span> = <span class="tok-str">""</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">str</span>.length() == <span class="tok-num">0</span>) {
+        std::cout &lt;&lt; <span class="tok-var">ans</span> &lt;&lt; <span class="tok-str">" "</span>;
+        <span class="tok-kw">return</span>
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">size_t</span> <span class="tok-var">i</span> = <span class="tok-num">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">str</span>.length(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">char</span> <span class="tok-var">ch</span> = <span class="tok-var">str</span>[<span class="tok-var">i</span>];
+        <span class="tok-kw">string</span> <span class="tok-var">ros</span> = <span class="tok-var">str</span>.substr(<span class="tok-num">0</span>, <span class="tok-var">i</span>) + <span class="tok-var">str</span>.substr(<span class="tok-var">i</span> + <span class="tok-num">1</span>);
+        <span class="tok-fn">printPermutations</span>(<span class="tok-var">ros</span>, <span class="tok-var">ans</span> + <span class="tok-var">ch</span>);
+    }
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 12: Fast Power (Binary Exponentiation)
+                            </div>
+                            <p>Write a recursive function that computes base^exp using the Binary Exponentiation
+                                technique, achieving logarithmic time complexity.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex12">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex12">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def fast_power(base, exp):
+    if exp == 0: return 1
+    half = fast_power(base, exp // 2)
+    if exp % 2 == 0: return half * half
+    return base * half * half">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">fast_power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">exp</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-var">half</span> = <span class="tok-fn">fast_power</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> // <span class="tok-num">2</span>)
+    <span class="tok-kw">if</span> <span class="tok-var">exp</span> % <span class="tok-num">2</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-var">half</span> * <span class="tok-var">half</span>
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-var">half</span> * <span class="tok-var">half</span></code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static long fastPower(long base, long exp) {
+    if (exp == 0) return 1;
+    long half = fastPower(base, exp / 2);
+    if (exp % 2 == 0) return half * half;
+    return base * half * half;
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static long</span> <span class="tok-fn">fastPower</span>(<span class="tok-kw">long</span> <span class="tok-var">base</span>, <span class="tok-kw">long</span> <span class="tok-var">exp</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">long</span> <span class="tok-var">half</span> = <span class="tok-fn">fastPower</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> / <span class="tok-num">2</span>);
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> % <span class="tok-num">2</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-var">half</span> * <span class="tok-var">half</span>
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-var">half</span> * <span class="tok-var">half</span>;
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="long long fastPower(long long base, long long exp) {
+    if (exp == 0) return 1;
+    long long half = fastPower(base, exp / 2);
+    if (exp % 2 == 0) return half * half;
+    return base * half * half;
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">long long</span> <span class="tok-fn">fastPower</span>(<span class="tok-kw">long long</span> <span class="tok-var">base</span>, <span class="tok-kw">long long</span> <span class="tok-var">exp</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">long long</span> <span class="tok-var">half</span> = <span class="tok-fn">fastPower</span>(<span class="tok-var">base</span>, <span class="tok-var">exp</span> / <span class="tok-num">2</span>);
+    <span class="tok-kw">if</span> (<span class="tok-var">exp</span> % <span class="tok-num">2</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-var">half</span> * <span class="tok-var">half</span>
+    <span class="tok-kw">return</span> <span class="tok-var">base</span> * <span class="tok-var">half</span> * <span class="tok-var">half</span>;
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 13: Reverse Array In-Place
+                            </div>
+                            <p>Given an array, reverse its elements recursively without creating an additional array.
+                                The reversal should be performed in-place</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex13">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex13">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def reverse_array(arr, left, right):
+    if left >= right: return
+    arr[left], arr[right] = arr[right], arr[left]
+    reverse_array(arr, left + 1, right - 1)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">reverse_array</span>(<span class="tok-var">arr</span>, <span class="tok-var">left</span>, <span class="tok-var">right</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">left</span> &gt;= <span class="tok-var">right</span>: <span class="tok-kw">return</span>
+    <span class="tok-var">arr</span>[<span class="tok-var">left</span>], <span class="tok-var">arr</span>[<span class="tok-var">right</span>] = <span class="tok-var">arr</span>[<span class="tok-var">right</span>], <span class="tok-var">arr</span>[<span class="tok-var">left</span>]
+    <span class="tok-fn">reverse_array</span>(<span class="tok-var">arr</span>, <span class="tok-var">left</span> + <span class="tok-num">1</span>, <span class="tok-var">right</span> - <span class="tok-num">1</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static void reverseArray(int[] arr, int left, int right) {
+    if (left >= right) return;
+    int temp = arr[left];
+    arr[left] = arr[right];
+    arr[right] = temp;
+    reverseArray(arr, left + 1, right - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static void</span> <span class="tok-fn">reverseArray</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">left</span>, <span class="tok-kw">int</span> <span class="tok-var">right</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">left</span> &gt;= <span class="tok-var">right</span>) <span class="tok-kw">return</span>
+    <span class="tok-kw">int</span> <span class="tok-var">temp</span> = <span class="tok-var">arr</span>[<span class="tok-var">left</span>];
+    <span class="tok-var">arr</span>[<span class="tok-var">left</span>] = <span class="tok-var">arr</span>[<span class="tok-var">right</span>];
+    <span class="tok-var">arr</span>[<span class="tok-var">right</span>] = <span class="tok-var">temp</span>
+    <span class="tok-fn">reverseArray</span>(<span class="tok-var">arr</span>, <span class="tok-var">left</span> + <span class="tok-num">1</span>, <span class="tok-var">right</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="void reverseArray(int arr[], int left, int right) {
+    if (left >= right) return;
+    swap(arr[left], arr[right]);
+    reverseArray(arr, left + 1, right - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">void</span> <span class="tok-fn">reverseArray</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">left</span>, <span class="tok-kw">int</span> <span class="tok-var">right</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">left</span> &gt;= <span class="tok-var">right</span>) <span class="tok-kw">return</span>
+    <span class="tok-kw">swap</span>(<span class="tok-var">arr</span>[<span class="tok-var">left</span>], <span class="tok-var">arr</span>[<span class="tok-var">right</span>]);
+    <span class="tok-fn">reverseArray</span>(<span class="tok-var">arr</span>, <span class="tok-var">left</span> + <span class="tok-num">1</span>, <span class="tok-var">right</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 14: Check if Array is Sorted
+                            </div>
+                            <p>Given an array of integers, determine recursively whether the array is sorted in
+                                non-decreasing order.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex14">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex14">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def is_sorted(arr, n):
+    if n <= 1: return True
+    return arr[n - 1] >= arr[n - 2] and is_sorted(arr, n - 1)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">is_sorted</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>: <span class="tok-kw">return</span> <span class="tok-var">True</span>
+    <span class="tok-kw">return</span> <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt;= <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">2</span>] <span class="tok-kw">and</span> <span class="tok-fn">is_sorted</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static boolean isSorted(int[] arr, int n) {
+    if (n <= 1) return true;
+    return arr[n - 1] >= arr[n - 2] && isSorted(arr, n - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static boolean</span> <span class="tok-fn">isSorted</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-var">true</span>
+    <span class="tok-kw">return</span> <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt;= <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">2</span>] && <span class="tok-fn">isSorted</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="bool isSorted(int arr[], int n) {
+    if (n <= 1) return true;
+    return arr[n - 1] >= arr[n - 2] && isSorted(arr, n - 1);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">bool</span> <span class="tok-fn">isSorted</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-var">true</span>
+    <span class="tok-kw">return</span> <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt;= <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">2</span>] && <span class="tok-fn">isSorted</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="recursion-exercise">
+                            <div class="recursion-exercise-title">
+                                <i class="fas fa-dumbbell"></i> Exercise 15: Subset Sum Accumulator Count
+                            </div>
+                            <p>Given an array of positive integers and a target sum, write a recursive function that
+                                counts the number of subsets whose elements add up exactly to the target sum.</p>
+                            <button class="recursion-exercise-toggle" aria-expanded="false"
+                                aria-controls="sol-ex15">Show Solution</button>
+                            <div class="recursion-exercise-solution" id="sol-ex15">
+
+                                <div class="recursion-code-block font-lang-container">
+                                    <div class="lang-switcher-tabs">
+                                        <button class="lang-tab-btn active"
+                                            onclick="switchLang(this, 'py')">Python</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'java')">Java</button>
+                                        <button class="lang-tab-btn" onclick="switchLang(this, 'cpp')">C++</button>
+                                    </div>
+
+                                    <div class="lang-pane active" data-lang="py">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Python</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="def count_subsets(arr, n, sum_val):
+    if sum_val == 0: return 1
+    if n == 0: return 0
+    if arr[n - 1] > sum_val:
+        return count_subsets(arr, n - 1, sum_val)
+    return count_subsets(arr, n - 1, sum_val - arr[n - 1]) + count_subsets(arr, n - 1, sum_val)">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">def</span> <span class="tok-fn">count_subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span>, <span class="tok-var">sum_val</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">sum_val</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-kw">if</span> <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt; <span class="tok-var">sum_val</span>:
+        <span class="tok-kw">return</span> <span class="tok-fn">count_subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum_val</span>)
+    <span class="tok-kw">return</span> <span class="tok-fn">count_subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum_val</span> - <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>]) + <span class="tok-fn">count_subsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum_val</span>)</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="java">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">Java</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="public static int countSubsets(int[] arr, int n, int sum) {
+    if (sum == 0) return 1;
+    if (n == 0) return 0;
+    if (arr[n - 1] > sum) {
+        return countSubsets(arr, n - 1, sum);
+    }
+    return countSubsets(arr, n - 1, sum - arr[n - 1]) + countSubsets(arr, n - 1, sum);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">public static int</span> <span class="tok-fn">countSubsets</span>(<span class="tok-kw">int</span>[] <span class="tok-var">arr</span>, <span class="tok-kw">int</span> <span class="tok-var">n</span>, <span class="tok-kw">int</span> <span class="tok-var">sum</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">sum</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt; <span class="tok-var">sum</span>) {
+        <span class="tok-kw">return</span> <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum</span>);
+    }
+    <span class="tok-kw">return</span> <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum</span> - <span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>]) + <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum</span>);
+}</code></pre>
+                                    </div>
+
+                                    <div class="lang-pane" data-lang="cpp">
+                                        <div class="recursion-code-header">
+                                            <span class="recursion-code-lang">C++</span>
+                                            <button class="recursion-code-copy" aria-label="Copy code" data-code="int countSubsets(int arr[], int n, int sum) {
+    if (sum == 0) return 1;
+    if (n == 0) return 0;
+    if (arr[n - 1] > sum) {
+        return countSubsets(arr, n - 1, sum);
+    }
+    return countSubsets(arr, n - 1, sum - arr[n - 1]) + countSubsets(arr, n - 1, sum);
+}">Copy</button>
+                                        </div>
+                                        <pre><code><span class="tok-kw">int</span> <span class="tok-fn">countSubsets</span>(<span class="tok-kw">int</span> <span class="tok-var">arr</span>[], <span class="tok-kw">int</span> <span class="tok-var">n</span>, <span class="tok-kw">int</span> <span class="tok-var">sum</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">sum</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>
+    <span class="tok-kw">if</span> (<span class="tok-var">n</span> == <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>] &gt; <span class="tok-var">sum</span>) {
+        <span class="tok-kw">return</span> <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum</span>);
+    }
+    <span class="tok-kw">return</span> <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum - arr</span>[<span class="tok-var">n</span> - <span class="tok-num">1</span>]) + <span class="tok-fn">countSubsets</span>(<span class="tok-var">arr</span>, <span class="tok-var">n</span> - <span class="tok-num">1</span>, <span class="tok-var">sum</span>);
+}</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </article>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        function switchLang(button, lang) {
+            // Find the closest tracking element container context
+            const container = button.closest('.font-lang-container');
+
+            // Deactivate all matching structural level button markers inside this box
+            container.querySelectorAll('.lang-tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Deactivate active structural tracking views inside this parent container
+            container.querySelectorAll('.lang-pane').forEach(pane => pane.classList.remove('active'));
+
+            // Highlight current tab button selector target 
+            button.classList.add('active');
+            // Unhide target programmatic content language tab pane
+            container.querySelector(`.lang-pane[data-lang="${lang}"]`).classList.add('active');
+        }
+    </script>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="recursion-learning.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+
+</html>

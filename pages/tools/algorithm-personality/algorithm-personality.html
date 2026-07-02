@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Personality Assessment | Algo Infinity Verse</title>
+    <meta name="description" content="Discover which algorithm or data structure matches your personality. Are you a QuickSort, a Heap, or a HashMap?" />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="algorithm-personality.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="algorithm-personality">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero ap-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Which Algorithm Are You?</span>
+          <span class="main-title ap-gradient">Algorithm Personality Assessment</span>
+          <span class="subtitle">15 questions. One algorithm. Your true self.</span>
+        </h1>
+        <p class="section-subtitle">Every algorithm has a personality — methodical or chaotic, greedy or patient, a team player or a lone ranger. Take the quiz and discover which one matches yours.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary ap-btn-primary" id="apStartHeroBtn">
+            <i class="fas fa-brain"></i> Take the Quiz
+          </button>
+          <a href="#personalities" class="btn btn-secondary">
+            <i class="fas fa-list"></i> See All Personalities
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="section">
+      <div class="container">
+
+        <!-- Start Screen -->
+        <div class="ap-start-card" id="apStartCard">
+          <div class="ap-start-icons">
+            <span>⚡</span><span>🌳</span><span>🗺️</span><span>💾</span><span>🔍</span>
+          </div>
+          <h2 class="ap-start-title">Discover Your Algorithm Personality</h2>
+          <p class="ap-start-desc">Answer 15 questions honestly. No right or wrong answers — just your authentic self. The algorithm you match will reveal something true about how you think and solve problems.</p>
+          <div class="ap-personality-peek">
+            <div class="ap-peek-item" style="--c:#f59e0b">⚡ QuickSort</div>
+            <div class="ap-peek-item" style="--c:#06b6d4">🌊 Merge Sort</div>
+            <div class="ap-peek-item" style="--c:#22c55e">📡 BFS</div>
+            <div class="ap-peek-item" style="--c:#a855f7">🌑 DFS</div>
+            <div class="ap-peek-item" style="--c:#ef4444">⚡ HashMap</div>
+            <div class="ap-peek-item" style="--c:#f97316">🔥 Heap</div>
+            <div class="ap-peek-item" style="--c:#3b82f6">🧠 Dynamic Programming</div>
+            <div class="ap-peek-item" style="--c:#ec4899">💰 Greedy</div>
+            <div class="ap-peek-item" style="--c:#8b5cf6">🔗 Linked List</div>
+            <div class="ap-peek-item" style="--c:#14b8a6">🔍 Binary Search</div>
+          </div>
+          <button class="btn btn-primary ap-btn-primary ap-start-main-btn" id="apStartMainBtn">
+            <i class="fas fa-play"></i> Begin Assessment
+          </button>
+        </div>
+
+        <!-- Quiz Card -->
+        <div class="ap-quiz-card hidden" id="apQuizCard">
+          <!-- Progress -->
+          <div class="ap-quiz-progress-wrap">
+            <div class="ap-quiz-progress-bar" id="apProgressBar"></div>
+          </div>
+          <div class="ap-quiz-meta">
+            <span class="ap-quiz-counter" id="apQuizCounter">Question 1 of 15</span>
+            <span class="ap-quiz-pct" id="apQuizPct">0% complete</span>
+          </div>
+
+          <!-- Question -->
+          <div class="ap-question" id="apQuestion"></div>
+
+          <!-- Options -->
+          <div class="ap-options" id="apOptions"></div>
+
+          <!-- Navigation -->
+          <div class="ap-quiz-nav">
+            <button class="btn btn-secondary ap-nav-btn" id="apPrevBtn" disabled>
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <div class="ap-quiz-dots" id="apQuizDots"></div>
+            <button class="btn btn-primary ap-btn-primary ap-nav-btn" id="apNextBtn" disabled>
+              Next <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="ap-result-card hidden" id="apResultCard">
+          <div class="ap-result-top" id="apResultTop">
+            <div class="ap-result-emoji" id="apResultEmoji"></div>
+            <div class="ap-result-you">You are...</div>
+            <div class="ap-result-name" id="apResultName"></div>
+            <div class="ap-result-tagline" id="apResultTagline"></div>
+          </div>
+
+          <div class="ap-result-body">
+            <div class="ap-result-desc" id="apResultDesc"></div>
+
+            <div class="ap-result-traits" id="apResultTraits"></div>
+
+            <div class="ap-result-complexity" id="apResultComplexity"></div>
+
+            <div class="ap-result-famous" id="apResultFamous"></div>
+
+            <div class="ap-result-advice" id="apResultAdvice"></div>
+          </div>
+
+          <!-- Score breakdown -->
+          <div class="ap-score-breakdown" id="apScoreBreakdown"></div>
+
+          <!-- Actions -->
+          <div class="ap-result-actions">
+            <button class="btn btn-primary ap-btn-primary" id="apRetakeBtn">
+              <i class="fas fa-redo"></i> Retake Quiz
+            </button>
+            <button class="btn btn-secondary" id="apShareBtn">
+              <i class="fas fa-share-alt"></i> Share Result
+            </button>
+          </div>
+
+          <div class="ap-share-msg hidden" id="apShareMsg">📋 Result copied to clipboard!</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- All Personalities -->
+    <section id="personalities" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🎭</span> All Algorithm Personalities</h2>
+        <p class="section-subtitle">10 unique personalities — which one sounds like you?</p>
+        <div class="ap-personalities-grid" id="apPersonalitiesGrid"></div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="algorithm-personality.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

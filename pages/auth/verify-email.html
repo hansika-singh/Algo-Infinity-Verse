@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Email - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          var p = window.matchMedia("(prefers-color-scheme: light)").matches;
+          if ((t || (p ? "light" : "dark")) === "light")
+            document.documentElement.classList.add("light-mode");
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      .verify-card {
+        text-align: center;
+        padding: 2.5rem 2rem;
+        max-width: 440px;
+        margin: 0 auto;
+      }
+      .verify-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .verify-card h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .verify-card p {
+        color: var(--text-muted, #aaa);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+      .verify-card .email-highlight {
+        color: var(--primary, #7c3aed);
+        font-weight: 600;
+      }
+      .verify-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+      .verify-status {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        display: none;
+      }
+      .verify-status.success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+        display: block;
+      }
+      .verify-status.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+        display: block;
+      }
+      .verify-status.info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+        display: block;
+      }
+      .resend-btn {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: var(--text, #fff);
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+      .resend-btn:hover:not(:disabled) {
+        border-color: var(--primary, #7c3aed);
+        color: var(--primary, #7c3aed);
+      }
+      .resend-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      #countdown { font-weight: 600; }
+    </style>
+  </head>
+  <body data-page="verify-email">
+    <main class="auth-page">
+      <section class="auth-panel glass-card verify-card" id="pendingView">
+        <span class="verify-icon">📧</span>
+        <h1>Check Your Email</h1>
+        <p>
+          We sent a verification link to<br />
+          <span class="email-highlight" id="userEmailDisplay">your email</span>.<br />
+          Click the link in the email to activate your account.
+        </p>
+
+        <div class="verify-status" id="statusMsg"></div>
+
+        <div class="verify-actions">
+          <button class="btn btn-primary" id="resendBtn" type="button">
+            <i class="fas fa-paper-plane"></i>
+            <span>Resend Email</span>
+          </button>
+          <button class="resend-btn" type="button" id="backToLoginBtn">
+            <i class="fas fa-arrow-left"></i> Back to Login
+          </button>
+        </div>
+
+        <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--text-muted,#888)">
+          Didn't get it? Check your spam folder or resend below.
+        </p>
+      </section>
+
+      <!-- Shown when ?token=xxx is in URL (user clicked email link) -->
+      <section class="auth-panel glass-card verify-card" id="verifyingView" style="display:none">
+        <span class="verify-icon">⏳</span>
+        <h1>Verifying...</h1>
+        <p>Please wait while we verify your email address.</p>
+      </section>
+
+      <section class="auth-panel glass-card verify-card" id="successView" style="display:none">
+        <span class="verify-icon">✅</span>
+        <h1>Email Verified!</h1>
+        <p>Your account is now active. Redirecting you to the platform...</p>
+        <div class="verify-actions">
+          <a class="btn btn-primary" href="/">Go to Home</a>
+        </div>
+      </section>
+
+      <section class="auth-panel glass-card verify-card" id="errorView" style="display:none">
+        <span class="verify-icon">❌</span>
+        <h1>Link Expired</h1>
+        <p id="errorMsg">This verification link is invalid or has expired. Please request a new one.</p>
+        <div class="verify-actions">
+          <button class="btn btn-primary" type="button" id="requestNewLinkBtn">
+            <i class="fas fa-paper-plane"></i> Request New Link
+          </button>
+          <button class="resend-btn" type="button" id="errorBackToLoginBtn">
+            Back to Login
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+      const token = params.get("token");
+      const emailParam = params.get("email");
+
+      // Show the user's email if passed as query param
+      if (emailParam) {
+        document.getElementById("userEmailDisplay").textContent = emailParam;
+        sessionStorage.setItem("pendingVerifyEmail", emailParam);
+      } else {
+        const stored = sessionStorage.getItem("pendingVerifyEmail");
+        if (stored) document.getElementById("userEmailDisplay").textContent = stored;
+      }
+
+      function show(id) {
+        ["pendingView","verifyingView","successView","errorView"].forEach(v => {
+          document.getElementById(v).style.display = v === id ? "" : "none";
+        });
+      }
+
+      function showPending() { show("pendingView"); }
+
+      const backToLoginBtn = document.getElementById("backToLoginBtn");
+
+      if (backToLoginBtn) {
+          backToLoginBtn.addEventListener("click", () => {
+              location.href = "/login";
+          });
+      }
+
+      const errorBackToLoginBtn = document.getElementById("errorBackToLoginBtn");
+
+      if (errorBackToLoginBtn) {
+          errorBackToLoginBtn.addEventListener("click", () => {
+              location.href = "/login";
+          });
+      }
+
+      const requestNewLinkBtn = document.getElementById("requestNewLinkBtn");
+
+      if (requestNewLinkBtn) {
+          requestNewLinkBtn.addEventListener("click", showPending);
+      }
+
+      function setStatus(msg, type) {
+        const el = document.getElementById("statusMsg");
+        el.textContent = msg;
+        el.className = `verify-status ${type}`;
+      }
+
+      // ── If token in URL → verify it ──────────────────────────────────────
+      if (token) {
+        show("verifyingView");
+        fetch(`/api/verify-email?token=${encodeURIComponent(token)}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.ok) {
+              show("successView");
+              setTimeout(() => { location.href = "/"; }, 2500);
+            } else {
+              document.getElementById("errorMsg").textContent =
+                data.error || "This verification link is invalid or has expired.";
+              show("errorView");
+            }
+          })
+          .catch(() => {
+            document.getElementById("errorMsg").textContent =
+              "Network error. Please try again.";
+            show("errorView");
+          });
+      }
+
+      // ── Resend button ────────────────────────────────────────────────────
+      let cooldown = 0;
+      const resendBtn = document.getElementById("resendBtn");
+
+      function startCooldown(seconds) {
+        resendBtn.disabled = true;
+        cooldown = seconds;
+        const tick = setInterval(() => {
+          cooldown--;
+          resendBtn.querySelector("span").textContent =
+            cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Email";
+          if (cooldown <= 0) {
+            clearInterval(tick);
+            resendBtn.disabled = false;
+          }
+        }, 1000);
+      }
+
+      resendBtn.addEventListener("click", async () => {
+        const email =
+          sessionStorage.getItem("pendingVerifyEmail") ||
+          document.getElementById("userEmailDisplay").textContent;
+
+        if (!email || email === "your email") {
+          setStatus("Could not find your email. Please sign up again.", "error");
+          return;
+        }
+
+        resendBtn.disabled = true;
+        resendBtn.querySelector("span").textContent = "Sending...";
+        setStatus("", "");
+
+        try {
+          const r = await fetch("/api/resend-verification", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          const data = await r.json();
+          if (r.ok) {
+            setStatus("Verification email sent! Check your inbox.", "success");
+            startCooldown(60);
+          } else {
+            setStatus(data.error || "Failed to resend. Try again.", "error");
+            resendBtn.disabled = false;
+            resendBtn.querySelector("span").textContent = "Resend Email";
+          }
+        } catch {
+          setStatus("Network error. Please try again.", "error");
+          resendBtn.disabled = false;
+          resendBtn.querySelector("span").textContent = "Resend Email";
+        }
+      });
+    </script>
+  </body>
+</html>

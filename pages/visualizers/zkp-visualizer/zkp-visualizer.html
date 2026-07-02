@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zero-Knowledge Proofs (zk-SNARKs) | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for zk-SNARKs, R1CS Circuit Compilation, and Cryptographic Verification." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="zkp-visualizer.css" />
+</head>
+<body class="zk-body">
+
+    <nav class="navbar zk-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-lock"></i> Cryptography Engine: Active
+        </div>
+    </nav>
+
+    <main class="zk-workspace">
+        
+        <!-- Header: Circuit Configuration -->
+        <header class="zk-header">
+            <div class="header-content">
+                <h2><i class="fas fa-microchip"></i> zk-SNARK Circuit Visualizer</h2>
+                <p>We are proving knowledge of secret inputs <code>x</code> and <code>y</code> that satisfy the equation without revealing them.</p>
+                
+                <div class="circuit-equation">
+                    <span class="eq-label">Target Circuit:</span>
+                    <code class="eq-math">f(x, y) = x * y + 2</code>
+                </div>
+            </div>
+            <div class="field-config">
+                <span class="config-label">Finite Field Prime (p):</span>
+                <span class="config-value">97</span>
+                <p class="config-note">All arithmetic is performed modulo 97 to ensure mathematical bounds.</p>
+            </div>
+        </header>
+
+        <!-- Interactive Panels -->
+        <div class="zk-panels">
+            
+            <!-- Left: The Prover -->
+            <div class="panel prover-panel">
+                <div class="panel-heading prover-heading">
+                    <i class="fas fa-user-secret"></i> The Prover (Alice)
+                </div>
+                <div class="panel-body">
+                    <p class="instruction">1. Enter secret inputs to satisfy the circuit:</p>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="inputX">Secret 'x'</label>
+                            <input type="number" id="inputX" value="3" min="0" max="96" />
+                        </div>
+                        <div class="input-group">
+                            <label for="inputY">Secret 'y'</label>
+                            <input type="number" id="inputY" value="4" min="0" max="96" />
+                        </div>
+                    </div>
+
+                    <div class="computation-box">
+                        <strong>Public Output Calculation:</strong>
+                        <div id="proverCalculation">out = (3 * 4) + 2 = 14</div>
+                    </div>
+
+                    <button class="btn btn-prover w-100" id="btnGenerateWitness">
+                        <i class="fas fa-cog"></i> Generate Witness (s)
+                    </button>
+
+                    <div class="witness-container hidden" id="witnessContainer">
+                        <p class="instruction">2. The Witness Vector <code>s = [1, out, x, y, v1]</code></p>
+                        <div class="vector-display" id="witnessVector">
+                            <!-- Injected via JS -->
+                        </div>
+                        <button class="btn btn-prover w-100 mt-3" id="btnGenerateProof">
+                            <i class="fas fa-magic"></i> Generate Cryptographic Proof
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: R1CS Matrices (The Math) -->
+            <div class="panel math-panel">
+                <div class="panel-heading math-heading">
+                    <i class="fas fa-square-root-alt"></i> Rank-1 Constraint System (R1CS)
+                </div>
+                <div class="panel-body">
+                    <p class="instruction text-center">The circuit is flattened into matrices A, B, and C such that <code>A.s * B.s = C.s</code></p>
+                    
+                    <div class="matrices-container">
+                        <div class="matrix-wrapper">
+                            <span class="matrix-label">Matrix A</span>
+                            <div class="matrix" id="matrixA"></div>
+                        </div>
+                        <div class="matrix-operator">*</div>
+                        <div class="matrix-wrapper">
+                            <span class="matrix-label">Matrix B</span>
+                            <div class="matrix" id="matrixB"></div>
+                        </div>
+                        <div class="matrix-operator">=</div>
+                        <div class="matrix-wrapper">
+                            <span class="matrix-label">Matrix C</span>
+                            <div class="matrix" id="matrixC"></div>
+                        </div>
+                    </div>
+
+                    <div class="network-animation hidden" id="networkAnim">
+                        <div class="packet">
+                            <i class="fas fa-file-signature"></i>
+                            <span class="packet-label">Sending Proof π...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: The Verifier -->
+            <div class="panel verifier-panel">
+                <div class="panel-heading verifier-heading">
+                    <i class="fas fa-shield-alt"></i> The Verifier (Bob)
+                </div>
+                <div class="panel-body">
+                    <p class="instruction">The Verifier only receives the <strong>Public Output</strong> and the <strong>Proof π</strong>. They never see x or y.</p>
+                    
+                    <div class="verifier-data">
+                        <div class="data-row">
+                            <span>Public Output:</span>
+                            <strong class="text-accent" id="verifierOutput">?</strong>
+                        </div>
+                        <div class="data-row">
+                            <span>Proof Status:</span>
+                            <strong class="text-secondary" id="verifierProofStatus">Waiting...</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-verifier w-100" id="btnVerify" disabled>
+                        <i class="fas fa-check-double"></i> Run Verification
+                    </button>
+
+                    <div class="verification-results hidden" id="verificationResults">
+                        <p class="instruction mt-2">Checking <code>(A.s) * (B.s) == (C.s) mod 97</code></p>
+                        
+                        <div class="equation-check">
+                            <div class="eq-row">
+                                <span>Gate 1 (x * y = v1):</span>
+                                <code id="checkGate1">...</code>
+                            </div>
+                            <div class="eq-row">
+                                <span>Gate 2 (v1 + 2 = out):</span>
+                                <code id="checkGate2">...</code>
+                            </div>
+                        </div>
+
+                        <div class="verdict-box" id="finalVerdict">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="zkp-visualizer.js"></script>
+</body>
+</html>

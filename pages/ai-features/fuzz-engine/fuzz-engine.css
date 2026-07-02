@@ -1,0 +1,108 @@
+/* Fuzz Testing Engine Styles */
+:root {
+    --glass-bg: rgba(15, 23, 42, 0.95);
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Fuzz Theme (Neon Purple & Toxic Green) */
+    --fuzz-primary: #a855f7; /* Purple */
+    --fuzz-primary-hover: #9333ea;
+    --fuzz-accent: #2dd4bf; /* Teal */
+    --fuzz-danger: #ef4444; /* Red */
+    --fuzz-success: #22c55e; /* Green */
+}
+
+body.fuzz-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.navbar { height: 60px; padding: 0 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--fuzz-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.engine-badge.running { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); }
+.engine-badge.running i { animation: spin 2s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Common Buttons & Inputs */
+.btn { padding: 0.8rem 1.5rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; }
+.btn-primary { background: var(--fuzz-primary); color: #fff; }
+.btn-primary:hover { background: var(--fuzz-primary-hover); transform: translateY(-1px); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--fuzz-danger); border: 1px solid var(--fuzz-danger); }
+.btn-danger:hover { background: var(--fuzz-danger); color: #fff; }
+.w-100 { width: 100%; }
+.hidden { display: none !important; }
+
+/* Workspace Layout */
+.fuzz-workspace { flex: 1; display: flex; overflow: hidden; }
+
+/* Left Panel (Config & Telemetry) */
+.panel-left { width: 45%; display: flex; flex-direction: column; background: #0f172a; border-right: 1px solid var(--glass-border); overflow-y: auto; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.config-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+.prob-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0; margin-bottom: 1.5rem; }
+.prob-desc strong { color: #e2e8f0; font-family: 'Orbitron', sans-serif; display: block; margin-bottom: 0.3rem; }
+
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group input, .input-group select { background: #020617; border: 1px solid #334155; color: #fff; padding: 0.6rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.9rem; outline: none; }
+.input-group input:focus, .input-group select:focus { border-color: var(--fuzz-accent); }
+
+/* Telemetry & Odometer */
+.telemetry-section { padding: 2rem 1.5rem; background: #020617; flex: 1; display: flex; flex-direction: column; }
+.odometer-container { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 2rem; text-align: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+.odometer-label { font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+.odometer-value { font-family: 'Fira Code', monospace; font-size: 4rem; font-weight: 700; color: var(--fuzz-accent); margin: 0.5rem 0 1.5rem; text-shadow: 0 0 20px rgba(45, 212, 191, 0.4); font-variant-numeric: tabular-nums; }
+
+.progress-bar-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 99px; overflow: hidden; }
+.progress-bar-fill { height: 100%; width: 0%; background: var(--fuzz-primary); transition: width 0.1s linear; }
+
+/* Crash Report */
+.crash-report { margin-top: 1.5rem; border: 2px dashed var(--fuzz-danger); background: rgba(239, 68, 68, 0.05); border-radius: 8px; overflow: hidden; animation: shake 0.5s; }
+.crash-header { background: rgba(239, 68, 68, 0.2); color: var(--fuzz-danger); padding: 0.8rem 1rem; font-family: 'Orbitron', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+.crash-body { padding: 1rem; }
+.crash-body p { margin: 0 0 1rem; color: #fca5a5; font-size: 0.9rem; }
+.data-row { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.8rem; }
+.data-row span { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; }
+.data-row code { font-family: 'Fira Code', monospace; font-size: 0.9rem; background: #020617; padding: 0.6rem; border-radius: 4px; border: 1px solid #334155; word-break: break-all; }
+.success-text { color: var(--fuzz-success) !important; border-color: rgba(34, 197, 94, 0.3) !important; background: rgba(34, 197, 94, 0.05) !important;}
+.error-text { color: var(--fuzz-danger) !important; border-color: rgba(239, 68, 68, 0.3) !important; background: rgba(239, 68, 68, 0.05) !important;}
+
+/* Success Report */
+.success-report { margin-top: 1.5rem; border: 1px solid var(--fuzz-success); background: rgba(34, 197, 94, 0.05); border-radius: 8px; padding: 1.5rem; text-align: center; animation: popIn 0.4s ease; }
+.success-header { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--fuzz-success); margin-bottom: 0.5rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; }
+.success-report p { color: #a7f3d0; margin: 0; font-size: 0.9rem; line-height: 1.5;}
+
+@keyframes shake { 0%, 100% {transform: translateX(0);} 20%, 60% {transform: translateX(-5px);} 40%, 80% {transform: translateX(5px);} }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Right Panel (Editor) */
+.panel-right { width: 55%; display: flex; flex-direction: column; background: #292d3e; }
+.editor-header { height: 45px; background: #0f111a; border-bottom: 1px solid #000; display: flex; align-items: center; padding: 0 1rem; }
+.editor-tabs { display: flex; height: 100%; }
+.editor-tab { background: #292d3e; border: none; border-top: 2px solid var(--fuzz-primary); color: #fff; padding: 0 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; }
+
+.editor-wrapper { flex: 1; overflow: hidden; }
+.CodeMirror { height: 100% !important; font-family: 'Fira Code', monospace !important; font-size: 14px; background: #292d3e !important; }
+.CodeMirror-gutters { background: #0f111a !important; border-right: 1px solid #1e293b !important; }
+
+@media (max-width: 900px) {
+    .fuzz-workspace { flex-direction: column; }
+    .panel-left, .panel-right { width: 100%; }
+    .panel-left { border-right: none; border-bottom: 1px solid var(--glass-border); flex: 1; }
+    .panel-right { height: 400px; flex: none; }
+}

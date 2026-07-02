@@ -1,0 +1,101 @@
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Huffman Theme (Emerald & Violet) */
+    --huff-primary: #10b981; /* Emerald */
+    --huff-primary-hover: #059669;
+    --huff-accent: #8b5cf6; /* Violet */
+    --huff-danger: #ef4444; /* Red */
+    --panel-bg: #0b1121;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.navbar { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--huff-primary); }
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #10b981; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.4rem 1rem; border-radius: 99px; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Common */
+.btn { padding: 0.8rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--huff-primary); color: #000; }
+.btn-primary:hover { background: var(--huff-primary-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+.w-100 { width: 100%; }
+
+/* Workspace Layout */
+.huff-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel: Input & Frequency */
+.panel-left { width: 350px; display: flex; flex-direction: column; background: var(--glass-bg); border-right: 1px solid var(--glass-border); z-index: 10; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.input-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+.input-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; display: block; margin-bottom: 0.5rem; }
+.text-input { width: 100%; height: 100px; background: #020617; border: 1px solid #334155; color: #fff; padding: 0.8rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem; outline: none; resize: none; box-sizing: border-box; margin-bottom: 1rem; transition: border-color 0.2s; }
+.text-input:focus { border-color: var(--huff-primary); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+
+.freq-section { padding: 1.5rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+.freq-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+.freq-table th { background: #1e293b; color: #f8fafc; padding: 0.6rem; text-align: left; position: sticky; top: 0; z-index: 2; font-weight: 600; border-bottom: 1px solid #334155; }
+.freq-table td { padding: 0.6rem; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+.freq-table tr:hover td { background: rgba(255,255,255,0.02); }
+.code-col { color: var(--huff-primary); font-weight: bold; }
+.char-col { color: var(--huff-accent); }
+
+/* Center Panel: D3 Tree Canvas */
+.panel-center { flex: 1; display: flex; flex-direction: column; position: relative; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); }
+.canvas-header { height: 50px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #cbd5e1; z-index: 2; }
+
+.tree-container { flex: 1; position: relative; overflow: hidden; cursor: grab; }
+.tree-container:active { cursor: grabbing; }
+#d3Canvas { width: 100%; height: 100%; display: block; }
+
+.empty-state { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #475569; pointer-events: none; }
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; color: var(--huff-primary); }
+
+/* D3 SVG Styles */
+.link { fill: none; stroke: #334155; stroke-width: 2px; }
+.link-label { font-family: 'Fira Code', monospace; font-size: 10px; fill: #94a3b8; text-anchor: middle; font-weight: bold; }
+.link-label-bg { fill: #020617; }
+.node circle { fill: #1e293b; stroke: var(--huff-accent); stroke-width: 2px; }
+.node.leaf circle { fill: rgba(16, 185, 129, 0.1); stroke: var(--huff-primary); }
+.node text { font-family: 'Fira Code', monospace; font-size: 11px; fill: #fff; text-anchor: middle; dominant-baseline: central; font-weight: 500;}
+.node.leaf text { font-size: 12px; font-weight: 700; fill: var(--huff-primary); }
+
+/* Right Panel: Output & Stats */
+.panel-right { width: 400px; display: flex; flex-direction: column; background: var(--glass-bg); border-left: 1px solid var(--glass-border); z-index: 10; overflow-y: auto; }
+
+.stats-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); background: #020617; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.stat-card { background: #0f172a; border: 1px solid #1e293b; padding: 1rem; border-radius: 8px; display: flex; flex-direction: column; gap: 0.3rem; }
+.stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); font-family: 'Orbitron', sans-serif; }
+.stat-value { font-family: 'Fira Code', monospace; font-size: 1.3rem; font-weight: 700; color: #fff; }
+.ratio-card { grid-column: span 2; background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.3); }
+.ratio-value { color: var(--huff-primary); font-size: 2rem; text-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+
+.output-section { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; gap: 1rem; }
+.binary-box { background: #000; border: 1px solid #334155; border-radius: 8px; padding: 1rem; flex: 1; display: flex; flex-direction: column; }
+.binary-header { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--huff-accent); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+.binary-content { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #cbd5e1; word-break: break-all; overflow-y: auto; flex: 1; line-height: 1.5; }
+.binary-content.compressed { color: var(--huff-primary); }
+
+@media (max-width: 1024px) {
+    .huff-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left, .panel-right { width: 100%; border: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .panel-center { min-height: 500px; flex: none; }
+}

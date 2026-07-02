@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Universe Map | Algo Infinity Verse</title>
+  <meta name="description" content="A zoomable knowledge map visualizing the entire landscape of Data Structures and Algorithms." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="algorithm-universe.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- D3.js -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="algorithm-universe">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-placeholder"></div>
+
+  <section class="universe-container">
+    <div class="universe-ui">
+      <div class="universe-header">
+        <h1>Algorithm Universe Map</h1>
+        <p>Explore the galaxy of Data Structures &amp; Algorithms</p>
+      </div>
+
+      <div class="universe-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="universeSearch" aria-label="Search topics" placeholder="Search topics (e.g. Dijkstra, Arrays)..." />
+        <ul id="searchDropdown" class="search-dropdown hidden"></ul>
+      </div>
+
+      <div class="universe-controls">
+        <button onclick="window.location.href='/pages/tools/personalized-learning-path/personalized-learning-path.html'" title="Create Custom Roadmap" aria-label="Create Custom Roadmap" style="margin-bottom: 15px; border-color: var(--primary); color: var(--primary);"><i class="fas fa-route" aria-hidden="true" focusable="false"></i></button>
+        <button id="zoomIn" title="Zoom In" aria-label="Zoom In"><i class="fas fa-plus" aria-hidden="true" focusable="false"></i></button>
+        <button id="zoomOut" title="Zoom Out" aria-label="Zoom Out"><i class="fas fa-minus" aria-hidden="true" focusable="false"></i></button>
+        <button id="zoomReset" title="Reset View" aria-label="Reset View"><i class="fas fa-expand" aria-hidden="true" focusable="false"></i></button>
+      </div>
+      
+      <div class="universe-legend">
+        <h3>Legend</h3>
+        <div class="legend-item"><span class="node-color completed"></span> Completed</div>
+        <div class="legend-item"><span class="node-color core"></span> Core Topic</div>
+        <div class="legend-item"><span class="node-color algo"></span> Algorithm</div>
+      </div>
+    </div>
+
+    <!-- D3 Map Container -->
+    <div id="map-canvas"></div>
+
+    <!-- Learning Outcome Panel -->
+    <div id="learningOutcomePanel" class="outcome-panel hidden">
+      <div class="panel-header">
+        <h2 id="panelTitle">Topic Title</h2>
+        <button id="closePanelBtn" aria-label="Close panel"><i class="fas fa-times" aria-hidden="true" focusable="false"></i></button>
+      </div>
+      <div class="panel-body">
+        <h3>Learning Outcome</h3>
+        <p id="panelOutcome">You will master the concepts of...</p>
+        
+        <div class="panel-progress">
+          <span>Status:</span>
+          <span id="panelStatus" class="status-badge">Not Started</span>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <a href="#" id="startLearningBtn" class="btn btn-primary"><i class="fas fa-rocket"></i> Start Learning</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script type="module" src="/modules/theme.js"></script>
+  <script src="algorithm-universe.js"></script>
+
+  <script>
+    if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

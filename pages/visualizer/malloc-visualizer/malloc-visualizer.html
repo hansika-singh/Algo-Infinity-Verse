@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Allocator (Buddy System) | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize OS-level malloc/free operations, Buddy Memory Allocation, and Heap Fragmentation." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js for Binary Tree Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="malloc-visualizer.css" />
+</head>
+<body class="malloc-body">
+
+    <nav class="navbar malloc-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> OS Heap Manager: Online
+        </div>
+    </nav>
+
+    <main class="malloc-workspace">
+        
+        <!-- Left Panel: Allocation Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-memory"></i> Syscalls: malloc & free</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    The <strong>Buddy System</strong> allocates memory in powers of two. If a block is too large, it splits into two equal "buddies". Freeing a block coalesces it with its buddy if both are free.
+                </p>
+
+                <div class="input-group">
+                    <label>Bytes to Allocate (malloc)</label>
+                    <div class="input-with-btn">
+                        <input type="number" id="mallocSize" placeholder="e.g. 45" min="1" max="1024" />
+                        <button class="btn btn-primary" id="btnMalloc">malloc()</button>
+                    </div>
+                    <small class="help-text">Max Heap Size: 1024 Bytes</small>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-outline w-100" id="btnRandomAlloc">
+                        <i class="fas fa-dice"></i> Random Alloc
+                    </button>
+                    <button class="btn btn-danger w-100" id="btnResetHeap">
+                        <i class="fas fa-skull"></i> Reset Heap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Pointers List -->
+            <div class="pointers-section">
+                <h4><i class="fas fa-list"></i> Active Allocations (Pointers)</h4>
+                <div class="pointers-list" id="pointersList">
+                    <div class="empty-state-text" id="pointersEmpty">No active allocations.</div>
+                    <!-- Items injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Visualization Area -->
+        <div class="panel-center">
+            
+            <!-- Linear RAM Bar -->
+            <div class="ram-view-section">
+                <div class="canvas-header">
+                    <span><i class="fas fa-hdd"></i> Linear Contiguous Memory (1024 Bytes)</span>
+                </div>
+                <div class="ram-bar-container" id="ramBarContainer">
+                    <!-- Blocks injected by JS -->
+                </div>
+                <div class="ram-legend">
+                    <span class="legend-item"><span class="box box-free"></span> Free Block</span>
+                    <span class="legend-item"><span class="box box-used"></span> Used (Payload)</span>
+                    <span class="legend-item"><span class="box box-waste"></span> Internal Fragmentation (Waste)</span>
+                </div>
+            </div>
+            
+            <!-- D3.js Binary Tree -->
+            <div class="tree-view-section">
+                <div class="canvas-header">
+                    <span><i class="fas fa-sitemap"></i> Buddy Allocation Binary Tree</span>
+                </div>
+                <div class="tree-container" id="treeContainer">
+                    <!-- SVG injected by JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Fragmentation Telemetry & Logs -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-chart-pie"></i> Fragmentation Telemetry</h3>
+            </div>
+            
+            <div class="telemetry-dashboard">
+                <div class="stat-card">
+                    <div class="stat-label">Total Heap Usage</div>
+                    <div class="progress-bar-bg mt-1">
+                        <div class="progress-bar-fill fill-used" id="usageBar" style="width: 0%;"></div>
+                    </div>
+                    <div class="stat-value-sm mt-1"><span id="usageBytes">0</span> / 1024 B</div>
+                </div>
+
+                <div class="stat-grid mt-3">
+                    <div class="stat-box">
+                        <span class="stat-title">Largest Free Block</span>
+                        <span class="stat-value text-success" id="largestFree">1024 B</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-title">Internal Fragmentation</span>
+                        <span class="stat-value text-warning" id="internalFrag">0 B</span>
+                    </div>
+                </div>
+
+                <div class="frag-explanation" id="fragExplanation">
+                    <i class="fas fa-info-circle"></i> System is healthy. No fragmentation detected.
+                </div>
+            </div>
+
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> OS Kernel Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-line sys">> Kernel memory allocator booted. Heap size: 1024 Bytes.</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="malloc-visualizer.js"></script>
+</body>
+</html>

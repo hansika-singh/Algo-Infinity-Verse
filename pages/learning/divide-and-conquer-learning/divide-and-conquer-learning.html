@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algo Infinity Verse - Learn Divide and Conquer</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="divide-and-conquer-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="divide-and-conquer-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background Animations -->
+    <div class="space-background"></div>
+    <div id="particles-js"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the</span>
+          <span class="main-title gradient-text">Divide & Conquer Pattern</span>
+          <span class="subtitle">Decompose complex problems into manageable sub-problems</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_dc" id="typingTextDC"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#intro" class="btn btn-primary">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#practice-exercises" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="4">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- Divide & Conquer Learning Section -->
+    <section id="divide-and-conquer-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">✂️</span>
+          Learn Divide & Conquer
+        </h2>
+        <p class="section-subtitle">
+          Decompose complex problems into manageable sub-problems
+        </p>
+        
+        <!-- Overall Progress -->
+          <div class="dc-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+            <span class="dc-progress-text"><span id="progressCount">0</span> / 5 topics completed</span>
+            <div class="dc-progress-track">
+              <div class="dc-progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+      <div class="dc-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="dc-sidebar">
+          <div class="dc-sidebar-title">Lesson Modules</div>
+          <ul class="dc-sidebar-nav">
+            <li>
+              <a href="#intro" class="active">
+                <div class="nav-icon"><i class="fa-solid fa-scissors"></i></div>
+                <span>Introduction</span>
+              </a>
+            </li>
+            <li>
+              <a href="#strategy">
+                <div class="nav-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <span>The 3-Step Strategy</span>
+              </a>
+            </li>
+            <li>
+              <a href="#applications">
+                <div class="nav-icon"><i class="fa-solid fa-list-ul"></i></div>
+                <span>Common Applications</span>
+              </a>
+            </li>
+            <li>
+              <a href="#complexity">
+                <div class="nav-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <span>Complexity Analysis</span>
+              </a>
+            </li>
+            <li>
+              <a href="#practice-exercises">
+                <div class="nav-icon"><i class="fa-solid fa-dumbbell"></i></div>
+                <span>Practice Exercises</span>
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="dc-main-content">
+          
+          <!-- Lesson 1: Intro -->
+          <article id="intro" class="dc-lesson" data-topic="1">
+            <div class="dc-lesson-header">
+              <div class="dc-lesson-number">01</div>
+              <h3>Introduction</h3>
+            </div>
+            <p><strong>Divide and Conquer</strong> is an algorithm design paradigm based on multi-branched recursion. A divide-and-conquer algorithm works by recursively breaking down a problem into two or more sub-problems of the same or related type, until these become simple enough to be solved directly. The solutions to the sub-problems are then combined to give a solution to the original problem.</p>
+            
+            <div class="dc-concept-card">
+              <h4>When to use it?</h4>
+              <p>Use Divide and Conquer when a problem can be partitioned into independent subproblems, and the combination of the subproblem solutions leads efficiently to the overall solution. It is especially useful for searching, sorting, and geometric problems.</p>
+            </div>
+            
+            <div class="dc-svg-container">
+              <svg class="dc-svg-diagram" width="340" height="180" viewBox="0 0 340 180">
+                <!-- Root -->
+                <rect x="130" y="20" width="80" height="30" class="dc-svg-node" />
+                <text x="170" y="40" class="dc-svg-text">Problem</text>
+                
+                <!-- Edges from Root -->
+                <line x1="170" y1="50" x2="100" y2="80" class="dc-svg-line dc-svg-line-active" />
+                <line x1="170" y1="50" x2="240" y2="80" class="dc-svg-line dc-svg-line-active" />
+                
+                <!-- Level 1 Subproblems -->
+                <rect x="60" y="80" width="80" height="30" class="dc-svg-node-alt" />
+                <text x="100" y="100" class="dc-svg-text">Sub 1</text>
+                
+                <rect x="200" y="80" width="80" height="30" class="dc-svg-node-alt" />
+                <text x="240" y="100" class="dc-svg-text">Sub 2</text>
+                
+                <!-- Edges from Sub 1 -->
+                <line x1="100" y1="110" x2="60" y2="140" class="dc-svg-line dc-svg-line-active" />
+                <line x1="100" y1="110" x2="140" y2="140" class="dc-svg-line dc-svg-line-active" />
+                
+                <!-- Level 2 Subproblems -->
+                <rect x="35" y="140" width="50" height="25" class="dc-svg-node" style="fill:rgba(34,197,94,0.1); stroke:#22c55e" />
+                <text x="60" y="156" class="dc-svg-text" style="font-size: 10px;">Solve</text>
+                
+                <rect x="115" y="140" width="50" height="25" class="dc-svg-node" style="fill:rgba(34,197,94,0.1); stroke:#22c55e" />
+                <text x="140" y="156" class="dc-svg-text" style="font-size: 10px;">Solve</text>
+                
+                <!-- Edges from Sub 2 -->
+                <line x1="240" y1="110" x2="200" y2="140" class="dc-svg-line dc-svg-line-active" />
+                <line x1="240" y1="110" x2="280" y2="140" class="dc-svg-line dc-svg-line-active" />
+                
+                <rect x="175" y="140" width="50" height="25" class="dc-svg-node" style="fill:rgba(34,197,94,0.1); stroke:#22c55e" />
+                <text x="200" y="156" class="dc-svg-text" style="font-size: 10px;">Solve</text>
+                
+                <rect x="255" y="140" width="50" height="25" class="dc-svg-node" style="fill:rgba(34,197,94,0.1); stroke:#22c55e" />
+                <text x="280" y="156" class="dc-svg-text" style="font-size: 10px;">Solve</text>
+              </svg>
+            </div>
+            
+          </article>
+
+          <!-- Lesson 2: Strategy -->
+          <article id="strategy" class="dc-lesson" data-topic="2">
+            <div class="dc-lesson-header">
+              <div class="dc-lesson-number">02</div>
+              <h3>The 3-Step Strategy</h3>
+            </div>
+            <p>Every Divide and Conquer algorithm fundamentally consists of three distinct steps:</p>
+            
+            <ol>
+              <li><strong>Divide:</strong> Break the given problem into subproblems of same type.</li>
+              <li><strong>Conquer:</strong> Recursively solve these subproblems. If they are small enough, solve them directly (the base case).</li>
+              <li><strong>Combine:</strong> Appropriately combine the answers of the subproblems to form the final answer.</li>
+            </ol>
+
+            <div class="dc-callout">
+              <div class="dc-callout-icon">💡</div>
+              <p><strong>Base Case is Critical:</strong> Without a proper base case in your recursion, the "Conquer" step will run infinitely, leading to a Stack Overflow error!</p>
+            </div>
+          </article>
+
+          <!-- Lesson 3: Common Applications -->
+          <article id="applications" class="dc-lesson" data-topic="3">
+            <div class="dc-lesson-header">
+              <div class="dc-lesson-number">03</div>
+              <h3>Common Applications</h3>
+            </div>
+            <p>Many classic algorithms utilize this paradigm. Here are a few prominent ones:</p>
+            
+            <h4>1. Merge Sort</h4>
+            <p>Divides the array into two halves, recursively sorts them, and then merges the two sorted halves.</p>
+            <div class="dc-code-block">
+              <div class="dc-code-header">
+                <span class="dc-code-lang">python</span>
+                <button class="dc-code-copy" data-target="code-trick-1">
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+              <pre id="code-trick-1"><code><span class="tok-kw">def</span> <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>):
+    <span class="tok-kw">if</span> <span class="tok-bi">len</span>(<span class="tok-var">arr</span>) <span class="tok-op">&lt;=</span> <span class="tok-num">1</span>:
+        <span class="tok-kw">return</span> <span class="tok-var">arr</span>
+    
+    <span class="tok-var">mid</span> <span class="tok-op">=</span> <span class="tok-bi">len</span>(<span class="tok-var">arr</span>) <span class="tok-op">//</span> <span class="tok-num">2</span>
+    <span class="tok-var">left</span> <span class="tok-op">=</span> <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>[:<span class="tok-var">mid</span>])
+    <span class="tok-var">right</span> <span class="tok-op">=</span> <span class="tok-fn">merge_sort</span>(<span class="tok-var">arr</span>[<span class="tok-var">mid</span>:])
+    
+    <span class="tok-kw">return</span> <span class="tok-fn">merge</span>(<span class="tok-var">left</span>, <span class="tok-var">right</span>)</code></pre>
+            </div>
+
+            <h4>2. Binary Search</h4>
+            <p>Searches a sorted array by repeatedly dividing the search interval in half. Note that Binary Search is technically a <em>Decrease and Conquer</em> algorithm, but it is often classified under this umbrella.</p>
+            
+            <h4>3. Quick Sort</h4>
+            <p>Picks an element as a pivot and partitions the given array around the picked pivot, before recursively sorting the partitions.</p>
+          </article>
+
+          <!-- Lesson 4: Complexity Analysis -->
+          <article id="complexity" class="dc-lesson" data-topic="4">
+            <div class="dc-lesson-header">
+              <div class="dc-lesson-number">04</div>
+              <h3>Complexity Analysis</h3>
+            </div>
+            <p>The time complexity of a Divide and Conquer algorithm is typically expressed using a recurrence relation and solved using the <strong>Master Theorem</strong>.</p>
+            
+            <div class="dc-concept-card">
+              <h4>The Master Theorem Formula</h4>
+              <p>For a recurrence of the form: <code>T(n) = aT(n/b) + f(n)</code></p>
+              <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                <li><code>n</code> is the size of the problem.</li>
+                <li><code>a</code> is the number of subproblems in the recursion.</li>
+                <li><code>n/b</code> is the size of each subproblem.</li>
+                <li><code>f(n)</code> is the cost of the work done outside the recursive calls (the divide and combine steps).</li>
+              </ul>
+            </div>
+            
+            <p>For example, in Merge Sort, we divide into <code>2</code> subproblems (<code>a=2</code>), each of size <code>n/2</code> (<code>b=2</code>), and merging takes <code>O(n)</code> time (<code>f(n)=n</code>). Thus: <code>T(n) = 2T(n/2) + O(n)</code>, which resolves to <code>O(n log n)</code>.</p>
+          </article>
+
+          <!-- Lesson 5: Practice Exercises -->
+          <article id="practice-exercises" class="dc-lesson" data-topic="5">
+            <div class="dc-lesson-header">
+              <div class="dc-lesson-number">05</div>
+              <h3>Practice Exercises</h3>
+            </div>
+            <p>Test your knowledge with these standard divide and conquer problems!</p>
+
+            <div class="dc-exercise">
+              <div class="dc-exercise-title">
+                <i class="fa-solid fa-code"></i> Majority Element
+              </div>
+              <p>Given an array <code>nums</code> of size <code>n</code>, return the majority element. The majority element is the element that appears more than <code>&lfloor;n / 2&rfloor;</code> times.</p>
+              
+              <button class="dc-exercise-toggle" data-target="sol-1">
+                <i class="fa-solid fa-eye"></i> View Solution
+              </button>
+              
+              <div id="sol-1" class="dc-exercise-solution">
+                <p>We can divide the array into two halves, recursively find the majority element of each half. If the two halves agree, that's the global majority. Otherwise, we count occurrences of both candidates in the current range and return the winner.</p>
+                <div class="dc-code-block">
+                  <div class="dc-code-header">
+                    <span class="dc-code-lang">cpp</span>
+                  </div>
+                  <pre><code><span class="tok-kw">int</span> <span class="tok-fn">majorityElement</span>(<span class="tok-var">vector</span>&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">nums</span>, <span class="tok-kw">int</span> <span class="tok-var">l</span>, <span class="tok-kw">int</span> <span class="tok-var">r</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">l</span> <span class="tok-op">==</span> <span class="tok-var">r</span>) <span class="tok-kw">return</span> <span class="tok-var">nums</span>[<span class="tok-var">l</span>];
+    
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> <span class="tok-op">=</span> <span class="tok-var">l</span> <span class="tok-op">+</span> (<span class="tok-var">r</span> <span class="tok-op">-</span> <span class="tok-var">l</span>) <span class="tok-op">/</span> <span class="tok-num">2</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">leftMajority</span> <span class="tok-op">=</span> <span class="tok-fn">majorityElement</span>(<span class="tok-var">nums</span>, <span class="tok-var">l</span>, <span class="tok-var">mid</span>);
+    <span class="tok-kw">int</span> <span class="tok-var">rightMajority</span> <span class="tok-op">=</span> <span class="tok-fn">majorityElement</span>(<span class="tok-var">nums</span>, <span class="tok-var">mid</span> <span class="tok-op">+</span> <span class="tok-num">1</span>, <span class="tok-var">r</span>);
+    
+    <span class="tok-kw">if</span> (<span class="tok-var">leftMajority</span> <span class="tok-op">==</span> <span class="tok-var">rightMajority</span>) <span class="tok-kw">return</span> <span class="tok-var">leftMajority</span>;
+    
+    <span class="tok-kw">int</span> <span class="tok-var">leftCount</span> <span class="tok-op">=</span> <span class="tok-fn">count</span>(<span class="tok-var">nums</span>.<span class="tok-fn">begin</span>() <span class="tok-op">+</span> <span class="tok-var">l</span>, <span class="tok-var">nums</span>.<span class="tok-fn">begin</span>() <span class="tok-op">+</span> <span class="tok-var">r</span> <span class="tok-op">+</span> <span class="tok-num">1</span>, <span class="tok-var">leftMajority</span>);
+    <span class="tok-kw">int</span> <span class="tok-var">rightCount</span> <span class="tok-op">=</span> <span class="tok-fn">count</span>(<span class="tok-var">nums</span>.<span class="tok-fn">begin</span>() <span class="tok-op">+</span> <span class="tok-var">l</span>, <span class="tok-var">nums</span>.<span class="tok-fn">begin</span>() <span class="tok-op">+</span> <span class="tok-var">r</span> <span class="tok-op">+</span> <span class="tok-num">1</span>, <span class="tok-var">rightMajority</span>);
+    
+    <span class="tok-kw">return</span> <span class="tok-var">leftCount</span> <span class="tok-op">&gt;</span> <span class="tok-var">rightCount</span> ? <span class="tok-var">leftMajority</span> : <span class="tok-var">rightMajority</span>;
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="dc-exercise">
+              <div class="dc-exercise-title">
+                <i class="fa-solid fa-code"></i> Maximum Subarray
+              </div>
+              <p>Find the contiguous subarray with the largest sum using a divide and conquer approach.</p>
+              
+              <button class="dc-exercise-toggle" data-target="sol-2">
+                <i class="fa-solid fa-eye"></i> View Solution
+              </button>
+              
+              <div id="sol-2" class="dc-exercise-solution">
+                <p>The max subarray must lie in either the left half, the right half, or crossing the midpoint. We recursively solve for the halves and combine by finding the max crossing sum.</p>
+                <div class="dc-code-block">
+                  <div class="dc-code-header">
+                    <span class="dc-code-lang">java</span>
+                  </div>
+                  <pre><code><span class="tok-kw">public int</span> <span class="tok-fn">maxSubArray</span>(<span class="tok-kw">int</span>[] <span class="tok-var">nums</span>) {
+    <span class="tok-kw">return</span> <span class="tok-fn">findMax</span>(<span class="tok-var">nums</span>, <span class="tok-num">0</span>, <span class="tok-var">nums</span>.<span class="tok-var">length</span> <span class="tok-op">-</span> <span class="tok-num">1</span>);
+}
+
+<span class="tok-kw">private int</span> <span class="tok-fn">findMax</span>(<span class="tok-kw">int</span>[] <span class="tok-var">nums</span>, <span class="tok-kw">int</span> <span class="tok-var">left</span>, <span class="tok-kw">int</span> <span class="tok-var">right</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">left</span> <span class="tok-op">&gt;</span> <span class="tok-var">right</span>) <span class="tok-kw">return</span> <span class="tok-var">Integer</span>.<span class="tok-var">MIN_VALUE</span>;
+    <span class="tok-kw">if</span> (<span class="tok-var">left</span> <span class="tok-op">==</span> <span class="tok-var">right</span>) <span class="tok-kw">return</span> <span class="tok-var">nums</span>[<span class="tok-var">left</span>];
+    
+    <span class="tok-kw">int</span> <span class="tok-var">mid</span> <span class="tok-op">=</span> (<span class="tok-var">left</span> <span class="tok-op">+</span> <span class="tok-var">right</span>) <span class="tok-op">/</span> <span class="tok-num">2</span>;
+    <span class="tok-kw">int</span> <span class="tok-var">leftMax</span> <span class="tok-op">=</span> <span class="tok-fn">findMax</span>(<span class="tok-var">nums</span>, <span class="tok-var">left</span>, <span class="tok-var">mid</span> <span class="tok-op">-</span> <span class="tok-num">1</span>);
+    <span class="tok-kw">int</span> <span class="tok-var">rightMax</span> <span class="tok-op">=</span> <span class="tok-fn">findMax</span>(<span class="tok-var">nums</span>, <span class="tok-var">mid</span> <span class="tok-op">+</span> <span class="tok-num">1</span>, <span class="tok-var">right</span>);
+    
+    <span class="tok-kw">int</span> <span class="tok-var">crossMax</span> <span class="tok-op">=</span> <span class="tok-fn">maxCrossingSum</span>(<span class="tok-var">nums</span>, <span class="tok-var">left</span>, <span class="tok-var">mid</span>, <span class="tok-var">right</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">Math</span>.<span class="tok-fn">max</span>(<span class="tok-var">Math</span>.<span class="tok-fn">max</span>(<span class="tok-var">leftMax</span>, <span class="tok-var">rightMax</span>), <span class="tok-var">crossMax</span>);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+            
+          </article>
+</div>
+      </div>
+          </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="divide-and-conquer-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

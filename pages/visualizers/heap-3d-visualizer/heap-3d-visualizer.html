@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Binary Heap & Priority Queue Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="An interactive 3D visualizer to learn Min-Heaps, Max-Heaps, priority queue extractions, and parent-child array indexing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="heap-3d-visualizer.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="heap-body">
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="heap-workspace">
+        
+        <!-- Left Panel: Controls & Custom Inputs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cubes"></i> Heap Controller</h3>
+            </div>
+            
+            <div class="control-section">
+                <!-- Heap Type Select -->
+                <div class="control-group">
+                    <label><i class="fas fa-exchange-alt"></i> Heap Mode</label>
+                    <div class="mode-toggle-group">
+                        <button class="btn btn-mode active" id="btnMinMode" data-mode="min">Min-Heap</button>
+                        <button class="btn btn-mode" id="btnMaxMode" data-mode="max">Max-Heap</button>
+                    </div>
+                </div>
+
+                <!-- Node Actions -->
+                <div class="control-group">
+                    <label for="nodeValueInput"><i class="fas fa-plus"></i> Push / Insert Node</label>
+                    <div class="action-input-row">
+                        <input type="number" id="nodeValueInput" min="1" max="99" value="15" />
+                        <button class="btn btn-primary" id="btnInsertNode">Insert</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label><i class="fas fa-minus"></i> Priority Queue Extraction</label>
+                    <button class="btn btn-danger w-100" id="btnExtractRoot">
+                        <i class="fas fa-arrow-up"></i> Extract Root Node
+                    </button>
+                </div>
+
+                <!-- Presets -->
+                <div class="control-group">
+                    <label><i class="fas fa-magic"></i> Demo Presets</label>
+                    <div class="preset-buttons">
+                        <button class="btn btn-outline w-100" id="btnPresetRandom">Load Random Heap</button>
+                        <button class="btn btn-outline w-100" id="btnPresetSorted" style="margin-top: 0.5rem;">Load Sorted Heap</button>
+                    </div>
+                </div>
+
+                <!-- 3D Rotation Sliders -->
+                <div class="control-group rotation-controls">
+                    <label><i class="fas fa-sync-alt"></i> 3D Rotation Viewport</label>
+                    
+                    <div class="slider-row">
+                        <span>Pitch (X):</span>
+                        <input type="range" id="rotateX" min="-30" max="30" value="10" />
+                        <span id="rotateXVal" class="slider-val">10°</span>
+                    </div>
+
+                    <div class="slider-row" style="margin-top: 0.5rem;">
+                        <span>Yaw (Y):</span>
+                        <input type="range" id="rotateY" min="-45" max="45" value="-10" />
+                        <span id="rotateYVal" class="slider-val">-10°</span>
+                    </div>
+
+                    <button class="btn btn-outline w-100" id="btnResetRotation" style="margin-top: 0.8rem;">
+                        <i class="fas fa-undo"></i> Reset 3D View
+                    </button>
+                </div>
+
+                <!-- Animation Controls -->
+                <div class="control-group">
+                    <label for="speedSlider"><i class="fas fa-running"></i> Sift animation Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" />
+                        <span id="speedValue">1.0x</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons-row">
+                    <button class="btn btn-outline" id="btnStepForward" title="Step forward one comparison" disabled>
+                        <i class="fas fa-step-forward"></i> Step
+                    </button>
+                    <button class="btn btn-outline" id="btnResetAll">
+                        <i class="fas fa-broom"></i> Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Workspace: Split-screen heap visualizer -->
+        <div class="panel-center" id="panelCenter">
+            
+            <!-- Top Section: 3D Tree Visualizer -->
+            <div class="tree-viewport-section">
+                <div class="viewport-header">
+                    <div class="header-title">
+                        <i class="fas fa-project-diagram"></i> 3D Binary Tree Representation
+                    </div>
+                    <div class="index-formula-badge">
+                        Left: 2i + 1 | Right: 2i + 2
+                    </div>
+                </div>
+
+                <!-- Viewport container with CSS perspective -->
+                <div class="viewport-3d-wrapper" id="viewport3DWrapper">
+                    <!-- SVG overlay for connectors -->
+                    <svg id="svgOverlay3D" class="svg-overlay-3d"></svg>
+                    
+                    <!-- 3D Transform Node Container -->
+                    <div class="tree-container-3d" id="treeContainer3D">
+                        <!-- Dynamic nodes loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Linear Array Representation -->
+            <div class="array-memory-section">
+                <div class="array-header">
+                    <div class="header-title">
+                        <i class="fas fa-th-list"></i> Linear Memory Array Layout
+                    </div>
+                    <div class="array-info-badge">
+                        Mapped to Index Positions
+                    </div>
+                </div>
+                
+                <div class="array-scroll-wrapper">
+                    <div class="array-container" id="arrayContainer">
+                        <!-- Dynamic array memory cells -->
+                        <div class="empty-array-msg">Heap is empty. Insert nodes to view memory mapping!</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Heapify Logs & Index Mapping -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> Step Execution Logs</h3>
+                <button class="btn-clear" id="btnClearLogs" title="Clear Logs"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            
+            <div class="logs-wrapper">
+                <div class="logs-container" id="logContainer">
+                    <div class="log-entry sys">> System booted. 3D Binary Heap engine ready.</div>
+                    <div class="log-entry sys">> Left child mapping: index = 2 * parent + 1</div>
+                    <div class="log-entry sys">> Right child mapping: index = 2 * parent + 2</div>
+                </div>
+                
+                <!-- Math formula helper card -->
+                <div class="formula-helper-card">
+                    <h5>Index Relationship HUD:</h5>
+                    <div class="formula-row">
+                        <span class="formula-label">Active Node Index:</span>
+                        <strong class="formula-value" id="hudActiveIndex">-</strong>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-label">Parent Index:</span>
+                        <strong class="formula-value" id="hudParentIndex">-</strong>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-label">Left Child Index:</span>
+                        <strong class="formula-value" id="hudLeftIndex">-</strong>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-label">Right Child Index:</span>
+                        <strong class="formula-value" id="hudRightIndex">-</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Core Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="heap-3d-visualizer.js"></script>
+
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

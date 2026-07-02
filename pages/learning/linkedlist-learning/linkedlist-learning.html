@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Linked Lists | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Learn Linked Lists from beginner to advanced with examples, visual explanations, interview tips, and practice problems." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="linkedlist-learning.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="linkedlist-learning">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Master Data Structures With</span>
+        <span class="main-title gradient-text">Linked Lists</span>
+        <span class="subtitle">Chains of Connected Nodes</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_ll" id="typingTextLL"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Learning
+        </a>
+        <a href="#operations" class="btn btn-secondary">
+          <i class="fas fa-code"></i> Jump to Operations
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <span class="stat-number" data-target="10">0</span>
+          <span class="stat-label">Topics</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="20">0</span>
+          <span class="stat-label">Examples</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="12">0</span>
+          <span class="stat-label">Interview Questions</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Linked List Learning Section -->
+  <section id="ll-learning" class="section">
+    <div class="container">
+
+      <h2 class="section-title">
+        <span class="title-icon">🔗</span>
+        Learn Linked Lists
+      </h2>
+      <p class="section-subtitle">
+        Master the node-based structure that powers stacks, queues, and dynamic memory.
+      </p>
+
+      <!-- Progress Bar -->
+      <div class="ll-progress-bar" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Learning progress">
+        <span class="ll-progress-text">
+          <span id="llProgressCount">0</span> / 10 topics completed
+        </span>
+        <div class="ll-progress-track">
+          <div class="ll-progress-fill" id="llProgressFill"></div>
+        </div>
+        <span class="ll-progress-percent" id="llProgressPercent">0%</span>
+      </div>
+
+      <div class="ll-layout">
+
+        <!-- Sidebar Navigation -->
+        <aside class="ll-sidebar" aria-label="Topic navigation">
+          <div class="ll-sidebar-title">Topics</div>
+          <ul class="ll-sidebar-nav" id="llTopicNav">
+            <li><a href="#introduction"   class="ll-nav-link"><span class="nav-icon">📖</span> Introduction</a></li>
+            <li><a href="#node-struct"     class="ll-nav-link"><span class="nav-icon">🧱</span> Node Structure</a></li>
+            <li><a href="#traversal"       class="ll-nav-link"><span class="nav-icon">🔄</span> Traversal</a></li>
+            <li><a href="#insertion"       class="ll-nav-link"><span class="nav-icon">➕</span> Insertion</a></li>
+            <li><a href="#deletion"        class="ll-nav-link"><span class="nav-icon">➖</span> Deletion</a></li>
+            <li><a href="#searching"       class="ll-nav-link"><span class="nav-icon">🔍</span> Searching</a></li>
+            <li><a href="#doubly"          class="ll-nav-link"><span class="nav-icon">↔️</span> Doubly Linked</a></li>
+            <li><a href="#circular"        class="ll-nav-link"><span class="nav-icon">🔁</span> Circular</a></li>
+            <li><a href="#vs-arrays"       class="ll-nav-link"><span class="nav-icon">⚖️</span> vs Arrays</a></li>
+            <li><a href="#interview"       class="ll-nav-link"><span class="nav-icon">⭐</span> Interview Tips</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ll-main-content" id="llMainContent">
+
+          <!-- ═══════════════════════════════════════
+               1. Introduction
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="introduction" data-topic="1">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">01</span>
+              <h3>Introduction to Linked Lists</h3>
+            </div>
+
+            <p>
+              A <strong>Linked List</strong> is a linear data structure where elements are not stored
+              in contiguous memory. Instead, each element (called a <strong>node</strong>) holds its
+              data and a pointer to the next node. This chain of pointers is what gives linked lists
+              their power and flexibility.
+            </p>
+
+            <div class="ll-concept-card">
+              <h4>Why Learn Linked Lists?</h4>
+              <ul>
+                <li><strong>Dynamic size</strong> — grows and shrinks at runtime without reallocation</li>
+                <li><strong>Efficient insert/delete</strong> — O(1) at the head, no shifting required</li>
+                <li><strong>Foundation for stacks &amp; queues</strong> — used in real OS schedulers</li>
+                <li><strong>Interview staple</strong> — reversal, cycle detection, merge problems are everywhere</li>
+              </ul>
+            </div>
+
+            <!-- Visual: chain diagram -->
+            <div class="ll-visual" aria-label="Linked list node chain diagram">
+              <div class="ll-chain">
+                <div class="ll-node">
+                  <div class="ll-node-data">10</div>
+                  <div class="ll-node-ptr">next →</div>
+                </div>
+                <div class="ll-arrow">→</div>
+                <div class="ll-node">
+                  <div class="ll-node-data">20</div>
+                  <div class="ll-node-ptr">next →</div>
+                </div>
+                <div class="ll-arrow">→</div>
+                <div class="ll-node">
+                  <div class="ll-node-data">30</div>
+                  <div class="ll-node-ptr">next →</div>
+                </div>
+                <div class="ll-arrow">→</div>
+                <div class="ll-node ll-node-null">
+                  <div class="ll-node-data">NULL</div>
+                </div>
+              </div>
+              <p class="ll-visual-label">Head → 10 → 20 → 30 → NULL</p>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">💡</span>
+              <p>Unlike arrays, linked list elements are <strong>not contiguous in memory</strong>.
+                 Each node can live anywhere on the heap — the pointer is what connects them.
+                 This makes random access O(n) but insertion/deletion at a known node O(1).</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               2. Node Structure
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="node-struct" data-topic="2">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">02</span>
+              <h3>Node Structure</h3>
+            </div>
+
+            <p>
+              Every linked list is built from nodes. A node is a simple <code>struct</code>
+              containing the <strong>data</strong> field and a <strong>next pointer</strong>
+              that references the following node. The last node's <code>next</code> is always
+              <code>NULL</code>, marking the end of the list.
+            </p>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Node Definition</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>// A single node in the linked list
+struct Node {
+    int data;           // payload
+    struct Node* next;  // pointer to the next node
+};
+
+// Helper: create a new node on the heap
+struct Node* createNode(int value) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = value;
+    node->next = NULL;
+    return node;
+}</code></pre>
+            </div>
+
+            <div class="ll-output">
+              <div class="ll-output-label">Memory Layout</div>
+              <pre>Node at 0x100          Node at 0x200          Node at 0x300
+┌────────┬────────┐   ┌────────┬────────┐   ┌────────┬────────┐
+│ data:10│ next:  │──▶│ data:20│ next:  │──▶│ data:30│ next:  │──▶ NULL
+│        │ 0x200  │   │        │ 0x300  │   │        │ NULL   │
+└────────┴────────┘   └────────┴────────┘   └────────┴────────┘</pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">⚡</span>
+              <p>Always initialize <code>next = NULL</code> when creating a node.
+                 A dangling pointer (uninitialized <code>next</code>) is one of the most
+                 common causes of segmentation faults in linked list code.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               3. Traversal
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="traversal" data-topic="3">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">03</span>
+              <h3>Traversal</h3>
+            </div>
+
+            <p>
+              Traversal visits every node exactly once by following the chain of <code>next</code>
+              pointers from <code>head</code> until we reach <code>NULL</code>. It is the
+              foundation of printing, searching, and computing aggregates.
+            </p>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>void printList(struct Node* head) {
+    struct Node* current = head;   // start at head
+
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL)
+            printf(" → ");
+        current = current->next;   // move to next node
+    }
+    printf(" → NULL\n");
+}</code></pre>
+            </div>
+
+            <div class="ll-output">
+              <div class="ll-output-label">Output</div>
+              <pre>10 → 20 → 30 → NULL</pre>
+            </div>
+
+            <!-- Exercise -->
+            <div class="ll-exercise" id="exercise-traversal">
+              <div class="ll-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Traversal
+              </div>
+              <p>Write a traversal that prints the <strong>sum</strong> and
+                 <strong>count</strong> of all nodes in the list.</p>
+              <button class="ll-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-traversal">Show Solution</button>
+              <div class="ll-exercise-solution" id="solution-traversal">
+                <div class="ll-code-block">
+                  <div class="ll-code-header">
+                    <span class="ll-code-lang">C</span>
+                    <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>void sumAndCount(struct Node* head) {
+    int sum = 0, count = 0;
+    struct Node* curr = head;
+
+    while (curr != NULL) {
+        sum   += curr->data;
+        count++;
+        curr = curr->next;
+    }
+    printf("Sum = %d, Count = %d\n", sum, count);
+}
+// For list 10→20→30: Sum = 60, Count = 3</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               4. Insertion
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="insertion" data-topic="4">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">04</span>
+              <h3>Insertion</h3>
+            </div>
+
+            <p>
+              Inserting a node into a linked list is O(1) when you already have a pointer
+              to the insertion point — no shifting required. There are three common cases:
+              at the <strong>head</strong>, at the <strong>tail</strong>, and at a
+              <strong>specific position</strong>.
+            </p>
+
+            <div class="ll-concept-card">
+              <h4>Insert at Head — O(1)</h4>
+              <p>Point the new node's <code>next</code> to the current head, then
+                 update <code>head</code> to the new node.</p>
+            </div>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Insert at Head</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>struct Node* insertAtHead(struct Node* head, int value) {
+    struct Node* newNode = createNode(value);
+    newNode->next = head;  // new node points to old head
+    return newNode;        // new node becomes the head
+}
+
+// Usage
+head = insertAtHead(head, 5);
+// Before: 10 → 20 → 30 → NULL
+// After :  5 → 10 → 20 → 30 → NULL</code></pre>
+            </div>
+
+            <div class="ll-concept-card">
+              <h4>Insert at Tail — O(n)</h4>
+              <p>Traverse to the last node (where <code>next == NULL</code>),
+                 then attach the new node.</p>
+            </div>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Insert at Tail</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>struct Node* insertAtTail(struct Node* head, int value) {
+    struct Node* newNode = createNode(value);
+
+    if (head == NULL) return newNode;  // empty list
+
+    struct Node* curr = head;
+    while (curr->next != NULL)
+        curr = curr->next;            // reach last node
+
+    curr->next = newNode;             // attach
+    return head;
+}
+
+// Before: 10 → 20 → 30 → NULL
+// After : 10 → 20 → 30 → 40 → NULL</code></pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">⚠️</span>
+              <p>Always handle the <strong>empty list</strong> case (head == NULL)
+                 before traversing. Calling <code>curr->next</code> on a NULL pointer
+                 is immediate undefined behaviour.</p>
+            </div>
+
+            <!-- Exercise -->
+            <div class="ll-exercise" id="exercise-insertion">
+              <div class="ll-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Insertion
+              </div>
+              <p>Insert the value <strong>25</strong> after the node that contains <strong>20</strong>
+                 in the list: <code>10 → 20 → 30 → NULL</code></p>
+              <button class="ll-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-insertion">Show Solution</button>
+              <div class="ll-exercise-solution" id="solution-insertion">
+                <div class="ll-code-block">
+                  <div class="ll-code-header">
+                    <span class="ll-code-lang">C</span>
+                    <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>void insertAfter(struct Node* prevNode, int value) {
+    if (prevNode == NULL) return;
+
+    struct Node* newNode  = createNode(value);
+    newNode->next         = prevNode->next;  // new → 30
+    prevNode->next        = newNode;         // 20  → new
+}
+
+// Find the node with data == 20, then:
+insertAfter(nodeWith20, 25);
+// Result: 10 → 20 → 25 → 30 → NULL</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               5. Deletion
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="deletion" data-topic="5">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">05</span>
+              <h3>Deletion</h3>
+            </div>
+
+            <p>
+              Deletion rewires the <code>next</code> pointer of the predecessor node to skip
+              the target, then frees the target's memory. Handling head deletion separately
+              is essential.
+            </p>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Delete by Value</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>struct Node* deleteNode(struct Node* head, int key) {
+    // Case 1: delete the head node
+    if (head != NULL && head->data == key) {
+        struct Node* temp = head;
+        head = head->next;
+        free(temp);
+        return head;
+    }
+
+    // Case 2: find predecessor of the target node
+    struct Node* curr = head;
+    while (curr != NULL && curr->next != NULL) {
+        if (curr->next->data == key) {
+            struct Node* temp  = curr->next;
+            curr->next         = temp->next;  // bypass target
+            free(temp);
+            return head;
+        }
+        curr = curr->next;
+    }
+    return head;  // key not found
+}
+
+// Before: 10 → 20 → 30 → NULL
+// Delete 20
+// After : 10 → 30 → NULL</code></pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">⚡</span>
+              <p>Always <strong>free()</strong> the deleted node to avoid memory leaks.
+                 In C++, use <code>delete</code>. In Java/Python the garbage collector
+                 handles it, but you still need to unlink the node first.</p>
+            </div>
+
+            <!-- Exercise -->
+            <div class="ll-exercise" id="exercise-deletion">
+              <div class="ll-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Deletion
+              </div>
+              <p>Delete the <strong>tail node</strong> from <code>5 → 10 → 15 → 20 → NULL</code>
+                 and print the resulting list.</p>
+              <button class="ll-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-deletion">Show Solution</button>
+              <div class="ll-exercise-solution" id="solution-deletion">
+                <div class="ll-code-block">
+                  <div class="ll-code-header">
+                    <span class="ll-code-lang">C</span>
+                    <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>struct Node* deleteTail(struct Node* head) {
+    if (head == NULL) return NULL;
+    if (head->next == NULL) { free(head); return NULL; }
+
+    struct Node* curr = head;
+    while (curr->next->next != NULL)
+        curr = curr->next;        // stop at second-to-last
+
+    free(curr->next);
+    curr->next = NULL;
+    return head;
+}
+// Result: 5 → 10 → 15 → NULL</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               6. Searching
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="searching" data-topic="6">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">06</span>
+              <h3>Searching</h3>
+            </div>
+
+            <p>
+              Unlike arrays, linked lists have no random access. Searching always requires
+              traversal from the head — giving it an O(n) worst-case time complexity
+              regardless of the key's position.
+            </p>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Search by Value</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>// Returns the node if found, NULL otherwise
+struct Node* search(struct Node* head, int key) {
+    struct Node* curr = head;
+    int position = 0;
+
+    while (curr != NULL) {
+        if (curr->data == key) {
+            printf("Found %d at position %d\n", key, position);
+            return curr;
+        }
+        curr = curr->next;
+        position++;
+    }
+    printf("%d not found in list\n", key);
+    return NULL;
+}</code></pre>
+            </div>
+
+            <div class="ll-output">
+              <div class="ll-output-label">Example</div>
+              <pre>List    : 10 → 20 → 30 → 40 → NULL
+Search  : 30
+Output  : Found 30 at position 2</pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">🔍</span>
+              <p>Search is <strong>O(n)</strong> time, <strong>O(1)</strong> space.
+                 There is no Binary Search on a singly linked list because you cannot
+                 jump to the middle in O(1). Use a <strong>skip list</strong> or
+                 convert to an array first if you need faster lookups.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               7. Doubly Linked Lists
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="doubly" data-topic="7">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">07</span>
+              <h3>Doubly Linked Lists</h3>
+            </div>
+
+            <p>
+              A <strong>Doubly Linked List</strong> extends each node with a <code>prev</code>
+              pointer in addition to <code>next</code>. This allows traversal in both
+              directions and O(1) deletion when given any node (no predecessor search needed).
+            </p>
+
+            <!-- Visual: doubly linked chain -->
+            <div class="ll-visual" aria-label="Doubly linked list diagram">
+              <div class="ll-chain ll-chain-doubly">
+                <div class="ll-node ll-node-null">
+                  <div class="ll-node-data">NULL</div>
+                </div>
+                <div class="ll-arrow ll-arrow-double">⇄</div>
+                <div class="ll-node">
+                  <div class="ll-node-data">10</div>
+                  <div class="ll-node-ptr">prev / next</div>
+                </div>
+                <div class="ll-arrow ll-arrow-double">⇄</div>
+                <div class="ll-node">
+                  <div class="ll-node-data">20</div>
+                  <div class="ll-node-ptr">prev / next</div>
+                </div>
+                <div class="ll-arrow ll-arrow-double">⇄</div>
+                <div class="ll-node">
+                  <div class="ll-node-data">30</div>
+                  <div class="ll-node-ptr">prev / next</div>
+                </div>
+                <div class="ll-arrow ll-arrow-double">⇄</div>
+                <div class="ll-node ll-node-null">
+                  <div class="ll-node-data">NULL</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Doubly Node</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>struct DNode {
+    int data;
+    struct DNode* prev;
+    struct DNode* next;
+};
+
+struct DNode* createDNode(int value) {
+    struct DNode* node = (struct DNode*)malloc(sizeof(struct DNode));
+    node->data = value;
+    node->prev = NULL;
+    node->next = NULL;
+    return node;
+}
+
+// Insert at head of doubly linked list
+struct DNode* insertDHead(struct DNode* head, int value) {
+    struct DNode* newNode = createDNode(value);
+    newNode->next = head;
+    if (head != NULL) head->prev = newNode;
+    return newNode;
+}</code></pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">🧩</span>
+              <p>Doubly linked lists use <strong>O(2n)</strong> pointer memory vs O(n)
+                 for singly linked. The trade-off: you gain O(1) backwards traversal
+                 and O(1) deletion at any known node — critical for LRU Cache
+                 implementations.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               8. Circular Linked Lists
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="circular" data-topic="8">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">08</span>
+              <h3>Circular Linked Lists</h3>
+            </div>
+
+            <p>
+              In a <strong>Circular Linked List</strong>, the last node's <code>next</code>
+              pointer points back to the <code>head</code> instead of <code>NULL</code>.
+              This is useful for round-robin schedulers, media playlists, and buffer implementations.
+            </p>
+
+            <div class="ll-code-block">
+              <div class="ll-code-header">
+                <span class="ll-code-lang">C — Circular Traversal</span>
+                <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>// Create circular list: 10 → 20 → 30 → (back to 10)
+void makeCircular(struct Node* head) {
+    if (head == NULL) return;
+    struct Node* curr = head;
+    while (curr->next != NULL)
+        curr = curr->next;
+    curr->next = head;  // tail points to head
+}
+
+// Traverse a circular list (stop after one full loop)
+void printCircular(struct Node* head) {
+    if (head == NULL) return;
+    struct Node* curr = head;
+    do {
+        printf("%d → ", curr->data);
+        curr = curr->next;
+    } while (curr != head);    // stop when we're back at head
+    printf("(head)\n");
+}
+// Output: 10 → 20 → 30 → (head)</code></pre>
+            </div>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">⚠️</span>
+              <p>A regular <code>while (curr != NULL)</code> loop will run <strong>forever</strong>
+                 on a circular list. Always use a <code>do-while</code> that checks
+                 <code>curr != head</code>, or track a visited flag to detect the cycle.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               9. Linked List vs Arrays
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="vs-arrays" data-topic="9">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">09</span>
+              <h3>Linked Lists vs Arrays</h3>
+            </div>
+
+            <p>
+              Choosing between a linked list and an array depends on which operations
+              dominate your use case. Neither is universally better.
+            </p>
+
+            <div class="ll-table-wrap">
+              <table class="ll-table" aria-label="Linked list vs array comparison">
+                <thead>
+                  <tr>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Array</th>
+                    <th scope="col">Linked List</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Access by index</td>    <td class="good">O(1) ✓</td>   <td class="bad">O(n) ✗</td></tr>
+                  <tr><td>Search</td>              <td>O(n)</td>                  <td>O(n)</td></tr>
+                  <tr><td>Insert at head</td>      <td class="bad">O(n) ✗</td>   <td class="good">O(1) ✓</td></tr>
+                  <tr><td>Insert at tail</td>      <td class="good">O(1) ✓</td>  <td>O(n)*</td></tr>
+                  <tr><td>Delete at head</td>      <td class="bad">O(n) ✗</td>   <td class="good">O(1) ✓</td></tr>
+                  <tr><td>Delete at tail</td>      <td class="good">O(1) ✓</td>  <td class="bad">O(n) ✗</td></tr>
+                  <tr><td>Memory overhead</td>     <td class="good">Low ✓</td>   <td class="bad">High (ptrs) ✗</td></tr>
+                  <tr><td>Cache performance</td>   <td class="good">Excellent ✓</td><td class="bad">Poor ✗</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:-0.5rem;">
+              * O(1) with a <code>tail</code> pointer maintained separately.
+            </p>
+
+            <div class="ll-callout">
+              <span class="ll-callout-icon">💡</span>
+              <p>Use an <strong>array</strong> when you need fast random access or cache-friendly
+                 iteration. Use a <strong>linked list</strong> when you need frequent insertions
+                 and deletions at arbitrary positions without shifting.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               10. Interview Tips
+               ═══════════════════════════════════════ -->
+          <article class="ll-lesson" id="interview" data-topic="10">
+            <div class="ll-lesson-header">
+              <span class="ll-lesson-number">10</span>
+              <h3>Linked List Interview Tips</h3>
+            </div>
+
+            <p>
+              Linked list problems are a favourite in FAANG interviews. They test pointer
+              manipulation, edge-case awareness, and in-place algorithmic thinking.
+            </p>
+
+            <div class="ll-concept-card">
+              <h4>Must-Know Techniques</h4>
+              <ul>
+                <li><strong>Two Pointers (Fast &amp; Slow)</strong> — detect cycles, find midpoint</li>
+                <li><strong>Reverse a Linked List</strong> — in-place iterative and recursive</li>
+                <li><strong>Merge Two Sorted Lists</strong> — dummy head pattern</li>
+                <li><strong>Find Nth from End</strong> — two pointers with N gap</li>
+                <li><strong>Detect Cycle (Floyd's)</strong> — hare &amp; tortoise algorithm</li>
+              </ul>
+            </div>
+
+            <ul>
+              <li>Always ask: singly or doubly linked? Head pointer only, or tail too?</li>
+              <li>Draw the list on paper before writing code — pointer bugs are visual.</li>
+              <li>Handle edge cases explicitly: empty list, single node, two nodes.</li>
+              <li>Use a <strong>dummy head node</strong> to avoid special-casing head deletion.</li>
+              <li>Don't lose the reference to a node before re-pointing its predecessor.</li>
+            </ul>
+
+            <!-- Exercise -->
+            <div class="ll-exercise" id="exercise-interview">
+              <div class="ll-exercise-title">
+                <i class="fas fa-dumbbell"></i> Classic Interview Problem
+              </div>
+              <p>
+                <strong>Reverse a Singly Linked List in-place (iterative).</strong>
+              </p>
+              <pre>Input : 1 → 2 → 3 → 4 → 5 → NULL
+Output: 5 → 4 → 3 → 2 → 1 → NULL</pre>
+              <button class="ll-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-interview">Show Solution</button>
+              <div class="ll-exercise-solution" id="solution-interview">
+                <div class="ll-code-block">
+                  <div class="ll-code-header">
+                    <span class="ll-code-lang">C</span>
+                    <button class="ll-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>struct Node* reverseList(struct Node* head) {
+    struct Node* prev    = NULL;
+    struct Node* current = head;
+    struct Node* next    = NULL;
+
+    while (current != NULL) {
+        next          = current->next;  // save next
+        current->next = prev;           // reverse link
+        prev          = current;        // advance prev
+        current       = next;           // advance current
+    }
+    return prev;  // prev is now the new head
+}
+
+// Step-by-step trace:
+// NULL ← 1    2 → 3 → 4 → 5
+// NULL ← 1 ← 2    3 → 4 → 5
+// NULL ← 1 ← 2 ← 3    4 → 5
+// NULL ← 1 ← 2 ← 3 ← 4    5
+// NULL ← 1 ← 2 ← 3 ← 4 ← 5  ← new head</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </main>
+      </div><!-- /.ll-layout -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./linkedlist-learning.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

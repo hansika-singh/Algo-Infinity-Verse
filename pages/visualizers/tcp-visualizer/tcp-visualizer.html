@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TCP Congestion Control Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate and visualize TCP Slow Start, Congestion Avoidance, and Fast Recovery mechanisms." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for CWND Graphing -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="tcp-visualizer.css" />
+</head>
+<body class="tcp-body">
+
+    <nav class="navbar tcp-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-network-wired"></i> TCP Reno Simulator
+        </div>
+    </nav>
+
+    <main class="tcp-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> Network Parameters</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Random Packet Loss (%)</label>
+                        <input type="range" id="lossRateSlider" min="0" max="15" value="2" step="1">
+                        <span class="slider-val" id="lossRateVal">2%</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Initial ssthresh</label>
+                        <input type="number" id="initSsthresh" value="16" min="4" max="100" />
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Simulation Speed (Round Trip Time)</label>
+                        <input type="range" id="speedSlider" min="100" max="2000" value="800" step="100">
+                        <span class="slider-val" id="speedVal">800ms</span>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-primary w-100" id="btnToggleSim">
+                        <i class="fas fa-play"></i> Start Simulation
+                    </button>
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Connection
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Triggers -->
+            <div class="triggers-section">
+                <h4><i class="fas fa-bolt"></i> Manual Network Events</h4>
+                <p>Force packet drops to observe TCP recovery mechanisms.</p>
+                <div class="trigger-grid">
+                    <button class="btn btn-warning" id="btnForceDupAck" title="Simulates minor packet loss handled by fast retransmit.">
+                        Force 3 DUP ACKs
+                    </button>
+                    <button class="btn btn-danger" id="btnForceTimeout" title="Simulates severe network congestion.">
+                        Force Timeout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live State Explanations -->
+            <div class="state-explanation" id="stateExplanationBox">
+                <div class="state-header">
+                    <span class="state-badge" id="currentStateBadge">SLOW START</span>
+                </div>
+                <div class="state-body">
+                    <p id="stateDescription">
+                        CWND doubles every RTT. The sender aggressively probes the network for available bandwidth until the Slow Start Threshold (ssthresh) is reached.
+                    </p>
+                    <div class="state-metrics">
+                        <div>CWND: <strong class="text-cyan" id="dispCwnd">1</strong></div>
+                        <div>ssthresh: <strong class="text-purple" id="dispSsthresh">16</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Graphs & Network Canvas -->
+        <div class="panel-right">
+            
+            <!-- Graph Area -->
+            <div class="chart-wrapper">
+                <div class="panel-header">
+                    <h3><i class="fas fa-chart-area"></i> Congestion Window (CWND) Over Time</h3>
+                    <div class="legend-mini">
+                        <span style="color:#0ea5e9;">■ CWND</span>
+                        <span style="color:#a855f7;">- - ssthresh</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="cwndChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Canvas Area (Packet Flow) -->
+            <div class="network-wrapper">
+                <div class="panel-header">
+                    <h3><i class="fas fa-exchange-alt"></i> Data Flow Simulator</h3>
+                </div>
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="networkCanvas"></canvas>
+                    <div class="endpoint sender">
+                        <i class="fas fa-server"></i> Sender
+                    </div>
+                    <div class="endpoint receiver">
+                        <i class="fas fa-laptop"></i> Receiver
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="tcp-visualizer.js"></script>
+</body>
+</html>

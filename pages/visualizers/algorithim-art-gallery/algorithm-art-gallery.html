@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Algorithm Art Gallery | Algo Infinity Verse</title>
+
+    <meta
+      name="description"
+      content="Transform algorithm execution into generative artwork. Visualize sorting algorithms as beautiful abstract art generated from algorithmic behavior."
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="algorithm-art-gallery.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+
+  <body data-page="algorithm-art-gallery">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll To Top -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section class="hero algorithm-art-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Creative Algorithm</span>
+          <span class="main-title gradient-text">Art Gallery</span>
+          <span class="subtitle">
+            Transform algorithms into beautiful generative artwork
+          </span>
+        </h1>
+
+        <div class="typing-container">
+          <span id="typingTextArt" class="typing-text-art"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Section -->
+    <section class="section">
+      <div class="container">
+        <div class="visualizer-container">
+          <!-- LEFT PANEL -->
+          <div class="visualizer-main-panel">
+            <!-- Artwork Canvas -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-palette"></i>
+                Generated Artwork
+              </h3>
+
+              <div class="canvas-wrapper">
+                <canvas id="artCanvas" width="1000" height="600">
+                  Your browser does not support HTML5 Canvas.
+                </canvas>
+              </div>
+              <button
+                id="clearBtn"
+                class="btn btn-secondary"
+                style="width: 100%; margin-top: 0.75rem"
+              >
+                <i class="fas fa-trash"></i>
+                Clear Canvas
+              </button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="visualizer-card" style="margin-top: 1.5rem">
+              <h3>
+                <i class="fas fa-chart-line"></i>
+                Artwork Statistics
+              </h3>
+
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <h4>Comparisons</h4>
+                  <span id="comparisonCount">0</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Artwork Seed</h4>
+                  <span id="seedValue">#0001</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Shapes Drawn</h4>
+                  <span id="shapeCount">0</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Swaps</h4>
+                  <span id="swapCount">0</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Array Accesses</h4>
+                  <span id="accessCount">0</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Generated Shapes</h4>
+                  <span id="shapeCount">0</span>
+                </div>
+
+                <div class="stat-card">
+                  <h4>Complexity</h4>
+                  <span id="complexityValue">O(n²)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL -->
+          <div class="visualizer-sidebar">
+            <!-- Controls -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-sliders"></i>
+                Art Controls
+              </h3>
+
+              <div class="control-group">
+                <label for="algorithmSelect">Algorithm</label>
+                <select id="algorithmSelect" class="control-input">
+                  <option value="bubble">Bubble Sort</option>
+                  <option value="selection">Selection Sort</option>
+                  <option value="insertion">Insertion Sort</option>
+                  <option value="merge">Merge Sort</option>
+                  <option value="quick">Quick Sort</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label for="sizeSlider">
+                  Dataset Size
+                  <span id="sizeValue">100</span>
+                </label>
+
+                <input
+                  type="range"
+                  id="sizeSlider"
+                  min="10"
+                  max="200"
+                  value="100"
+                  class="slider-custom"
+                />
+              </div>
+
+              <div class="control-group">
+                <label for="artStyle">Art Style</label>
+
+                <select id="artStyle" class="control-input">
+                  <option value="particles">Particles</option>
+                  <option value="spiral">Spiral</option>
+                  <option value="wave">Wave</option>
+                  <option value="galaxy">Galaxy</option>
+                  <option value="mandala">Mandala</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label for="speedSlider">Animation Speed</label>
+
+                <input
+                  type="range"
+                  id="speedSlider"
+                  min="1"
+                  max="10"
+                  value="5"
+                  class="slider-custom"
+                />
+              </div>
+
+              <button
+                id="generateBtn"
+                class="btn btn-primary"
+                style="width: 100%"
+              >
+                <i class="fas fa-wand-magic-sparkles"></i>
+                Generate Artwork
+              </button>
+
+              <button
+                id="randomBtn"
+                class="btn btn-secondary"
+                style="width: 100%; margin-top: 0.75rem"
+              >
+                <i class="fas fa-dice"></i>
+                Random Surprise
+              </button>
+            </div>
+
+            <!-- Export -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-download"></i>
+                Export
+              </h3>
+
+              <button
+                id="downloadBtn"
+                class="btn btn-primary"
+                style="width: 100%"
+              >
+                Download Artwork
+              </button>
+
+              <button
+                id="shareBtn"
+                class="btn btn-secondary"
+                style="width: 100%; margin-top: 0.75rem"
+              >
+                Share Artwork
+              </button>
+            </div>
+
+            <!-- Log -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-terminal"></i>
+                Generation Log
+              </h3>
+
+              <div id="logPanel" class="log-panel">
+                <div class="log-entry">> Ready to create algorithm art...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="section" id="algorithm-art-gallery">
+      <div class="container">
+        <h2 class="section-title">Featured Algorithm Artworks</h2>
+
+        <div class="gallery-grid">
+          <div class="gallery-card">
+            <div class="gallery-preview bubble-preview"></div>
+            <h4>Bubble Sort</h4>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-preview insertion-preview"></div>
+            <h4>Insertion Sort</h4>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-preview selection-preview"></div>
+            <h4>Selection Sort</h4>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-preview merge-preview"></div>
+            <h4>Merge Sort</h4>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-preview quick-preview"></div>
+            <h4>Quick Sort</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+
+    <script src="algorithm-art-gallery.js"></script>
+
+    <script>
+      loadPartial("navbar-placeholder", "/partials/navbar.html");
+      loadPartial("footer-placeholder", "/partials/footer.html");
+    </script>
+  </body>
+</html>

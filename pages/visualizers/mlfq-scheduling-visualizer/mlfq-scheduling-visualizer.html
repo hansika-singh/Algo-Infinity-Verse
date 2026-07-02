@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLFQ Scheduling Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Multilevel Feedback Queue (MLFQ) scheduling visualizer with dynamic priority, queue promotion/demotion, aging, and animated CPU timeline."
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="stylesheet"
+      href="mlfq-scheduling-visualizer.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body data-page="mlfq-scheduling-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>MLFQ Scheduling Visualizer</h1>
+          <p>
+            Multilevel Feedback Queue scheduling with aging, queue promotion/demotion,
+            configurable quantum per queue, and an animated CPU timeline.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#mlfq-section" class="btn btn-primary">Explore Visualizer</a>
+            <a href="#legend-section" class="btn btn-secondary">Rule Legend</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mlfq-section" class="section mlfq-section">
+      <div class="container">
+        <div class="print-export-bar">
+          <button id="exportPdfBtn" class="btn btn-primary print-export-btn" type="button" aria-label="Export current page as PDF">
+            <i class="fas fa-file-pdf"></i> Export to PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="container mlfq-container">
+        <div class="mlfq-grid">
+          <!-- Left: Controls & Process Builder -->
+          <div class="mlfq-panel">
+            <div class="mlfq-card">
+              <h2 class="mlfq-title">
+                <i class="fas fa-sliders"></i> Controls
+              </h2>
+
+              <div class="control-row">
+                <div class="control-group">
+                  <label for="queueCount">Queue Count (Q levels)</label>
+                  <input
+                    id="queueCount"
+                    type="number"
+                    min="2"
+                    max="5"
+                    step="1"
+                    value="3"
+                  />
+                </div>
+
+                <div class="control-group">
+                  <label for="agingThreshold">Aging Threshold (ticks)</label>
+                  <input
+                    id="agingThreshold"
+                    type="number"
+                    min="1"
+                    max="30"
+                    step="1"
+                    value="5"
+                  />
+                </div>
+              </div>
+
+              <div class="control-row quantum-row" id="quantumRow"></div>
+
+              <div class="divider"></div>
+
+              <div class="control-row">
+                <div class="control-group">
+                  <label for="simSpeed">Animation Speed</label>
+                  <input
+                    id="simSpeed"
+                    type="range"
+                    min="0.5"
+                    max="3"
+                    step="0.5"
+                    value="1"
+                  />
+                  <div class="hint" id="simSpeedValue">1.0x</div>
+                </div>
+
+                <div class="control-group">
+                  <label>Run Buttons</label>
+                  <div class="btn-row">
+                    <button id="btnLoadExample" class="btn btn-secondary">
+                      <i class="fas fa-file-lines"></i> Load Example
+                    </button>
+                    <button id="btnGenerate" class="btn btn-primary">
+                      <i class="fas fa-bolt"></i> Generate Schedule
+                    </button>
+                  </div>
+                  <div class="btn-row">
+                    <button id="btnStart" class="btn btn-success" disabled>
+                      <i class="fas fa-play"></i> Start
+                    </button>
+                    <button id="btnPause" class="btn btn-outline" disabled>
+                      <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button id="btnStep" class="btn btn-outline" disabled>
+                      <i class="fas fa-step-forward"></i> Step
+                    </button>
+                    <button id="btnReset" class="btn btn-danger">
+                      <i class="fas fa-rotate-left"></i> Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="mlfq-section-subtitle">
+                <i class="fas fa-user-plus"></i> Add Process
+              </div>
+
+              <div class="process-form">
+                <div class="control-row">
+                  <div class="control-group">
+                    <label for="pId">Process ID</label>
+                    <input id="pId" type="text" value="P1" />
+                  </div>
+                  <div class="control-group">
+                    <label for="pArrival">Arrival Time (ticks)</label>
+                    <input id="pArrival" type="number" min="0" step="1" value="0" />
+                  </div>
+                </div>
+
+                <div class="control-row">
+                  <div class="control-group">
+                    <label for="pBurst">Burst Time (ticks)</label>
+                    <input id="pBurst" type="number" min="1" step="1" value="6" />
+                  </div>
+                  <div class="control-group">
+                    <label for="pInitialLevel">Initial Queue Level</label>
+                    <select id="pInitialLevel"></select>
+                  </div>
+                </div>
+
+                <button id="btnAddProcess" class="btn btn-primary w-100">
+                  <i class="fas fa-plus"></i> Add Process
+                </button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="mlfq-section-subtitle">
+                <i class="fas fa-layer-group"></i> Pending Processes
+              </div>
+
+              <div class="list" id="processList">
+                <!-- dynamic -->
+                <div class="empty-state">No processes yet. Add a process or load an example.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Queue hierarchy + animations -->
+          <div class="mlfq-panel">
+            <div class="mlfq-card">
+              <h2 class="mlfq-title">
+                <i class="fas fa-diagram-project"></i> Queue Hierarchy
+              </h2>
+
+              <div class="queue-legend" id="queueLegend">
+                <!-- dynamic -->
+              </div>
+
+              <div class="queues-wrapper" id="queuesWrapper">
+                <!-- queue rows dynamic -->
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="mlfq-section-subtitle">
+                <i class="fas fa-microchip"></i> CPU Timeline
+              </div>
+
+              <div class="timeline" id="cpuTimeline"></div>
+
+              <div class="timeline-meta">
+                <div class="timeline-badge" id="currentCpuBadge">CPU: idle</div>
+                <div class="timeline-badge" id="tickBadge">Tick: 0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Trace & Accuracy -->
+          <div class="mlfq-panel">
+            <div class="mlfq-card">
+              <h2 class="mlfq-title">
+                <i class="fas fa-clipboard-list"></i> Scheduling Log
+              </h2>
+
+              <div class="log" id="scheduleLog"></div>
+
+              <div class="divider"></div>
+
+              <div class="accuracy-box">
+                <div class="accuracy-title">
+                  <i class="fas fa-check-circle"></i> Accuracy Checks
+                </div>
+                <ul class="accuracy-list" id="accuracyList"></ul>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="rules-mini" id="legend-section">
+                <h3 class="rules-mini-title">Rule Legend</h3>
+                <div class="rule">
+                  <span class="dot dot-promote"></span>
+                  <strong>Promotion:</strong> when a process waits long enough (aging).
+                </div>
+                <div class="rule">
+                  <span class="dot dot-demote"></span>
+                  <strong>Demotion:</strong> when its quantum expires without finishing.
+                </div>
+                <div class="rule">
+                  <span class="dot dot-run"></span>
+                  <strong>Execution:</strong> always picks from highest non-empty queue.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="mlfq-scheduling-visualizer.js"></script>
+
+    <script type="module">
+      import { initPrint } from "/modules/print.js";
+      initPrint();
+    </script>
+
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>
+

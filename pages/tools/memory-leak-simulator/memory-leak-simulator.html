@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Leak Debugger Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive environment to simulate and fix JavaScript memory leaks." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror Core and Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-ocean.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="memory-leak-simulator.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="mem-body">
+    <nav class="navbar mem-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Memory Leak Simulator</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="btn-home"><i class="fas fa-home"></i> Home</a>
+        </div>
+    </nav>
+
+    <main class="mem-workspace">
+        <!-- Left Panel: Controls and Info -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-bug"></i> Scenario Settings</h3>
+            </div>
+            <div class="panel-content">
+                <label for="scenarioSelect">Select Scenario:</label>
+                <select id="scenarioSelect" class="form-select">
+                    <option value="timer">Uncleared setInterval</option>
+                    <option value="dom">Detached DOM Elements</option>
+                    <option value="closure">Lingering Closures</option>
+                    <option value="event">Unremoved Event Listeners</option>
+                </select>
+
+                <div class="info-box" id="scenarioInfo">
+                    <!-- Scenario info injected here -->
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" id="btnRun"><i class="fas fa-play"></i> Run Simulation</button>
+                    <button class="btn btn-danger hidden" id="btnStop"><i class="fas fa-stop"></i> Stop</button>
+                    <button class="btn btn-secondary" id="btnGC"><i class="fas fa-trash-alt"></i> Force GC</button>
+                    <button class="btn btn-outline" id="btnReset"><i class="fas fa-undo"></i> Reset Code</button>
+                </div>
+                
+                <div class="status-indicator mt-3">
+                    Status: <span id="simStatus" class="status-idle">Idle</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Editor and Graph -->
+        <div class="panel-right">
+            <div class="editor-section">
+                <div class="section-header">
+                    <h4><i class="fas fa-code"></i> Source Code</h4>
+                    <span class="badge">Editable Sandbox</span>
+                </div>
+                <div id="editorContainer"></div>
+            </div>
+
+            <div class="graph-section">
+                <div class="section-header">
+                    <h4><i class="fas fa-chart-line"></i> Virtual Heap Memory Usage</h4>
+                    <span class="badge badge-info" id="memBadge">0 Objects</span>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="memoryGraph"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    
+    <!-- Main Logic -->
+    <script src="memory-leak-simulator.js"></script>
+</body>
+</html>

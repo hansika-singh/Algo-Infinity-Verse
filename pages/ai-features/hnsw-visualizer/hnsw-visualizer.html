@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HNSW Vector Database Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize Hierarchical Navigable Small World (HNSW) graphs for Vector Databases." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="hnsw-visualizer.css" />
+</head>
+<body class="hnsw-body">
+
+    <nav class="navbar hnsw-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-database"></i> Vector DB Engine: Idle
+        </div>
+    </nav>
+
+    <main class="hnsw-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> HNSW Parameters</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    <strong>HNSW</strong> builds a multi-layered graph to enable fast Approximate Nearest Neighbor (ANN) search. Top layers act as "highways" to skip local clusters.
+                </p>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label for="paramM">Max Connections (M)</label>
+                        <input type="number" id="paramM" value="5" min="2" max="16" />
+                    </div>
+                    <div class="input-group">
+                        <label for="paramEf">efConstruction</label>
+                        <input type="number" id="paramEf" value="20" min="5" max="100" />
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-primary w-100" id="btnGenerate">
+                        <i class="fas fa-project-diagram"></i> Generate Graph
+                    </button>
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <h4><i class="fas fa-search"></i> Vector Query</h4>
+                <p class="desc-text" style="margin-top: 0.5rem;">Click anywhere on the canvas or click "Random Query" to visualize the greedy search descent through the layers.</p>
+                <div class="action-row">
+                    <button class="btn btn-success w-100" id="btnRandomSearch" disabled>
+                        <i class="fas fa-crosshairs"></i> Random Query
+                    </button>
+                </div>
+            </div>
+
+            <!-- Telemetry -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-chart-bar"></i> Search Telemetry</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Nodes Explored</span>
+                        <span class="tel-value text-primary" id="statExplored">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Total Graph Nodes</span>
+                        <span class="tel-value text-secondary" id="statTotal">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Distance to Target</span>
+                        <span class="tel-value text-success" id="statDist">0.00</span>
+                    </div>
+                </div>
+                
+                <div class="logs-container" id="logContainer">
+                    <div class="log-entry sys">&gt; Engine Initialized. Ready to build index.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Isometric Canvas Area -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="legend">
+                    <span class="legend-item"><span class="box box-layer2"></span> Layer 2 (Highways)</span>
+                    <span class="legend-item"><span class="box box-layer1"></span> Layer 1</span>
+                    <span class="legend-item"><span class="box box-layer0"></span> Layer 0 (Base)</span>
+                </div>
+                <div class="view-controls">
+                    <button class="btn-icon active" id="btnIsoView" title="Isometric 3D View"><i class="fas fa-cube"></i></button>
+                    <button class="btn-icon" id="btnFlatView" title="Top-Down 2D View"><i class="fas fa-square"></i></button>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="hnswCanvas"></canvas>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-cubes"></i>
+                    <p>Click "Generate Graph" to build the HNSW Index.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="hnsw-visualizer.js"></script>
+</body>
+</html>

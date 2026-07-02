@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Stacks | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Learn Stacks from beginner to advanced with examples, visual explanations, interview tips, and practice problems." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="stack-learning.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="stack-learning">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Master Data Structures With</span>
+        <span class="main-title gradient-text">Stacks</span>
+        <span class="subtitle">Last In, First Out — The LIFO Principle</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_stk" id="typingTextStk"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Learning
+        </a>
+        <a href="#operations" class="btn btn-secondary">
+          <i class="fas fa-code"></i> Jump to Operations
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <span class="stat-number" data-target="10">0</span>
+          <span class="stat-label">Topics</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="18">0</span>
+          <span class="stat-label">Examples</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="12">0</span>
+          <span class="stat-label">Interview Questions</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Stack Learning Section -->
+  <section id="stk-learning" class="section">
+    <div class="container">
+
+      <h2 class="section-title">
+        <span class="title-icon">📚</span>
+        Learn Stacks
+      </h2>
+      <p class="section-subtitle">
+        Master the LIFO structure that powers function calls, undo systems, and expression evaluation.
+      </p>
+
+      <!-- Progress Bar -->
+      <div class="stk-progress-bar" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Learning progress">
+        <span class="stk-progress-text">
+          <span id="stkProgressCount">0</span> / 10 topics completed
+        </span>
+        <div class="stk-progress-track">
+          <div class="stk-progress-fill" id="stkProgressFill"></div>
+        </div>
+        <span class="stk-progress-percent" id="stkProgressPercent">0%</span>
+      </div>
+
+      <div class="stk-layout">
+
+        <!-- Sidebar Navigation -->
+        <aside class="stk-sidebar" aria-label="Topic navigation">
+          <div class="stk-sidebar-title">Topics</div>
+          <ul class="stk-sidebar-nav" id="stkTopicNav">
+            <li><a href="#introduction"  class="stk-nav-link"><span class="nav-icon">📖</span> Introduction</a></li>
+            <li><a href="#lifo"          class="stk-nav-link"><span class="nav-icon">🔃</span> LIFO Principle</a></li>
+            <li><a href="#operations"    class="stk-nav-link"><span class="nav-icon">⚙️</span> Core Operations</a></li>
+            <li><a href="#array-impl"    class="stk-nav-link"><span class="nav-icon">📦</span> Array Implementation</a></li>
+            <li><a href="#linked-impl"   class="stk-nav-link"><span class="nav-icon">🔗</span> Linked List Impl</a></li>
+            <li><a href="#complexity"    class="stk-nav-link"><span class="nav-icon">⏱️</span> Complexity</a></li>
+            <li><a href="#applications"  class="stk-nav-link"><span class="nav-icon">🌍</span> Applications</a></li>
+            <li><a href="#expression"    class="stk-nav-link"><span class="nav-icon">🔢</span> Expression Eval</a></li>
+            <li><a href="#stack-queue"   class="stk-nav-link"><span class="nav-icon">⚖️</span> Stack vs Queue</a></li>
+            <li><a href="#interview"     class="stk-nav-link"><span class="nav-icon">⭐</span> Interview Tips</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="stk-main-content" id="stkMainContent">
+
+          <!-- ═══════════════════════════════════════
+               1. Introduction
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="introduction" data-topic="1">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">01</span>
+              <h3>Introduction to Stacks</h3>
+            </div>
+
+            <p>
+              A <strong>Stack</strong> is a linear data structure that follows the
+              <strong>Last In, First Out (LIFO)</strong> principle — the last element
+              added is always the first one removed. Think of a stack of plates: you
+              always add and remove from the top.
+            </p>
+
+            <div class="stk-concept-card">
+              <h4>Why Learn Stacks?</h4>
+              <ul>
+                <li><strong>Function call management</strong> — the call stack tracks every function invocation</li>
+                <li><strong>Undo / Redo</strong> — text editors, Photoshop, browsers use stacks</li>
+                <li><strong>Expression evaluation</strong> — compilers parse arithmetic using stacks</li>
+                <li><strong>DFS &amp; backtracking</strong> — graph traversal and recursion simulation</li>
+                <li><strong>Interview staple</strong> — balanced brackets, next greater element, min-stack</li>
+              </ul>
+            </div>
+
+            <!-- Visual: stack column -->
+            <div class="stk-visual" aria-label="Stack diagram showing LIFO order">
+              <div class="stk-column">
+                <div class="stk-slot stk-slot-top">
+                  <span class="stk-slot-label">TOP →</span>
+                  <div class="stk-block stk-block-active">30</div>
+                </div>
+                <div class="stk-slot">
+                  <div class="stk-block">20</div>
+                </div>
+                <div class="stk-slot">
+                  <div class="stk-block">10</div>
+                </div>
+                <div class="stk-base">▬▬▬▬▬▬▬▬</div>
+              </div>
+              <div class="stk-visual-ops">
+                <div class="stk-op stk-op-push">
+                  <i class="fas fa-arrow-down"></i> PUSH adds to top
+                </div>
+                <div class="stk-op stk-op-pop">
+                  <i class="fas fa-arrow-up"></i> POP removes from top
+                </div>
+              </div>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">💡</span>
+              <p>The <strong>top</strong> of the stack is the only accessible element.
+                 You cannot reach elements below it without first removing everything above —
+                 this constraint is what makes stacks uniquely powerful for ordered-reversal problems.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               2. LIFO Principle
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="lifo" data-topic="2">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">02</span>
+              <h3>The LIFO Principle</h3>
+            </div>
+
+            <p>
+              <strong>Last In, First Out</strong> means the most recently inserted element
+              is the first to be removed. This is the defining rule of every stack —
+              whether implemented with an array, a linked list, or a language built-in.
+            </p>
+
+            <div class="stk-output">
+              <div class="stk-output-label">LIFO Trace</div>
+              <pre>Push 10  →  Stack: [ 10 ]           top = 0
+Push 20  →  Stack: [ 10, 20 ]        top = 1
+Push 30  →  Stack: [ 10, 20, 30 ]    top = 2
+Pop      →  Returns 30  (LAST IN)    top = 1
+Pop      →  Returns 20               top = 0
+Pop      →  Returns 10  (FIRST IN, last out)</pre>
+            </div>
+
+            <div class="stk-concept-card">
+              <h4>Real-World Analogy</h4>
+              <p>A browser's <strong>Back button</strong> is a stack. Every page you visit is
+                 pushed onto a history stack. Pressing Back pops the most recent page —
+                 you always return to where you just came from, not where you started.</p>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">⚡</span>
+              <p>LIFO is the <em>opposite</em> of a Queue's FIFO (First In, First Out).
+                 Choosing between them depends entirely on whether you need the newest
+                 or the oldest item next.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               3. Core Operations
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="operations" data-topic="3">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">03</span>
+              <h3>Core Operations</h3>
+            </div>
+
+            <p>
+              Every stack exposes exactly five operations. All are O(1) when implemented correctly.
+            </p>
+
+            <div class="stk-table-wrap">
+              <table class="stk-table" aria-label="Stack operations">
+                <thead>
+                  <tr>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>push(x)</code></td>  <td>Insert element x onto the top</td>   <td>O(1)</td></tr>
+                  <tr><td><code>pop()</code></td>     <td>Remove and return the top element</td><td>O(1)</td></tr>
+                  <tr><td><code>peek()</code></td>    <td>Return top element without removing</td><td>O(1)</td></tr>
+                  <tr><td><code>isEmpty()</code></td> <td>Check if the stack has no elements</td><td>O(1)</td></tr>
+                  <tr><td><code>size()</code></td>    <td>Return the number of elements</td>   <td>O(1)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">⚠️</span>
+              <p>Always call <strong>isEmpty()</strong> before <strong>pop()</strong> or
+                 <strong>peek()</strong>. Calling these on an empty stack is a
+                 <em>stack underflow</em> error — in C it's undefined behaviour,
+                 in Java it throws <code>EmptyStackException</code>.</p>
+            </div>
+
+            <!-- Exercise -->
+            <div class="stk-exercise" id="exercise-operations">
+              <div class="stk-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Operations
+              </div>
+              <p>Given these operations in order, what does the stack look like after each step,
+                 and what value does the final <code>pop()</code> return?</p>
+              <pre>push(5) → push(3) → push(8) → pop() → push(1) → peek()</pre>
+              <button class="stk-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-operations">Show Solution</button>
+              <div class="stk-exercise-solution" id="solution-operations">
+                <div class="stk-code-block">
+                  <div class="stk-code-header">
+                    <span class="stk-code-lang">Trace</span>
+                    <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>push(5)  →  [ 5 ]          top = 5
+push(3)  →  [ 5, 3 ]       top = 3
+push(8)  →  [ 5, 3, 8 ]    top = 8
+pop()    →  returns 8  →  [ 5, 3 ]    top = 3
+push(1)  →  [ 5, 3, 1 ]    top = 1
+peek()   →  returns 1  (stack unchanged: [ 5, 3, 1 ])</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               4. Array Implementation
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="array-impl" data-topic="4">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">04</span>
+              <h3>Array Implementation</h3>
+            </div>
+
+            <p>
+              The simplest way to implement a stack is with a fixed-size array and an integer
+              <code>top</code> that tracks the index of the topmost element.
+              <code>top = -1</code> means the stack is empty.
+            </p>
+
+            <div class="stk-code-block">
+              <div class="stk-code-header">
+                <span class="stk-code-lang">C — Array Stack</span>
+                <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>#define MAX 100
+
+int stack[MAX];
+int top = -1;
+
+// Push
+void push(int value) {
+    if (top == MAX - 1) {
+        printf("Stack Overflow!\n");
+        return;
+    }
+    stack[++top] = value;
+}
+
+// Pop
+int pop() {
+    if (top == -1) {
+        printf("Stack Underflow!\n");
+        return -1;
+    }
+    return stack[top--];
+}
+
+// Peek
+int peek() {
+    if (top == -1) {
+        printf("Stack is empty.\n");
+        return -1;
+    }
+    return stack[top];
+}
+
+// isEmpty
+int isEmpty() { return top == -1; }
+
+// Size
+int size()    { return top + 1; }</code></pre>
+            </div>
+
+            <div class="stk-output">
+              <div class="stk-output-label">Example Usage</div>
+              <pre>push(10);  push(20);  push(30);
+peek()  →  30
+pop()   →  30
+pop()   →  20
+size()  →  1</pre>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">⚡</span>
+              <p>Array stacks have a <strong>fixed capacity</strong> defined at compile time.
+                 Use a dynamic array (<code>vector</code> in C++, <code>ArrayList</code> in Java)
+                 if you need the stack to grow beyond a known maximum.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               5. Linked List Implementation
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="linked-impl" data-topic="5">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">05</span>
+              <h3>Linked List Implementation</h3>
+            </div>
+
+            <p>
+              A linked list stack has <strong>no fixed capacity</strong> — it grows and
+              shrinks dynamically. The head of the linked list acts as the top of the stack.
+              Both push and pop operate at the head, keeping them O(1).
+            </p>
+
+            <div class="stk-code-block">
+              <div class="stk-code-header">
+                <span class="stk-code-lang">C — Linked List Stack</span>
+                <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* top = NULL;  // empty stack
+
+// Push — insert at head
+void push(int value) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = value;
+    node->next = top;    // new node points to old top
+    top = node;          // update top
+}
+
+// Pop — remove from head
+int pop() {
+    if (top == NULL) {
+        printf("Stack Underflow!\n");
+        return -1;
+    }
+    int val = top->data;
+    struct Node* temp = top;
+    top = top->next;
+    free(temp);
+    return val;
+}
+
+// Peek
+int peek() {
+    return (top != NULL) ? top->data : -1;
+}
+
+// isEmpty
+int isEmpty() { return top == NULL; }</code></pre>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">🔗</span>
+              <p>Linked list stacks trade the memory overhead of pointers for
+                 <strong>unlimited dynamic size</strong>. The array version uses
+                 contiguous memory (better cache performance); the linked version
+                 uses heap allocation (no overflow risk).</p>
+            </div>
+
+            <!-- Exercise -->
+            <div class="stk-exercise" id="exercise-linked-impl">
+              <div class="stk-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Linked Stack
+              </div>
+              <p>Add a <code>size()</code> function to the linked list stack above
+                 that returns the number of elements in O(n) time.</p>
+              <button class="stk-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-linked-impl">Show Solution</button>
+              <div class="stk-exercise-solution" id="solution-linked-impl">
+                <div class="stk-code-block">
+                  <div class="stk-code-header">
+                    <span class="stk-code-lang">C</span>
+                    <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>int size() {
+    int count = 0;
+    struct Node* curr = top;
+    while (curr != NULL) {
+        count++;
+        curr = curr->next;
+    }
+    return count;
+}
+// Tip: maintain a separate 'count' variable in push/pop
+// to achieve O(1) size() instead.</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               6. Time & Space Complexity
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="complexity" data-topic="6">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">06</span>
+              <h3>Time &amp; Space Complexity</h3>
+            </div>
+
+            <p>
+              All core stack operations are O(1) — that is what makes stacks so efficient.
+              The table below compares the two standard implementations.
+            </p>
+
+            <div class="stk-table-wrap">
+              <table class="stk-table" aria-label="Stack complexity comparison">
+                <thead>
+                  <tr>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Array Stack</th>
+                    <th scope="col">Linked Stack</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>push</td>      <td>O(1)*</td>  <td>O(1)</td></tr>
+                  <tr><td>pop</td>       <td>O(1)</td>   <td>O(1)</td></tr>
+                  <tr><td>peek</td>      <td>O(1)</td>   <td>O(1)</td></tr>
+                  <tr><td>isEmpty</td>   <td>O(1)</td>   <td>O(1)</td></tr>
+                  <tr><td>size</td>      <td>O(1)</td>   <td>O(n)**</td></tr>
+                  <tr><td>Space</td>     <td>O(n)</td>   <td>O(n) + ptr overhead</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:-0.5rem;">
+              * Amortised O(1) for dynamic arrays; worst case O(n) on resize.<br>
+              ** O(1) if you maintain a <code>count</code> variable.
+            </p>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">💡</span>
+              <p>Space complexity for both implementations is <strong>O(n)</strong>
+                 where n is the number of elements. The linked list version uses
+                 additional memory per node for the <code>next</code> pointer.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               7. Real-World Applications
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="applications" data-topic="7">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">07</span>
+              <h3>Real-World Applications</h3>
+            </div>
+
+            <p>
+              Stacks appear in almost every layer of modern software. Understanding
+              where they are used helps you recognise when to reach for one in your own code.
+            </p>
+
+            <div class="stk-concept-card">
+              <h4>Function Call Stack</h4>
+              <p>Every time a function is called, the CPU pushes a <em>stack frame</em>
+                 onto the call stack containing the return address, parameters, and local
+                 variables. When the function returns, the frame is popped. Recursion depth
+                 is literally the depth of this stack — exceed it and you get a
+                 <strong>stack overflow</strong>.</p>
+            </div>
+
+            <div class="stk-code-block">
+              <div class="stk-code-header">
+                <span class="stk-code-lang">C — Balanced Brackets Check</span>
+                <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>// Returns 1 if brackets are balanced, 0 otherwise
+int isBalanced(char* expr) {
+    char stack[100];
+    int top = -1;
+
+    for (int i = 0; expr[i] != '\0'; i++) {
+        char ch = expr[i];
+
+        // Push opening brackets
+        if (ch == '(' || ch == '[' || ch == '{') {
+            stack[++top] = ch;
+        }
+        // Match closing brackets
+        else if (ch == ')' || ch == ']' || ch == '}') {
+            if (top == -1) return 0;   // nothing to match
+
+            char open = stack[top--];
+            if ((ch == ')' && open != '(') ||
+                (ch == ']' && open != '[') ||
+                (ch == '}' && open != '{'))
+                return 0;
+        }
+    }
+    return top == -1;  // balanced if stack is empty
+}
+
+// isBalanced("{[()]}")  → 1 (true)
+// isBalanced("{[(])}")  → 0 (false)</code></pre>
+            </div>
+
+            <div class="stk-concept-card">
+              <h4>Other Common Uses</h4>
+              <ul>
+                <li><strong>Browser history</strong> — Back / Forward navigation</li>
+                <li><strong>Undo / Redo</strong> — two stacks (undo stack + redo stack)</li>
+                <li><strong>DFS traversal</strong> — explicit stack replaces call-stack recursion</li>
+                <li><strong>Syntax parsing</strong> — compilers validate code with stacks</li>
+                <li><strong>Postfix evaluation</strong> — calculators use an operand stack</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               8. Expression Evaluation
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="expression" data-topic="8">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">08</span>
+              <h3>Expression Evaluation</h3>
+            </div>
+
+            <p>
+              One of the most classic stack applications is evaluating
+              <strong>postfix (Reverse Polish Notation)</strong> expressions.
+              Every operand is pushed; every operator pops two operands, computes,
+              and pushes the result.
+            </p>
+
+            <div class="stk-concept-card">
+              <h4>Infix vs Postfix</h4>
+              <p>
+                Infix: <code>3 + 4 * 2</code> — requires precedence rules and parentheses.<br>
+                Postfix: <code>3 4 2 * +</code> — no ambiguity, evaluated left-to-right with a stack.
+              </p>
+            </div>
+
+            <div class="stk-code-block">
+              <div class="stk-code-header">
+                <span class="stk-code-lang">C — Postfix Evaluator</span>
+                <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+              </div>
+              <pre><code>int evaluatePostfix(char* expr) {
+    int stack[100], top = -1;
+
+    for (int i = 0; expr[i] != '\0'; i++) {
+        char ch = expr[i];
+
+        if (ch >= '0' && ch <= '9') {
+            stack[++top] = ch - '0';   // push digit
+        } else if (ch != ' ') {
+            int b = stack[top--];       // pop right operand
+            int a = stack[top--];       // pop left operand
+            switch (ch) {
+                case '+': stack[++top] = a + b; break;
+                case '-': stack[++top] = a - b; break;
+                case '*': stack[++top] = a * b; break;
+                case '/': stack[++top] = a / b; break;
+            }
+        }
+    }
+    return stack[top];
+}
+
+// evaluatePostfix("3 4 2 * +")
+// Step 1: push 3  → [3]
+// Step 2: push 4  → [3, 4]
+// Step 3: push 2  → [3, 4, 2]
+// Step 4: *  → pop 2,4  → push 8   → [3, 8]
+// Step 5: +  → pop 8,3  → push 11  → [11]
+// Result: 11</code></pre>
+            </div>
+
+            <!-- Exercise -->
+            <div class="stk-exercise" id="exercise-expression">
+              <div class="stk-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Postfix Evaluation
+              </div>
+              <p>Evaluate the following postfix expression step by step:</p>
+              <pre>5 1 2 + 4 * + 3 -</pre>
+              <button class="stk-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-expression">Show Solution</button>
+              <div class="stk-exercise-solution" id="solution-expression">
+                <div class="stk-code-block">
+                  <div class="stk-code-header">
+                    <span class="stk-code-lang">Trace</span>
+                    <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>Token  Action           Stack
+5      push 5           [5]
+1      push 1           [5, 1]
+2      push 2           [5, 1, 2]
++      pop 2,1 → 1+2=3  [5, 3]
+4      push 4           [5, 3, 4]
+*      pop 4,3 → 3*4=12 [5, 12]
++      pop 12,5 → 5+12=17 [17]
+3      push 3           [17, 3]
+-      pop 3,17 → 17-3=14 [14]
+
+Result: 14</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               9. Stack vs Queue
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="stack-queue" data-topic="9">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">09</span>
+              <h3>Stack vs Queue</h3>
+            </div>
+
+            <p>
+              Stacks and queues are both restricted-access linear structures, but their
+              removal order is opposite. Knowing when to use each is a fundamental
+              DSA skill.
+            </p>
+
+            <div class="stk-table-wrap">
+              <table class="stk-table" aria-label="Stack vs Queue comparison">
+                <thead>
+                  <tr>
+                    <th scope="col">Property</th>
+                    <th scope="col">Stack</th>
+                    <th scope="col">Queue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Principle</td>       <td>LIFO</td>                       <td>FIFO</td></tr>
+                  <tr><td>Insert end</td>       <td>Top (push)</td>                 <td>Rear (enqueue)</td></tr>
+                  <tr><td>Remove end</td>       <td>Top (pop)</td>                  <td>Front (dequeue)</td></tr>
+                  <tr><td>Peek</td>             <td>Top element</td>                <td>Front element</td></tr>
+                  <tr><td>Use case</td>         <td>DFS, undo, call stack</td>      <td>BFS, scheduling, print queue</td></tr>
+                  <tr><td>Analogy</td>          <td>Plate stack</td>                <td>Ticket queue</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="stk-callout">
+              <span class="stk-callout-icon">🧩</span>
+              <p>You can implement a <strong>queue using two stacks</strong> (and vice versa)
+                 — a common interview problem. Push to stack 1; when dequeuing, transfer all
+                 elements to stack 2 (reversing order) and pop from stack 2.</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               10. Interview Tips
+               ═══════════════════════════════════════ -->
+          <article class="stk-lesson" id="interview" data-topic="10">
+            <div class="stk-lesson-header">
+              <span class="stk-lesson-number">10</span>
+              <h3>Stack Interview Tips</h3>
+            </div>
+
+            <p>
+              Stack problems are among the most common in technical interviews.
+              They appear in every tier from internships to FAANG senior roles.
+            </p>
+
+            <div class="stk-concept-card">
+              <h4>Must-Know Problems</h4>
+              <ul>
+                <li><strong>Valid Parentheses</strong> — balanced bracket checker (LeetCode #20)</li>
+                <li><strong>Min Stack</strong> — O(1) getMin() alongside push/pop (LeetCode #155)</li>
+                <li><strong>Daily Temperatures</strong> — next greater element pattern (LeetCode #739)</li>
+                <li><strong>Evaluate RPN</strong> — postfix expression evaluator (LeetCode #150)</li>
+                <li><strong>Decode String</strong> — nested bracket expansion (LeetCode #394)</li>
+                <li><strong>Largest Rectangle in Histogram</strong> — monotonic stack (LeetCode #84)</li>
+              </ul>
+            </div>
+
+            <ul>
+              <li>When you see <em>"next greater / smaller element"</em> → think <strong>monotonic stack</strong>.</li>
+              <li>When you see <em>"valid brackets / nesting"</em> → always use a stack.</li>
+              <li>Always guard against underflow: check isEmpty() before every pop/peek.</li>
+              <li>Know both array and linked-list implementations — interviewers may ask to code either.</li>
+              <li>The <strong>two-stack queue</strong> and <strong>min stack</strong> are nearly guaranteed at top companies.</li>
+            </ul>
+
+            <!-- Classic interview exercise -->
+            <div class="stk-exercise" id="exercise-interview">
+              <div class="stk-exercise-title">
+                <i class="fas fa-dumbbell"></i> Classic Interview Problem
+              </div>
+              <p>
+                <strong>Min Stack:</strong> Design a stack that supports push, pop, peek,
+                and <code>getMin()</code> — all in O(1) time.
+              </p>
+              <button class="stk-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-interview">Show Solution</button>
+              <div class="stk-exercise-solution" id="solution-interview">
+                <div class="stk-code-block">
+                  <div class="stk-code-header">
+                    <span class="stk-code-lang">C — Min Stack</span>
+                    <button class="stk-code-copy" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                  <pre><code>// Use two stacks: one for data, one to track minimums
+#define MAX 100
+int main_stack[MAX], min_stack[MAX];
+int main_top = -1, min_top = -1;
+
+void push(int val) {
+    main_stack[++main_top] = val;
+    // push to min_stack only if val <= current min
+    if (min_top == -1 || val <= min_stack[min_top])
+        min_stack[++min_top] = val;
+}
+
+int pop() {
+    int val = main_stack[main_top--];
+    // if popped value was the minimum, pop min_stack too
+    if (val == min_stack[min_top])
+        min_top--;
+    return val;
+}
+
+int getMin() {
+    return min_stack[min_top];  // O(1) always
+}
+
+// push(3) push(5) push(2) push(1)
+// getMin() → 1
+// pop()    → 1
+// getMin() → 2</code></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </main>
+      </div><!-- /.stk-layout -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./stack-learning.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

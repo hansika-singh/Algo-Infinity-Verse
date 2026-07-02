@@ -1,0 +1,1626 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn C++ – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly C++ tutorial covering variables, data types, operators, I/O, conditionals, loops, functions, arrays, strings, and OOP concepts with interactive exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="cplusplus-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="cplusplus-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #00599C 0%, #659AD2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">C++ Programming</span>
+          <span class="subtitle">Beginner-Friendly Concepts, Code &amp; Practice</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_cpp" id="typingTextCpp"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #00599C 0%, #659AD2 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-variables" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="40">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- C++ Learning Section -->
+    <section id="cpp-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">⚡</span>
+          Learn C++
+        </h2>
+        <p class="section-subtitle">
+          Master the fundamentals of C++ with clear explanations and hands-on examples
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="cpp-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="cpp-progress-text"><span id="progressCount">0</span> / 10 topics completed</span>
+          <div class="cpp-progress-track">
+            <div class="cpp-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="cpp-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="cpp-sidebar" aria-label="Topic navigation">
+            <div class="cpp-sidebar-title">Topics</div>
+            <ul class="cpp-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#setup"><span class="nav-icon">⚙️</span> Installation &amp; Setup</a></li>
+              <li><a href="#variables"><span class="nav-icon">📦</span> Variables &amp; Types</a></li>
+              <li><a href="#io"><span class="nav-icon">⌨️</span> Input &amp; Output</a></li>
+              <li><a href="#operators"><span class="nav-icon">➕</span> Operators</a></li>
+              <li><a href="#conditionals"><span class="nav-icon">🔀</span> Conditionals</a></li>
+              <li><a href="#loops"><span class="nav-icon">🔄</span> Loops</a></li>
+              <li><a href="#functions"><span class="nav-icon">⚡</span> Functions</a></li>
+              <li><a href="#arrays-strings"><span class="nav-icon">📋</span> Arrays &amp; Strings</a></li>
+              <li><a href="#oop"><span class="nav-icon">🔷</span> Basic OOP</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="cpp-main-content" id="mainContent">
+
+            <!-- 1. Introduction to C++ -->
+            <article class="cpp-lesson" id="introduction" data-topic="1">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">01</span>
+                <h3>Introduction to C++</h3>
+              </div>
+              <p>
+                C++ is a powerful, high-performance programming language created by <strong>Bjarne Stroustrup</strong> in 1985 at Bell Labs.
+                It extends the C language with object-oriented features, making it one of the most versatile languages ever created.
+                C++ gives you fine-grained control over system resources and memory.
+              </p>
+              <div class="cpp-concept-card">
+                <h4>Why Learn C++?</h4>
+                <ul>
+                  <li><strong>High Performance</strong> – Used in game engines, operating systems, and browsers</li>
+                  <li><strong>Object-Oriented</strong> – Supports classes, inheritance, and polymorphism</li>
+                  <li><strong>Manual Memory Control</strong> – Pointers and direct memory management</li>
+                  <li><strong>Industry Standard</strong> – Used by Google, Microsoft, Adobe, and game studios</li>
+                  <li><strong>Foundation for DSA</strong> – The go-to language for competitive programming</li>
+                </ul>
+              </div>
+              <p>Your first C++ program is the classic "Hello, World!":</p>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; &quot;Hello, World!&quot; &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    cout &lt;&lt; <span class="tok-str">"Hello, World!"</span> &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Hello, World!</pre>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">💡</span>
+                <p>Every C++ program needs a <code>main()</code> function — it's the entry point. The <code>#include &lt;iostream&gt;</code> directive lets you use input/output features. <code>return 0;</code> signals successful execution.</p>
+              </div>
+            </article>
+
+            <!-- 2. Installation & Setup -->
+            <article class="cpp-lesson" id="setup" data-topic="2">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">02</span>
+                <h3>Installation &amp; Setup</h3>
+              </div>
+              <p>
+                To write and run C++ code, you need a <strong>C++ compiler</strong> and a text editor or IDE.
+                The most common compilers are <strong>g++</strong> (GNU Compiler Collection) and <strong>clang++</strong>.
+              </p>
+              <div class="cpp-concept-card">
+                <h4><i class="fas fa-download"></i> Installing a Compiler</h4>
+                <ul>
+                  <li><strong>Linux</strong> – Install via package manager: <code>sudo apt install g++</code></li>
+                  <li><strong>macOS</strong> – Install Xcode Command Line Tools: <code>xcode-select --install</code></li>
+                  <li><strong>Windows</strong> – Download MinGW-w64 or use Visual Studio with the "Desktop development with C++" workload</li>
+                </ul>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">Bash</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="# Verify your compiler installation
+g++ --version
+clang++ --version">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt"># Verify your compiler installation</span>
+g++ --version
+clang++ --version</code></pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4><i class="fas fa-laptop-code"></i> Choosing an IDE</h4>
+                <ul>
+                  <li><strong>VS Code</strong> – Lightweight with C++ extension pack (recommended)</li>
+                  <li><strong>CLion</strong> – Full-featured C++ IDE by JetBrains</li>
+                  <li><strong>Code::Blocks</strong> – Free, beginner-friendly IDE</li>
+                </ul>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">Bash</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="# Compile and run a C++ program
+g++ hello.cpp -o hello    # compiles to executable
+./hello                   # runs the executable">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt"># Compile and run a C++ program</span>
+g++ hello.cpp -o hello    <span class="tok-cmt"># compiles to executable</span>
+./hello                   <span class="tok-cmt"># runs the executable</span></code></pre>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">✅</span>
+                <p>C++ is a <strong>compiled</strong> language: you write <code>.cpp</code> source files, compile them to a machine-executable binary with <code>g++</code>, and run the binary directly on your operating system.</p>
+              </div>
+            </article>
+
+            <!-- 3. Variables and Data Types -->
+            <article class="cpp-lesson" id="variables" data-topic="3">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">03</span>
+                <h3>Variables &amp; Data Types</h3>
+              </div>
+              <p>
+                In C++, every variable must have a declared <strong>type</strong>. C++ is statically typed — once you declare a variable's type, it cannot hold a different type of value.
+              </p>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string name = &quot;Alice&quot;;    // Text
+    int age = 25;               // Whole number
+    double height = 5.7;        // Decimal number
+    bool isStudent = true;      // true / false
+    char grade = 'A';           // Single character
+
+    cout &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; age &lt;&lt; endl;
+    cout &lt;&lt; height &lt;&lt; endl;
+    cout &lt;&lt; isStudent &lt;&lt; endl;
+    cout &lt;&lt; grade &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">string</span> name = <span class="tok-str">"Alice"</span>;    <span class="tok-cmt">// Text</span>
+    <span class="tok-kw">int</span> age = <span class="tok-num">25</span>;               <span class="tok-cmt">// Whole number</span>
+    <span class="tok-kw">double</span> height = <span class="tok-num">5.7</span>;        <span class="tok-cmt">// Decimal number</span>
+    <span class="tok-kw">bool</span> isStudent = <span class="tok-bool">true</span>;      <span class="tok-cmt">// true / false</span>
+    <span class="tok-kw">char</span> grade = <span class="tok-str">'A'</span>;           <span class="tok-cmt">// Single character</span>
+
+    cout &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; age &lt;&lt; endl;
+    cout &lt;&lt; height &lt;&lt; endl;
+    cout &lt;&lt; isStudent &lt;&lt; endl;
+    cout &lt;&lt; grade &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Alice
+25
+5.7
+1
+A</pre>
+              </div>
+              <div class="cpp-table-wrap">
+                <table class="cpp-table" aria-label="C++ primitive data types">
+                  <thead>
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Size</th>
+                      <th scope="col">Example</th>
+                      <th scope="col">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>int</code></td><td>4 bytes</td><td><code>42</code></td><td>Whole number</td></tr>
+                    <tr><td><code>double</code></td><td>8 bytes</td><td><code>3.14</code></td><td>Double precision decimal</td></tr>
+                    <tr><td><code>float</code></td><td>4 bytes</td><td><code>3.14f</code></td><td>Single precision decimal</td></tr>
+                    <tr><td><code>char</code></td><td>1 byte</td><td><code>'A'</code></td><td>Single ASCII character</td></tr>
+                    <tr><td><code>bool</code></td><td>1 byte</td><td><code>true/false</code></td><td>Logical value</td></tr>
+                    <tr><td><code>string</code></td><td>Variable</td><td><code>"Hello"</code></td><td>Sequence of characters (from <code>&lt;string&gt;</code>)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">💡</span>
+                <p>C++ also supports <code>unsigned</code> types (only non-negative values), <code>long</code> and <code>short</code> variants, and the <code>auto</code> keyword for type inference: <code>auto x = 42;</code> automatically deduces <code>int</code>.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-variables">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Variables &amp; Data Types
+                </div>
+                <p>Create variables of different types and print them:</p>
+                <ol>
+                  <li>Create an <code>int</code> variable <code>score</code> with value <code>95</code></li>
+                  <li>Create a <code>double</code> variable <code>gpa</code> with value <code>3.85</code></li>
+                  <li>Create a <code>string</code> variable <code>city</code> with value <code>"New York"</code></li>
+                  <li>Create a <code>bool</code> variable <code>passed</code> set to <code>true</code></li>
+                  <li>Print each variable using <code>cout</code></li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-variables">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-variables">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="int score = 95;
+double gpa = 3.85;
+string city = &quot;New York&quot;;
+bool passed = true;
+
+cout &lt;&lt; &quot;Score: &quot; &lt;&lt; score &lt;&lt; endl;
+cout &lt;&lt; &quot;GPA: &quot; &lt;&lt; gpa &lt;&lt; endl;
+cout &lt;&lt; &quot;City: &quot; &lt;&lt; city &lt;&lt; endl;
+cout &lt;&lt; &quot;Passed: &quot; &lt;&lt; passed &lt;&lt; endl;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">int</span> score = <span class="tok-num">95</span>;
+<span class="tok-kw">double</span> gpa = <span class="tok-num">3.85</span>;
+<span class="tok-bi">string</span> city = <span class="tok-str">"New York"</span>;
+<span class="tok-kw">bool</span> passed = <span class="tok-bool">true</span>;
+
+cout &lt;&lt; <span class="tok-str">"Score: "</span> &lt;&lt; score &lt;&lt; endl;
+cout &lt;&lt; <span class="tok-str">"GPA: "</span> &lt;&lt; gpa &lt;&lt; endl;
+cout &lt;&lt; <span class="tok-str">"City: "</span> &lt;&lt; city &lt;&lt; endl;
+cout &lt;&lt; <span class="tok-str">"Passed: "</span> &lt;&lt; passed &lt;&lt; endl;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Input and Output -->
+            <article class="cpp-lesson" id="io" data-topic="4">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">04</span>
+                <h3>Input &amp; Output</h3>
+              </div>
+              <p>
+                C++ uses <code>cout</code> (console output) and <code>cin</code> (console input) from the standard library. They are defined in the <code>&lt;iostream&gt;</code> header.
+              </p>
+              <div class="cpp-concept-card">
+                <h4>cout — Displaying Output</h4>
+                <p><code>cout &lt;&lt; "text" &lt;&lt; endl;</code> prints text followed by a newline. Use <code>&lt;&lt;</code> to chain multiple values together.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    string name = &quot;Alice&quot;;
+    int age = 25;
+
+    cout &lt;&lt; &quot;My name is &quot; &lt;&lt; name &lt;&lt; &quot; and I am &quot; &lt;&lt; age &lt;&lt; &quot; years old.&quot; &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">string</span> name = <span class="tok-str">"Alice"</span>;
+    <span class="tok-kw">int</span> age = <span class="tok-num">25</span>;
+
+    cout &lt;&lt; <span class="tok-str">"My name is "</span> &lt;&lt; name &lt;&lt; <span class="tok-str">" and I am "</span> &lt;&lt; age &lt;&lt; <span class="tok-str">" years old."</span> &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>My name is Alice and I am 25 years old.</pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>cin — Reading User Input</h4>
+                <p><code>cin &gt;&gt; variable</code> reads input from the console. The extraction operator (<code>&gt;&gt;</code>) reads formatted data.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string name;
+    int age;
+
+    cout &lt;&lt; &quot;What is your name? &quot;;
+    getline(cin, name);
+
+    cout &lt;&lt; &quot;How old are you? &quot;;
+    cin &gt;&gt; age;
+
+    cout &lt;&lt; &quot;Hello, &quot; &lt;&lt; name &lt;&lt; &quot;! In 10 years you will be &quot; &lt;&lt; (age + 10) &lt;&lt; &quot;.&quot; &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">string</span> name;
+    <span class="tok-kw">int</span> age;
+
+    cout &lt;&lt; <span class="tok-str">"What is your name? "</span>;
+    <span class="tok-fn">getline</span>(cin, name);
+
+    cout &lt;&lt; <span class="tok-str">"How old are you? "</span>;
+    cin &gt;&gt; age;
+
+    cout &lt;&lt; <span class="tok-str">"Hello, "</span> &lt;&lt; name &lt;&lt; <span class="tok-str">"! In 10 years you will be "</span> &lt;&lt; (age + <span class="tok-num">10</span>) &lt;&lt; <span class="tok-str">"."</span> &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">⚠️</span>
+                <p><code>cin &gt;&gt;</code> stops at whitespace, so it won't read a full name like "John Doe". Use <code>getline(cin, name)</code> to read an entire line. However, after <code>cin &gt;&gt;</code>, there's often a leftover newline — use <code>cin.ignore()</code> before <code>getline</code> to clear it.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-io">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Input &amp; Output
+                </div>
+                <p>Write a program that asks the user for their name and favorite color, then prints a greeting.</p>
+                <ol>
+                  <li>Include <code>&lt;iostream&gt;</code> and <code>&lt;string&gt;</code></li>
+                  <li>Ask for name and favorite color using <code>getline(cin, variable)</code></li>
+                  <li>Print: <code>"Hello {name}, your favorite color is {color}!"</code></li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-io">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-io">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string name, color;
+
+    cout &lt;&lt; &quot;Enter your name: &quot;;
+    getline(cin, name);
+
+    cout &lt;&lt; &quot;Enter your favorite color: &quot;;
+    getline(cin, color);
+
+    cout &lt;&lt; &quot;Hello &quot; &lt;&lt; name &lt;&lt; &quot;, your favorite color is &quot; &lt;&lt; color &lt;&lt; &quot;!&quot; &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">string</span> name, color;
+
+    cout &lt;&lt; <span class="tok-str">"Enter your name: "</span>;
+    <span class="tok-fn">getline</span>(cin, name);
+
+    cout &lt;&lt; <span class="tok-str">"Enter your favorite color: "</span>;
+    <span class="tok-fn">getline</span>(cin, color);
+
+    cout &lt;&lt; <span class="tok-str">"Hello "</span> &lt;&lt; name &lt;&lt; <span class="tok-str">", your favorite color is "</span> &lt;&lt; color &lt;&lt; <span class="tok-str">"!"</span> &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Operators -->
+            <article class="cpp-lesson" id="operators" data-topic="5">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">05</span>
+                <h3>Operators</h3>
+              </div>
+              <p>
+                Operators perform operations on variables and values. C++ supports arithmetic, assignment, comparison, logical, and bitwise operators.
+              </p>
+              <div class="cpp-table-wrap">
+                <table class="cpp-table" aria-label="C++ operators">
+                  <thead>
+                    <tr>
+                      <th scope="col">Category</th>
+                      <th scope="col">Operators</th>
+                      <th scope="col">Example</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Arithmetic</td><td><code>+ - * / %</code></td><td><code>10 + 5 → 15</code></td></tr>
+                    <tr><td>Assignment</td><td><code>= += -= *= /= %=</code></td><td><code>x += 5</code></td></tr>
+                    <tr><td>Comparison</td><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td><code>10 &gt; 5 → true</code></td></tr>
+                    <tr><td>Logical</td><td><code>&& || !</code></td><td><code>true && false → false</code></td></tr>
+                    <tr><td>Increment/Decrement</td><td><code>++ --</code></td><td><code>i++</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int a = 10, b = 5;
+
+    // Arithmetic
+    int sum = a + b;
+    int product = a * b;
+    int remainder = a % b;
+
+    // Comparison &amp; Logical
+    bool isGreater = a > b;
+    bool bothPositive = (a > 0) && (b > 0);
+
+    cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; sum &lt;&lt; endl;
+    cout &lt;&lt; &quot;Product: &quot; &lt;&lt; product &lt;&lt; endl;
+    cout &lt;&lt; &quot;Remainder: &quot; &lt;&lt; remainder &lt;&lt; endl;
+    cout &lt;&lt; &quot;Is a &gt; b? &quot; &lt;&lt; isGreater &lt;&lt; endl;
+    cout &lt;&lt; &quot;Both positive? &quot; &lt;&lt; bothPositive &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> a = <span class="tok-num">10</span>, b = <span class="tok-num">5</span>;
+
+    <span class="tok-cmt">// Arithmetic</span>
+    <span class="tok-kw">int</span> sum = a + b;
+    <span class="tok-kw">int</span> product = a * b;
+    <span class="tok-kw">int</span> remainder = a % b;
+
+    <span class="tok-cmt">// Comparison &amp; Logical</span>
+    <span class="tok-kw">bool</span> isGreater = a > b;
+    <span class="tok-kw">bool</span> bothPositive = (a > <span class="tok-num">0</span>) && (b > <span class="tok-num">0</span>);
+
+    cout &lt;&lt; <span class="tok-str">"Sum: "</span> &lt;&lt; sum &lt;&lt; endl;
+    cout &lt;&lt; <span class="tok-str">"Product: "</span> &lt;&lt; product &lt;&lt; endl;
+    cout &lt;&lt; <span class="tok-str">"Remainder: "</span> &lt;&lt; remainder &lt;&lt; endl;
+    cout &lt;&lt; <span class="tok-str">"Is a > b? "</span> &lt;&lt; isGreater &lt;&lt; endl;
+    cout &lt;&lt; <span class="tok-str">"Both positive? "</span> &lt;&lt; bothPositive &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Sum: 15
+Product: 50
+Remainder: 0
+Is a > b? true
+Both positive? true</pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-operators">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Operators
+                </div>
+                <p>Calculate the area and perimeter of a rectangle with width <code>8</code> and length <code>12</code>.</p>
+                <ol>
+                  <li>Create <code>int</code> variables <code>width</code> and <code>length</code></li>
+                  <li>Calculate <code>area = width * length</code></li>
+                  <li>Calculate <code>perimeter = 2 * (width + length)</code></li>
+                  <li>Print both results using <code>cout</code></li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-operators">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-operators">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int width = 8;
+    int length = 12;
+    int area = width * length;
+    int perimeter = 2 * (width + length);
+
+    cout &lt;&lt; &quot;Area: &quot; &lt;&lt; area &lt;&lt; endl;
+    cout &lt;&lt; &quot;Perimeter: &quot; &lt;&lt; perimeter &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> width = <span class="tok-num">8</span>;
+    <span class="tok-kw">int</span> length = <span class="tok-num">12</span>;
+    <span class="tok-kw">int</span> area = width * length;
+    <span class="tok-kw">int</span> perimeter = <span class="tok-num">2</span> * (width + length);
+
+    cout &lt;&lt; <span class="tok-str">"Area: "</span> &lt;&lt; area &lt;&lt; endl;
+    cout &lt;&lt; <span class="tok-str">"Perimeter: "</span> &lt;&lt; perimeter &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Conditional Statements -->
+            <article class="cpp-lesson" id="conditionals" data-topic="6">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">06</span>
+                <h3>Conditional Statements</h3>
+              </div>
+              <p>
+                Conditionals let your program make decisions. C++ supports <code>if</code>, <code>else if</code>, <code>else</code>, and <code>switch</code> statements.
+              </p>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int score = 85;
+    char grade;
+
+    if (score >= 90) {
+        grade = 'A';
+    } else if (score >= 80) {
+        grade = 'B';
+    } else if (score >= 70) {
+        grade = 'C';
+    } else {
+        grade = 'F';
+    }
+
+    cout &lt;&lt; &quot;Score: &quot; &lt;&lt; score &lt;&lt; &quot; → Grade: &quot; &lt;&lt; grade &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> score = <span class="tok-num">85</span>;
+    <span class="tok-kw">char</span> grade;
+
+    <span class="tok-kw">if</span> (score >= <span class="tok-num">90</span>) {
+        grade = <span class="tok-str">'A'</span>;
+    } <span class="tok-kw">else if</span> (score >= <span class="tok-num">80</span>) {
+        grade = <span class="tok-str">'B'</span>;
+    } <span class="tok-kw">else if</span> (score >= <span class="tok-num">70</span>) {
+        grade = <span class="tok-str">'C'</span>;
+    } <span class="tok-kw">else</span> {
+        grade = <span class="tok-str">'F'</span>;
+    }
+
+    cout &lt;&lt; <span class="tok-str">"Score: "</span> &lt;&lt; score &lt;&lt; <span class="tok-str">" → Grade: "</span> &lt;&lt; grade &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Score: 85 → Grade: B</pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>switch Statement</h4>
+                <p>The <code>switch</code> statement is useful when checking a variable against many specific values.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int day = 3;
+    string dayName;
+
+    switch (day) {
+        case 1:  dayName = &quot;Monday&quot;;    break;
+        case 2:  dayName = &quot;Tuesday&quot;;   break;
+        case 3:  dayName = &quot;Wednesday&quot;; break;
+        case 4:  dayName = &quot;Thursday&quot;;  break;
+        case 5:  dayName = &quot;Friday&quot;;    break;
+        default: dayName = &quot;Weekend&quot;;
+    }
+
+    cout &lt;&lt; dayName &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> day = <span class="tok-num">3</span>;
+    <span class="tok-bi">string</span> dayName;
+
+    <span class="tok-kw">switch</span> (day) {
+        <span class="tok-kw">case</span> <span class="tok-num">1</span>:  dayName = <span class="tok-str">"Monday"</span>;    <span class="tok-kw">break</span>;
+        <span class="tok-kw">case</span> <span class="tok-num">2</span>:  dayName = <span class="tok-str">"Tuesday"</span>;   <span class="tok-kw">break</span>;
+        <span class="tok-kw">case</span> <span class="tok-num">3</span>:  dayName = <span class="tok-str">"Wednesday"</span>; <span class="tok-kw">break</span>;
+        <span class="tok-kw">case</span> <span class="tok-num">4</span>:  dayName = <span class="tok-str">"Thursday"</span>;  <span class="tok-kw">break</span>;
+        <span class="tok-kw">case</span> <span class="tok-num">5</span>:  dayName = <span class="tok-str">"Friday"</span>;    <span class="tok-kw">break</span>;
+        <span class="tok-kw">default</span>: dayName = <span class="tok-str">"Weekend"</span>;
+    }
+
+    cout &lt;&lt; dayName &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Wednesday</pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-conditionals">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Conditionals
+                </div>
+                <p>Write a program that reads a number and prints whether it is positive, negative, or zero.</p>
+                <ol>
+                  <li>Use <code>cin</code> to read an integer</li>
+                  <li>Use <code>if</code>/<code>else if</code>/<code>else</code> to check the number</li>
+                  <li>Print the result using <code>cout</code></li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-conditionals">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-conditionals">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int num;
+    cout &lt;&lt; &quot;Enter a number: &quot;;
+    cin &gt;&gt; num;
+
+    if (num &gt; 0) {
+        cout &lt;&lt; &quot;Positive&quot; &lt;&lt; endl;
+    } else if (num &lt; 0) {
+        cout &lt;&lt; &quot;Negative&quot; &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; &quot;Zero&quot; &lt;&lt; endl;
+    }
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> num;
+    cout &lt;&lt; <span class="tok-str">"Enter a number: "</span>;
+    cin &gt;&gt; num;
+
+    <span class="tok-kw">if</span> (num > <span class="tok-num">0</span>) {
+        cout &lt;&lt; <span class="tok-str">"Positive"</span> &lt;&lt; endl;
+    } <span class="tok-kw">else if</span> (num < <span class="tok-num">0</span>) {
+        cout &lt;&lt; <span class="tok-str">"Negative"</span> &lt;&lt; endl;
+    } <span class="tok-kw">else</span> {
+        cout &lt;&lt; <span class="tok-str">"Zero"</span> &lt;&lt; endl;
+    }
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Loops -->
+            <article class="cpp-lesson" id="loops" data-topic="7">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">07</span>
+                <h3>Loops (for, while, do-while)</h3>
+              </div>
+              <p>
+                Loops let you repeat a block of code. C++ has three loop types: <code>for</code>, <code>while</code>, and <code>do-while</code>.
+              </p>
+              <div class="cpp-concept-card">
+                <h4>for Loop</h4>
+                <p>Use <code>for</code> when you know how many times to iterate.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Count from 0 to 4
+    for (int i = 0; i &lt; 5; i++) {
+        cout &lt;&lt; &quot;Count: &quot; &lt;&lt; i &lt;&lt; endl;
+    }
+
+    // Iterate over an array
+    string fruits[] = {&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;};
+    for (string fruit : fruits) {
+        cout &lt;&lt; fruit &lt;&lt; endl;
+    }
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// Count from 0 to 4</span>
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">5</span>; i++) {
+        cout &lt;&lt; <span class="tok-str">"Count: "</span> &lt;&lt; i &lt;&lt; endl;
+    }
+
+    <span class="tok-cmt">// Range-based for loop (C++11)</span>
+    <span class="tok-bi">string</span> fruits[] = {<span class="tok-str">"apple"</span>, <span class="tok-str">"banana"</span>, <span class="tok-str">"cherry"</span>};
+    <span class="tok-kw">for</span> (<span class="tok-bi">string</span> fruit : fruits) {
+        cout &lt;&lt; fruit &lt;&lt; endl;
+    }
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Count: 0
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+apple
+banana
+cherry</pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>while &amp; do-while Loops</h4>
+                <p><code>while</code> checks the condition first; <code>do-while</code> runs the body at least once.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // while loop
+    int count = 0;
+    while (count &lt; 5) {
+        cout &lt;&lt; &quot;While: &quot; &lt;&lt; count &lt;&lt; endl;
+        count++;
+    }
+
+    // do-while loop
+    int num = 0;
+    do {
+        cout &lt;&lt; &quot;Do-while: &quot; &lt;&lt; num &lt;&lt; endl;
+        num++;
+    } while (num &lt; 5);
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// while loop</span>
+    <span class="tok-kw">int</span> count = <span class="tok-num">0</span>;
+    <span class="tok-kw">while</span> (count &lt; <span class="tok-num">5</span>) {
+        cout &lt;&lt; <span class="tok-str">"While: "</span> &lt;&lt; count &lt;&lt; endl;
+        count++;
+    }
+
+    <span class="tok-cmt">// do-while loop</span>
+    <span class="tok-kw">int</span> num = <span class="tok-num">0</span>;
+    <span class="tok-kw">do</span> {
+        cout &lt;&lt; <span class="tok-str">"Do-while: "</span> &lt;&lt; num &lt;&lt; endl;
+        num++;
+    } <span class="tok-kw">while</span> (num &lt; <span class="tok-num">5</span>);
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">⚠️</span>
+                <p>Always ensure your loop condition eventually becomes <code>false</code> to avoid <strong>infinite loops</strong>. Use <code>break</code> to exit early and <code>continue</code> to skip the current iteration.</p>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-loops">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Loops
+                </div>
+                <p>Write two programs:</p>
+                <ol>
+                  <li>Use a <code>for</code> loop to print all even numbers from 2 to 20</li>
+                  <li>Use a <code>while</code> loop to calculate the sum of numbers from 1 to 100</li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-loops">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-loops">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Even numbers 2-20
+    for (int i = 2; i &lt;= 20; i += 2) {
+        cout &lt;&lt; i &lt;&lt; endl;
+    }
+
+    // Sum of 1 to 100
+    int sum = 0;
+    int n = 1;
+    while (n &lt;= 100) {
+        sum += n;
+        n++;
+    }
+    cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; sum &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// Even numbers 2-20</span>
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> i = <span class="tok-num">2</span>; i &lt;= <span class="tok-num">20</span>; i += <span class="tok-num">2</span>) {
+        cout &lt;&lt; i &lt;&lt; endl;
+    }
+
+    <span class="tok-cmt">// Sum of 1 to 100</span>
+    <span class="tok-kw">int</span> sum = <span class="tok-num">0</span>;
+    <span class="tok-kw">int</span> n = <span class="tok-num">1</span>;
+    <span class="tok-kw">while</span> (n &lt;= <span class="tok-num">100</span>) {
+        sum += n;
+        n++;
+    }
+    cout &lt;&lt; <span class="tok-str">"Sum: "</span> &lt;&lt; sum &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. Functions -->
+            <article class="cpp-lesson" id="functions" data-topic="8">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">08</span>
+                <h3>Functions</h3>
+              </div>
+              <p>
+                Functions (also called methods) are reusable blocks of code. They help you avoid repetition and organize your program into logical pieces.
+              </p>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+// Function with parameters and return value
+int add(int a, int b) {
+    return a + b;
+}
+
+// Void function (no return value)
+void greet(string name) {
+    cout &lt;&lt; &quot;Hello, &quot; &lt;&lt; name &lt;&lt; &quot;!&quot; &lt;&lt; endl;
+}
+
+int main() {
+    int sum = add(10, 5);
+    cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    greet(&quot;Alice&quot;);
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-cmt">// Function with parameters and return value</span>
+<span class="tok-kw">int</span> <span class="tok-fn">add</span>(<span class="tok-kw">int</span> a, <span class="tok-kw">int</span> b) {
+    <span class="tok-kw">return</span> a + b;
+}
+
+<span class="tok-cmt">// Void function (no return value)</span>
+<span class="tok-kw">void</span> <span class="tok-fn">greet</span>(<span class="tok-bi">string</span> name) {
+    cout &lt;&lt; <span class="tok-str">"Hello, "</span> &lt;&lt; name &lt;&lt; <span class="tok-str">"!"</span> &lt;&lt; endl;
+}
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-kw">int</span> sum = <span class="tok-fn">add</span>(<span class="tok-num">10</span>, <span class="tok-num">5</span>);
+    cout &lt;&lt; <span class="tok-str">"Sum: "</span> &lt;&lt; sum &lt;&lt; endl;
+
+    <span class="tok-fn">greet</span>(<span class="tok-str">"Alice"</span>);
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Sum: 15
+Hello, Alice!</pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>Function Overloading</h4>
+                <p>C++ allows multiple functions with the same name as long as their parameters differ (number, type, or order).</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+double multiply(double a, double b) {
+    return a * b;
+}
+
+int main() {
+    cout &lt;&lt; multiply(5, 3) &lt;&lt; endl;      // 15
+    cout &lt;&lt; multiply(2.5, 4.0) &lt;&lt; endl;  // 10
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">multiply</span>(<span class="tok-kw">int</span> a, <span class="tok-kw">int</span> b) {
+    <span class="tok-kw">return</span> a * b;
+}
+
+<span class="tok-kw">double</span> <span class="tok-fn">multiply</span>(<span class="tok-kw">double</span> a, <span class="tok-kw">double</span> b) {
+    <span class="tok-kw">return</span> a * b;
+}
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    cout &lt;&lt; <span class="tok-fn">multiply</span>(<span class="tok-num">5</span>, <span class="tok-num">3</span>) &lt;&lt; endl;      <span class="tok-cmt">// 15</span>
+    cout &lt;&lt; <span class="tok-fn">multiply</span>(<span class="tok-num">2.5</span>, <span class="tok-num">4.0</span>) &lt;&lt; endl;  <span class="tok-cmt">// 10</span>
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-functions">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Functions
+                </div>
+                <ol>
+                  <li>Write a function <code>isEven(int n)</code> that returns <code>true</code> if n is even</li>
+                  <li>Write a function <code>factorial(int n)</code> that returns the factorial of n</li>
+                  <li>Call both from <code>main()</code> and print the results</li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-functions">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-functions">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+bool isEven(int n) {
+    return n % 2 == 0;
+}
+
+int factorial(int n) {
+    if (n &lt;= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+int main() {
+    cout &lt;&lt; isEven(4) &lt;&lt; endl;           // 1 (true)
+    cout &lt;&lt; factorial(5) &lt;&lt; endl;        // 120
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">bool</span> <span class="tok-fn">isEven</span>(<span class="tok-kw">int</span> n) {
+    <span class="tok-kw">return</span> n % <span class="tok-num">2</span> == <span class="tok-num">0</span>;
+}
+
+<span class="tok-kw">int</span> <span class="tok-fn">factorial</span>(<span class="tok-kw">int</span> n) {
+    <span class="tok-kw">if</span> (n &lt;= <span class="tok-num">1</span>) <span class="tok-kw">return</span> <span class="tok-num">1</span>;
+    <span class="tok-kw">return</span> n * <span class="tok-fn">factorial</span>(n - <span class="tok-num">1</span>);
+}
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    cout &lt;&lt; <span class="tok-fn">isEven</span>(<span class="tok-num">4</span>) &lt;&lt; endl;           <span class="tok-cmt">// 1 (true)</span>
+    cout &lt;&lt; <span class="tok-fn">factorial</span>(<span class="tok-num">5</span>) &lt;&lt; endl;        <span class="tok-cmt">// 120</span>
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Arrays and Strings -->
+            <article class="cpp-lesson" id="arrays-strings" data-topic="9">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">09</span>
+                <h3>Arrays &amp; Strings</h3>
+              </div>
+              <p>
+                Arrays store multiple values of the same type. C++ strings (<code>std::string</code>) represent text and come with many built-in methods.
+              </p>
+              <div class="cpp-concept-card">
+                <h4>Arrays — Fixed-Size Collections</h4>
+                <p>Arrays in C++ have a fixed length. You can use C-style arrays or <code>std::array</code> (C++11). Indexing starts at 0.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // C-style array
+    int numbers[5] = {10, 20, 30, 40, 50};
+    string fruits[] = {&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;};
+
+    // Access and modify
+    numbers[0] = 99;
+    cout &lt;&lt; numbers[0] &lt;&lt; endl;      // 99
+    cout &lt;&lt; fruits[1] &lt;&lt; endl;       // banana
+    cout &lt;&lt; &quot;Size: &quot; &lt;&lt; sizeof(numbers) / sizeof(numbers[0]) &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// C-style array</span>
+    <span class="tok-kw">int</span> numbers[<span class="tok-num">5</span>] = {<span class="tok-num">10</span>, <span class="tok-num">20</span>, <span class="tok-num">30</span>, <span class="tok-num">40</span>, <span class="tok-num">50</span>};
+    <span class="tok-bi">string</span> fruits[] = {<span class="tok-str">"apple"</span>, <span class="tok-str">"banana"</span>, <span class="tok-str">"cherry"</span>};
+
+    <span class="tok-cmt">// Access and modify</span>
+    numbers[<span class="tok-num">0</span>] = <span class="tok-num">99</span>;
+    cout &lt;&lt; numbers[<span class="tok-num">0</span>] &lt;&lt; endl;      <span class="tok-cmt">// 99</span>
+    cout &lt;&lt; fruits[<span class="tok-num">1</span>] &lt;&lt; endl;       <span class="tok-cmt">// banana</span>
+    cout &lt;&lt; <span class="tok-str">"Size: "</span> &lt;&lt; <span class="tok-kw">sizeof</span>(numbers) / <span class="tok-kw">sizeof</span>(numbers[<span class="tok-num">0</span>]) &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>String Methods</h4>
+                <p>The <code>std::string</code> class provides many useful methods for text manipulation.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string text = &quot;Hello, C++!&quot;;
+
+    cout &lt;&lt; text.length() &lt;&lt; endl;              // 11
+    cout &lt;&lt; text[0] &lt;&lt; endl;                     // H
+    cout &lt;&lt; text.substr(7) &lt;&lt; endl;              // C++!
+    cout &lt;&lt; text.find(&quot;C++&quot;) &lt;&lt; endl;            // 7
+    cout &lt;&lt; text.replace(7, 3, &quot;World&quot;) &lt;&lt; endl; // Hello, World!
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">string</span> text = <span class="tok-str">"Hello, C++!"</span>;
+
+    cout &lt;&lt; text.<span class="tok-fn">length</span>() &lt;&lt; endl;              <span class="tok-cmt">// 11</span>
+    cout &lt;&lt; text[<span class="tok-num">0</span>] &lt;&lt; endl;                     <span class="tok-cmt">// H</span>
+    cout &lt;&lt; text.<span class="tok-fn">substr</span>(<span class="tok-num">7</span>) &lt;&lt; endl;              <span class="tok-cmt">// C++!</span>
+    cout &lt;&lt; text.<span class="tok-fn">find</span>(<span class="tok-str">"C++"</span>) &lt;&lt; endl;            <span class="tok-cmt">// 7</span>
+    cout &lt;&lt; text.<span class="tok-fn">replace</span>(<span class="tok-num">7</span>, <span class="tok-num">3</span>, <span class="tok-str">"World"</span>) &lt;&lt; endl; <span class="tok-cmt">// Hello, World!</span>
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-arrays-strings">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Arrays &amp; Strings
+                </div>
+                <ol>
+                  <li>Create an array of 5 integers and calculate their sum using a for loop</li>
+                  <li>Write code to count how many vowels are in a given string</li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-arrays-strings">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-arrays-strings">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    // Sum of array
+    int nums[] = {10, 20, 30, 40, 50};
+    int sum = 0;
+    for (int n : nums) {
+        sum += n;
+    }
+    cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    // Count vowels
+    string str = &quot;hello world&quot;;
+    int vowels = 0;
+    for (char c : str) {
+        c = tolower(c);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            vowels++;
+        }
+    }
+    cout &lt;&lt; &quot;Vowels: &quot; &lt;&lt; vowels &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// Sum of array</span>
+    <span class="tok-kw">int</span> nums[] = {<span class="tok-num">10</span>, <span class="tok-num">20</span>, <span class="tok-num">30</span>, <span class="tok-num">40</span>, <span class="tok-num">50</span>};
+    <span class="tok-kw">int</span> sum = <span class="tok-num">0</span>;
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> n : nums) {
+        sum += n;
+    }
+    cout &lt;&lt; <span class="tok-str">"Sum: "</span> &lt;&lt; sum &lt;&lt; endl;
+
+    <span class="tok-cmt">// Count vowels</span>
+    <span class="tok-bi">string</span> str = <span class="tok-str">"hello world"</span>;
+    <span class="tok-kw">int</span> vowels = <span class="tok-num">0</span>;
+    <span class="tok-kw">for</span> (<span class="tok-kw">char</span> c : str) {
+        c = <span class="tok-fn">tolower</span>(c);
+        <span class="tok-kw">if</span> (c == <span class="tok-str">'a'</span> || c == <span class="tok-str">'e'</span> || c == <span class="tok-str">'i'</span> || c == <span class="tok-str">'o'</span> || c == <span class="tok-str">'u'</span>) {
+            vowels++;
+        }
+    }
+    cout &lt;&lt; <span class="tok-str">"Vowels: "</span> &lt;&lt; vowels &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. Basic OOP -->
+            <article class="cpp-lesson" id="oop" data-topic="10">
+              <div class="cpp-lesson-header">
+                <span class="cpp-lesson-number">10</span>
+                <h3>Basic Object-Oriented Programming</h3>
+              </div>
+              <p>
+                C++ supports Object-Oriented Programming (OOP) with classes and objects. The core principles are <strong>Encapsulation</strong>, <strong>Inheritance</strong>, and <strong>Polymorphism</strong>.
+              </p>
+              <div class="cpp-concept-card">
+                <h4>Classes &amp; Objects</h4>
+                <p>A <strong>class</strong> is a blueprint. An <strong>object</strong> is an instance with its own state and behavior.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// Define a class
+class Student {
+public:
+    string name;
+    int age;
+
+    // Constructor
+    Student(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    void introduce() {
+        cout &lt;&lt; &quot;Hi, I'm &quot; &lt;&lt; name &lt;&lt; &quot; and I'm &quot; &lt;&lt; age &lt;&lt; &quot; years old.&quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    // Create objects
+    Student alice(&quot;Alice&quot;, 20);
+    Student bob(&quot;Bob&quot;, 22);
+
+    alice.introduce();
+    bob.introduce();
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-cmt">// Define a class</span>
+<span class="tok-kw">class</span> <span class="tok-bi">Student</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">string</span> name;
+    <span class="tok-kw">int</span> age;
+
+    <span class="tok-cmt">// Constructor</span>
+    <span class="tok-bi">Student</span>(<span class="tok-bi">string</span> n, <span class="tok-kw">int</span> a) {
+        name = n;
+        age = a;
+    }
+
+    <span class="tok-kw">void</span> <span class="tok-fn">introduce</span>() {
+        cout &lt;&lt; <span class="tok-str">"Hi, I'm "</span> &lt;&lt; name &lt;&lt; <span class="tok-str">" and I'm "</span> &lt;&lt; age &lt;&lt; <span class="tok-str">" years old."</span> &lt;&lt; endl;
+    }
+};
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-cmt">// Create objects</span>
+    <span class="tok-bi">Student</span> alice(<span class="tok-str">"Alice"</span>, <span class="tok-num">20</span>);
+    <span class="tok-bi">Student</span> bob(<span class="tok-str">"Bob"</span>, <span class="tok-num">22</span>);
+
+    alice.<span class="tok-fn">introduce</span>();
+    bob.<span class="tok-fn">introduce</span>();
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Hi, I'm Alice and I'm 20 years old.
+Hi, I'm Bob and I'm 22 years old.</pre>
+              </div>
+              <div class="cpp-callout">
+                <span class="cpp-callout-icon">💡</span>
+                <p>Constructors have the same name as the class and no return type. The <code>public:</code> access specifier makes members accessible from outside the class. You can also use <code>private:</code> and <code>protected:</code> for data hiding.</p>
+              </div>
+
+              <div class="cpp-concept-card">
+                <h4>Encapsulation</h4>
+                <p>Bundle data and methods together, restricting direct access to fields using <code>private</code> with public getters/setters.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Person {
+private:
+    string name;
+    int age;
+
+public:
+    Person(string n, int a) : name(n), age(a) {}
+
+    string getName() { return name; }
+    int getAge() { return age; }
+
+    void setAge(int a) {
+        if (a > 0) age = a;
+    }
+};
+
+int main() {
+    Person p(&quot;Alice&quot;, 25);
+    cout &lt;&lt; p.getName() &lt;&lt; &quot; is &quot; &lt;&lt; p.getAge() &lt;&lt; endl;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">class</span> <span class="tok-bi">Person</span> {
+<span class="tok-kw">private</span>:
+    <span class="tok-bi">string</span> name;
+    <span class="tok-kw">int</span> age;
+
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">Person</span>(<span class="tok-bi">string</span> n, <span class="tok-kw">int</span> a) : <span class="tok-fn">name</span>(n), <span class="tok-fn">age</span>(a) {}
+
+    <span class="tok-bi">string</span> <span class="tok-fn">getName</span>() { <span class="tok-kw">return</span> name; }
+    <span class="tok-kw">int</span> <span class="tok-fn">getAge</span>() { <span class="tok-kw">return</span> age; }
+
+    <span class="tok-kw">void</span> <span class="tok-fn">setAge</span>(<span class="tok-kw">int</span> a) {
+        <span class="tok-kw">if</span> (a > <span class="tok-num">0</span>) age = a;
+    }
+};
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">Person</span> p(<span class="tok-str">"Alice"</span>, <span class="tok-num">25</span>);
+    cout &lt;&lt; p.<span class="tok-fn">getName</span>() &lt;&lt; <span class="tok-str">" is "</span> &lt;&lt; p.<span class="tok-fn">getAge</span>() &lt;&lt; endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+
+              <div class="cpp-concept-card">
+                <h4>Inheritance &amp; Polymorphism</h4>
+                <p>Create a derived class from a base class using <code>:</code>. Polymorphism lets derived classes override base class behavior.</p>
+              </div>
+              <div class="cpp-code-block">
+                <div class="cpp-code-header">
+                  <span class="cpp-code-lang">C++</span>
+                  <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    string name;
+    Animal(string n) : name(n) {}
+    virtual void speak() {
+        cout &lt;&lt; name &lt;&lt; &quot; makes a sound&quot; &lt;&lt; endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n) {}
+
+    void speak() override {
+        cout &lt;&lt; name &lt;&lt; &quot; barks!&quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Animal* a = new Dog(&quot;Buddy&quot;);
+    a-&gt;speak();  // Buddy barks! (polymorphism)
+    delete a;
+    return 0;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-cmt">// Base class</span>
+<span class="tok-kw">class</span> <span class="tok-bi">Animal</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">string</span> name;
+    <span class="tok-bi">Animal</span>(<span class="tok-bi">string</span> n) : <span class="tok-fn">name</span>(n) {}
+    <span class="tok-kw">virtual void</span> <span class="tok-fn">speak</span>() {
+        cout &lt;&lt; name &lt;&lt; <span class="tok-str">" makes a sound"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="tok-cmt">// Derived class</span>
+<span class="tok-kw">class</span> <span class="tok-bi">Dog</span> : <span class="tok-kw">public</span> <span class="tok-bi">Animal</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">Dog</span>(<span class="tok-bi">string</span> n) : <span class="tok-bi">Animal</span>(n) {}
+
+    <span class="tok-kw">void</span> <span class="tok-fn">speak</span>() <span class="tok-kw">override</span> {
+        cout &lt;&lt; name &lt;&lt; <span class="tok-str">" barks!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">Animal</span>* a = <span class="tok-kw">new</span> <span class="tok-bi">Dog</span>(<span class="tok-str">"Buddy"</span>);
+    a-&gt;<span class="tok-fn">speak</span>();  <span class="tok-cmt">// Buddy barks! (polymorphism)</span>
+    <span class="tok-kw">delete</span> a;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+              </div>
+              <div class="cpp-output">
+                <div class="cpp-output-label">Output</div>
+                <pre>Buddy barks!</pre>
+              </div>
+              <div class="cpp-concept-card">
+                <h4>The Four Pillars of OOP in C++</h4>
+                <ul>
+                  <li><strong>Encapsulation</strong> – Bundle data &amp; methods; use <code>private</code> with getters/setters</li>
+                  <li><strong>Inheritance</strong> – Derive classes with <code>class Dog : public Animal</code></li>
+                  <li><strong>Polymorphism</strong> – <code>virtual</code> functions enable runtime method dispatch</li>
+                  <li><strong>Abstraction</strong> – Hide complexity using <code>virtual</code> functions and interfaces</li>
+                </ul>
+              </div>
+
+              <!-- Exercise -->
+              <div class="cpp-exercise" id="exercise-oop">
+                <div class="cpp-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: OOP Concepts
+                </div>
+                <p>Create a <code>Vehicle</code> base class and a <code>Car</code> derived class:</p>
+                <ol>
+                  <li><code>Vehicle</code> has a <code>brand</code> field and a virtual method <code>honk()</code></li>
+                  <li><code>Car</code> inherits from <code>Vehicle</code> with an additional <code>model</code> field</li>
+                  <li>Override <code>honk()</code> in Car to print a car-specific sound</li>
+                  <li>Create a Car object and call its methods</li>
+                </ol>
+                <button class="cpp-exercise-toggle" aria-expanded="false" aria-controls="solution-oop">Show Solution</button>
+                <div class="cpp-exercise-solution" id="solution-oop">
+                  <div class="cpp-code-block">
+                    <div class="cpp-code-header">
+                      <span class="cpp-code-lang">C++</span>
+                      <button class="cpp-code-copy" aria-label="Copy code" data-code="#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Vehicle {
+public:
+    string brand;
+    Vehicle(string b) : brand(b) {}
+    virtual void honk() {
+        cout &lt;&lt; brand &lt;&lt; &quot; goes beep beep!&quot; &lt;&lt; endl;
+    }
+};
+
+class Car : public Vehicle {
+public:
+    string model;
+    Car(string b, string m) : Vehicle(b), model(m) {}
+
+    void honk() override {
+        cout &lt;&lt; brand &lt;&lt; &quot; &quot; &lt;&lt; model &lt;&lt; &quot; goes HONK HONK!&quot; &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Car myCar(&quot;Toyota&quot;, &quot;Camry&quot;);
+    myCar.honk();
+    return 0;
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-pch">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-pch">#include</span> <span class="tok-str">&lt;string&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">class</span> <span class="tok-bi">Vehicle</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">string</span> brand;
+    <span class="tok-bi">Vehicle</span>(<span class="tok-bi">string</span> b) : <span class="tok-fn">brand</span>(b) {}
+    <span class="tok-kw">virtual void</span> <span class="tok-fn">honk</span>() {
+        cout &lt;&lt; brand &lt;&lt; <span class="tok-str">" goes beep beep!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="tok-kw">class</span> <span class="tok-bi">Car</span> : <span class="tok-kw">public</span> <span class="tok-bi">Vehicle</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-bi">string</span> model;
+    <span class="tok-bi">Car</span>(<span class="tok-bi">string</span> b, <span class="tok-bi">string</span> m) : <span class="tok-bi">Vehicle</span>(b), <span class="tok-fn">model</span>(m) {}
+
+    <span class="tok-kw">void</span> <span class="tok-fn">honk</span>() <span class="tok-kw">override</span> {
+        cout &lt;&lt; brand &lt;&lt; <span class="tok-str">" "</span> &lt;&lt; model &lt;&lt; <span class="tok-str">" goes HONK HONK!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-bi">Car</span> myCar(<span class="tok-str">"Toyota"</span>, <span class="tok-str">"Camry"</span>);
+    myCar.<span class="tok-fn">honk</span>();
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div><!-- /.cpp-layout -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./cplusplus-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -35,11 +35,11 @@ initFirebase();
 const SESSION_COOKIE = "aiv_session";
 
 function sessionSecret() {
-  return process.env.SESSION_SECRET || "dev-only-change-me-with-SESSION_SECRET-before-deploying";
-  if (!process.env.SESSION_SECRET) {
-    throw new Error("SESSION_SECRET is required");
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("SESSION_SECRET is required in production.");
   }
-  return process.env.SESSION_SECRET;
+  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
 }
 
 function sign(value) {

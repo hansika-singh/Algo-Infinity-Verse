@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Body Language Analyst | Algo Infinity Verse</title>
+    <meta name="description" content="Real-time facial tracking and body language analysis for interview prep." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ai-analyst.css" />
+    
+    <!-- TensorFlow.js & MediaPipe Dependencies -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.21.0/dist/tf-core.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.21.0/dist/tf-converter.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@3.21.0/dist/tf-backend-webgl.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.2/dist/face-landmarks-detection.min.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="analyst-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-badge" id="engineStatus">
+            <i class="fas fa-spinner fa-spin"></i> Loading Vision Model...
+        </div>
+    </nav>
+
+    <main class="analyst-workspace">
+        
+        <!-- Left Panel: Interview Context & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-clipboard-list"></i> Mock Interview Session</h3>
+            </div>
+            
+            <div class="interview-prompt">
+                <div class="prompt-speaker"><i class="fas fa-robot"></i> AI Interviewer:</div>
+                <p>"Tell me about a time you had to optimize a slow-performing API endpoint. Walk me through your entire diagnostic and resolution process."</p>
+                <div class="prompt-timer" id="sessionTimer">00:00</div>
+            </div>
+
+            <!-- Real-Time Soft Skills Telemetry -->
+            <div class="telemetry-dashboard">
+                <h4 class="section-title"><i class="fas fa-chart-pie"></i> Soft Skills Telemetry</h4>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>Eye Contact Maintenance</span>
+                        <span class="metric-value" id="eyeContactScore">100%</span>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill success" id="eyeContactBar" style="width: 100%;"></div></div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>Posture Stability (Fidgeting)</span>
+                        <span class="metric-value" id="postureScore">100%</span>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill success" id="postureBar" style="width: 100%;"></div></div>
+                </div>
+
+                <div class="status-alert success" id="behaviorStatus">
+                    <i class="fas fa-check-circle"></i> Great eye contact and posture.
+                </div>
+            </div>
+            
+            <div class="control-actions">
+                <button class="btn btn-primary" id="btnStartAnalysis" disabled>
+                    <i class="fas fa-video"></i> Start Camera & Analysis
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Camera Feed & Canvas -->
+        <div class="panel-right">
+            <div class="camera-container">
+                <div class="camera-header">
+                    <span><i class="fas fa-eye"></i> Vision Engine View</span>
+                    <span class="fps-counter">FPS: <span id="fpsDisplay">0</span></span>
+                </div>
+                
+                <div class="video-wrapper">
+                    <!-- The raw video feed (hidden, used for processing) -->
+                    <video id="webcamVideo" autoplay playsinline muted style="display: none;"></video>
+                    
+                    <!-- The canvas where we draw the feed + AI wireframe overlays -->
+                    <canvas id="outputCanvas"></canvas>
+                    
+                    <!-- Overlay Message -->
+                    <div class="video-overlay" id="videoOverlay">
+                        <i class="fas fa-camera-slash"></i>
+                        <p>Camera inactive. Click 'Start' to begin.</p>
+                    </div>
+                </div>
+                
+                <div class="debug-panel">
+                    <strong>Raw Diagnostics:</strong>
+                    <div class="debug-grid">
+                        <div>Head Yaw: <span id="debugYaw">0.00</span></div>
+                        <div>Head Pitch: <span id="debugPitch">0.00</span></div>
+                        <div>Y-Variance: <span id="debugVar">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="ai-analyst.js"></script>
+</body>
+</html>

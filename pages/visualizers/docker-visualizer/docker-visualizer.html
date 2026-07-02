@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OS Virtualization & Containerization | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate Linux Namespaces, cgroups, and Docker container internals." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="docker-visualizer.css" />
+</head>
+<body class="docker-body">
+
+    <nav class="navbar docker-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fab fa-docker"></i> Container Engine: Running
+        </div>
+    </nav>
+
+    <main class="docker-workspace">
+        
+        <!-- Left Panel: Host OS Kernel -->
+        <div class="panel-host">
+            <div class="panel-header">
+                <h3><i class="fas fa-server"></i> Host OS (Root Namespace)</h3>
+                <span class="badge host-badge">Ring 0</span>
+            </div>
+            
+            <div class="host-telemetry">
+                <div class="hw-spec">
+                    <i class="fas fa-memory"></i> Host RAM: <span class="text-accent" id="hostRamUsage">0</span> / 16384 MB
+                </div>
+                <div class="hw-spec">
+                    <i class="fas fa-network-wired"></i> Interfaces: <code>eth0</code>, <code>docker0</code>
+                    <div id="hostVethList" class="veth-list"></div>
+                </div>
+            </div>
+
+            <div class="process-table-container">
+                <h4>Global Process Table (All Namespaces)</h4>
+                <table class="os-table">
+                    <thead>
+                        <tr>
+                            <th>Host PID</th>
+                            <th>Command</th>
+                            <th>Namespace</th>
+                            <th>Memory</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hostProcessTable">
+                        <!-- Host processes injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="kernel-logs">
+                <h4><i class="fas fa-terminal"></i> /var/log/syslog</h4>
+                <div class="log-container" id="hostLogs">
+                    <div class="log-line sys">> Kernel initialized. Docker daemon started.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Docker CLI / Control Plane -->
+        <div class="panel-control">
+            <div class="panel-header" style="justify-content: center;">
+                <h3><i class="fas fa-terminal"></i> Engine CLI</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    A "Container" is just a process wrapped in Linux <strong>Namespaces</strong> (for isolation) and <strong>cgroups</strong> (for resource limits). 
+                </p>
+
+                <!-- Create Container -->
+                <div class="cli-card">
+                    <h4>1. Spawn Container</h4>
+                    <div class="input-group">
+                        <label>cgroup Memory Limit (MB)</label>
+                        <input type="range" id="cgroupLimit" min="128" max="2048" value="512" step="128">
+                        <div class="range-val"><span id="cgroupLimitVal">512</span> MB</div>
+                    </div>
+                    <button class="btn btn-primary w-100" id="btnCreateContainer">
+                        <code>docker run -m <span id="btnMemVal">512</span>m</code>
+                    </button>
+                </div>
+
+                <!-- Interact with Container -->
+                <div class="cli-card" id="interactionCard" style="opacity: 0.5; pointer-events: none;">
+                    <h4>2. Interact with <span id="activeContainerName" class="text-accent">None</span></h4>
+                    
+                    <div class="input-group mt-2">
+                        <label>Spawn Process inside Namespace</label>
+                        <div class="action-grid">
+                            <button class="btn btn-outline" id="btnSpawnNginx"><code>nginx</code></button>
+                            <button class="btn btn-outline" id="btnSpawnNode"><code>node app.js</code></button>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3">
+                        <label>Allocate Memory (Simulate Load)</label>
+                        <p class="desc-text" style="font-size: 0.75rem; margin-top:0;">Push RAM past the cgroup limit to trigger the OOM Killer.</p>
+                        <div class="action-grid">
+                            <button class="btn btn-warning" id="btnAlloc50">+50 MB</button>
+                            <button class="btn btn-danger" id="btnAlloc200">+200 MB</button>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline-danger w-100 mt-3" id="btnKillContainer">
+                        <code>docker rm -f</code>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Isolated Container View -->
+        <div class="panel-container">
+            <div class="panel-header">
+                <h3><i class="fas fa-box-open"></i> Container Perspective</h3>
+                <select id="containerSelector" class="container-select">
+                    <option value="">-- No Containers --</option>
+                </select>
+            </div>
+            
+            <div id="containerWorkspace" class="hidden">
+                <div class="namespace-info">
+                    <div class="ns-badge"><i class="fas fa-eye-slash"></i> PID Namespace: <span id="nsPid">Isolated</span></div>
+                    <div class="ns-badge"><i class="fas fa-network-wired"></i> Net Namespace: <code>eth0</code></div>
+                    <div class="ns-badge"><i class="fas fa-folder"></i> Mount (chroot): <code>/</code></div>
+                </div>
+
+                <!-- cgroup Throttling -->
+                <div class="cgroup-dashboard">
+                    <h4><i class="fas fa-microchip"></i> cgroup Resource Monitor</h4>
+                    <div class="cgroup-stats">
+                        <span>Usage: <strong id="cgroupUsage">0</strong> MB</span>
+                        <span>Limit: <strong id="cgroupMax">512</strong> MB</span>
+                    </div>
+                    <div class="cgroup-bar-bg">
+                        <div class="cgroup-bar-fill" id="cgroupBar"></div>
+                    </div>
+                    <div class="oom-warning hidden" id="oomWarning">
+                        <i class="fas fa-exclamation-triangle"></i> Approaching OOM Limit!
+                    </div>
+                </div>
+
+                <div class="process-table-container mt-3">
+                    <h4>Local Process Table (Isolated)</h4>
+                    <p class="desc-text" style="font-size:0.75rem;">Because of the PID namespace, the container believes it has full control and its entry process is PID 1.</p>
+                    <table class="os-table">
+                        <thead>
+                            <tr>
+                                <th>Local PID</th>
+                                <th>Command</th>
+                                <th>Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody id="containerProcessTable">
+                            <!-- Local processes injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="empty-state" id="containerEmptyState">
+                <i class="fab fa-docker"></i>
+                <p>Select or create a container to view its isolated namespaces.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="docker-visualizer.js"></script>
+</body>
+</html>
