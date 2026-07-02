@@ -3630,32 +3630,38 @@ function initRoadmap() {
     const advancedTab = document.getElementById("roadmapAdvancedTab");
     const overviewTab = document.getElementById("roadmapOverviewTab");
     
-    if (basicTab && advancedTab && overviewTab) {
-      basicTab.addEventListener("click", () => {
+    if (basicTab || advancedTab || overviewTab) {
+      if (basicTab) basicTab.addEventListener("click", () => {
+        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
         basicTab.classList.add("active");
-        advancedTab.classList.remove("active");
-        overviewTab.classList.remove("active");
-        document.getElementById("basicRoadmapContainer").classList.add("active");
-        document.getElementById("advancedRoadmapContainer").classList.remove("active");
-        document.getElementById("overviewRoadmapContainer").classList.remove("active");
+        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove("active");
+        });
+        const basic = document.getElementById("basicRoadmapContainer");
+        if (basic) basic.classList.add("active");
       });
 
-      advancedTab.addEventListener("click", () => {
+      if (advancedTab) advancedTab.addEventListener("click", () => {
+        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
         advancedTab.classList.add("active");
-        basicTab.classList.remove("active");
-        overviewTab.classList.remove("active");
-        document.getElementById("advancedRoadmapContainer").classList.add("active");
-        document.getElementById("basicRoadmapContainer").classList.remove("active");
-        document.getElementById("overviewRoadmapContainer").classList.remove("active");
+        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove("active");
+        });
+        const advanced = document.getElementById("advancedRoadmapContainer");
+        if (advanced) advanced.classList.add("active");
       });
-      
-      overviewTab.addEventListener("click", () => {
+
+      if (overviewTab) overviewTab.addEventListener("click", () => {
+        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
         overviewTab.classList.add("active");
-        basicTab.classList.remove("active");
-        advancedTab.classList.remove("active");
-        document.getElementById("overviewRoadmapContainer").classList.add("active");
-        document.getElementById("basicRoadmapContainer").classList.remove("active");
-        document.getElementById("advancedRoadmapContainer").classList.remove("active");
+        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove("active");
+        });
+        const overview = document.getElementById("overviewRoadmapContainer");
+        if (overview) overview.classList.add("active");
       });
     }
     
