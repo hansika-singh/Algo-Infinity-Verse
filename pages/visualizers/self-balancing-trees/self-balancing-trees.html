@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Self-Balancing Trees Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive AVL and Red-Black Tree Rotation Simulator. Perform manual and auto-balanced rotations with smooth transitions." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="self-balancing-trees.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="self-balancing-trees">
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Self-Balancing Trees</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="visualizer-section">
+      <div class="visualizer-container">
+        
+        <aside class="control-panel">
+          <h2 class="panel-title"><i class="fas fa-project-diagram"></i> Tree Config</h2>
+          
+          <div class="control-group">
+            <label>Tree Type</label>
+            <div class="tree-type-selector">
+              <button class="btn-type active" id="btn-avl" data-type="AVL">AVL Tree</button>
+              <button class="btn-type" id="btn-rbt" data-type="RBT">Red-Black Tree</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Insert Value</label>
+            <div class="input-row">
+              <input type="number" id="node-value" placeholder="e.g., 25" min="1" max="999" />
+              <button class="btn-vis btn-insert" id="btn-insert"><i class="fas fa-plus"></i> Insert</button>
+            </div>
+            <div class="button-grid">
+              <button class="btn-vis" id="btn-random"><i class="fas fa-random"></i> Add Random</button>
+              <button class="btn-vis btn-danger" id="btn-clear"><i class="fas fa-trash-alt"></i> Clear Tree</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Simulation Controls</label>
+            <div class="simulation-controls">
+              <button class="btn-ctrl" id="btn-prev" title="Step Backward" disabled><i class="fas fa-step-backward"></i></button>
+              <button class="btn-ctrl" id="btn-play" title="Auto Play"><i class="fas fa-play"></i></button>
+              <button class="btn-ctrl" id="btn-next" title="Step Forward" disabled><i class="fas fa-step-forward"></i></button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Simulation Speed</label>
+            <div class="speed-control">
+              <input type="range" id="speed-slider" min="200" max="2000" value="800" step="100" />
+              <span id="speed-val">800ms</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Step Explanation</label>
+            <div class="status-box" id="status-message">
+              Select AVL or Red-Black Tree mode, then insert a value to start.
+            </div>
+          </div>
+
+          <div class="legend-panel" id="tree-legend">
+            <!-- Legend items will be injected here dynamically -->
+          </div>
+        </aside>
+
+        <main class="canvas-area">
+          <!-- Floating Action Overlay for node options -->
+          <div id="node-menu" class="floating-menu" style="display: none;">
+            <div class="menu-header">Node Operations</div>
+            <button class="menu-btn" id="menu-rot-left"><i class="fas fa-undo"></i> Rotate Left</button>
+            <button class="menu-btn" id="menu-rot-right"><i class="fas fa-redo"></i> Rotate Right</button>
+            <button class="menu-btn" id="menu-rot-lr"><i class="fas fa-sync"></i> Left-Right Rotation</button>
+            <button class="menu-btn" id="menu-rot-rl"><i class="fas fa-sync"></i> Right-Left Rotation</button>
+          </div>
+
+          <div id="tree-canvas" class="tree-canvas">
+            <svg id="edges-svg" width="100%" height="100%"></svg>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+    
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="self-balancing-trees.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

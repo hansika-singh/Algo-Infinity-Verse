@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Mirror | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Track your learning journey with 30-day, 60-day and 90-day progress snapshots and milestone replays." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="learning-mirror.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <main>
+      <section class="mirror-hero section">
+        <div class="container">
+          <div class="mirror-hero-card">
+            <div class="mirror-badge">🪞 Learning Mirror</div>
+            <h1>See how far you have come</h1>
+            <p>
+              Compare your current progress with your earlier milestones and replay your learning journey.
+            </p>
+
+            <div class="mirror-view-switcher" role="tablist" aria-label="Mirror time views">
+              <button class="mirror-view-btn active" data-view="30">30 Days</button>
+              <button class="mirror-view-btn" data-view="60">60 Days</button>
+              <button class="mirror-view-btn" data-view="90">90 Days</button>
+            </div>
+
+            <div class="mirror-hero-actions">
+              <button id="replayBtn" class="mirror-primary-btn">
+                <i class="fas fa-play"></i>
+                Replay Journey
+              </button>
+              <button id="resetBtn" class="mirror-secondary-btn">
+                <i class="fas fa-rotate-left"></i>
+                Reset View
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Progress Snapshot</h2>
+            <p>Track your improvement across time and compare your growth.</p>
+          </div>
+
+          <div class="mirror-stats-grid">
+            <article class="mirror-stat-card">
+              <span class="mirror-stat-label">Current Topics</span>
+              <span class="mirror-stat-value" id="currentTopics">0</span>
+              <span class="mirror-stat-note">Topics completed now</span>
+            </article>
+
+            <article class="mirror-stat-card">
+              <span class="mirror-stat-label">XP Earned</span>
+              <span class="mirror-stat-value" id="currentXp">0</span>
+              <span class="mirror-stat-note">Total learning points</span>
+            </article>
+
+            <article class="mirror-stat-card">
+              <span class="mirror-stat-label">Learning Streak</span>
+              <span class="mirror-stat-value" id="currentStreak">0</span>
+              <span class="mirror-stat-note">Consecutive active days</span>
+            </article>
+
+            <article class="mirror-stat-card">
+              <span class="mirror-stat-label">Skill Level</span>
+              <span class="mirror-stat-value" id="currentLevel">Beginner</span>
+              <span class="mirror-stat-note">Current mastery stage</span>
+            </article>
+          </div>
+
+          <div class="mirror-comparison-heading">
+              <h2>
+                  Current You vs
+                  <span id="selectedPeriod">30 Days Ago</span>
+              </h2>
+          </div>
+
+
+          <div class="mirror-comparison-grid">
+            <article class="mirror-panel">
+              <div class="mirror-panel-header">
+                <h3>Current You</h3>
+                <span class="mirror-panel-pill">Now</span>
+              </div>
+
+              <div class="mirror-progress">
+                <div class="mirror-progress-row">
+                  <span>Topics</span>
+                  <strong id="compareCurrentTopics">0</strong>
+                </div>
+                <div class="mirror-progress-track">
+                  <div class="mirror-progress-fill" id="compareCurrentBar"></div>
+                </div>
+              </div>
+
+              <div class="mirror-detail-list">
+                <div><span>XP</span><strong id="compareCurrentXp">0</strong></div>
+                <div><span>Streak</span><strong id="compareCurrentStreak">0 days</strong></div>
+                <div><span>Level</span><strong id="compareCurrentLevel">Beginner</strong></div>
+              </div>
+
+              <div class="mirror-growth-card">
+                <h3>Growth Summary</h3>
+
+                <p>
+                    Topics Improved:
+                    <strong id="topicsGrowth">+63</strong>
+                </p>
+
+                <p>
+                    XP Improved:
+                    <strong id="xpGrowth">+1880</strong>
+                </p>
+
+                <p>
+                    Streak Improvement:
+                    <strong id="streakGrowth">+16 Days</strong>
+                </p>
+            </div>
+            </article>
+
+            <article class="mirror-panel mirror-panel-accent">
+              <div class="mirror-panel-header">
+                <h3 id="snapshotTitle">30 Days Ago</h3>
+                <span class="mirror-panel-pill" id="snapshotBadge">Snapshot</span>
+              </div>
+
+              <div class="mirror-progress">
+                <div class="mirror-progress-row">
+                  <span>Topics</span>
+                  <strong id="snapshotTopics">0</strong>
+                </div>
+                <div class="mirror-progress-track">
+                  <div class="mirror-progress-fill" id="snapshotBar"></div>
+                </div>
+              </div>
+
+              <div class="mirror-detail-list">
+                <div><span>XP</span><strong id="snapshotXp">0</strong></div>
+                <div><span>Streak</span><strong id="snapshotStreak">0 days</strong></div>
+                <div><span>Level</span><strong id="snapshotLevel">Beginner</strong></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Learning Replay</h2>
+            <p>Watch your milestones unfold from day one to today.</p>
+          </div>
+
+          <div class="mirror-replay-card">
+            <div class="mirror-replay-header">
+              <span>Replay Progress</span>
+              <strong id="replayDayLabel">Day 1</strong>
+            </div>
+
+            <div class="mirror-replay-track" aria-hidden="true">
+              <div class="mirror-replay-node active">1</div>
+              <div class="mirror-replay-line"></div>
+              <div class="mirror-replay-node">15</div>
+              <div class="mirror-replay-line"></div>
+              <div class="mirror-replay-node">30</div>
+              <div class="mirror-replay-line"></div>
+              <div class="mirror-replay-node">60</div>
+              <div class="mirror-replay-line"></div>
+              <div class="mirror-replay-node">90</div>
+            </div>
+
+            <div class="mirror-replay-output" id="replayOutput">
+              Day 1: started the journey with basic topic exploration.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Achievement Timeline</h2>
+            <p>Unlocks and milestones earned along the learning path.</p>
+          </div>
+
+          <div class="mirror-timeline-grid">
+            <article class="mirror-timeline-card">
+              <div class="mirror-timeline-icon">🏁</div>
+              <span class="timeline-day">Day 10</span>
+              <h3>First Topic Completed</h3>
+              <p>Started building consistency with regular practice.</p>
+            </article>
+
+            <article class="mirror-timeline-card">
+              <div class="mirror-timeline-icon">📚</div>
+               <span class="timeline-day">Day 35</span>
+              <h3>Core Concepts Mastered</h3>
+              <p>Covered arrays, recursion, and pattern-based thinking.</p>
+            </article>
+
+            <article class="mirror-timeline-card">
+              <div class="mirror-timeline-icon">⚡</div>
+              <span class="timeline-day">Day 70</span>
+              <h3>Interview Readiness Improved</h3>
+              <p>Solved more problems faster with better confidence.</p>
+            </article>
+
+            <article class="mirror-timeline-card">
+              <div class="mirror-timeline-icon">🏆</div>
+               <span class="timeline-day">Day 90</span>
+              <h3>Advanced Learner</h3>
+              <p>Built strong foundations and consistent momentum.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+     <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="/auth-gate.js"></script>
+    <script src="learning-mirror.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

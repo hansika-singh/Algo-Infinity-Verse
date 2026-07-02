@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RDBMS Engine Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Client-Side RDBMS: Visualize B+Tree Page Splitting, WAL, and Crash Recovery." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js for Graph Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="rdbms-visualizer.css" />
+</head>
+<body class="rdbms-body">
+
+    <nav class="navbar rdbms-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge online" id="engineStatus" role="status" aria-live="polite" aria-atomic="true">
+            <i class="fas fa-database"></i> Storage Engine: ONLINE
+        </div>
+    </nav>
+
+    <main class="rdbms-workspace">
+        
+        <!-- Left Panel: Controls, WAL, & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Database Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Execute transactions to see the <strong>B+Tree</strong> dynamically split pages (Max 3 keys/page). The <strong>Write-Ahead Log (WAL)</strong> safely records operations before memory is updated.
+                </p>
+
+                <!-- Query Controls -->
+                <div class="query-builder">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="inputKey">Primary Key (ID)</label>
+                            <input type="number" id="inputKey" placeholder="e.g. 42" />
+                        </div>
+                        <div class="input-group">
+                            <label for="inputValue">Value (Data)</label>
+                            <input type="text" id="inputValue" placeholder="e.g. Alice" />
+                        </div>
+                    </div>
+                    <div class="action-grid">
+                        <button class="btn btn-primary" id="btnExecuteTx">
+                            <i class="fas fa-bolt"></i> Execute INSERT
+                        </button>
+                        <button class="btn btn-outline" id="btnRandomTx">
+                            <i class="fas fa-dice"></i> Random Row
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Write-Ahead Log (WAL) Viewer -->
+            <div class="wal-section">
+                <div class="section-title">
+                    <h4><i class="fas fa-list-alt"></i> Write-Ahead Log (Disk)</h4>
+                    <span class="wal-counter" id="walCounter">0 Entries</span>
+                </div>
+                <div class="wal-container" id="walLog">
+                    <!-- Logs injected via JS -->
+                </div>
+            </div>
+
+            <!-- Chaos Engineering: Crash & Recovery -->
+            <div class="chaos-section">
+                <h4><i class="fas fa-skull-crossbones"></i> Chaos Engineering</h4>
+                <div class="action-grid">
+                    <button class="btn btn-danger w-100" id="btnCrash">
+                        <i class="fas fa-power-off"></i> Simulate Crash
+                    </button>
+                    <button class="btn btn-success w-100" id="btnRecover" disabled>
+                        <i class="fas fa-medkit"></i> Recover from WAL
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: B+ Tree Visualization -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="header-info">
+                    <i class="fas fa-sitemap"></i> Volatile Memory (B+Tree Index)
+                </div>
+                <div class="telemetry">
+                    <span>Pages (Nodes): <strong id="statNodes">0</strong></span>
+                    <span>Page Splits: <strong id="statSplits" class="text-accent">0</strong></span>
+                    <span>Tree Height: <strong id="statHeight">1</strong></span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-database"></i>
+                    <p>Database is empty. Execute an INSERT to allocate the root page.</p>
+                </div>
+                <!-- D3 SVG injected here -->
+            </div>
+        </div>
+
+    </main>
+
+    <script src="rdbms-visualizer.js"></script>
+</body>
+</html>

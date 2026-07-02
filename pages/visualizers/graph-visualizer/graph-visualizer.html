@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Graph Traversal Visualizer (BFS &amp; DFS) | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize Breadth First Search (BFS) and Depth First Search (DFS) traversals on custom graphs step-by-step. Add nodes, edges, weights, and play traversals." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="graph-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="graph-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Graph Visualizer</span>
+          <span class="subtitle">Design your own graphs and animate traversal algorithms</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_graph" id="typingTextGraph"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Section -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          <!-- LEFT PANEL: Canvas -->
+          <div class="visualizer-main-panel">
+            <div class="visualizer-card" style="padding: 1rem;">
+              <div class="canvas-wrapper" id="canvasWrapper">
+                <div class="canvas-placeholder-text" id="canvasPlaceholder">
+                  Click on canvas to add Nodes.<br>
+                  (Select "Add Edge" mode and click two nodes to connect them)
+                </div>
+                <svg id="visualizerSvg" class="svg-canvas">
+                  <!-- Arrowhead Definition for Directed Graph -->
+                  <defs>
+                    <marker
+                      id="arrowhead"
+                      markerWidth="10"
+                      markerHeight="10"
+                      refX="6"
+                      refY="3"
+                      orient="auto"
+                      markerUnits="strokeWidth"
+                    >
+                      <path d="M0,0 L0,6 L6,3 Z" fill="#06b6d4" />
+                    </marker>
+                  </defs>
+                  <!-- Background rect to catch clicks -->
+                  <rect id="canvasBg" width="100%" height="100%" fill="transparent" />
+                  <!-- Edges Group -->
+                  <g id="svgEdges"></g>
+                  <!-- Nodes Group -->
+                  <g id="svgNodes"></g>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Traversal Logs and live structures -->
+            <div class="visualizer-card" style="margin-top: 1.5rem;">
+              <h3 style="margin-bottom: 1rem;"><i class="fas fa-history" style="color: var(--accent); margin-right: 0.5rem;"></i>Traversal Information</h3>
+              
+              <div class="control-group">
+                <label>Visited Sequence</label>
+                <div class="live-structure" id="visitedOrder">
+                  <div style="color: var(--text-secondary); font-size: 0.85rem;">[Empty]</div>
+                </div>
+              </div>
+              
+              <div class="control-group">
+                <label id="structureTitle">Queue / Stack Data Structure State</label>
+                <div class="live-structure" id="liveStructure">
+                  <div style="color: var(--text-secondary); font-size: 0.85rem;">[Empty]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL: Controls -->
+          <div class="visualizer-sidebar">
+            <div class="visualizer-card">
+              <h3 style="margin-bottom: 1.25rem;"><i class="fas fa-tools" style="color: var(--accent); margin-right: 0.5rem;"></i>Canvas Tools</h3>
+              
+              <!-- Mode Select Grid -->
+              <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Active Mode</label>
+              <div class="mode-grid">
+                <button class="mode-btn active" data-mode="node">
+                  <i class="fas fa-circle"></i> Add Node
+                </button>
+                <button class="mode-btn" data-mode="edge">
+                  <i class="fas fa-share-alt"></i> Add Edge
+                </button>
+                <button class="mode-btn" data-mode="delete">
+                  <i class="fas fa-eraser"></i> Delete
+                </button>
+                <button class="mode-btn" data-mode="run">
+                  <i class="fas fa-running"></i> Run Algo
+                </button>
+              </div>
+
+              <!-- Directed / Undirected Toggle -->
+              <div class="toggle-row">
+                <span class="toggle-label">Directed Graph</span>
+                <label class="switch">
+                  <input type="checkbox" id="directedToggle" />
+                  <span class="slider-switch"></span>
+                </label>
+              </div>
+
+              <!-- Weighted / Unweighted Toggle -->
+              <div class="toggle-row">
+                <span class="toggle-label">Weighted Edges</span>
+                <label class="switch">
+                  <input type="checkbox" id="weightedToggle" />
+                  <span class="slider-switch"></span>
+                </label>
+              </div>
+
+              <button id="clearGraphBtn" class="btn btn-secondary" style="width: 100%; margin-top: 0.5rem; justify-content: center; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-trash-alt"></i> Clear Graph
+              </button>
+            </div>
+
+            <!-- Algorithm Controls -->
+            <div class="visualizer-card">
+              <h3 style="margin-bottom: 1rem;"><i class="fas fa-play" style="color: var(--accent); margin-right: 0.5rem;"></i>Playback</h3>
+              
+              <!-- Algorithm Select -->
+              <div class="control-group">
+                <label for="algoSelect">Algorithm</label>
+                <select id="algoSelect" class="control-input">
+                  <option value="bfs">Breadth First Search (BFS)</option>
+                  <option value="dfs">Depth First Search (DFS)</option>
+                </select>
+              </div>
+
+              <!-- Speed/Delay -->
+              <div class="control-group">
+                <label for="speedRange">Step Delay <span class="val-display" id="speedDisplay">450ms</span></label>
+                <input type="range" id="speedRange" min="50" max="1000" value="450" class="slider-custom">
+              </div>
+
+              <!-- Debugger Mode Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Debugger Mode</span>
+                  <label class="switch">
+                    <input type="checkbox" id="dbgToggle" />
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Playback row -->
+              <div class="btn-control-row">
+                <button id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Play
+                </button>
+                <button id="pauseBtn" class="btn btn-secondary btn-control" style="display: none;">
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+                <button id="stepBtn" class="btn btn-secondary btn-control">
+                  <i class="fas fa-step-forward"></i> Step
+                </button>
+                <button id="resetBtn" class="btn btn-secondary btn-control">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Debugger Panel -->
+            <div id="debuggerPanel" class="visualizer-card debugger-panel" style="display: none; position: relative;">
+              <div class="debugger-header">
+                <h3><i class="fas fa-bug" style="color: var(--accent);"></i> Step Debugger</h3>
+                <span id="dbgStepCounter" class="step-counter">Step 0 / 0</span>
+              </div>
+              <div class="debugger-controls">
+                <button id="dbgPrevBtn" class="btn btn-secondary btn-control-mini" disabled><i class="fas fa-step-backward"></i> Prev</button>
+                <button id="dbgPlayBtn" class="btn btn-primary btn-control-mini"><i class="fas fa-play"></i> Play</button>
+                <button id="dbgPauseBtn" class="btn btn-secondary btn-control-mini" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                <button id="dbgNextBtn" class="btn btn-secondary btn-control-mini"><i class="fas fa-step-forward"></i> Next</button>
+              </div>
+              <div class="debugger-slider-group">
+                <input type="range" id="dbgStepSlider" min="0" max="0" value="0" class="slider-custom">
+              </div>
+              <div class="debugger-explanation">
+                <h5>Why this step happens:</h5>
+                <p id="dbgExplanationText" class="debugger-explanation-text">Select an algorithm, click "Run Algo" mode, and select a start node to begin step debugging.</p>
+              </div>
+              <div class="pseudo-code-container" id="dbgPseudoCode">
+                <!-- Pseudo-code lines will be injected here -->
+              </div>
+            </div>
+
+            <!-- Traversal Execution Logs -->
+            <div class="visualizer-card">
+              <h3 style="margin-bottom: 0.75rem;"><i class="fas fa-terminal" style="color: var(--accent); margin-right: 0.5rem;"></i>Execution Log</h3>
+              <div class="log-panel" id="logPanel">
+                <div class="log-entry">> Canvas ready. Add nodes to begin.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="graph-visualizer.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

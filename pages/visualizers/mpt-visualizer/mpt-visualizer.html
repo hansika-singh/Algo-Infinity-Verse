@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Merkle Patricia Trie Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive cryptographic state management visualizer mimicking Ethereum's global state trie." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js for Tree Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="mpt-visualizer.css" />
+</head>
+<body class="mpt-body">
+
+    <nav class="navbar mpt-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fab fa-ethereum"></i> Cryptographic State: Active
+        </div>
+    </nav>
+
+    <main class="mpt-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cubes"></i> State Manager</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Ethereum uses a <strong>Hexary Merkle Patricia Trie (MPT)</strong> to securely store state. Insert key-value pairs to watch the tree compress paths and update the cryptographic <strong>Root Hash</strong>.
+                </p>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Hex Key (Nibbles)</label>
+                        <input type="text" id="inputKey" placeholder="e.g., a7113b" pattern="[0-9a-fA-F]+" maxlength="16" />
+                        <small>Only 0-9, a-f allowed.</small>
+                    </div>
+                    <div class="input-group">
+                        <label>Value Data</label>
+                        <input type="text" id="inputValue" placeholder="e.g., 100 ETH" />
+                    </div>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-primary w-100" id="btnInsert">
+                        <i class="fas fa-plus-circle"></i> Update State
+                    </button>
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Trie
+                    </button>
+                </div>
+            </div>
+
+            <!-- Root Hash Dashboard -->
+            <div class="root-hash-section">
+                <h4><i class="fas fa-fingerprint"></i> Global State Root</h4>
+                <div class="root-hash-box">
+                    <span class="hash-label">keccak256(RootNode)</span>
+                    <code class="hash-value" id="rootHashDisplay">0x0000000000000000000000000000000000000000000000000000000000000000</code>
+                </div>
+                <div class="tree-stats mt-3">
+                    <div class="stat-row">
+                        <span>Total Nodes:</span>
+                        <strong class="text-accent" id="statNodes">0</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Leaves (Data):</span>
+                        <strong class="text-success" id="statLeaves">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Cryptographic Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> MPT Engine Initialized. Ready for state updates.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Tree Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-sitemap"></i> Merkle Patricia Trie Visualization</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch branch-node"></span> Branch [16]</span>
+                    <span class="legend-item"><span class="node-swatch ext-node"></span> Extension</span>
+                    <span class="legend-item"><span class="node-swatch leaf-node"></span> Leaf</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div id="d3Container"></div>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-network-wired"></i>
+                    <p>State is empty. Insert data to construct the Trie.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="mpt-visualizer.js"></script>
+</body>
+</html>

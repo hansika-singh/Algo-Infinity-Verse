@@ -1,0 +1,100 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B-Tree Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive B-Tree visualizer for balanced multi-way search trees with insertion, search, and step playback." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="b-tree-visualizer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function() {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="b-tree-visualizer">
+  <div id="loading-screen"><div class="loader"><div class="infinity-loader">∞</div><h2>Algo Infinity Verse</h2><div class="loading-bar"><div class="loading-progress"></div></div></div></div>
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn"><i class="fas fa-circle-chevron-up"></i></button>
+  <div id="navbar-placeholder"></div>
+
+  <section id="home" class="hero visualizer-hero bt-hero">
+    <div class="hero-background"><div class="stars"></div><div class="stars2"></div><div class="stars3"></div></div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Balanced. Multi-way. Always Sorted.</span>
+        <span class="main-title bt-gradient">B-Tree Visualizer</span>
+        <span class="subtitle">Insert and search with real split, promotion, and root-split animations.</span>
+      </h1>
+      <div class="typing-container"><span class="typing-text_visualizer" id="typingTextVisualizer"></span><span class="typing-cursor">|</span></div>
+    </div>
+  </section>
+
+  <section class="visualizer-section">
+    <div class="visualizer-container bt-layout">
+      <aside class="control-panel bt-control-panel">
+        <h2 class="panel-title"><i class="fas fa-sliders-h"></i> Operations</h2>
+        <div class="control-group">
+          <label for="btDegree">Degree (minimum degree t)</label>
+          <div class="input-row"><input type="number" id="btDegree" value="2" min="2" max="6" /></div>
+        </div>
+        <div class="control-group">
+          <label for="btInsertKey">Insert Key</label>
+          <div class="input-row"><input type="number" id="btInsertKey" placeholder="e.g., 25" /></div>
+        </div>
+        <div class="control-group">
+          <label for="btSearchKey">Search Key</label>
+          <div class="input-row"><input type="number" id="btSearchKey" placeholder="e.g., 17" /></div>
+        </div>
+        <div class="button-grid bt-action-grid">
+          <button class="btn-vis btn-insert" id="btInsertBtn"><i class="fas fa-plus"></i> Insert</button>
+          <button class="btn-vis btn-search" id="btSearchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <div class="button-grid bt-playback-grid">
+          <button class="btn-vis" id="btPrevBtn" disabled><i class="fas fa-step-backward"></i> Previous</button>
+          <button class="btn-vis" id="btNextBtn" disabled><i class="fas fa-step-forward"></i> Next</button>
+          <button class="btn-vis" id="btPlayBtn" disabled><i class="fas fa-play"></i> Play</button>
+          <button class="btn-vis" id="btPauseBtn" disabled><i class="fas fa-pause"></i> Pause</button>
+          <button class="btn-vis btn-danger" id="btResetBtn"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+        <div class="status-box" id="btStatusBox" aria-live="polite">Insert a key or search for one to begin.</div>
+        <div class="explanation-box">
+          <div class="panel-subtitle">Explanation Panel</div>
+          <p id="btExplanationBox" aria-live="polite">Every step will explain exactly what happened.</p>
+        </div>
+        <div class="history-card">
+          <div class="panel-subtitle">Step Counter</div>
+          <div class="step-counter" id="btStepCounter" aria-live="polite">Step 0 / 0</div>
+        </div>
+      </aside>
+
+      <main class="canvas-area bt-canvas-area">
+        <div id="tree-canvas" class="tree-canvas bt-tree-canvas" role="img" aria-label="B-Tree visualization">
+          <svg id="edges-svg" width="100%" height="100%" aria-hidden="true"></svg>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../script.js"></script>
+  <script src="../../../auth.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="b-tree-visualizer.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

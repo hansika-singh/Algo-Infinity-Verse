@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cognitive Load Analyzer | Algo Infinity Verse</title>
+  <meta name="description" content="Analyze your coding behavior – time per line, confusion zones, rewrite frequency – and get actionable insights." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="cognitive-load-analyzer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="cognitive-load-analyzer">
+  <div id="loading-screen"><div class="loader"><div class="infinity-loader">∞</div><h2>Algo Infinity Verse</h2><div class="loading-bar"><div class="loading-progress"></div></div></div></div>
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+  <div id="navbar-placeholder"></div>
+  <section id="home" class="cla-hero">
+    <div class="cla-hero-badge"><i class="fas fa-brain"></i> Cognitive Load Analyzer</div>
+    <h1><span>Cognitive Load Analyzer</span><br/><span class="gold-text">Code Behavior Insights</span></h1>
+    <p>Write your code and let the analyzer track your time per line, pauses, and rewrite patterns. Get concise, FAANG‑style feedback on where you might be struggling.</p>
+    <div class="cla-hero-stats">
+      <div class="cla-stat"><span class="cla-stat-val" id="claTotalLines">0</span><span class="cla-stat-label">Lines Edited</span></div>
+      <div class="cla-stat"><span class="cla-stat-val" id="claConfusionCount">0</span><span class="cla-stat-label">Confusion Zones</span></div>
+      <div class="cla-stat"><span class="cla-stat-val" id="claRewriteCount">0</span><span class="cla-stat-label">Rewrites</span></div>
+    </div>
+  </section>
+  <section class="section" id="workspace-section">
+    <div class="container">
+      <div class="cla-workspace">
+        <div class="cla-panel-card">
+          <div class="cla-panel-header">
+            <div class="cla-panel-title"><i class="fas fa-code cla-panel-icon"></i><h3>Your Code</h3></div>
+            <div class="cla-selectors"><select id="claLanguageSelect" class="cla-select" aria-label="Select language"><option value="python">Python</option><option value="javascript">JavaScript</option><option value="cpp">C++</option><option value="java">Java</option></select></div>
+          </div>
+          <div class="cla-editor-wrapper">
+            <div class="cla-pane-label"><span><i class="fas fa-terminal"></i> Write or paste your solution</span><span id="claLineCount" style="font-size:0.75rem;">1 line</span></div>
+            <div class="cla-editor-frame"><div class="cla-line-numbers" id="claLineNumbers">1</div><textarea id="claCodeEditor" class="cla-code-textarea" spellcheck="false" placeholder="# Start coding..."></textarea></div>
+          </div>
+          <div class="cla-controls"><button id="claStartBtn" class="btn btn-primary">Start Session</button><button id="claResetBtn" class="btn btn-secondary" disabled>Reset</button><button id="claGenerateBtn" class="btn btn-success" disabled>Generate Insights</button></div>
+        </div>
+        <div class="cla-panel-card" id="claInsightsPanel">
+          <div class="cla-panel-header"><div class="cla-panel-title"><i class="fas fa-lightbulb cla-panel-icon"></i><h3>Insights</h3></div></div>
+          <div id="claInsightsContainer" class="cla-insights-container"><p class="cla-placeholder">Run a session and click “Generate Insights” to see feedback.</p></div>
+          <div class="cla-controls"><button id="claCopyBtn" class="btn btn-outline" disabled>Copy Insights</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="footer-placeholder"></div>
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="cognitive-load-analyzer.js"></script>
+
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+  </body>
+</html>

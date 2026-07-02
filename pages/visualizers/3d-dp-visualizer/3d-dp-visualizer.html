@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D DP Matrix Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Explore multi-dimensional Dynamic Programming arrays in interactive 3D." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="3d-dp-visualizer.css" />
+    
+    <!-- Three.js Library & OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-badge" id="engineStatus">
+            <i class="fas fa-cube"></i> WebGL Engine: Ready
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="vis-workspace">
+        
+        <!-- Left Panel: Problem Context -->
+        <aside class="vis-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-layer-group"></i> 3D State Visualization</h3>
+            </div>
+            <div class="sidebar-content">
+                <h2>3D Knapsack (Volume, Weight, Capacity)</h2>
+                <p>
+                    Standard DP tables are 2D, but what happens when you introduce a third constraint? 
+                    The state becomes <code>dp[i][w][v]</code>.
+                </p>
+                <div class="code-context">
+                    <pre><code>for (let i = 1; i <= items; i++) {
+  for (let w = 1; w <= weight; w++) {
+    for (let v = 1; v <= volume; v++) {
+      // Current State Calculation
+      dp[i][w][v] = ...
+    }
+  }
+}</code></pre>
+                </div>
+                
+                <div class="legend-box">
+                    <h4>Color Legend</h4>
+                    <div class="legend-item"><span class="color-box uncalc"></span> Uncalculated State</div>
+                    <div class="legend-item"><span class="color-box active"></span> Current Loop Iteration</div>
+                    <div class="legend-item"><span class="color-box calc"></span> Calculated State (Memoized)</div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span>Dimensions:</span>
+                        <strong class="text-cyan">5 x 5 x 5</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total DP States:</span>
+                        <strong class="text-cyan">125 Nodes</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Draw Calls:</span>
+                        <strong class="text-cyan">1 (InstancedMesh)</strong>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Area: 3D Canvas & HUD -->
+        <div class="canvas-wrapper">
+            <!-- Three.js Canvas Injected Here -->
+            <div id="threejs-container"></div>
+            
+            <!-- Floating Data Overlay (CSS2DRenderer fallback) -->
+            <div class="hud-overlay">
+                <div class="hud-top">
+                    <div class="camera-hint"><i class="fas fa-mouse"></i> Click & Drag to Rotate | Scroll to Zoom</div>
+                    <div class="current-state-display" id="currentStateDisplay">
+                        State: dp[0][0][0]
+                    </div>
+                </div>
+                
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <button class="btn-control" id="btnReset" title="Reset"><i class="fas fa-undo"></i></button>
+                    <button class="btn-control" id="btnStepBack" title="Step Back"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn-control play-btn" id="btnPlayPause" title="Play/Pause"><i class="fas fa-play"></i></button>
+                    <button class="btn-control" id="btnStepFwd" title="Step Forward"><i class="fas fa-step-forward"></i></button>
+                    
+                    <div class="timeline-scrubber">
+                        <input type="range" id="timelineSlider" min="0" max="124" value="0">
+                        <span class="timeline-progress" id="timelineProgress">0 / 125</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <script src="3d-dp-visualizer.js"></script>
+</body>
+</html>

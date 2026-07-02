@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Evolution Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Watch algorithms evolve across generations to achieve optimal time complexity." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for real-time operation plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="evolution-simulator.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="evo-body">
+
+    <nav class="navbar evo-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-dna"></i> Evolution Engine: Idle
+        </div>
+    </nav>
+
+    <main class="evo-workspace">
+        
+        <!-- Left Panel: Genome & Telemetry -->
+        <div class="panel-side panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-microscope"></i> Evolution Telemetry</h3>
+            </div>
+            
+            <div class="telemetry-dashboard">
+                <div class="stat-card highlight">
+                    <span class="stat-label">Current Generation</span>
+                    <span class="stat-value" id="genDisplay">1 / 20</span>
+                </div>
+                
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Time Complexity</span>
+                        <span class="stat-value text-accent" id="complexityDisplay">O(N²)</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Operations (N=100)</span>
+                        <span class="stat-value" id="opsDisplay">0</span>
+                    </div>
+                </div>
+
+                <div class="dna-section">
+                    <h4><i class="fas fa-code-branch"></i> Current Algorithm DNA</h4>
+                    <span class="dna-name" id="dnaNameDisplay">Naive Swap Traversal</span>
+                    <pre class="dna-code" id="dnaCodeDisplay">
+function evolve(arr) {
+  // Awaiting simulation...
+}
+                    </pre>
+                </div>
+
+                <div class="control-actions">
+                    <button class="btn btn-primary w-100" id="btnStartEvo">
+                        <i class="fas fa-bolt"></i> Start Evolution
+                    </button>
+                    <button class="btn btn-danger w-100 hidden" id="btnStopEvo">
+                        <i class="fas fa-stop"></i> Halt Simulation
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Visualization Arena -->
+        <div class="panel-center">
+            <div class="arena-header">
+                <div class="header-title">
+                    <i class="fas fa-project-diagram"></i> Execution Arena
+                </div>
+                <div class="array-size-indicator">
+                    Data Size: N=100
+                </div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="sortCanvas"></canvas>
+                <div class="canvas-overlay" id="canvasOverlay">
+                    <i class="fas fa-dna"></i>
+                    <p>Click Start to begin generational evolution.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Performance Chart -->
+        <div class="panel-side panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-chart-line"></i> Optimization Curve</h3>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="opsChart"></canvas>
+            </div>
+            
+            <div class="analysis-box">
+                <h4><i class="fas fa-info-circle"></i> Evolution Analysis</h4>
+                <p id="analysisText">
+                    Watch the chart as the algorithm mutates. An $O(N^2)$ algorithm requires roughly 5,000 operations for 100 elements. As it evolves to $O(N \log N)$, operations will plummet below 500.
+                </p>
+                
+                <div class="efficiency-delta hidden" id="efficiencyDelta">
+                    <span class="delta-label">Efficiency Gain (vs Gen 1):</span>
+                    <span class="delta-value" id="deltaValue">0%</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="evolution-simulator.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C++ Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="cpp-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="cpp-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero ce-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write C++.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #dc322f 0%, #e8612c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser C++ Editor</span>
+        </h1>
+        <p class="ce-hero-desc">Write C++ code and see real-time execution output. Supports standard libraries, object-oriented concepts, and more.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #dc322f 0%, #e8612c 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/cplusplus-learning/cplusplus-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn C++</a>
+        </div>
+        <div class="ce-note">
+          <i class="fas fa-info-circle"></i>
+          Execution is powered by the Piston API in a secure backend sandbox. Standard input (cin) is currently not supported in this interactive demo.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section ce-section">
+      <div class="ce-container">
+        <div class="ce-toolbar">
+          <div class="ce-toolbar-left">
+            <span class="ce-label"><i class="fas fa-code ce-cpp-icon"></i> C++ Editor</span>
+            <select id="ceExampleSelect" class="ce-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="collections">Collections & Loops</option>
+              <option value="function">Functions</option>
+              <option value="class">Classes & OOP</option>
+            </select>
+          </div>
+          <div class="ce-toolbar-right">
+            <button id="ceRunBtn" class="btn btn-primary ce-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="ceResetBtn" class="ce-icon-btn" title="Reset to example" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="ceCopyBtn" class="ce-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="ceSaveBtn" class="ce-icon-btn" title="Save to browser storage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="ce-split">
+          <div class="ce-editor-pane">
+            <div class="ce-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="ce-lang-badge">C++</span>
+            </div>
+            <div class="ce-editor-wrap">
+              <div class="ce-line-numbers" id="ceLineNumbers">1</div>
+              <textarea id="ceEditor" class="ce-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="C++ code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="ce-output-pane">
+            <div class="ce-pane-header">
+              <span><i class="fas fa-terminal"></i> Output</span>
+              <span id="ceStatusBadge" class="ce-status-badge ce-status-ready">Ready</span>
+            </div>
+            <div class="ce-output-body" id="ceOutputBody">
+              <span class="ce-output-placeholder">Run your code to see output here...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ce-console">
+          <div class="ce-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Errors / Warnings</span>
+            <button class="ce-console-clear" id="ceConsoleClear" aria-label="Clear error console"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="ce-console-body" id="ceConsoleBody">
+            <span class="ce-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./cpp-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

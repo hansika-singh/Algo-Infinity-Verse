@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future Self Simulator | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="future-self-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="future-self-simulator">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero fss-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Will You Remember This Next Month?</span>
+          <span class="main-title fss-gradient">Future Self Simulator</span>
+          <span class="subtitle">Predict forgetting before it happens.</span>
+        </h1>
+        <p class="section-subtitle">Log topics as you learn them. Using spaced repetition principles, we'll estimate your forgetting risk for each one and tell you exactly what to revise today.</p>
+        <div class="hero-buttons">
+          <a href="#simulator" class="btn btn-primary"><i class="fas fa-brain"></i> Open Dashboard</a>
+          <a href="/pages/tools/memory-scanner/memory-scanner.html" class="btn btn-secondary"><i class="fas fa-magnifying-glass"></i> Memory Scanner</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="simulator" class="section">
+      <div class="container">
+
+        <!-- Log a topic -->
+        <div class="fss-log-card">
+          <div class="fss-log-title"><i class="fas fa-plus"></i> Log a Topic You Studied</div>
+          <form id="fssLogForm" class="fss-log-form">
+            <div class="fss-form-row">
+              <label for="fssTopicInput" class="sr-only">Topic name</label>
+              <input
+                type="text"
+                id="fssTopicInput"
+                class="fss-input"
+                placeholder="e.g. Union Find, Prefix Sum, Dynamic Programming..."
+                required
+                maxlength="60"
+              />
+              <label for="fssQualityInput" class="sr-only">Recall quality</label>
+              <select id="fssQualityInput" class="fss-select" required>
+                <option value="" disabled selected>How well did you recall it?</option>
+                <option value="5">5 — Instant, no hesitation</option>
+                <option value="4">4 — Recalled with slight effort</option>
+                <option value="3">3 — Recalled, but slow</option>
+                <option value="2">2 — Struggled, partial recall</option>
+                <option value="1">1 — Barely remembered</option>
+                <option value="0">0 — Completely forgot</option>
+              </select>
+              <button type="submit" class="btn btn-primary fss-log-btn">
+                <i class="fas fa-floppy-disk"></i> Log Session
+              </button>
+            </div>
+          </form>
+          <p class="fss-log-hint" id="fssLogMessage" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- Forgetting risk dashboard -->
+        <div class="fss-dashboard-card">
+          <div class="fss-dashboard-header">
+            <div class="fss-dashboard-title"><i class="fas fa-chart-line"></i> Risk of Forgetting</div>
+            <span class="fss-dashboard-subtitle">Higher % = more urgent to revise</span>
+          </div>
+          <div class="fss-risk-bars" id="fssRiskBars">
+            <p class="fss-empty-state">No topics logged yet. Add one above to see your forgetting risk.</p>
+          </div>
+        </div>
+
+        <!-- Recommended revision schedule -->
+        <div class="fss-schedule-card">
+          <div class="fss-dashboard-header">
+            <div class="fss-dashboard-title"><i class="fas fa-calendar-check"></i> Recommended Revision</div>
+            <span class="fss-dashboard-subtitle">Based on spaced repetition scheduling</span>
+          </div>
+          <div class="fss-schedule-list" id="fssScheduleList">
+            <p class="fss-empty-state">Your revision plan will appear here once you log topics.</p>
+          </div>
+        </div>
+
+        <!-- All tracked topics -->
+        <div class="fss-topics-card">
+          <div class="fss-dashboard-header">
+            <div class="fss-dashboard-title"><i class="fas fa-layer-group"></i> All Tracked Topics</div>
+            <button id="fssClearBtn" class="fss-clear-btn"><i class="fas fa-trash"></i> Clear All Data</button>
+          </div>
+          <div class="fss-topics-list" id="fssTopicsList">
+            <p class="fss-empty-state">No topics tracked yet.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./future-self-simulator.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

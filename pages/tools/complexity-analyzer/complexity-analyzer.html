@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code to Complexity — Live Big-O Analyzer | Algo Infinity Verse</title>
+    <meta name="description" content="Paste code and get instant line-by-line Big-O annotations, complexity derivation, and final time/space verdict." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="complexity-analyzer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="complexity-analyzer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="ca-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ca-hero-inner">
+        <div class="ca-hero-badge">⚡ Instant Big-O Analysis</div>
+        <h1 class="ca-hero-title">Code to Complexity</h1>
+        <p class="ca-hero-sub">Paste code. Get Big-O. Understand why.</p>
+        <p class="ca-hero-desc">Line-by-line annotation shows exactly which loop, recursion, or data structure operation contributes to your algorithm's complexity — with a step-by-step derivation and final verdict.</p>
+        <a href="#analyzer" class="btn btn-primary ca-btn-primary">
+          <i class="fas fa-code"></i> Start Analyzing
+        </a>
+      </div>
+    </section>
+
+    <!-- Analyzer -->
+    <section id="analyzer" class="section ca-section">
+      <div class="container">
+        <div class="ca-layout">
+
+          <!-- Left: Editor -->
+          <div class="ca-editor-col">
+
+            <!-- Presets -->
+            <div class="ca-preset-bar">
+              <span class="ca-preset-label"><i class="fas fa-bolt"></i> Presets:</span>
+              <div class="ca-preset-btns" id="caPresetBtns"></div>
+            </div>
+
+            <!-- Code editor -->
+            <div class="ca-editor-wrap">
+              <div class="ca-editor-header">
+                <span class="ca-editor-title"><i class="fas fa-file-code"></i> Your Code</span>
+                <div class="ca-editor-actions">
+                  <button class="ca-action-btn" id="caClearBtn" aria-label="Clear code">
+                    <i class="fas fa-trash"></i> Clear
+                  </button>
+                  <button class="ca-action-btn ca-action-copy" id="caCopyBtn" aria-label="Copy code">
+                    <i class="fas fa-copy"></i> Copy
+                  </button>
+                </div>
+              </div>
+              <div class="ca-editor-body">
+                <div class="ca-line-nums" id="caLineNums"></div>
+                <textarea
+                  id="caEditor"
+                  class="ca-textarea"
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  aria-label="Code input"
+                  placeholder="Paste your pseudocode or JS/Python here..."></textarea>
+                <div class="ca-annotations" id="caAnnotations"></div>
+              </div>
+            </div>
+
+            <!-- Analyze button -->
+            <button class="btn ca-btn-primary ca-analyze-btn" id="caAnalyzeBtn">
+              <i class="fas fa-magnifying-glass-chart"></i> Analyze Complexity
+            </button>
+
+          </div>
+
+          <!-- Right: Results -->
+          <div class="ca-results-col" id="caResultsCol">
+
+            <!-- Verdict card -->
+            <div class="ca-verdict-card" id="caVerdictCard" role="status" aria-live="polite" aria-atomic="true">
+              <div class="ca-verdict-placeholder">
+                <i class="fas fa-magnifying-glass-chart"></i>
+                <p>Paste code and click Analyze to see your complexity verdict.</p>
+              </div>
+            </div>
+
+            <!-- Derivation -->
+            <div class="ca-derivation-card" id="caDerivationCard">
+              <div class="ca-card-title"><i class="fas fa-sitemap"></i> Complexity Derivation</div>
+              <div class="ca-derivation-body" id="caDerivationBody" aria-live="polite">
+                <div class="ca-deriv-placeholder">Derivation steps will appear here after analysis.</div>
+              </div>
+            </div>
+
+            <!-- Pattern detector -->
+            <div class="ca-patterns-card" id="caPatternsCard">
+              <div class="ca-card-title"><i class="fas fa-search"></i> Detected Patterns</div>
+              <div class="ca-patterns-body" id="caPatternsBody" aria-live="polite">
+                <div class="ca-deriv-placeholder">Recognized code patterns appear here.</div>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="ca-legend-card">
+              <div class="ca-card-title"><i class="fas fa-palette"></i> Annotation Legend</div>
+              <div class="ca-legend-grid">
+                <div class="ca-legend-item"><span class="ca-badge ca-o1">O(1)</span>Constant — single operation</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-ologn">O(log n)</span>Logarithmic — halving</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-on">O(n)</span>Linear — single loop</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-onlogn">O(n log n)</span>Linearithmic — divide+merge</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-on2">O(n²)</span>Quadratic — nested loops</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-on3">O(n³)</span>Cubic — triple nested</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-o2n">O(2ⁿ)</span>Exponential — branching recursion</div>
+                <div class="ca-legend-item"><span class="ca-badge ca-ofact">O(n!)</span>Factorial — permutations</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn section -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📐</span> Common Complexity Patterns</h2>
+        <div class="ca-pattern-learn-grid">
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-o1">O(1)</div>
+            <h3>Constant</h3>
+            <div class="ca-pattern-code">arr[i] = 5;<br>x = a + b;<br>map.get(key);</div>
+            <p>Single operations, array access, hash map lookup. Never loops.</p>
+          </div>
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-ologn">O(log n)</div>
+            <h3>Logarithmic</h3>
+            <div class="ca-pattern-code">while (lo &lt;= hi) {<br>&nbsp;&nbsp;mid = (lo+hi)/2<br>&nbsp;&nbsp;lo = mid + 1<br>}</div>
+            <p>Loop that halves the search space each iteration.</p>
+          </div>
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-on">O(n)</div>
+            <h3>Linear</h3>
+            <div class="ca-pattern-code">for (i = 0; i &lt; n; i++) {<br>&nbsp;&nbsp;// O(1) work<br>}</div>
+            <p>Single loop over input. Each iteration is O(1).</p>
+          </div>
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-on2">O(n²)</div>
+            <h3>Quadratic</h3>
+            <div class="ca-pattern-code">for (i=0; i&lt;n; i++)<br>&nbsp;&nbsp;for (j=0; j&lt;n; j++)<br>&nbsp;&nbsp;&nbsp;&nbsp;// O(1) work</div>
+            <p>Nested loops both over n. Classic Bubble Sort pattern.</p>
+          </div>
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-o2n">O(2ⁿ)</div>
+            <h3>Exponential</h3>
+            <div class="ca-pattern-code">function f(n) {<br>&nbsp;&nbsp;return f(n-1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + f(n-2);<br>}</div>
+            <p>Branching recursion with 2 calls per level. Fibonacci without memoization.</p>
+          </div>
+          <div class="ca-pattern-card">
+            <div class="ca-pattern-badge ca-onlogn">O(n log n)</div>
+            <h3>Linearithmic</h3>
+            <div class="ca-pattern-code">// Divide array (log n)<br>// Merge each half (n)<br>// → Merge Sort</div>
+            <p>Divide and conquer — split O(log n) times, O(n) work per level.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="complexity-analyzer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

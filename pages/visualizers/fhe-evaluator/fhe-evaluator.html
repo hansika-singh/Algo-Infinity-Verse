@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fully Homomorphic Encryption (FHE) Evaluator | Algo Infinity Verse</title>
+    <meta name="description" content="Visual cryptography engine simulating LWE encryption, homomorphic logic gates, and bootstrapping." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="fhe-evaluator.css" />
+</head>
+<body class="fhe-body">
+
+    <nav class="navbar fhe-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-lock"></i> LWE Crypto Engine: Ready
+        </div>
+    </nav>
+
+    <main class="fhe-workspace">
+        
+        <!-- Left Panel: Client Environment (Encryption) -->
+        <div class="panel client-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-laptop-house"></i> Local Client (Trusted)</h3>
+            </div>
+            
+            <div class="panel-body">
+                <p class="desc-text">Generate your secret keys and encrypt your private binary data. The server will never see these raw bits.</p>
+
+                <div class="key-section">
+                    <button class="btn btn-outline w-100" id="btnKeyGen"><i class="fas fa-key"></i> Generate Secret Key</button>
+                    <div class="secret-key-display hidden" id="skDisplay">
+                        <span>sk = </span> <code id="skVal">[...]</code>
+                    </div>
+                </div>
+
+                <div class="inputs-grid">
+                    <div class="input-card">
+                        <label>Input A</label>
+                        <select id="valA">
+                            <option value="0">Bit: 0</option>
+                            <option value="1" selected>Bit: 1</option>
+                        </select>
+                    </div>
+                    <div class="input-card">
+                        <label>Input B</label>
+                        <select id="valB">
+                            <option value="0" selected>Bit: 0</option>
+                            <option value="1">Bit: 1</option>
+                        </select>
+                    </div>
+                    <div class="input-card">
+                        <label>Input C</label>
+                        <select id="valC">
+                            <option value="0">Bit: 0</option>
+                            <option value="1" selected>Bit: 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3" id="btnEncrypt"><i class="fas fa-user-secret"></i> Encrypt & Send to Cloud</button>
+
+                <div class="cipher-log hidden" id="cipherLog">
+                    <strong>Generated Ciphertexts (LWE):</strong>
+                    <div id="cipherDump"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Cloud Server (Homomorphic Evaluation) -->
+        <div class="panel cloud-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-cloud"></i> Cloud Server (Untrusted)</h3>
+            </div>
+            
+            <div class="panel-body cloud-body">
+                <div class="cloud-toolbar">
+                    <p>Construct a logic circuit. The server evaluates the gates using encrypted math without decrypting the inputs.</p>
+                    <button class="btn btn-accent" id="btnEvaluate" disabled><i class="fas fa-bolt"></i> Evaluate Blindly</button>
+                </div>
+
+                <div class="circuit-arena" id="circuitArena">
+                    <svg class="circuit-lines" id="svgLines"></svg>
+                    
+                    <div class="col col-in">
+                        <div class="circuit-node in-node" id="node-A">c_A</div>
+                        <div class="circuit-node in-node" id="node-B">c_B</div>
+                        <div class="circuit-node in-node" id="node-C" style="margin-top: 60px;">c_C</div>
+                    </div>
+                    
+                    <div class="col col-gate1">
+                        <div class="circuit-node gate-node" id="gate-1">
+                            <select id="opGate1">
+                                <option value="XOR">XOR (Add)</option>
+                                <option value="AND">AND (Mult)</option>
+                            </select>
+                            <div class="noise-meter">
+                                <label>Noise</label>
+                                <div class="noise-bg"><div class="noise-fill" id="noise-gate1"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="bootstrap-control">
+                            <label><input type="checkbox" id="checkBootstrap"> Run Bootstrap (Reset Noise)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col col-gate2">
+                        <div class="circuit-node gate-node" id="gate-2">
+                            <select id="opGate2">
+                                <option value="AND">AND (Mult)</option>
+                                <option value="XOR">XOR (Add)</option>
+                            </select>
+                            <div class="noise-meter">
+                                <label>Noise</label>
+                                <div class="noise-bg"><div class="noise-fill" id="noise-gate2"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col col-out">
+                        <div class="circuit-node out-node" id="node-OUT">c_Out</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Client Environment (Decryption) -->
+        <div class="panel client-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-unlock-alt"></i> Local Client (Decryption)</h3>
+            </div>
+            
+            <div class="panel-body">
+                <p class="desc-text">Receive the final computed ciphertext from the server and decrypt it using your Secret Key.</p>
+
+                <div class="received-box hidden" id="receivedBox">
+                    <span>Received:</span>
+                    <code id="receivedCipher">...</code>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3" id="btnDecrypt" disabled><i class="fas fa-unlock"></i> Decrypt Result</button>
+
+                <div class="results-dashboard hidden" id="resultsDashboard">
+                    <div class="verdict-card" id="verdictCard">
+                        <i class="fas fa-check-circle" id="verdictIcon"></i>
+                        <h4 id="verdictTitle">Decryption Successful</h4>
+                    </div>
+
+                    <div class="truth-table">
+                        <div class="tt-row">
+                            <span>Expected Logic (Plaintext):</span>
+                            <strong class="text-cyan" id="expectedLogic">0</strong>
+                        </div>
+                        <div class="tt-row">
+                            <span>Decrypted Result:</span>
+                            <strong class="text-success" id="actualResult">0</strong>
+                        </div>
+                        <div class="tt-row">
+                            <span>Final Noise Level:</span>
+                            <strong id="finalNoiseText">5%</strong>
+                        </div>
+                    </div>
+                    
+                    <p class="explanation-text" id="explanationText"></p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="fhe-evaluator.js"></script>
+</body>
+</html>

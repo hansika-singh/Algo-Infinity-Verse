@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Time-Travel Debugger | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/nord.min.css">
+    
+    <link rel="stylesheet" href="time-travel.css" />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="debugger-body">
+    
+    <nav class="debugger-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-title"><i class="fas fa-history"></i> Time-Travel Debugger Engine</div>
+    </nav>
+
+    <main class="debugger-workspace">
+        <div class="editor-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-file-code"></i> bubble_sort.js</span>
+                <button class="btn btn-primary btn-sm" id="btnCompile"><i class="fas fa-cogs"></i> Compile & Snapshot</button>
+            </div>
+            <div id="editorContainer" class="editor-container"></div>
+        </div>
+
+        <div class="visualizer-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-memory"></i> Memory Heap Visualizer</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="box default"></span> Unsorted</span>
+                    <span class="legend-item"><span class="box compare"></span> Comparing</span>
+                    <span class="legend-item"><span class="box swap"></span> Swapping</span>
+                    <span class="legend-item"><span class="box sorted"></span> Sorted</span>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <div class="array-container" id="arrayContainer">
+                    </div>
+                
+                <div class="debug-vars">
+                    <h4>Local Scope:</h4>
+                    <div id="varDisplay">
+                        <code>i: undefined, j: undefined</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="timeline-controls">
+        <div class="playback-buttons">
+            <button class="btn-icon" id="btnStepBack" title="Step Back"><i class="fas fa-step-backward"></i></button>
+            <button class="btn-icon play-btn" id="btnPlayPause" title="Play/Pause"><i class="fas fa-play"></i></button>
+            <button class="btn-icon" id="btnStepFwd" title="Step Forward"><i class="fas fa-step-forward"></i></button>
+        </div>
+        
+        <div class="timeline-scrubber">
+            <span id="stepCurrent">0</span>
+            <input type="range" id="timelineSlider" min="0" max="0" value="0" disabled>
+            <span id="stepTotal">0</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="time-travel.js"></script>
+</body>
+</html>

@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Graphs – BFS, DFS & Applications | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Master Graph Data Structures. Learn graph fundamentals, terminology, BFS, DFS, applications, and practice exercises."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="graph-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="graph-learning">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="hero-nodes" id="heroNodes"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master</span>
+          <span class="main-title gradient-text">Graph Data Structures</span>
+          <span class="subtitle">Nodes · Edges · BFS · DFS · Real-World Applications</span>
+        </h1>
+        <div class="typing-container">
+          <span id="typingTextGraph"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-target="6">0</span>
+            <span class="stat-label">Core Topics</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="6">0</span>
+            <span class="stat-label">Practice Checks</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Quiz Questions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Section -->
+    <section class="learning-section">
+      <div class="container">
+
+        <!-- Progress Bar -->
+        <div class="graph-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <span class="graph-progress-text">Your Progress: <span id="progressCount">0</span>/8 Topics Completed</span>
+          <div class="graph-progress-track">
+            <div class="graph-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="graph-layout">
+
+          <!-- Sidebar -->
+          <aside class="graph-sidebar">
+            <h2 class="graph-sidebar-title">Graph Learning Guide</h2>
+            <nav aria-label="Graph topics">
+              <ul class="graph-sidebar-nav">
+                <li><a href="#intro" class="active"><span class="nav-icon"><i class="fas fa-info-circle"></i></span><span>1. Graph Fundamentals</span></a></li>
+                <li><a href="#terminology"><span class="nav-icon"><i class="fas fa-tag"></i></span><span>2. Graph Terminology</span></a></li>
+                <li><a href="#bfs"><span class="nav-icon"><i class="fas fa-layer-group"></i></span><span>3. Breadth-First Search</span></a></li>
+                <li><a href="#dfs"><span class="nav-icon"><i class="fas fa-arrow-down"></i></span><span>4. Depth-First Search</span></a></li>
+                <li><a href="#applications"><span class="nav-icon"><i class="fas fa-globe"></i></span><span>5. Graph Applications</span></a></li>
+                <li><a href="#diagrams"><span class="nav-icon"><i class="fas fa-project-diagram"></i></span><span>6. Graph Examples</span></a></li>
+                <li><a href="#exercises"><span class="nav-icon"><i class="fas fa-dumbbell"></i></span><span>7. Practice Exercises</span></a></li>
+                <li><a href="#quiz"><span class="nav-icon"><i class="fas fa-question-circle"></i></span><span>8. Knowledge Quiz</span></a></li>
+              </ul>
+            </nav>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="graph-main-content">
+
+            <!-- ───────────────────────── 01. Graph Fundamentals ───────────────────────── -->
+            <article class="graph-lesson" id="intro" data-topic="1">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">01</span>
+                <h3>Introduction to Graphs</h3>
+              </div>
+              <p>
+                A <strong>Graph</strong> is a non-linear data structure consisting of a set of
+                <strong>vertices (nodes)</strong> connected by <strong>edges</strong>. Unlike
+                trees, graphs can have cycles, multiple paths between nodes, and disconnected
+                components — making them one of the most versatile structures in computer science.
+              </p>
+              <p>Graphs come in several fundamental forms depending on how edges are defined:</p>
+
+              <div class="graph-types-grid">
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">→</span>
+                  <h5>Directed Graph</h5>
+                  <p>Edges have a specific direction from one vertex to another (A → B ≠ B → A).</p>
+                </div>
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">↔</span>
+                  <h5>Undirected Graph</h5>
+                  <p>Edges have no direction; the connection between two nodes is bidirectional.</p>
+                </div>
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">⚖</span>
+                  <h5>Weighted Graph</h5>
+                  <p>Edges carry a numerical weight or cost, e.g. distances in a road network.</p>
+                </div>
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">○</span>
+                  <h5>Unweighted Graph</h5>
+                  <p>All edges are equal — traversal only considers connectivity, not cost.</p>
+                </div>
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">🔄</span>
+                  <h5>Cyclic Graph</h5>
+                  <p>Contains at least one cycle — a path that starts and ends at the same vertex.</p>
+                </div>
+                <div class="graph-type-card">
+                  <span class="graph-type-icon">🌳</span>
+                  <h5>Acyclic Graph (DAG)</h5>
+                  <p>Directed graph with no cycles. Used in scheduling and dependency resolution.</p>
+                </div>
+              </div>
+
+              <!-- Undirected graph SVG -->
+              <div class="graph-svg-container">
+                <svg width="320" height="200" viewBox="0 0 320 200" aria-label="Simple undirected graph example">
+                  <line x1="90"  y1="60"  x2="230" y2="60"  class="graph-svg-line"/>
+                  <line x1="90"  y1="60"  x2="50"  y2="150" class="graph-svg-line"/>
+                  <line x1="90"  y1="60"  x2="160" y2="155" class="graph-svg-line"/>
+                  <line x1="230" y1="60"  x2="270" y2="150" class="graph-svg-line"/>
+                  <line x1="230" y1="60"  x2="160" y2="155" class="graph-svg-line"/>
+                  <line x1="50"  y1="150" x2="160" y2="155" class="graph-svg-line"/>
+                  <circle cx="90"  cy="60"  r="24" class="graph-svg-node-root"/>
+                  <circle cx="230" cy="60"  r="24" class="graph-svg-node"/>
+                  <circle cx="50"  cy="150" r="24" class="graph-svg-node"/>
+                  <circle cx="160" cy="155" r="24" class="graph-svg-node"/>
+                  <circle cx="270" cy="150" r="24" class="graph-svg-node"/>
+                  <text x="90"  y="60"  class="graph-svg-text">A</text>
+                  <text x="230" y="60"  class="graph-svg-text">B</text>
+                  <text x="50"  y="150" class="graph-svg-text">C</text>
+                  <text x="160" y="155" class="graph-svg-text">D</text>
+                  <text x="270" y="150" class="graph-svg-text">E</text>
+                  <text x="160" y="190" class="graph-svg-label">Undirected Graph — all edges are bidirectional</text>
+                </svg>
+              </div>
+
+              <!-- Representation -->
+              <div class="graph-concept-card">
+                <h4>Graph Representation</h4>
+                <ul>
+                  <li><strong>Adjacency Matrix:</strong> 2D array where <code>matrix[i][j] = 1</code> if edge exists. O(V²) space.</li>
+                  <li><strong>Adjacency List:</strong> Each node stores a list of its neighbours. O(V + E) space — preferred for sparse graphs.</li>
+                  <li><strong>Edge List:</strong> Simple list of all edges as pairs <code>(u, v)</code>. Easy to iterate.</li>
+                </ul>
+              </div>
+
+              <div class="graph-code-block">
+                <div class="graph-code-header">
+                  <span class="graph-code-lang">Python — Adjacency List</span>
+                  <button class="graph-code-copy" data-code="graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'D'],
+    'D': ['A', 'B', 'C'],
+    'E': ['B']
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-var">graph</span> = {
+    <span class="tok-str">'A'</span>: [<span class="tok-str">'B'</span>, <span class="tok-str">'C'</span>, <span class="tok-str">'D'</span>],
+    <span class="tok-str">'B'</span>: [<span class="tok-str">'A'</span>, <span class="tok-str">'D'</span>, <span class="tok-str">'E'</span>],
+    <span class="tok-str">'C'</span>: [<span class="tok-str">'A'</span>, <span class="tok-str">'D'</span>],
+    <span class="tok-str">'D'</span>: [<span class="tok-str">'A'</span>, <span class="tok-str">'B'</span>, <span class="tok-str">'C'</span>],
+    <span class="tok-str">'E'</span>: [<span class="tok-str">'B'</span>]
+}</code></pre>
+              </div>
+
+              <div class="graph-exercise" id="exercise-intro">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Quick Check</div>
+                <p>What are the two main components of every graph data structure?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-intro">
+                  <p><strong>Answer: Vertices (Nodes) and Edges</strong></p>
+                  <p>Vertices represent entities (people, cities, web pages) and edges represent relationships or connections between them.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 02. Graph Terminology ───────────────────────── -->
+            <article class="graph-lesson" id="terminology" data-topic="2">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">02</span>
+                <h3>Graph Terminology</h3>
+              </div>
+              <p>
+                Before exploring algorithms, it's essential to speak the language of graphs.
+                These terms appear throughout every graph problem and interview discussion.
+              </p>
+
+              <div class="term-tags">
+                <span class="term-tag"><i class="fas fa-circle"></i> Vertex</span>
+                <span class="term-tag"><i class="fas fa-minus"></i> Edge</span>
+                <span class="term-tag"><i class="fas fa-angle-double-right"></i> Degree</span>
+                <span class="term-tag"><i class="fas fa-route"></i> Path</span>
+                <span class="term-tag"><i class="fas fa-sync"></i> Cycle</span>
+                <span class="term-tag"><i class="fas fa-project-diagram"></i> Connected</span>
+                <span class="term-tag"><i class="fas fa-weight"></i> Weighted</span>
+                <span class="term-tag"><i class="fas fa-ban"></i> Acyclic</span>
+              </div>
+
+              <div class="graph-concept-card">
+                <h4>Key Definitions</h4>
+                <ul>
+                  <li><strong>Vertex (Node):</strong> The fundamental unit of a graph. Represents an entity.</li>
+                  <li><strong>Edge:</strong> A connection between two vertices. Can be directed or undirected.</li>
+                  <li><strong>Degree:</strong> Number of edges connected to a vertex. In directed graphs: <code>in-degree</code> (incoming) and <code>out-degree</code> (outgoing).</li>
+                  <li><strong>Path:</strong> A sequence of vertices where each pair is connected by an edge and no vertex is repeated.</li>
+                  <li><strong>Cycle:</strong> A path that starts and ends at the same vertex with no repeated edges.</li>
+                  <li><strong>Connected Graph:</strong> Every vertex is reachable from every other vertex.</li>
+                  <li><strong>Disconnected Graph:</strong> Some vertices have no path between them.</li>
+                  <li><strong>Spanning Tree:</strong> A subgraph that includes all vertices with the minimum number of edges (no cycles).</li>
+                  <li><strong>Neighbour:</strong> Two vertices connected by a direct edge are neighbours (adjacent).</li>
+                  <li><strong>Self-loop:</strong> An edge where a vertex connects to itself.</li>
+                </ul>
+              </div>
+
+              <!-- Degree illustration table -->
+              <div class="graph-table-wrap">
+                <table class="graph-table" aria-label="Vertex degrees in the example graph">
+                  <thead>
+                    <tr><th>Vertex</th><th>Neighbours</th><th>Degree</th><th>Note</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>A</td><td>B, C, D</td><td>3</td><td>Hub node</td></tr>
+                    <tr><td>B</td><td>A, D, E</td><td>3</td><td>Hub node</td></tr>
+                    <tr><td>C</td><td>A, D</td><td>2</td><td>—</td></tr>
+                    <tr><td>D</td><td>A, B, C</td><td>3</td><td>Hub node</td></tr>
+                    <tr><td>E</td><td>B</td><td>1</td><td>Leaf node</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="graph-exercise" id="exercise-terminology">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Quick Check</div>
+                <p>In a directed graph, if vertex A has 3 incoming edges and 2 outgoing edges, what is its in-degree and out-degree?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-terminology">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-terminology">
+                  <p><strong>Answer: In-degree = 3, Out-degree = 2</strong></p>
+                  <p>In a directed graph, in-degree counts edges pointing <em>into</em> the vertex, and out-degree counts edges going <em>out from</em> the vertex. They are tracked independently.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 03. BFS ───────────────────────── -->
+            <article class="graph-lesson" id="bfs" data-topic="3">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">03</span>
+                <h3>Breadth-First Search (BFS)</h3>
+              </div>
+              <p>
+                <strong>BFS</strong> explores a graph level by level — visiting all neighbours of a
+                node before moving deeper. It uses a <strong>Queue (FIFO)</strong> to track nodes
+                to visit next. BFS always finds the shortest path in an unweighted graph.
+              </p>
+
+              <div class="graph-concept-card">
+                <h4>How BFS Works</h4>
+                <ol>
+                  <li>Start at the source vertex. Mark it visited and enqueue it.</li>
+                  <li>While the queue is not empty, dequeue a vertex and process it.</li>
+                  <li>For each unvisited neighbour of the current vertex, mark it visited and enqueue it.</li>
+                  <li>Repeat until the queue is empty.</li>
+                </ol>
+              </div>
+
+              <div class="graph-steps">
+                <div class="graph-step"><span class="graph-step-num">01</span><p>Enqueue start node <strong>A</strong>. Visited = {A}. Queue = [A]</p></div>
+                <div class="graph-step"><span class="graph-step-num">02</span><p>Dequeue <strong>A</strong>. Enqueue neighbours B, C. Visited = {A,B,C}. Queue = [B,C]</p></div>
+                <div class="graph-step"><span class="graph-step-num">03</span><p>Dequeue <strong>B</strong>. Enqueue unvisited neighbour D, E. Queue = [C,D,E]</p></div>
+                <div class="graph-step"><span class="graph-step-num">04</span><p>Continue until queue is empty. BFS order: <strong>A → B → C → D → E</strong></p></div>
+              </div>
+
+              <!-- BFS SVG showing visit order -->
+              <div class="graph-svg-container">
+                <svg width="340" height="210" viewBox="0 0 340 210" aria-label="BFS traversal example">
+                  <line x1="100" y1="55"  x2="240" y2="55"  class="graph-svg-line"/>
+                  <line x1="100" y1="55"  x2="55"  y2="155" class="graph-svg-line"/>
+                  <line x1="240" y1="55"  x2="285" y2="155" class="graph-svg-line"/>
+                  <line x1="240" y1="55"  x2="170" y2="155" class="graph-svg-line"/>
+                  <!-- Visited order labels -->
+                  <circle cx="100" cy="55"  r="26" class="graph-svg-node-root"/>
+                  <circle cx="240" cy="55"  r="26" class="graph-svg-node-visited"/>
+                  <circle cx="55"  cy="155" r="26" class="graph-svg-node-visited"/>
+                  <circle cx="170" cy="155" r="26" class="graph-svg-node"/>
+                  <circle cx="285" cy="155" r="26" class="graph-svg-node"/>
+                  <text x="100" y="55"  class="graph-svg-text">A</text>
+                  <text x="240" y="55"  class="graph-svg-text">B</text>
+                  <text x="55"  y="155" class="graph-svg-text">C</text>
+                  <text x="170" y="155" class="graph-svg-text">D</text>
+                  <text x="285" y="155" class="graph-svg-text">E</text>
+                  <!-- BFS order numbers -->
+                  <text x="100" y="30"  class="graph-svg-weight">①</text>
+                  <text x="240" y="30"  class="graph-svg-weight">②</text>
+                  <text x="55"  y="130" class="graph-svg-weight">③</text>
+                  <text x="170" y="130" class="graph-svg-weight">④</text>
+                  <text x="285" y="130" class="graph-svg-weight">⑤</text>
+                  <text x="170" y="198" class="graph-svg-label">BFS Visit Order: A → B → C → D → E</text>
+                </svg>
+              </div>
+
+              <div class="graph-code-block">
+                <div class="graph-code-header">
+                  <span class="graph-code-lang">Pseudocode — BFS</span>
+                  <button class="graph-code-copy" data-code="function BFS(graph, start):
+    queue  = new Queue()
+    visited = empty set
+
+    queue.enqueue(start)
+    visited.add(start)
+
+    while queue is not empty:
+        node = queue.dequeue()
+        process(node)
+
+        for each neighbour of node:
+            if neighbour not in visited:
+                visited.add(neighbour)
+                queue.enqueue(neighbour)">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">BFS</span>(<span class="tok-param">graph, start</span>):
+    <span class="tok-var">queue</span>   = <span class="tok-kw">new</span> <span class="tok-bi">Queue</span>()
+    <span class="tok-var">visited</span> = <span class="tok-bi">empty set</span>
+
+    <span class="tok-var">queue</span>.<span class="tok-fn">enqueue</span>(<span class="tok-var">start</span>)
+    <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">start</span>)
+
+    <span class="tok-kw">while</span> <span class="tok-var">queue</span> <span class="tok-kw">is not</span> <span class="tok-bool">empty</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">queue</span>.<span class="tok-fn">dequeue</span>()
+        <span class="tok-fn">process</span>(<span class="tok-var">node</span>)
+
+        <span class="tok-kw">for each</span> <span class="tok-var">neighbour</span> <span class="tok-kw">of</span> <span class="tok-var">node</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">neighbour</span> <span class="tok-kw">not in</span> <span class="tok-var">visited</span>:
+                <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">neighbour</span>)
+                <span class="tok-var">queue</span>.<span class="tok-fn">enqueue</span>(<span class="tok-var">neighbour</span>)</code></pre>
+              </div>
+
+              <div class="graph-code-block">
+                <div class="graph-code-header">
+                  <span class="graph-code-lang">Python — BFS Implementation</span>
+                  <button class="graph-code-copy" data-code="from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue   = deque([start])
+    visited.add(start)
+    result  = []
+
+    while queue:
+        node = queue.popleft()
+        result.append(node)
+        for neighbour in graph[node]:
+            if neighbour not in visited:
+                visited.add(neighbour)
+                queue.append(neighbour)
+    return result">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">from</span> collections <span class="tok-kw">import</span> deque
+
+<span class="tok-kw">def</span> <span class="tok-fn">bfs</span>(<span class="tok-param">graph, start</span>):
+    <span class="tok-var">visited</span> = <span class="tok-fn">set</span>()
+    <span class="tok-var">queue</span>   = <span class="tok-fn">deque</span>([<span class="tok-var">start</span>])
+    <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">start</span>)
+    <span class="tok-var">result</span>  = []
+
+    <span class="tok-kw">while</span> <span class="tok-var">queue</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">queue</span>.<span class="tok-fn">popleft</span>()
+        <span class="tok-var">result</span>.<span class="tok-fn">append</span>(<span class="tok-var">node</span>)
+        <span class="tok-kw">for</span> <span class="tok-var">neighbour</span> <span class="tok-kw">in</span> <span class="tok-var">graph</span>[<span class="tok-var">node</span>]:
+            <span class="tok-kw">if</span> <span class="tok-var">neighbour</span> <span class="tok-kw">not in</span> <span class="tok-var">visited</span>:
+                <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">neighbour</span>)
+                <span class="tok-var">queue</span>.<span class="tok-fn">append</span>(<span class="tok-var">neighbour</span>)
+    <span class="tok-kw">return</span> <span class="tok-var">result</span></code></pre>
+              </div>
+
+              <div class="graph-concept-card">
+                <h4>BFS Complexity</h4>
+                <ul>
+                  <li><strong>Time:</strong> <code>O(V + E)</code> — each vertex and edge is processed once.</li>
+                  <li><strong>Space:</strong> <code>O(V)</code> — queue can hold at most V nodes.</li>
+                  <li><strong>Shortest Path:</strong> BFS guarantees shortest path in <em>unweighted</em> graphs.</li>
+                </ul>
+              </div>
+
+              <div class="graph-exercise" id="exercise-bfs">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Practice: BFS Data Structure</div>
+                <p>Which data structure is essential to implement BFS iteratively, and why?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-bfs">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-bfs">
+                  <p><strong>Answer: Queue (FIFO — First In, First Out)</strong></p>
+                  <p>A queue ensures nodes are visited in the order they were discovered — level by level. This guarantees that all nodes at distance <em>k</em> are visited before any node at distance <em>k+1</em>, which is exactly what BFS needs to find shortest paths.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 04. DFS ───────────────────────── -->
+            <article class="graph-lesson" id="dfs" data-topic="4">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">04</span>
+                <h3>Depth-First Search (DFS)</h3>
+              </div>
+              <p>
+                <strong>DFS</strong> explores a graph by diving as deep as possible along a path
+                before backtracking. It uses a <strong>Stack</strong> (or recursion) rather than a
+                queue. DFS is ideal for detecting cycles, topological sorting, and solving mazes.
+              </p>
+
+              <div class="graph-concept-card">
+                <h4>How DFS Works</h4>
+                <ol>
+                  <li>Start at the source vertex. Mark it visited.</li>
+                  <li>Recursively visit any unvisited neighbour, going as deep as possible.</li>
+                  <li>When no unvisited neighbours remain, backtrack to the previous vertex.</li>
+                  <li>Repeat until all vertices reachable from source are visited.</li>
+                </ol>
+              </div>
+
+              <div class="graph-steps">
+                <div class="graph-step"><span class="graph-step-num">01</span><p>Visit <strong>A</strong>. Visited = {A}. Push to stack.</p></div>
+                <div class="graph-step"><span class="graph-step-num">02</span><p>Visit first neighbour <strong>B</strong>. Push B. Go deeper.</p></div>
+                <div class="graph-step"><span class="graph-step-num">03</span><p>From B, visit <strong>D</strong>. No unvisited neighbours. Backtrack to B.</p></div>
+                <div class="graph-step"><span class="graph-step-num">04</span><p>From B, visit <strong>E</strong>. Backtrack to A. Visit <strong>C</strong>. DFS order: <strong>A → B → D → E → C</strong></p></div>
+              </div>
+
+              <!-- DFS SVG -->
+              <div class="graph-svg-container">
+                <svg width="340" height="210" viewBox="0 0 340 210" aria-label="DFS traversal example">
+                  <line x1="100" y1="55"  x2="240" y2="55"  class="graph-svg-line"/>
+                  <line x1="100" y1="55"  x2="55"  y2="155" class="graph-svg-line"/>
+                  <line x1="240" y1="55"  x2="285" y2="155" class="graph-svg-line"/>
+                  <line x1="240" y1="55"  x2="170" y2="155" class="graph-svg-line"/>
+                  <circle cx="100" cy="55"  r="26" class="graph-svg-node-root"/>
+                  <circle cx="240" cy="55"  r="26" class="graph-svg-node-visited"/>
+                  <circle cx="55"  cy="155" r="26" class="graph-svg-node"/>
+                  <circle cx="170" cy="155" r="26" class="graph-svg-node-visited"/>
+                  <circle cx="285" cy="155" r="26" class="graph-svg-node-visited"/>
+                  <text x="100" y="55"  class="graph-svg-text">A</text>
+                  <text x="240" y="55"  class="graph-svg-text">B</text>
+                  <text x="55"  y="155" class="graph-svg-text">C</text>
+                  <text x="170" y="155" class="graph-svg-text">D</text>
+                  <text x="285" y="155" class="graph-svg-text">E</text>
+                  <text x="100" y="30"  class="graph-svg-weight">①</text>
+                  <text x="240" y="30"  class="graph-svg-weight">②</text>
+                  <text x="55"  y="130" class="graph-svg-weight">⑤</text>
+                  <text x="170" y="130" class="graph-svg-weight">③</text>
+                  <text x="285" y="130" class="graph-svg-weight">④</text>
+                  <text x="170" y="198" class="graph-svg-label">DFS Visit Order: A → B → D → E → C</text>
+                </svg>
+              </div>
+
+              <div class="graph-code-block">
+                <div class="graph-code-header">
+                  <span class="graph-code-lang">Pseudocode — DFS (Recursive)</span>
+                  <button class="graph-code-copy" data-code="function DFS(graph, node, visited):
+    mark node as visited
+    process(node)
+
+    for each neighbour of node:
+        if neighbour not in visited:
+            DFS(graph, neighbour, visited)">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">DFS</span>(<span class="tok-param">graph, node, visited</span>):
+    <span class="tok-cm">// mark and process current node</span>
+    <span class="tok-fn">mark</span> <span class="tok-var">node</span> <span class="tok-kw">as</span> <span class="tok-bool">visited</span>
+    <span class="tok-fn">process</span>(<span class="tok-var">node</span>)
+
+    <span class="tok-kw">for each</span> <span class="tok-var">neighbour</span> <span class="tok-kw">of</span> <span class="tok-var">node</span>:
+        <span class="tok-kw">if</span> <span class="tok-var">neighbour</span> <span class="tok-kw">not in</span> <span class="tok-var">visited</span>:
+            <span class="tok-fn">DFS</span>(<span class="tok-var">graph</span>, <span class="tok-var">neighbour</span>, <span class="tok-var">visited</span>)</code></pre>
+              </div>
+
+              <div class="graph-code-block">
+                <div class="graph-code-header">
+                  <span class="graph-code-lang">Python — DFS Recursive + Iterative</span>
+                  <button class="graph-code-copy" data-code="# Recursive DFS
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    print(node)
+    for neighbour in graph[node]:
+        if neighbour not in visited:
+            dfs_recursive(graph, neighbour, visited)
+
+# Iterative DFS using explicit stack
+def dfs_iterative(graph, start):
+    visited = set()
+    stack   = [start]
+    result  = []
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            result.append(node)
+            stack.extend(reversed(graph[node]))
+    return result">Copy</button>
+                </div>
+                <pre><code><span class="tok-cm"># Recursive DFS</span>
+<span class="tok-kw">def</span> <span class="tok-fn">dfs_recursive</span>(<span class="tok-param">graph, node, visited=None</span>):
+    <span class="tok-kw">if</span> <span class="tok-var">visited</span> <span class="tok-kw">is</span> <span class="tok-bool">None</span>:
+        <span class="tok-var">visited</span> = <span class="tok-fn">set</span>()
+    <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">node</span>)
+    <span class="tok-fn">print</span>(<span class="tok-var">node</span>)
+    <span class="tok-kw">for</span> <span class="tok-var">neighbour</span> <span class="tok-kw">in</span> <span class="tok-var">graph</span>[<span class="tok-var">node</span>]:
+        <span class="tok-kw">if</span> <span class="tok-var">neighbour</span> <span class="tok-kw">not in</span> <span class="tok-var">visited</span>:
+            <span class="tok-fn">dfs_recursive</span>(<span class="tok-var">graph</span>, <span class="tok-var">neighbour</span>, <span class="tok-var">visited</span>)
+
+<span class="tok-cm"># Iterative DFS using explicit stack</span>
+<span class="tok-kw">def</span> <span class="tok-fn">dfs_iterative</span>(<span class="tok-param">graph, start</span>):
+    <span class="tok-var">visited</span> = <span class="tok-fn">set</span>()
+    <span class="tok-var">stack</span>   = [<span class="tok-var">start</span>]
+    <span class="tok-var">result</span>  = []
+    <span class="tok-kw">while</span> <span class="tok-var">stack</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">stack</span>.<span class="tok-fn">pop</span>()
+        <span class="tok-kw">if</span> <span class="tok-var">node</span> <span class="tok-kw">not in</span> <span class="tok-var">visited</span>:
+            <span class="tok-var">visited</span>.<span class="tok-fn">add</span>(<span class="tok-var">node</span>)
+            <span class="tok-var">result</span>.<span class="tok-fn">append</span>(<span class="tok-var">node</span>)
+            <span class="tok-var">stack</span>.<span class="tok-fn">extend</span>(<span class="tok-fn">reversed</span>(<span class="tok-var">graph</span>[<span class="tok-var">node</span>]))
+    <span class="tok-kw">return</span> <span class="tok-var">result</span></code></pre>
+              </div>
+
+              <!-- BFS vs DFS comparison -->
+              <div class="graph-table-wrap">
+                <table class="graph-table" aria-label="BFS vs DFS comparison">
+                  <thead><tr><th>Property</th><th>BFS</th><th>DFS</th></tr></thead>
+                  <tbody>
+                    <tr><td>Data Structure</td><td><code>Queue (FIFO)</code></td><td><code>Stack / Recursion</code></td></tr>
+                    <tr><td>Traversal Order</td><td>Level by level</td><td>Path to dead-end, then backtrack</td></tr>
+                    <tr><td>Shortest Path</td><td>✅ Yes (unweighted)</td><td>❌ Not guaranteed</td></tr>
+                    <tr><td>Memory Use</td><td>Higher (wide graphs)</td><td>Lower (deep graphs)</td></tr>
+                    <tr><td>Cycle Detection</td><td>Possible</td><td>Efficient</td></tr>
+                    <tr><td>Use Case</td><td>Shortest path, social networks</td><td>Topological sort, maze solving</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="graph-exercise" id="exercise-dfs">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Practice: DFS vs BFS</div>
+                <p>You need to find whether a path exists between two nodes in a large graph. Which traversal would you choose, and why?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-dfs">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-dfs">
+                  <p><strong>Answer: Either works, but DFS is often preferred for reachability.</strong></p>
+                  <p>DFS uses less memory (stack depth vs wide BFS queue) and quickly reaches distant nodes by going deep first. If you also need the shortest path, switch to BFS. For pure reachability, DFS is simpler.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 05. Applications ───────────────────────── -->
+            <article class="graph-lesson" id="applications" data-topic="5">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">05</span>
+                <h3>Real-World Graph Applications</h3>
+              </div>
+              <p>
+                Graphs model virtually any network of relationships. From your GPS to your social
+                media feed, graph algorithms power the technologies you use every day.
+              </p>
+
+              <div class="graph-apps-grid">
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">🗺️</span>
+                  <h5>Maps & Navigation</h5>
+                  <p>Google Maps uses Dijkstra's algorithm on a weighted graph of roads to find shortest routes.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">👥</span>
+                  <h5>Social Networks</h5>
+                  <p>Facebook, LinkedIn — users are vertices; friendships/connections are edges. BFS finds friend-of-friend suggestions.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">🌐</span>
+                  <h5>Web Crawlers</h5>
+                  <p>Search engines use BFS/DFS to traverse the web graph (pages = nodes, hyperlinks = edges).</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">✈️</span>
+                  <h5>Flight Planning</h5>
+                  <p>Airports are nodes; routes are weighted edges. Shortest path algorithms minimise flight time and fuel.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">📦</span>
+                  <h5>Package Delivery</h5>
+                  <p>Logistics companies (FedEx, UPS) optimise delivery routes using graph traversal and minimum spanning trees.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">🎬</span>
+                  <h5>Recommendations</h5>
+                  <p>Netflix and Spotify build collaborative filtering graphs to suggest content based on user behaviour patterns.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">🔗</span>
+                  <h5>Computer Networks</h5>
+                  <p>Routers and switches form a graph. Routing protocols (OSPF, BGP) use shortest-path algorithms.</p>
+                </div>
+                <div class="graph-app-card">
+                  <span class="graph-app-icon">🧬</span>
+                  <h5>Bioinformatics</h5>
+                  <p>Protein interaction networks, gene regulatory networks, and phylogenetic trees are all modelled as graphs.</p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-applications">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Quick Check</div>
+                <p>Which graph algorithm would you use to find the shortest driving route between two cities, and why?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-applications">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-applications">
+                  <p><strong>Answer: Dijkstra's Algorithm (or A* for heuristic-guided search)</strong></p>
+                  <p>Roads are a weighted graph where edge weights represent distance or travel time. BFS finds shortest path only in unweighted graphs. Dijkstra's handles non-negative weights and is the standard choice for navigation systems.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 06. Graph Examples (Diagrams) ───────────────────────── -->
+            <article class="graph-lesson" id="diagrams" data-topic="6">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">06</span>
+                <h3>Graph Examples &amp; Traversal Traces</h3>
+              </div>
+              <p>
+                The diagrams below show the same 4-node graph traversed by BFS and DFS,
+                making the difference in exploration order immediately visible.
+              </p>
+
+              <!-- Square graph: A-B-C-D -->
+              <div class="graph-svg-container">
+                <svg width="340" height="220" viewBox="0 0 340 220" aria-label="Square graph ABCD with traversal labels">
+                  <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="var(--accent3)"/>
+                    </marker>
+                  </defs>
+                  <!-- Edges -->
+                  <line x1="95"  y1="65"  x2="245" y2="65"  class="graph-svg-line"/>
+                  <line x1="95"  y1="65"  x2="95"  y2="165" class="graph-svg-line"/>
+                  <line x1="245" y1="65"  x2="245" y2="165" class="graph-svg-line"/>
+                  <line x1="95"  y1="165" x2="245" y2="165" class="graph-svg-line"/>
+                  <!-- Nodes -->
+                  <circle cx="95"  cy="65"  r="26" class="graph-svg-node-root"/>
+                  <circle cx="245" cy="65"  r="26" class="graph-svg-node-visited"/>
+                  <circle cx="95"  cy="165" r="26" class="graph-svg-node-visited"/>
+                  <circle cx="245" cy="165" r="26" class="graph-svg-node"/>
+                  <text x="95"  y="65"  class="graph-svg-text">A</text>
+                  <text x="245" y="65"  class="graph-svg-text">B</text>
+                  <text x="95"  y="165" class="graph-svg-text">C</text>
+                  <text x="245" y="165" class="graph-svg-text">D</text>
+                  <!-- Edge labels (midpoints) -->
+                  <text x="170" y="52"  class="graph-svg-weight">1</text>
+                  <text x="68"  y="118" class="graph-svg-weight">2</text>
+                  <text x="260" y="118" class="graph-svg-weight">3</text>
+                  <text x="170" y="188" class="graph-svg-weight">4</text>
+                  <text x="170" y="210" class="graph-svg-label">4-node undirected graph</text>
+                </svg>
+              </div>
+
+              <div class="graph-concept-card">
+                <h4>Traversal Traces on the Square Graph (starting from A)</h4>
+                <ul>
+                  <li><strong>BFS Order:</strong> <code>A → B → C → D</code> — visits both A's neighbours (B, C) before going deeper to D.</li>
+                  <li><strong>DFS Order:</strong> <code>A → B → D → C</code> — dives deep through B → D first, then backtracks to reach C.</li>
+                </ul>
+              </div>
+
+              <!-- Weighted directed graph example -->
+              <div class="graph-svg-container">
+                <svg width="380" height="210" viewBox="0 0 380 210" aria-label="Weighted directed graph example">
+                  <defs>
+                    <marker id="arrowDir" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="var(--accent)"/>
+                    </marker>
+                  </defs>
+                  <line x1="68"  y1="105" x2="158" y2="55"  stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrowDir)" opacity="0.8"/>
+                  <line x1="68"  y1="105" x2="158" y2="155" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrowDir)" opacity="0.8"/>
+                  <line x1="175" y1="55"  x2="290" y2="55"  stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrowDir)" opacity="0.8"/>
+                  <line x1="175" y1="155" x2="290" y2="155" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrowDir)" opacity="0.8"/>
+                  <line x1="307" y1="55"  x2="307" y2="145" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#arrowDir)" opacity="0.8"/>
+                  <!-- Nodes -->
+                  <circle cx="55"  cy="105" r="26" class="graph-svg-node-root"/>
+                  <circle cx="170" cy="55"  r="26" class="graph-svg-node"/>
+                  <circle cx="170" cy="155" r="26" class="graph-svg-node"/>
+                  <circle cx="310" cy="55"  r="26" class="graph-svg-node"/>
+                  <circle cx="310" cy="155" r="26" class="graph-svg-node"/>
+                  <text x="55"  y="105" class="graph-svg-text">S</text>
+                  <text x="170" y="55"  class="graph-svg-text">A</text>
+                  <text x="170" y="155" class="graph-svg-text">B</text>
+                  <text x="310" y="55"  class="graph-svg-text">C</text>
+                  <text x="310" y="155" class="graph-svg-text">D</text>
+                  <!-- Weights -->
+                  <text x="100" y="68"  class="graph-svg-weight">4</text>
+                  <text x="100" y="150" class="graph-svg-weight">2</text>
+                  <text x="233" y="42"  class="graph-svg-weight">3</text>
+                  <text x="233" y="168" class="graph-svg-weight">5</text>
+                  <text x="322" y="108" class="graph-svg-weight">1</text>
+                  <text x="190" y="205" class="graph-svg-label">Weighted directed graph — shortest S→D = S→A→C→D (cost: 8)</text>
+                </svg>
+              </div>
+
+              <div class="graph-exercise" id="exercise-diagrams">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Trace the Path</div>
+                <p>
+                  In the square graph (A-B-C-D), what is the BFS order if you start from node <strong>B</strong>?
+                  Assume neighbours are visited in alphabetical order.
+                </p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-diagrams">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-diagrams">
+                  <p><strong>Answer: B → A → D → C</strong></p>
+                  <p>Starting at B, BFS enqueues its neighbours A and D first (level 1). Then processes A — its unvisited neighbour is C (level 2). D has no new unvisited neighbours. Final order: B → A → D → C.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 07. Practice Exercises ───────────────────────── -->
+            <article class="graph-lesson" id="exercises" data-topic="7">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">07</span>
+                <h3>Practice Exercises</h3>
+              </div>
+              <p>Work through the following problems to solidify your understanding of graphs.</p>
+
+              <div class="graph-exercise" id="exercise-ex1">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 1: Define a Graph</div>
+                <p>In your own words, define a graph and explain the difference between a <strong>directed</strong> and <strong>undirected</strong> graph. Give one real-world example of each.</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex1">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex1">
+                  <p><strong>Answer:</strong></p>
+                  <p>A graph is a data structure of vertices (entities) and edges (relationships). <strong>Directed:</strong> edges have direction, like Twitter follows (A follows B ≠ B follows A). <strong>Undirected:</strong> edges are bidirectional, like Facebook friendship (if A is friends with B, B is friends with A).</p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-ex2">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 2: Identify a Cycle</div>
+                <p>Given the graph <code>A—B—C—A</code>, does this graph contain a cycle? What is the cycle?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex2">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex2">
+                  <p><strong>Answer: Yes — cycle is A → B → C → A</strong></p>
+                  <p>A cycle exists because there is a path that starts at A, traverses through B and C, and returns to A without repeating any edge. This makes the graph cyclic.</p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-ex3">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 3: BFS vs DFS Choice</div>
+                <p>Scenario: You want to find the shortest number of hops between two users in a social network. Should you use BFS or DFS? Justify your answer.</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex3">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex3">
+                  <p><strong>Answer: BFS</strong></p>
+                  <p>BFS explores level by level — every node at distance <em>k</em> is found before any node at distance <em>k+1</em>. The first time BFS reaches the target node, it has found the fewest-hop path. DFS does not guarantee this as it dives deep down one branch first.</p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-ex4">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 4: Adjacency List</div>
+                <p>Build an adjacency list for the graph: <code>A—B, A—C, B—D, C—D, D—E</code>. Then perform a BFS starting from A and list the visit order.</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex4">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex4">
+                  <p><strong>Adjacency List:</strong></p>
+                  <p>A: [B, C] | B: [A, D] | C: [A, D] | D: [B, C, E] | E: [D]</p>
+                  <p><strong>BFS from A:</strong> Enqueue A → dequeue A, enqueue B,C → dequeue B, enqueue D → dequeue C (D already queued) → dequeue D, enqueue E → dequeue E.</p>
+                  <p><strong>Order: A → B → C → D → E</strong></p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-ex5">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 5: Application Design</div>
+                <p>You're designing a flight booking system. Airports are nodes and direct flight routes are edges with weights representing flight duration. Which algorithm would find the quickest route from City X to City Y? What if you wanted to include stopovers?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex5">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex5">
+                  <p><strong>Answer: Dijkstra's Algorithm</strong></p>
+                  <p>This is a weighted shortest-path problem. Dijkstra's efficiently finds minimum-weight paths in graphs with non-negative edge weights. For stopovers, the same algorithm applies — it naturally considers multi-hop routes through intermediate airports when they produce a lower total weight.</p>
+                </div>
+              </div>
+
+              <div class="graph-exercise" id="exercise-ex6">
+                <div class="graph-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 6: Time Complexity</div>
+                <p>A graph has V = 1000 vertices and E = 4000 edges. What is the time complexity of running BFS on it?</p>
+                <button class="graph-exercise-toggle" aria-expanded="false" aria-controls="solution-ex6">Show Answer</button>
+                <div class="graph-exercise-solution" id="solution-ex6">
+                  <p><strong>Answer: O(V + E) = O(1000 + 4000) = O(5000) = O(V + E)</strong></p>
+                  <p>BFS visits every vertex once and processes every edge once. With 1000 vertices and 4000 edges, it performs approximately 5000 operations — making it very efficient even at this scale.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- ───────────────────────── 08. Quiz ───────────────────────── -->
+            <article class="graph-lesson" id="quiz" data-topic="8">
+              <div class="graph-lesson-header">
+                <span class="graph-lesson-number">08</span>
+                <h3>Quiz &amp; Knowledge Check</h3>
+              </div>
+              <p>Test your understanding of Graph Data Structures. Choose the best answer for each question, then submit.</p>
+
+              <div class="graph-quiz-container">
+
+                <!-- Q1 -->
+                <div class="graph-quiz-question-card">
+                  <div class="graph-quiz-question-text">
+                    <span class="graph-quiz-question-num">Q1.</span>
+                    <span>What connects two vertices in a graph?</span>
+                  </div>
+                  <div class="graph-quiz-options">
+                    <label class="graph-quiz-option"><input type="radio" name="q1" value="a"/><span>A) Queue</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q1" value="b"/><span>B) Edge</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q1" value="c"/><span>C) Stack</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q1" value="d"/><span>D) Array</span></label>
+                  </div>
+                  <div class="graph-quiz-feedback" id="feedback-q1"></div>
+                  <div class="graph-quiz-explanation" id="explanation-q1">An <strong>edge</strong> is the connection between two vertices (nodes) in a graph. It can be directed or undirected, and weighted or unweighted.</div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="graph-quiz-question-card">
+                  <div class="graph-quiz-question-text">
+                    <span class="graph-quiz-question-num">Q2.</span>
+                    <span>Which graph traversal algorithm uses a Queue and guarantees the shortest path in an unweighted graph?</span>
+                  </div>
+                  <div class="graph-quiz-options">
+                    <label class="graph-quiz-option"><input type="radio" name="q2" value="a"/><span>A) DFS</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q2" value="b"/><span>B) BFS</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q2" value="c"/><span>C) Both DFS and BFS</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q2" value="d"/><span>D) Neither</span></label>
+                  </div>
+                  <div class="graph-quiz-feedback" id="feedback-q2"></div>
+                  <div class="graph-quiz-explanation" id="explanation-q2"><strong>BFS</strong> uses a Queue (FIFO) and explores level by level, making it the algorithm of choice for finding the shortest path in unweighted graphs.</div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="graph-quiz-question-card">
+                  <div class="graph-quiz-question-text">
+                    <span class="graph-quiz-question-num">Q3.</span>
+                    <span>DFS traversal is primarily implemented using which data structure?</span>
+                  </div>
+                  <div class="graph-quiz-options">
+                    <label class="graph-quiz-option"><input type="radio" name="q3" value="a"/><span>A) Queue</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q3" value="b"/><span>B) Stack (or recursion)</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q3" value="c"/><span>C) Heap</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q3" value="d"/><span>D) Hash Table</span></label>
+                  </div>
+                  <div class="graph-quiz-feedback" id="feedback-q3"></div>
+                  <div class="graph-quiz-explanation" id="explanation-q3">DFS uses a <strong>Stack</strong> — either explicitly in an iterative version, or implicitly through the call stack in a recursive implementation.</div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="graph-quiz-question-card">
+                  <div class="graph-quiz-question-text">
+                    <span class="graph-quiz-question-num">Q4.</span>
+                    <span>A graph whose edges have directions (A→B does not imply B→A) is called a?</span>
+                  </div>
+                  <div class="graph-quiz-options">
+                    <label class="graph-quiz-option"><input type="radio" name="q4" value="a"/><span>A) Weighted Graph</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q4" value="b"/><span>B) Directed Graph</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q4" value="c"/><span>C) Undirected Graph</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q4" value="d"/><span>D) Complete Graph</span></label>
+                  </div>
+                  <div class="graph-quiz-feedback" id="feedback-q4"></div>
+                  <div class="graph-quiz-explanation" id="explanation-q4">A <strong>Directed Graph (Digraph)</strong> has edges with a specific direction. Twitter follows are a classic example — following someone doesn't mean they follow you back.</div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="graph-quiz-question-card">
+                  <div class="graph-quiz-question-text">
+                    <span class="graph-quiz-question-num">Q5.</span>
+                    <span>Which of the following is a real-world application that is best modelled as a graph?</span>
+                  </div>
+                  <div class="graph-quiz-options">
+                    <label class="graph-quiz-option"><input type="radio" name="q5" value="a"/><span>A) Social Networks (users + friendships)</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q5" value="b"/><span>B) A physical keyboard</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q5" value="c"/><span>C) A monitor screen</span></label>
+                    <label class="graph-quiz-option"><input type="radio" name="q5" value="d"/><span>D) A printer</span></label>
+                  </div>
+                  <div class="graph-quiz-feedback" id="feedback-q5"></div>
+                  <div class="graph-quiz-explanation" id="explanation-q5"><strong>Social Networks</strong> are the canonical graph application — users are vertices and friendship/follow relationships are edges. BFS powers features like "People You May Know."</div>
+                </div>
+
+              </div><!-- /quiz-container -->
+
+              <div class="graph-quiz-actions">
+                <button class="graph-quiz-btn" id="submitQuizBtn">Submit Quiz</button>
+                <button class="graph-quiz-btn-secondary" id="resetQuizBtn" style="display:none">Reset Quiz</button>
+              </div>
+
+              <div class="graph-quiz-score-banner" id="quizScoreBanner">
+                <div class="graph-quiz-score-title">Quiz Results</div>
+                <div class="graph-quiz-score-text">
+                  You scored <span id="quizScoreValue">0 / 5</span>
+                  <span id="quizScorePercent"></span>
+                </div>
+              </div>
+            </article>
+
+          </main><!-- /graph-main-content -->
+        </div><!-- /graph-layout -->
+      </div><!-- /container -->
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="graph-learning.js" defer></script>
+    
+  
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rabin-Karp Rolling Hash Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive step-by-step visualization of the Rabin-Karp string-matching algorithm. Analyze rolling hash computation, spurious matches (collisions), and actual verification."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="rabin-karp-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="rabin-karp-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Rabin-Karp</span>
+          <span class="main-title gradient-text">Rolling Hash Visualizer</span>
+          <span class="subtitle">Animate, compute, and master rolling hash pattern matching</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          
+          <!-- LEFT SIDEBAR: Inputs & Controls -->
+          <div class="visualizer-sidebar">
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-sliders-h" style="color: var(--accent); margin-right: 0.5rem"></i>Parameters
+              </h3>
+
+              <!-- Inputs Group -->
+              <div class="control-group">
+                <label for="textInput">Source Text</label>
+                <input type="text" id="textInput" value="AABAACAADAABAABA" class="control-input" maxlength="45" placeholder="Enter text..." />
+              </div>
+
+              <div class="control-group">
+                <label for="patternInput">Pattern to Match</label>
+                <input type="text" id="patternInput" value="AABA" class="control-input" maxlength="15" placeholder="Enter pattern..." />
+              </div>
+
+              <div class="control-group-row">
+                <div class="control-group">
+                  <label for="baseInput">Base (d)</label>
+                  <input type="number" id="baseInput" value="10" min="2" max="256" class="control-input" />
+                </div>
+                <div class="control-group">
+                  <label for="modInput">Modulo (q)</label>
+                  <input type="number" id="modInput" value="11" min="2" max="99999" class="control-input" />
+                </div>
+              </div>
+
+              <!-- Speed/Delay -->
+              <div class="control-group">
+                <label for="speedRange">Step Delay <span class="val-display" id="speedDisplay">800ms</span></label>
+                <input type="range" id="speedRange" min="100" max="2000" step="50" value="800" class="slider-custom" />
+              </div>
+
+              <!-- Sound Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="soundToggle" style="margin-bottom: 0;">Audio Synthesizer</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="controls-action-container">
+                <div class="btn-control-row">
+                  <button id="playBtn" class="btn btn-primary btn-control" title="Start Automatic Playback">
+                    <i class="fas fa-play"></i> Play
+                  </button>
+                  <button id="pauseBtn" class="btn btn-secondary btn-control" disabled title="Pause Animation">
+                    <i class="fas fa-pause"></i> Pause
+                  </button>
+                </div>
+                <div class="btn-control-row" style="margin-top: 0.5rem;">
+                  <button id="stepBackBtn" class="btn btn-secondary btn-control-icon" title="Step Backward">
+                    <i class="fas fa-step-backward"></i>
+                  </button>
+                  <button id="stepForwardBtn" class="btn btn-secondary btn-control-icon" title="Step Forward">
+                    <i class="fas fa-step-forward"></i>
+                  </button>
+                  <button id="resetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset Simulation">
+                    <i class="fas fa-undo"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-chart-bar" style="color: var(--accent); margin-right: 0.5rem"></i>Simulation Stats
+              </h3>
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Comparisons</span>
+                  <span id="statComparisons" class="stat-value">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Matches</span>
+                  <span id="statMatches" class="stat-value green-text">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Collisions</span>
+                  <span id="statCollisions" class="stat-value red-text">0</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Checked</span>
+                  <span id="statChecked" class="stat-value">0/0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN VISUALIZER WORKSPACE -->
+          <div class="visualizer-main-panel">
+            
+            <!-- Character Grids Area -->
+            <div class="visualizer-card canvas-card">
+              <div class="section-title">
+                <h4><i class="fas fa-search-location"></i> Rolling Window Visualizer</h4>
+                <div class="badge" id="stepIndicator">Step: Ready</div>
+              </div>
+
+              <!-- Main Text Row -->
+              <div class="view-row-container">
+                <span class="view-row-label">Source Text (T)</span>
+                <div class="char-grid-wrapper" id="textGridWrapper">
+                  <!-- Generated by JS -->
+                  <div class="placeholder-text">Enter text to start...</div>
+                </div>
+              </div>
+
+              <!-- Pattern Row -->
+              <div class="view-row-container" style="margin-top: 1.5rem;">
+                <span class="view-row-label">Pattern (P)</span>
+                <div class="pattern-row-layout">
+                  <div class="char-grid-wrapper" id="patternGridWrapper">
+                    <!-- Generated by JS -->
+                  </div>
+                  <div class="hash-box" id="patternHashValue">
+                    <span class="hash-label">P Hash</span>
+                    <span class="hash-val" id="pHashVal">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Current Window Info / Hash Comparison -->
+              <div class="comparison-status-banner" id="comparisonBanner">
+                <div class="comparison-side">
+                  <span class="label">Window Hash:</span>
+                  <span class="val" id="wHashVal">0</span>
+                </div>
+                <div class="comparison-operator" id="operatorIcon">
+                  <i class="fas fa-question"></i>
+                </div>
+                <div class="comparison-side">
+                  <span class="label">Pattern Hash:</span>
+                  <span class="val" id="pHashValCompare">0</span>
+                </div>
+                <div class="comparison-result" id="hashCompareResult">
+                  No Comparison Yet
+                </div>
+              </div>
+            </div>
+
+            <!-- Mathematical Breakdown Panel -->
+            <div class="visualizer-card math-card">
+              <h3>
+                <i class="fas fa-calculator" style="color: var(--accent); margin-right: 0.5rem"></i>Mathematical Formula (Rolling Hash)
+              </h3>
+              <p class="formula-desc">
+                Rabin-Karp avoids recalculating the hash from scratch. Instead, it subtracts the leaving character's hash contribution, multiplies by the base, and adds the entering character.
+              </p>
+              
+              <!-- Equation Block -->
+              <div class="equation-box">
+                <div class="formula-base">
+                  $$\text{H}_{i+1} = \Big( d \times \big( \text{H}_i - T[i] \times d^{m-1} \big) + T[i+m] \Big) \pmod q$$
+                </div>
+                <div class="formula-divider"></div>
+                <div class="formula-substituted" id="substitutedFormula">
+                  Select "Step" or "Play" to observe rolling hash substitution.
+                </div>
+              </div>
+
+              <div class="math-terms-explainer" id="mathTerms">
+                <div class="term-item"><span class="term-badge base-badge">d</span> Base = <span id="mathBase">10</span></div>
+                <div class="term-item"><span class="term-badge mod-badge">q</span> Modulo = <span id="mathMod">11</span></div>
+                <div class="term-item"><span class="term-badge mult-badge">d^(m-1)</span> Multiplier = <span id="mathMult">1000</span></div>
+              </div>
+            </div>
+
+            <!-- Log Table -->
+            <div class="visualizer-card table-card">
+              <h3>
+                <i class="fas fa-history" style="color: var(--accent); margin-right: 0.5rem"></i>Rolling Windows History Log
+              </h3>
+              <div class="table-scroll-container">
+                <table class="history-table" id="historyTable">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Substring</th>
+                      <th>Computed Hash</th>
+                      <th>Hash Match?</th>
+                      <th>Chars verified</th>
+                      <th>Outcome</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody">
+                    <tr>
+                      <td colspan="6" class="empty-table-message">No steps executed. Enter parameters and press Play/Step.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Rabin-Karp Theory / Modulo Explanation -->
+    <section class="section" id="theory-section" style="padding-top: 0;">
+      <div class="container">
+        <div class="visualizer-card theory-panel">
+          <h2 class="theory-title"><i class="fas fa-book-open"></i> Rabin-Karp Algorithm Core Concepts</h2>
+          
+          <div class="theory-grid">
+            <div class="theory-column">
+              <h4><i class="fas fa-network-wired"></i> Spurious Matches (Collisions)</h4>
+              <p>
+                A **spurious match** (or hash collision) happens when a substring's hash value equals the pattern's hash value, but the actual characters do not match.
+              </p>
+              <p>
+                Because we use a modulo ($q$) to keep the hash value within integer boundaries, different strings can map to the same hash code ($A \equiv B \pmod q$). If a hash match occurs, we must perform a character-by-character comparison (O(m) verification) to confirm whether it is an actual match or a spurious match.
+              </p>
+            </div>
+            
+            <div class="theory-column">
+              <h4><i class="fas fa-bolt"></i> Rolling Hashing Complexity</h4>
+              <p>
+                Using a rolling hash, we compute the hash of the next window in $O(1)$ constant time. This brings the average search time down to **$O(n + m)$**.
+              </p>
+              <p>
+                In the worst case (e.g. searching for $A^m$ in $A^n$ with a very poor modulo choice causing collisions at every single window), the algorithm reverts to **$O(n \times m)$** as we verify characters at every step. Choosing a large prime number for $q$ minimizes this risk.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you master the Rabin-Karp rolling hash algorithm today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+            aria-label="Type your chat message"
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="Explain how the rolling hash calculates the next hash."
+          >
+            Rolling Hash Formula
+          </button>
+          <button
+            class="quick-q"
+            data-question="What is a spurious match/collision in Rabin-Karp?"
+          >
+            Spurious Matches
+          </button>
+          <button class="quick-q" data-question="How does modulo selection impact performance?">
+            Modulo Selection
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="rabin-karp-visualizer.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

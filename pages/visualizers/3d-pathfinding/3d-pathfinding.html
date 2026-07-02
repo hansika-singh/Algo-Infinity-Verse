@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Procedural Pathfinding | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize A* Pathfinding on dynamically generated 3D procedural terrain using WebGL." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="3d-pathfinding.css" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="path-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-mountain"></i> WebGL Terrain Engine
+        </div>
+    </nav>
+
+    <main class="path-workspace">
+        
+        <!-- UI Overlay (Glassmorphism) -->
+        <div class="controls-overlay">
+            <div class="panel-header">
+                <h3><i class="fas fa-route"></i> 3D Pathfinding</h3>
+            </div>
+            
+            <div class="controls-content">
+                <p class="desc-text">
+                    Observe the <strong>A* Algorithm</strong> navigate procedural 3D terrain. The cost of movement factors in both distance and the <em>elevation slope</em> between nodes.
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary w-100" id="btnGenerate">
+                        <i class="fas fa-random"></i> Generate Terrain
+                    </button>
+                    <button class="btn btn-success w-100" id="btnStartSearch">
+                        <i class="fas fa-play"></i> Start Search
+                    </button>
+                </div>
+
+                <div class="settings-group">
+                    <label>Algorithm Speed</label>
+                    <input type="range" id="speedSlider" min="1" max="50" value="20" aria-label="Algorithm Speed">
+                </div>
+
+                <div class="legend-box">
+                    <h4>Map Legend</h4>
+                    <div class="legend-item"><span class="color-box start"></span> Start Node</div>
+                    <div class="legend-item"><span class="color-box end"></span> Target Node</div>
+                    <div class="legend-item"><span class="color-box open"></span> Frontier (Open Set)</div>
+                    <div class="legend-item"><span class="color-box closed"></span> Explored (Closed Set)</div>
+                    <div class="legend-item"><span class="color-box path"></span> Optimal Path</div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span>Terrain Size:</span>
+                        <strong class="text-accent">40 x 40 (1600 Nodes)</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Nodes Explored:</span>
+                        <strong class="text-accent" id="statExplored" aria-live="polite">0</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Path Cost:</span>
+                        <strong class="text-accent" id="statCost" aria-live="polite">0.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Canvas Container -->
+        <div class="canvas-wrapper" id="threejs-container" aria-label="3D Pathfinding Terrain Canvas" role="region">
+            <p class="sr-only">A 3D representation of terrain where the A* algorithm visually searches for the optimal path.</p>
+            <div class="camera-hint" aria-hidden="true"><i class="fas fa-mouse"></i> Click & Drag to Rotate | Scroll to Zoom</div>
+        </div>
+
+    </main>
+
+    <!-- External Scripts -->
+    <script src="/script.js"></script>
+    <script src="3d-pathfinding.js"></script>
+</body>
+</html>

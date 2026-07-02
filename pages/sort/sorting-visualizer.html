@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorting Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualization of Bubble, Selection, Insertion, Merge, and Quick Sort algorithms." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sorting-visualizer.css" />
+</head>
+<body class="sort-body">
+
+    <nav class="navbar sort-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-chart-bar"></i> Sorting Engine: Idle
+        </div>
+    </nav>
+
+    <main class="sort-workspace">
+        
+        <!-- Left Panel: Configuration -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> Configuration</h3>
+            </div>
+            
+            <div class="control-section">
+                <!-- Algorithm Selection -->
+                <div class="input-group">
+                    <label>Algorithm</label>
+                    <select id="algoSelect">
+                        <optgroup label="O(n²) Algorithms">
+                            <option value="bubble">Bubble Sort</option>
+                            <option value="selection">Selection Sort</option>
+                            <option value="insertion">Insertion Sort</option>
+                        </optgroup>
+                        <optgroup label="O(n log n) Algorithms">
+                            <option value="merge" selected>Merge Sort (Divide & Conquer)</option>
+                            <option value="quick">Quick Sort (Partitioning)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Array Size: <span id="sizeValue" class="slider-val">50</span></label>
+                    <input type="range" id="sizeSlider" min="10" max="150" value="50">
+                </div>
+
+                <div class="input-group">
+                    <label>Animation Speed: <span id="speedValue" class="slider-val">Fast</span></label>
+                    <input type="range" id="speedSlider" min="1" max="100" value="80" style="direction: rtl;">
+                </div>
+
+                <div class="action-grid">
+                    <button class="btn btn-outline w-100" id="btnGenerate">
+                        <i class="fas fa-random"></i> Generate Array
+                    </button>
+                    <button class="btn btn-primary w-100" id="btnSort">
+                        <i class="fas fa-play"></i> Start Sorting
+                    </button>
+                </div>
+            </div>
+
+            <!-- Algorithm Info -->
+            <div class="info-section">
+                <h4><i class="fas fa-info-circle"></i> Algorithm Info</h4>
+                <div class="info-content" id="algoInfo">
+                    <h5>Merge Sort</h5>
+                    <p>A divide-and-conquer algorithm that recursively splits the array in half, sorts the halves, and merges them back together.</p>
+                    <div class="complexity-grid">
+                        <div class="comp-item"><span>Time (Avg):</span> <strong>O(n log n)</strong></div>
+                        <div class="comp-item"><span>Space:</span> <strong>O(n)</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Visualization Canvas -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="legend">
+                    <span class="legend-item"><span class="color-box base"></span> Unsorted</span>
+                    <span class="legend-item"><span class="color-box compare"></span> Comparing</span>
+                    <span class="legend-item"><span class="color-box swap"></span> Swapping / Writing</span>
+                    <span class="legend-item"><span class="color-box pivot"></span> Pivot (Quick Sort)</span>
+                    <span class="legend-item"><span class="color-box sorted"></span> Sorted</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div class="bars-container" id="barsContainer">
+                    <!-- Array Bars Injected Here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="sorting-visualizer.js"></script>
+</body>
+</html>

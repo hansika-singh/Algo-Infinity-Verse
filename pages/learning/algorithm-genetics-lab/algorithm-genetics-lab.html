@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Genetics Lab | Algo Infinity Verse</title>
+    <meta name="description"
+        content="Interactive algorithm DNA explorer showing relationships, traits, and inheritance between algorithms." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="algorithm-genetics-lab.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="algorithm-genetics-lab">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="infinity-loader">∞</div>
+            <h2>Algo Infinity Verse</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="lab-container">
+        <!-- Sidebar for Search & Filters -->
+        <aside class="lab-sidebar">
+            <div class="lab-header">
+                <h2><i class="fas fa-flask"></i> Genetics Lab</h2>
+                <p>Explore Algorithm DNA</p>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="algo-search" aria-label="Search algorithms" placeholder="Search algorithms..." autocomplete="off" />
+            </div>
+            
+            <div class="filters">
+                <h3>Filters</h3>
+                <div class="filter-group">
+                    <label for="paradigm-filter">Paradigm</label>
+                    <select id="paradigm-filter">
+                        <option value="all">All Paradigms</option>
+                        <option value="Divide & Conquer">Divide & Conquer</option>
+                        <option value="Dynamic Programming">Dynamic Programming</option>
+                        <option value="Greedy">Greedy</option>
+                        <option value="Graph Traversal">Graph Traversal</option>
+                        <option value="Two Pointers">Two Pointers</option>
+                        <option value="Backtracking">Backtracking</option>
+                        <option value="Core Concept">Core Concept</option>
+                    </select>
+                </div>
+                
+                <div class="legend-box">
+                    <h3>Node Types</h3>
+                    <div class="legend-item"><span class="legend-color core-node"></span> Core Foundation</div>
+                    <div class="legend-item"><span class="legend-color intermediate-node"></span> Intermediate Variant</div>
+                    <div class="legend-item"><span class="legend-color advanced-node"></span> Advanced Technique</div>
+                </div>
+            </div>
+            
+            <div class="zoom-controls">
+                <button id="zoom-in" aria-label="Zoom In"><i class="fas fa-plus"></i></button>
+                <button id="zoom-reset" aria-label="Reset Zoom"><i class="fas fa-expand"></i></button>
+                <button id="zoom-out" aria-label="Zoom Out"><i class="fas fa-minus"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Graph Area -->
+        <section class="lab-graph-area" id="graph-container">
+            <div class="graph-instructions">
+                <p><i class="fas fa-mouse-pointer"></i> Drag nodes to play with physics. Scroll to zoom. Click to view DNA.</p>
+            </div>
+            <div id="d3-container"></div>
+        </section>
+
+        <!-- Right Panel for DNA Trait Card -->
+        <aside class="lab-dna-panel" id="dna-panel">
+            <div class="dna-card-placeholder" id="dna-placeholder">
+                <i class="fas fa-dna dna-icon-pulse"></i>
+                <p>Select an algorithm to analyze its DNA and Learning Outcomes</p>
+            </div>
+            
+            <div class="dna-card" id="dna-card" style="display: none;">
+                <div class="dna-card-header">
+                    <div class="title-row">
+                        <i id="dna-title-icon" class="fas fa-code"></i>
+                        <h2 id="dna-title">Algorithm Name</h2>
+                    </div>
+                    <span class="dna-paradigm" id="dna-paradigm">Paradigm</span>
+                </div>
+                
+                <div class="dna-card-body">
+                    <div class="traits-row">
+                        <div class="trait-box">
+                            <i class="fas fa-clock"></i>
+                            <div class="trait-info">
+                                <span>Time Complexity</span>
+                                <strong id="dna-time">O(1)</strong>
+                            </div>
+                        </div>
+                        <div class="trait-box">
+                            <i class="fas fa-memory"></i>
+                            <div class="trait-info">
+                                <span>Space Complexity</span>
+                                <strong id="dna-space">O(1)</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="learning-outcome-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Learning Outcome</h3>
+                        <p id="dna-learning-outcome" class="dna-text-block">What you learn from this algorithm.</p>
+                    </div>
+
+                    <div class="trait-group code-pattern-group">
+                        <h3><i class="fas fa-laptop-code"></i> Key Pattern / Snippet</h3>
+                        <pre><code id="dna-snippet" class="language-javascript">code</code></pre>
+                    </div>
+
+                    <div class="relations-container">
+                        <div class="trait-group half-width">
+                            <h3><i class="fas fa-arrow-down"></i> Inherits From</h3>
+                            <ul class="trait-list" id="dna-prereq"></ul>
+                        </div>
+                        
+                        <div class="trait-group half-width">
+                            <h3><i class="fas fa-code-branch"></i> Evolves Into</h3>
+                            <ul class="trait-list" id="dna-derived"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="trait-group">
+                        <h3><i class="fas fa-lightbulb"></i> Real-World Application</h3>
+                        <p id="dna-applications" class="dna-text-block">Uses</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script src="algorithm-genetics-lab.js"></script>
+    <script>
+        // Load Navbar
+        fetch('/partials/navbar.html')
+            .then(response => {
+                if (!response.ok) throw new Error(`Navbar load failed: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            })
+            .catch(() => {
+                const host = document.getElementById('navbar-placeholder');
+                if (host) host.innerHTML = '<nav aria-label="Primary"><a href="/index.html">Home</a></nav>';
+            });
+            
+        // Hide loading screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 800);
+        });
+    </script>
+</body>
+
+</html>

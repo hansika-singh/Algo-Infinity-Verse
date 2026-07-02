@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lazy Load Test</title>
+    <style>
+        .spacer {
+            height: 2000px;
+            background: #eee;
+        }
+        /* Styles from styles.css */
+        img.lazy-image, .lazy-bg {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        img.lazy-loaded, .lazy-bg.lazy-loaded {
+            opacity: 1;
+        }
+        .lazy-bg {
+            width: 100px;
+            height: 100px;
+            background-color: lightblue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lazy Loading Test Cases</h1>
+    
+    <!-- spacer to push images offscreen -->
+    <div class="spacer">Scroll down...</div>
+
+    <!-- Case 1: Native lazy load -->
+    <img id="native-lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==" loading="lazy" alt="Native lazy">
+    
+    <!-- Case 2: Intersection Observer lazy image -->
+    <img id="io-lazy-img" class="lazy-image" data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==" alt="IO lazy">
+
+    <!-- Case 3: Intersection Observer lazy background -->
+    <div id="io-lazy-bg" class="lazy-bg" data-bg="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=="></div>
+
+    <script src="../scripts/lazy-load.js"></script>
+</body>
+</html>

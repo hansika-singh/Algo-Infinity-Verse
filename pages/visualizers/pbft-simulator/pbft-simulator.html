@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Byzantine Fault Tolerance (pBFT) Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for the Practical Byzantine Fault Tolerance consensus algorithm." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pbft-simulator.css" />
+</head>
+<body class="pbft-body">
+
+    <nav class="navbar pbft-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-shield-alt"></i> Consensus Engine: Idle
+        </div>
+    </nav>
+
+    <main class="pbft-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Cluster Configuration</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    <strong>pBFT</strong> guarantees consensus even if nodes are actively malicious (sending conflicting lies), provided that the total number of nodes $N \ge 3f + 1$, where $f$ is the number of faulty nodes.
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnStartConsensus">
+                        <i class="fas fa-bolt"></i> Start Consensus
+                    </button>
+                    <button class="btn btn-outline" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Network
+                    </button>
+                    <button class="btn btn-secondary w-100" id="btnAddNode" style="grid-column: span 2;">
+                        <i class="fas fa-plus"></i> Add Replica Node
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mathematical Thresholds -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-calculator"></i> Byzantine Thresholds</h4>
+                <div class="math-grid">
+                    <div class="math-box">
+                        <span class="m-label">Total Nodes (N)</span>
+                        <span class="m-val text-primary" id="valN">4</span>
+                    </div>
+                    <div class="math-box">
+                        <span class="m-label">Max Traitors (f)</span>
+                        <span class="m-val text-danger" id="valF">1</span>
+                    </div>
+                    <div class="math-box" style="grid-column: span 2;">
+                        <span class="m-label">Quorum Required (2f + 1)</span>
+                        <span class="m-val text-success" id="valQuorum">3</span>
+                    </div>
+                </div>
+                
+                <div class="chaos-instruction">
+                    <i class="fas fa-user-secret"></i>
+                    <span>Click on any node in the graph to toggle its <strong>Malicious</strong> status. Malicious nodes will broadcast conflicting values.</span>
+                </div>
+            </div>
+
+            <!-- Network Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-list-alt"></i> Consensus Ledger</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Network booted. Awaiting client request.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Network Topology -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> P2P Mesh Network</span>
+                <span class="phase-indicator" id="phaseIndicator">Phase: IDLE</span>
+            </div>
+            
+            <div class="canvas-wrapper" id="networkCanvas">
+                <!-- SVG Layer for links and packets -->
+                <svg class="network-svg" id="svgLayer">
+                    <g id="connectionsGroup"></g>
+                    <g id="packetsGroup"></g>
+                </svg>
+                
+                <!-- DOM Nodes Layer -->
+                <div class="nodes-layer" id="nodesLayer"></div>
+            </div>
+
+            <div class="canvas-legend">
+                <span class="legend-item"><span class="swatch s-primary"></span> Primary (Leader)</span>
+                <span class="legend-item"><span class="swatch s-honest"></span> Honest Replica</span>
+                <span class="legend-item"><span class="swatch s-malicious"></span> Malicious Traitor</span>
+                <div style="width: 1px; height: 15px; background: #334155; margin: 0 10px;"></div>
+                <span class="legend-item"><span class="packet-swatch p-true"></span> Valid Data</span>
+                <span class="legend-item"><span class="packet-swatch p-lie"></span> Corrupted / Lie</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="pbft-simulator.js"></script>
+</body>
+</html>

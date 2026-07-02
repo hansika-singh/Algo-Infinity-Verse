@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algorithm Music Composer | Algo Infinity Verse</title>
+  <meta name="description" content="Generate and listen to dynamic musical compositions synthesized in real-time based on sorting and graph algorithm execution paths." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="algorithm-music-composer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+
+</head>
+<body data-page="algorithm-music-composer">
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="mc-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      <div class="mc-aurora"></div>
+    </div>
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-line">Acoustic Logic</span>
+        <span class="main-title mc-gradient">Algorithm Music Composer 🎵</span>
+        <span class="subtitle">Hear the patterns of execution in real-time.</span>
+      </h1>
+      <p class="section-subtitle">
+        We map code operations directly to frequencies and soundwaves. Watch sorting and traversals write their own soundtrack using Web Audio synthesis.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container py-4">
+    <div class="print-export-bar">
+      <button id="exportPdfBtn" class="btn btn-primary print-export-btn" type="button" aria-label="Export current page as PDF">
+        <i class="fas fa-file-pdf"></i> Export to PDF
+      </button>
+    </div>
+
+    
+    <div class="row layout-row-gap">
+      
+      <!-- Left Column: Audio Console & Synthesizer controls -->
+      <div class="col-lg-4 col-md-12">
+        <div class="dream-card p-4 height-100 flex-column justify-between" id="composer-console">
+          
+          <div>
+            <div class="card-header pb-3 mb-3 border-bottom flex justify-between align-center">
+              <h3 class="m-0"><i class="fas fa-sliders"></i> Audio Console</h3>
+              <span class="live-badge" id="audio-context-status"><i class="fas fa-volume-mute"></i> Muted</span>
+            </div>
+
+            <div class="console-controls-grid">
+              <!-- Select Algorithm -->
+              <div class="form-group mb-3">
+                <label for="select-mc-algo"><i class="fas fa-network-wired"></i> Select Algorithm</label>
+                <select id="select-mc-algo" class="dream-input">
+                  <option value="mergesort" selected>Merge Sort (Classical Piano)</option>
+                  <option value="bfs">BFS Traversal (Rhythmic Pulse)</option>
+                  <option value="dfs">DFS Traversal (Deep Ambient)</option>
+                </select>
+              </div>
+
+              <!-- Wave Type -->
+              <div class="form-group mb-3">
+                <label for="select-osc-type"><i class="fas fa-wave-square"></i> Synth wave Timbre</label>
+                <select id="select-osc-type" class="dream-input">
+                  <option value="sine" selected>Sine (Smooth & Pure)</option>
+                  <option value="triangle">Triangle (Flute / Warm)</option>
+                  <option value="sawtooth">Sawtooth (Searing Brass)</option>
+                  <option value="square">Square (Retro / Chiptune)</option>
+                </select>
+              </div>
+
+              <!-- Sliders (Volume, Tempo) -->
+              <div class="form-group mb-3">
+                <div class="flex justify-between align-center text-sm mb-1">
+                  <span><i class="fas fa-volume-high"></i> Master Gain</span>
+                  <span id="display-val-volume">60%</span>
+                </div>
+                <input type="range" id="slider-volume" min="0" max="100" value="60" class="mc-slider" />
+              </div>
+
+              <div class="form-group mb-3">
+                <div class="flex justify-between align-center text-sm mb-1">
+                  <span><i class="fas fa-gauge-high"></i> Playback Tempo</span>
+                  <span id="display-val-tempo">120 BPM</span>
+                </div>
+                <input type="range" id="slider-tempo" min="40" max="280" value="120" class="mc-slider" />
+              </div>
+            </div>
+
+            <!-- HTML5 Frequency Waveform Canvas -->
+            <div class="spectrum-container mt-4">
+              <div class="spectrum-title text-xs text-muted mb-1 uppercase font-semibold">Frequency Spectrum</div>
+              <canvas id="analyser-canvas" height="90" style="width: 100%; height: 90px; border-radius: 8px; background: #000;"></canvas>
+            </div>
+          </div>
+
+          <!-- Playback Actions -->
+          <div class="playback-actions border-top pt-3 mt-3">
+            <div class="mc-playback-grid">
+              <button id="btn-play" class="btn btn-primary mc-icon-btn" aria-label="Play sequence">
+                <i class="fas fa-play"></i>
+              </button>
+              <button id="btn-pause" class="btn btn-outline mc-icon-btn" disabled aria-label="Pause sequence">
+                <i class="fas fa-pause"></i>
+              </button>
+              <button id="btn-reset" class="btn btn-secondary mc-icon-btn" aria-label="Reset sequence">
+                <i class="fas fa-rotate-left"></i>
+              </button>
+            </div>
+
+            <div class="mc-seq-progress mt-3" aria-hidden="true">
+              <div class="mc-seq-progress-top">
+                <span class="mc-seq-progress-label"><i class="fas fa-wave-square"></i> Sequence</span>
+                <span class="mc-seq-step-label" id="mc-seq-step-label">Step: 0</span>
+              </div>
+              <div class="mc-seq-progress-track">
+                <div class="mc-seq-progress-fill" id="mc-seq-progress-fill"></div>
+              </div>
+              <div class="mc-seq-timeline" id="mc-seq-timeline"></div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Visualizer Stage & Explanations -->
+      <div class="col-lg-8 col-md-12">
+        <div class="flex-column gap-4 height-100">
+          
+          <!-- Visualizer Stage -->
+          <div class="dream-card flex-grow-1 overflow-hidden" style="min-height: 400px;">
+            <div class="card-header p-3 border-bottom flex justify-between align-center">
+              <h4 class="m-0"><i class="fas fa-tv"></i> Execution Stage</h4>
+              <div class="visualizer-status" id="composer-status-badge">Idle</div>
+            </div>
+              <div class="card-body p-0 text-center position-relative" style="background: radial-gradient(circle at center, #111117 0%, #060609 100%);">
+                <div class="stage-container" style="width: 100%; height: 380px;">
+                  <div class="mc-note-indicator" id="mc-note-indicator" aria-hidden="true"></div>
+                  <svg id="stage-svg" width="100%" height="100%"></svg>
+                </div>
+              </div>
+
+          </div>
+
+          <!-- Explanation Panel -->
+          <div class="dream-card p-4">
+            <div class="card-header pb-2 mb-2 border-bottom">
+              <h4 class="m-0"><i class="fas fa-music"></i> Sonification Dictionary</h4>
+            </div>
+            <div class="card-body">
+              <div class="explanation-box" id="composer-explanation-content">
+                <!-- Interpolated via JS depending on algorithm -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./algorithm-music-composer.js"></script>
+
+  <script type="module">
+    import { initPrint } from "/modules/print.js";
+    initPrint();
+  </script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

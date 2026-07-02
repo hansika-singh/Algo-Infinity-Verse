@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problem Solving Framework | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Learn a repeatable 5-stage framework for solving coding interview problems: Understand, Brute Force, Optimize, Code, Test." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="problem-solving-framework.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="problem-solving-framework">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Master Any Coding Problem With</span>
+        <span class="main-title gradient-text">The 5-Stage Framework</span>
+        <span class="subtitle">Understand → Brute Force → Optimize → Code → Test</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text-psf" id="typingTextPsf"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#understand" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Learning
+        </a>
+        <a href="#practice-section" class="btn btn-secondary">
+          <i class="fas fa-dumbbell"></i> Practice Problems
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <span class="stat-number" data-target="5">0</span>
+          <span class="stat-label">Framework Stages</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="12">0</span>
+          <span class="stat-label">Techniques</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="6">0</span>
+          <span class="stat-label">Practice Problems</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Problem Solving Framework Section -->
+  <section id="psf-section" class="section">
+    <div class="container">
+
+      <h2 class="section-title">
+        <span class="title-icon">🧠</span>
+        Problem Solving Framework
+      </h2>
+      <p class="section-subtitle">
+        A repeatable 5-stage workflow to systematically solve any coding interview problem.
+      </p>
+
+      <!-- Progress Bar -->
+      <div class="psf-progress-bar" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Learning progress">
+        <span class="psf-progress-text">
+          <span id="progressCount">0</span> / 6 stages completed
+        </span>
+        <div class="psf-progress-track">
+          <div class="psf-progress-fill" id="progressFill"></div>
+        </div>
+        <span class="psf-progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div class="psf-layout">
+
+        <!-- Sidebar Navigation -->
+        <aside class="psf-sidebar" aria-label="Stage navigation">
+          <div class="psf-sidebar-title">Framework Stages</div>
+          <ul class="psf-sidebar-nav" id="topicNav">
+            <li><a href="#understand" class="psf-nav-link"><span class="nav-icon">🔍</span> 1. Understand</a></li>
+            <li><a href="#brute-force" class="psf-nav-link"><span class="nav-icon">💪</span> 2. Brute Force</a></li>
+            <li><a href="#optimize" class="psf-nav-link"><span class="nav-icon">⚡</span> 3. Optimize</a></li>
+            <li><a href="#code" class="psf-nav-link"><span class="nav-icon">📝</span> 4. Code</a></li>
+            <li><a href="#test" class="psf-nav-link"><span class="nav-icon">✅</span> 5. Test</a></li>
+            <li><a href="#practice-section" class="psf-nav-link"><span class="nav-icon">🏋️</span> Practice</a></li>
+          </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="psf-main-content" id="mainContent">
+
+          <!-- ═══════════════════════════════════════
+               Stage 1: Understand
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="understand" data-topic="1">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">01</span>
+              <div class="psf-stage-badge psf-stage-badge--understand">Stage 1</div>
+              <h3>Understand the Problem</h3>
+            </div>
+
+            <p>
+              Before writing a single line of code, you must fully understand what the
+              problem is asking. Most mistakes happen because candidates rush this step.
+            </p>
+
+            <div class="psf-concept-card">
+              <h4>The 4-Step Clarification Process</h4>
+              <ol>
+                <li><strong>Read the problem carefully</strong> — Read it 2-3 times. Circle key terms.</li>
+                <li><strong>Identify inputs and outputs</strong> — What are the function parameters? What should it return?</li>
+                <li><strong>Determine constraints</strong> — Input size, value ranges, time/space limits.</li>
+                <li><strong>Ask clarifying questions</strong> — Can the input be empty? Are there duplicates? Is it sorted?</li>
+              </ol>
+            </div>
+
+            <div class="psf-callout">
+              <span class="psf-callout-icon">💡</span>
+              <p><strong>Pro Tip:</strong> Restate the problem in your own words and confirm with the interviewer.
+                 "So just to confirm, I need to find the first non-repeating character in a string
+                 and return its index — is that correct?"</p>
+            </div>
+
+            <div class="psf-concept-card">
+              <h4>Example: Clarifying Questions</h4>
+              <p>Given: <code>Given an array of integers, return indices of two numbers that add up to a target.</code></p>
+              <ul>
+                <li>What if no two numbers sum to the target?</li>
+                <li>Can the same element be used twice?</li>
+                <li>Is the array sorted?</li>
+                <li>What if there are multiple valid pairs?</li>
+              </ul>
+            </div>
+
+            <div class="psf-exercise" id="exercise-understand">
+              <div class="psf-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Ask Questions
+              </div>
+              <p>For the problem <strong>"Find the longest substring without repeating characters"</strong>,
+                 what clarifying questions would you ask?</p>
+              <button class="psf-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-understand">Show Sample Questions</button>
+              <div class="psf-exercise-solution" id="solution-understand">
+                <ul>
+                  <li>What characters are allowed? (ASCII, Unicode, only letters?)</li>
+                  <li>What should be returned for an empty string?</li>
+                  <li>Should substring be contiguous? (Yes, by definition)</li>
+                  <li>Case-sensitive or case-insensitive?</li>
+                  <li>What is the maximum length of the input string?</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               Stage 2: Brute Force
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="brute-force" data-topic="2">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">02</span>
+              <div class="psf-stage-badge psf-stage-badge--bruteforce">Stage 2</div>
+              <h3>Brute Force Solution</h3>
+            </div>
+
+            <p>
+              Start with the simplest possible solution. It doesn't need to be efficient —
+              it needs to be <em>correct</em>. A brute force solution shows you understand
+              the problem and gives you a baseline to optimize from.
+            </p>
+
+            <div class="psf-concept-card">
+              <h4>Why Start With Brute Force?</h4>
+              <ul>
+                <li>Guarantees you can solve the problem (even if slowly)</li>
+                <li>Provides a correctness baseline for optimized solutions</li>
+                <li>Demonstrates your thought process to the interviewer</li>
+                <li>Often suggests where the optimization opportunities lie</li>
+              </ul>
+            </div>
+
+            <div class="psf-callout">
+              <span class="psf-callout-icon">⚡</span>
+              <p><strong>Always state the complexity</strong> — After writing brute force, analyze it:
+                 "This is O(n²) time and O(1) space. Can we do better?"</p>
+            </div>
+
+            <!-- Two Sum Brute Force Example -->
+            <div class="psf-concept-card">
+              <h4>Example: Two Sum — Brute Force</h4>
+              <p><strong>Problem:</strong> Given an array <code>nums</code> and a <code>target</code>,
+                 return indices of two numbers that add up to the target.</p>
+              <p><strong>Approach:</strong> Compare every pair of elements.</p>
+            </div>
+
+            <div class="psf-code-block">
+              <div class="psf-code-header">
+                <span class="psf-code-lang">JavaScript</span>
+                <button class="psf-code-copy" type="button" aria-label="Copy code"
+                  data-code="function twoSum(nums, target) {
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+  return [];
+}">Copy</button>
+              </div>
+              <pre><code>function twoSum(nums, target) {
+  for (let i = 0; i &lt; nums.length; i++) {
+    for (let j = i + 1; j &lt; nums.length; j++) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+  return [];
+}</code></pre>
+            </div>
+
+            <div class="psf-output">
+              <div class="psf-output-label">Complexity Analysis</div>
+              <pre>Time Complexity: O(n²) — nested loops over the array
+Space Complexity: O(1) — only using a few variables</pre>
+            </div>
+
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               Stage 3: Optimize
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="optimize" data-topic="3">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">03</span>
+              <div class="psf-stage-badge psf-stage-badge--optimize">Stage 3</div>
+              <h3>Optimize Your Solution</h3>
+            </div>
+
+            <p>
+              Once you have a working brute force, identify the bottlenecks and apply
+              the right patterns to improve time and space complexity.
+            </p>
+
+            <div class="psf-concept-card">
+              <h4>How to Optimize</h4>
+              <ol>
+                <li>Identify the <strong>bottleneck</strong> — usually the innermost loop</li>
+                <li>Look for <strong>redundant work</strong> — are you recomputing values?</li>
+                <li>Consider a <strong>better data structure</strong> — HashMap, Set, Heap, etc.</li>
+                <li>Apply a <strong>known pattern</strong> — Sliding Window, Two Pointers, etc.</li>
+                <li>Evaluate the <strong>time-space tradeoff</strong></li>
+              </ol>
+            </div>
+
+            <!-- Two Sum Optimized -->
+            <div class="psf-subsection">
+              <h4 class="psf-subsection-title">Optimization 1: HashMap Lookup</h4>
+              <p>
+                Replace the inner loop with a HashMap to track seen numbers.
+                Trade O(n) space for O(1) lookup.
+              </p>
+            </div>
+
+            <div class="psf-code-block">
+              <div class="psf-code-header">
+                <span class="psf-code-lang">JavaScript — Hash Map</span>
+                <button class="psf-code-copy" type="button" aria-label="Copy code"
+                  data-code="function twoSum(nums, target) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    map.set(nums[i], i);
+  }
+  return [];
+}">Copy</button>
+              </div>
+              <pre><code>function twoSum(nums, target) {
+  const map = new Map();
+  for (let i = 0; i &lt; nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    map.set(nums[i], i);
+  }
+  return [];
+}</code></pre>
+            </div>
+
+            <div class="psf-output">
+              <div class="psf-output-label">Complexity Analysis</div>
+              <pre>Time Complexity: O(n) — single pass through the array
+Space Complexity: O(n) — HashMap stores up to n elements</pre>
+            </div>
+
+            <!-- Optimization Patterns -->
+            <div class="psf-concept-card">
+              <h4>Common Optimization Patterns</h4>
+              <div class="psf-pattern-grid">
+                <div class="psf-pattern-card">
+                  <div class="psf-pattern-icon"><i class="fas fa-map"></i></div>
+                  <div class="psf-pattern-name">HashMap</div>
+                  <div class="psf-pattern-desc">O(1) lookup trades space for speed</div>
+                </div>
+                <div class="psf-pattern-card">
+                  <div class="psf-pattern-icon"><i class="fas fa-window-maximize"></i></div>
+                  <div class="psf-pattern-name">Sliding Window</div>
+                  <div class="psf-pattern-desc">O(n) for contiguous subarray problems</div>
+                </div>
+                <div class="psf-pattern-card">
+                  <div class="psf-pattern-icon"><i class="fas fa-plus-circle"></i></div>
+                  <div class="psf-pattern-name">Prefix Sum</div>
+                  <div class="psf-pattern-desc">O(1) range sum queries</div>
+                </div>
+                <div class="psf-pattern-card">
+                  <div class="psf-pattern-icon"><i class="fas fa-search"></i></div>
+                  <div class="psf-pattern-name">Binary Search</div>
+                  <div class="psf-pattern-desc">O(log n) on sorted data</div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               Stage 4: Code
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="code" data-topic="4">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">04</span>
+              <div class="psf-stage-badge psf-stage-badge--code">Stage 4</div>
+              <h3>Write Clean Code</h3>
+            </div>
+
+            <p>
+              With a clear optimized plan, now write code that is readable, maintainable,
+              and correct. Your solution should communicate intent as clearly as it computes results.
+            </p>
+
+            <div class="psf-concept-card">
+              <h4>Clean Coding Principles</h4>
+              <ul>
+                <li><strong>Use descriptive names</strong> — <code>numberOfOccurrences</code> not <code>n</code>, <code>numMap</code> not <code>mp</code></li>
+                <li><strong>Write modular logic</strong> — Extract helper functions for reusable logic</li>
+                <li><strong>Handle edge cases first</strong> — Check null, empty, invalid inputs at the top</li>
+                <li><strong>Keep functions small</strong> — Each function should do one thing well</li>
+                <li><strong>Add comments sparingly</strong> — Prefer self-documenting code</li>
+              </ul>
+            </div>
+
+            <div class="psf-code-block">
+              <div class="psf-code-header">
+                <span class="psf-code-lang">JavaScript — Clean Version</span>
+                <button class="psf-code-copy" type="button" aria-label="Copy code"
+                  data-code="function twoSum(nums, target) {
+  const seen = new Map();
+
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+
+    if (seen.has(complement)) {
+      return [seen.get(complement), i];
+    }
+
+    seen.set(nums[i], i);
+  }
+
+  return [];
+}">Copy</button>
+              </div>
+              <pre><code>function twoSum(nums, target) {
+  const seen = new Map();
+
+  for (let i = 0; i &lt; nums.length; i++) {
+    const complement = target - nums[i];
+
+    if (seen.has(complement)) {
+      return [seen.get(complement), i];
+    }
+
+    seen.set(nums[i], i);
+  }
+
+  return [];
+}</code></pre>
+            </div>
+
+            <div class="psf-callout">
+              <span class="psf-callout-icon">⚠️</span>
+              <p><strong>Edge Cases Checklist:</strong>
+                 Empty input &bull; Single element &bull; Null/undefined &bull;
+                 Large values &bull; Negative numbers &bull; Duplicates</p>
+            </div>
+
+            <div class="psf-exercise" id="exercise-code">
+              <div class="psf-exercise-title">
+                <i class="fas fa-dumbbell"></i> Practice: Edge Cases
+              </div>
+              <p>What edge cases should the <strong>Two Sum</strong> function handle?</p>
+              <button class="psf-exercise-toggle" type="button"
+                aria-expanded="false" aria-controls="solution-code">Show Answer</button>
+              <div class="psf-exercise-solution" id="solution-code">
+                <ul>
+                  <li><strong>Empty array:</strong> Return <code>[]</code> (no pair possible)</li>
+                  <li><strong>Single element:</strong> Return <code>[]</code> (need at least 2 elements)</li>
+                  <li><strong>No valid pair:</strong> Return <code>[]</code></li>
+                  <li><strong>Negative numbers:</strong> The complement logic works naturally with negatives</li>
+                  <li><strong>Target is zero:</strong> e.g., <code>[1, -1]</code>, target <code>0</code> → <code>[0, 1]</code></li>
+                  <li><strong>Multiple valid pairs:</strong> Return the first one found (any is valid per spec)</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               Stage 5: Test
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="test" data-topic="5">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">05</span>
+              <div class="psf-stage-badge psf-stage-badge--test">Stage 5</div>
+              <h3>Test Your Solution</h3>
+            </div>
+
+            <p>
+              Testing is not optional. Walk through your code manually with example inputs
+              and verify correctness. A methodical testing strategy catches bugs before the interviewer does.
+            </p>
+
+            <div class="psf-concept-card">
+              <h4>Testing Strategy</h4>
+              <ol>
+                <li><strong>Test the example</strong> given in the problem — verify your understanding</li>
+                <li><strong>Test edge cases</strong> — empty, single, boundary values</li>
+                <li><strong>Test duplicate values</strong> — ensure correct handling</li>
+                <li><strong>Test large inputs</strong> — reason about time/space constraints</li>
+                <li><strong>Trace through the code</strong> — simulate execution with small inputs</li>
+              </ol>
+            </div>
+
+            <div class="psf-table-wrap">
+              <table class="psf-table" aria-label="Two Sum test cases">
+                <thead>
+                  <tr>
+                    <th scope="col">Test Case</th>
+                    <th scope="col">Input</th>
+                    <th scope="col">Target</th>
+                    <th scope="col">Expected</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Normal</td><td><code>[2, 7, 11, 15]</code></td><td>9</td><td><code>[0, 1]</code></td></tr>
+                  <tr><td>Duplicates</td><td><code>[3, 3]</code></td><td>6</td><td><code>[0, 1]</code></td></tr>
+                  <tr><td>Negative</td><td><code>[-1, -2, -3]</code></td><td>-5</td><td><code>[1, 2]</code></td></tr>
+                  <tr><td>No match</td><td><code>[1, 2, 3]</code></td><td>7</td><td><code>[]</code></td></tr>
+                  <tr><td>Empty</td><td><code>[]</code></td><td>5</td><td><code>[]</code></td></tr>
+                  <tr><td>Single</td><td><code>[1]</code></td><td>1</td><td><code>[]</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="psf-callout">
+              <span class="psf-callout-icon">💡</span>
+              <p><strong>Verbal Tracing:</strong> "For input [2, 7, 11, 15] with target 9:
+                 i=0, complement=7, seen is empty, store {2→0}.
+                 i=1, complement=2, seen has 2! Return [0, 1]. Correct."</p>
+            </div>
+          </article>
+
+          <!-- ═══════════════════════════════════════
+               Interactive Practice Section
+               ═══════════════════════════════════════ -->
+          <article class="psf-lesson" id="practice-section" data-topic="6">
+            <div class="psf-lesson-header">
+              <span class="psf-lesson-number">06</span>
+              <div class="psf-stage-badge psf-stage-badge--practice">Practice</div>
+              <h3>Apply the Framework</h3>
+            </div>
+
+            <p>
+              Practice applying the 5-stage framework to these problems. For each one,
+              identify the brute force, suggest an optimization, and estimate complexity.
+            </p>
+
+            <div class="psf-practice-problems" id="psfPracticeProblems">
+
+              <!-- Problem 1 -->
+              <div class="psf-practice-card" data-problem="1">
+                <div class="psf-practice-header">
+                  <span class="psf-practice-number">Problem 1</span>
+                  <span class="psf-practice-difficulty psf-difficulty-easy">Easy</span>
+                </div>
+                <h4 class="psf-practice-title">Contains Duplicate</h4>
+                <p class="psf-practice-desc">
+                  Given an integer array <code>nums</code>, return <code>true</code> if any
+                  value appears at least twice, otherwise return <code>false</code>.
+                </p>
+
+                <div class="psf-practice-input">
+                  <strong>Example:</strong> <code>nums = [1, 2, 3, 1]</code> → <code>true</code>
+                </div>
+
+                <div class="psf-practice-questions">
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Brute Force Approach</label>
+                    <select class="psf-pq-select" id="problem1-brute">
+                      <option value="">— Select —</option>
+                      <option value="nested">Nested loops comparing every pair</option>
+                      <option value="sort">Sort then compare neighbors</option>
+                      <option value="hash">HashSet for O(1) lookup</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem1-brute-feedback"></div>
+                  </div>
+
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Optimized Complexity</label>
+                    <select class="psf-pq-select" id="problem1-complexity">
+                      <option value="">— Select —</option>
+                      <option value="on2">O(n²) time, O(1) space</option>
+                      <option value="on">O(n) time, O(n) space</option>
+                      <option value="ologn">O(n log n) time, O(1) space</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem1-complexity-feedback"></div>
+                  </div>
+                </div>
+
+                <button class="psf-pq-submit" type="button" data-problem="1">Check Answers</button>
+                <div class="psf-pq-result" id="problem1-result"></div>
+              </div>
+
+              <!-- Problem 2 -->
+              <div class="psf-practice-card" data-problem="2">
+                <div class="psf-practice-header">
+                  <span class="psf-practice-number">Problem 2</span>
+                  <span class="psf-practice-difficulty psf-difficulty-medium">Medium</span>
+                </div>
+                <h4 class="psf-practice-title">Maximum Subarray</h4>
+                <p class="psf-practice-desc">
+                  Given an integer array <code>nums</code>, find the contiguous subarray
+                  (at least one element) with the largest sum and return that sum.
+                </p>
+
+                <div class="psf-practice-input">
+                  <strong>Example:</strong> <code>nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]</code> → <code>6</code>
+                </div>
+
+                <div class="psf-practice-questions">
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Brute Force Approach</label>
+                    <select class="psf-pq-select" id="problem2-brute">
+                      <option value="">— Select —</option>
+                      <option value="nested">Try all subarrays with nested loops</option>
+                      <option value="divide">Divide and conquer</option>
+                      <option value="kadane">Kadane's algorithm (single pass)</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem2-brute-feedback"></div>
+                  </div>
+
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Optimized Approach</label>
+                    <select class="psf-pq-select" id="problem2-optimized">
+                      <option value="">— Select —</option>
+                      <option value="nested">Nested loops O(n²)</option>
+                      <option value="divide">Divide and conquer O(n log n)</option>
+                      <option value="kadane">Kadane's algorithm O(n)</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem2-optimized-feedback"></div>
+                  </div>
+
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Kadane's Complexity</label>
+                    <select class="psf-pq-select" id="problem2-complexity">
+                      <option value="">— Select —</option>
+                      <option value="on2">O(n²) time, O(1) space</option>
+                      <option value="on">O(n) time, O(1) space</option>
+                      <option value="onlogn">O(n log n) time, O(n) space</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem2-complexity-feedback"></div>
+                  </div>
+                </div>
+
+                <button class="psf-pq-submit" type="button" data-problem="2">Check Answers</button>
+                <div class="psf-pq-result" id="problem2-result"></div>
+              </div>
+
+              <!-- Problem 3 -->
+              <div class="psf-practice-card" data-problem="3">
+                <div class="psf-practice-header">
+                  <span class="psf-practice-number">Problem 3</span>
+                  <span class="psf-practice-difficulty psf-difficulty-hard">Hard</span>
+                </div>
+                <h4 class="psf-practice-title">Sliding Window Maximum</h4>
+                <p class="psf-practice-desc">
+                  Given an array <code>nums</code> and an integer <code>k</code>, return the
+                  maximum element in each sliding window of size <code>k</code>.
+                </p>
+
+                <div class="psf-practice-input">
+                  <strong>Example:</strong> <code>nums = [1, 3, -1, -3, 5, 3, 6, 7]</code>,
+                  <code>k = 3</code> → <code>[3, 3, 5, 5, 6, 7]</code>
+                </div>
+
+                <div class="psf-practice-questions">
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Brute Force Complexity</label>
+                    <select class="psf-pq-select" id="problem3-brute">
+                      <option value="">— Select —</option>
+                      <option value="on">O(n) time, O(1) space</option>
+                      <option value="onk">O(n·k) time, O(1) space</option>
+                      <option value="on2">O(n²) time, O(n) space</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem3-brute-feedback"></div>
+                  </div>
+
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Optimized Data Structure</label>
+                    <select class="psf-pq-select" id="problem3-optimized">
+                      <option value="">— Select —</option>
+                      <option value="hashmap">HashMap</option>
+                      <option value="deque">Deque (Monotonic Queue)</option>
+                      <option value="heap">Min-Heap</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem3-optimized-feedback"></div>
+                  </div>
+
+                  <div class="psf-pq-item">
+                    <label class="psf-pq-label">Optimized Complexity</label>
+                    <select class="psf-pq-select" id="problem3-complexity">
+                      <option value="">— Select —</option>
+                      <option value="on">O(n) time, O(k) space</option>
+                      <option value="onlogn">O(n log n) time, O(n) space</option>
+                      <option value="onk">O(n·k) time, O(1) space</option>
+                    </select>
+                    <div class="psf-pq-feedback" id="problem3-complexity-feedback"></div>
+                  </div>
+                </div>
+
+                <button class="psf-pq-submit" type="button" data-problem="3">Check Answers</button>
+                <div class="psf-pq-result" id="problem3-result"></div>
+              </div>
+
+            </div>
+          </article>
+
+        </main>
+      </div><!-- /.psf-layout -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./problem-solving-framework.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

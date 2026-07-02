@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Failure Simulation Engine | Algo Infinity Verse</title>
+  <meta name="description" content="Simulate real technical interview stressors: sudden deadline contractions, memory overhead constraints, hidden boundary inputs, and conversational interruptions." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="failure-simulator.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen"><div class="loader"><div class="infinity-loader">∞</div><h2>Algo Infinity Verse</h2><div class="loading-bar"><div class="loading-progress"></div></div></div></div>
+  
+  <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+  
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-logo"><span class="logo-text">∞</span><span class="logo-title">Algo Infinity Verse</span></div>
+    <ul class="nav-links" id="navLinks">
+      <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+      <li class="nav-item has-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+          <span>Learn</span>
+          <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
+          <a href="index.html#practice" class="dropdown-item" role="menuitem">Practice Problems</a>
+          <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
+          <a href="index.html#roadmap" class="dropdown-item" role="menuitem">Learning Roadmap</a>
+          <a href="algorithm-timeline.html" class="dropdown-item" role="menuitem">Algorithm Timeline</a>
+          <a href="concept-bridge.html" class="dropdown-item" role="menuitem">Concept Bridge Trainer</a>
+          <a href="think-aloud-judge.html" class="dropdown-item" role="menuitem">Think-Aloud AI Judge</a>
+          <a href="sorting-visualizer.html" class="dropdown-item" role="menuitem">Sorting Visualizer</a>
+          <a href="complexity-calculator.html" class="dropdown-item" role="menuitem">Complexity Calculator</a>
+        </div>
+      </li>
+      <li class="nav-item has-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+          <span>Interview</span>
+          <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="index.html#interview" class="dropdown-item" role="menuitem">Interview Prep</a>
+          <a href="cheat-sheets.html" class="dropdown-item" role="menuitem">DSA Cheat Sheets</a>
+          <a href="system-design.html" class="dropdown-item" role="menuitem">System Design</a>
+          <a href="behavioral-questions.html" class="dropdown-item" role="menuitem">Behavioral Questions</a>
+          <a href="failure-simulator.html" class="dropdown-item active" role="menuitem">Failure Simulator</a>
+        </div>
+      </li>
+      <li class="nav-item has-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+          <span>Community</span>
+          <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a href="community.html" class="dropdown-item" role="menuitem">Discussions</a>
+          <a href="index.html#dashboard" class="dropdown-item" role="menuitem">Leaderboard</a>
+          <a href="feedback.html" class="dropdown-item" role="menuitem">Feedback</a>
+        </div>
+      </li>
+      <li class="nav-item has-dropdown nav-profile-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+          <span>Profile</span>
+          <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" role="menu">
+          <a href="index.html#dashboard" class="dropdown-item" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <a href="index.html#profile" class="dropdown-item" role="menuitem"><i class="fas fa-user"></i> My Profile</a>
+          <a href="/execution-history.html" class="dropdown-item" role="menuitem" data-auth-required><i class="fas fa-history"></i> Execution History</a>
+          <a href="/pages/career/resume/resume.html" class="dropdown-item" role="menuitem"><i class="fas fa-file-alt"></i> Coding Resume</a>
+        </div>
+      </li>
+      <div class="nav-buttons">
+        <button id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="fse-hero">
+    <div class="fse-hero-badge"><i class="fas fa-bolt-lightning animate-pulse"></i> Failure Simulation Engine</div>
+    <h1><span>Failure Simulation</span><br/><span class="gold-text">Engine</span></h1>
+    <p>Train your coding resilience under simulated interview pressure. Surmount sudden time contractions, strict memory limits, hidden base-case failures, and interrupting Q&A constraints.</p>
+    <div class="fse-hero-stats">
+      <div class="fse-stat"><span class="fse-stat-val" id="fseCompletedVal">0</span><span class="fse-stat-label">Sessions Run</span></div>
+      <div class="fse-stat"><span class="fse-stat-val" id="fseResilienceVal">N/A</span><span class="fse-stat-label">Avg Resilience</span></div>
+      <div class="fse-stat"><span class="fse-stat-val" id="fseStressorsVal">0</span><span class="fse-stat-label">Stressors Defeated</span></div>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <section class="section" id="workspace-section">
+    <div class="container">
+      <div class="fse-workspace">
+        
+        <!-- Left Panel: Code Arena -->
+        <div class="fse-panel-card" id="fseEditorPanel">
+          <div class="fse-panel-header">
+            <div class="fse-panel-title"><i class="fas fa-code fse-panel-icon"></i><h3>Code Arena</h3></div>
+            <div class="fse-selectors">
+              <select id="fseLanguageSelect" class="fse-select" aria-label="Select language">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+              </select>
+            </div>
+          </div>
+          <div class="fse-editor-wrapper">
+            <div class="fse-pane-label">
+              <span><i class="fas fa-terminal"></i> Write your solution here</span>
+              <span id="fseLineCount">1 line</span>
+            </div>
+            <div class="fse-editor-frame">
+              <div class="fse-line-numbers" id="fseLineNumbers">1</div>
+              <textarea id="fseCodeEditor" class="fse-code-textarea" spellcheck="false" placeholder="# Configure parameters below and click 'Initialize Simulation'..." aria-label="Code editor for failure simulation" disabled></textarea>
+            </div>
+          </div>
+          <div class="fse-controls">
+            <button id="fseRunBtn" class="btn btn-secondary" disabled><i class="fas fa-play"></i> Compile & Run</button>
+            <button id="fseSubmitBtn" class="btn btn-success" disabled><i class="fas fa-paper-plane"></i> Submit Code</button>
+          </div>
+        </div>
+        
+        <!-- Right Panel: Stress Console & Chat -->
+        <div class="fse-panel-card" id="fseConsolePanel">
+          <div class="fse-panel-header">
+            <div class="fse-panel-title"><i class="fas fa-triangle-exclamation fse-panel-icon"></i><h3>Stress Console</h3></div>
+            <div class="fse-pressure-bar-wrapper">
+              <span class="fse-pressure-label">Pressure:</span>
+              <div class="fse-pressure-bar">
+                <div class="fse-pressure-fill" id="fsePressureFill" style="width: 0%;"></div>
+              </div>
+              <span class="fse-pressure-val" id="fsePressureVal">0%</span>
+            </div>
+          </div>
+          
+          <!-- Live Countdown Timer -->
+          <div class="fse-timer-box" id="fseTimerBox">
+            <i class="far fa-clock"></i>
+            <span id="fseTimerVal">10:00</span>
+            <span class="fse-timer-status" id="fseTimerStatus">Inactive</span>
+          </div>
+          
+          <!-- Interviewer & System Activity Stream -->
+          <div class="fse-console-stream" id="fseConsoleStream">
+            <div class="fse-log-entry system">
+              <span class="fse-log-time">[System]</span>
+              <span class="fse-log-msg">Configure settings in the parameters panel below and click "Initialize Simulation".</span>
+            </div>
+          </div>
+          
+          <!-- Socratic Dialogue Box -->
+          <div class="fse-dialogue-box hidden" id="fseDialogueBox">
+            <p class="fse-dialogue-prompt" id="fseDialoguePrompt">Interviewer asks a question...</p>
+            <div class="fse-dialogue-options" id="fseDialogueOptions">
+              <!-- options will be injected dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Setup Panel -->
+      <div class="fse-setup-card" id="fseSetupCard">
+        <div class="fse-setup-header">
+          <i class="fas fa-sliders"></i>
+          <h3>Simulation Parameters</h3>
+        </div>
+        <div class="fse-setup-grid">
+          <div class="fse-setup-group">
+            <label for="fseProblemSelect">Choose Challenge:</label>
+            <select id="fseProblemSelect" class="fse-select">
+              <option value="twosum">Two Sum (Arrays & Hashing)</option>
+              <option value="reverse-list">Reverse Linked List (Pointers)</option>
+              <option value="valid-parentheses">Valid Parentheses (Stacks)</option>
+              <option value="binary-search">Binary Search (Algorithms)</option>
+            </select>
+          </div>
+          <div class="fse-setup-group">
+            <label>Inject Stressors:</label>
+            <div class="fse-checkbox-list">
+              <label class="fse-checkbox-label">
+                <input type="checkbox" id="fseStressorTime" checked />
+                <span>Timer Contraction (Sudden deadline changes)</span>
+              </label>
+              <label class="fse-checkbox-label">
+                <input type="checkbox" id="fseStressorMemory" checked />
+                <span>Memory Overhead Constraint (In-place swap requirement)</span>
+              </label>
+              <label class="fse-checkbox-label">
+                <input type="checkbox" id="fseStressorEdge" checked />
+                <span>Hidden Edge Cases (Unchecked limits failures)</span>
+              </label>
+              <label class="fse-checkbox-label">
+                <input type="checkbox" id="fseStressorInterruption" checked />
+                <span>AI Interruptions (Socratic Q&A checkpoints)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="fse-setup-controls">
+          <button id="fseStartBtn" class="btn btn-primary btn-large"><i class="fas fa-bolt"></i> Initialize Simulation</button>
+          <button id="fseResetBtn" class="btn btn-secondary btn-large" disabled><i class="fas fa-rotate-left"></i> Reset Engine</button>
+        </div>
+      </div>
+      
+      <!-- Results / Retrospective Panel -->
+      <div class="fse-panel-card hidden" id="fseResultsCard">
+        <div class="fse-results-header">
+          <div class="fse-results-badge" id="fseResultsBadge">Resilience Passed</div>
+          <h2>Simulation Debriefing</h2>
+          <p>Retrospective breakdown of your code performance under high cognitive pressure.</p>
+        </div>
+        <div class="fse-results-grid">
+          <div class="fse-results-score-box">
+            <span class="fse-results-score-label">Resilience Score</span>
+            <span class="fse-results-score-val" id="fseFinalScoreVal">0%</span>
+          </div>
+          <div class="fse-results-metrics">
+            <div class="fse-metric-row">
+              <span>Code Robustness (Edge cases resolved)</span>
+              <strong id="fseRobustnessScore">0/3</strong>
+            </div>
+            <div class="fse-metric-row">
+              <span>Deadline Adaptability</span>
+              <strong id="fseTimeScore">N/A</strong>
+            </div>
+            <div class="fse-metric-row">
+              <span>Memory Optimality</span>
+              <strong id="fseMemoryScore">N/A</strong>
+            </div>
+            <div class="fse-metric-row">
+              <span>Interruption Dialogue Score</span>
+              <strong id="fseDialogueScore">N/A</strong>
+            </div>
+          </div>
+        </div>
+        <div class="fse-retrospective-box">
+          <h4>💡 Socratic Retrospective Report</h4>
+          <div class="fse-retrospective-content" id="fseRetroReport">
+            <!-- retro report injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div class="container"><p>© 2026 Algo Infinity Verse. All rights reserved.</p></div></footer>
+  <script src="/theme.js"></script>
+  <script src="failure-simulator.js"></script>
+
+</body>
+</html>

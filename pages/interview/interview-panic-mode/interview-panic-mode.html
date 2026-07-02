@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Panic Mode | Algo Infinity Verse</title>
+    <meta name="description" content="A 30-minute rapid-fire revision module for last-minute interview prep." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="interview-panic-mode.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="panic-body">
+
+    <nav class="navbar panic-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="timer-badge" id="timerBadge">
+            <i class="fas fa-stopwatch"></i> <span id="panicTimerDisplay">30:00</span>
+        </div>
+    </nav>
+
+    <main class="panic-workspace">
+        
+        <!-- Pre-Start Hero Section -->
+        <section class="panic-hero" id="panicHero">
+            <div class="hero-content">
+                <div class="alert-banner">
+                    <i class="fas fa-exclamation-triangle"></i> EMERGENCY REVISION PROTOCOL
+                </div>
+                <h1 class="hero-title">
+                    <span class="main-title panic-text">Interview Panic Mode</span>
+                </h1>
+                <p class="subtitle">
+                    Your interview starts in 30 minutes. No time for deep dives. This module forces you through rapid-fire time complexities, core data structure properties, and absolute must-know algorithm patterns.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-panic" id="btnStartRevision">
+                        <i class="fas fa-bolt"></i> Start 30-Min Revision
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Revision Area (Hidden until started) -->
+        <section class="active-revision hidden" id="activeRevisionArea">
+            
+            <div class="revision-header">
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span>Flashcard Progress</span>
+                        <span id="flashcardProgressText">1 / 20</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="flashcardProgressBar" style="width: 5%;"></div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-danger" id="btnStopRevision"><i class="fas fa-stop"></i> Abort</button>
+            </div>
+
+            <!-- Flashcard Container -->
+            <div class="flashcard-container" id="flashcardContainer">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-front" id="cardFront">
+                        <span class="card-category">Time Complexity</span>
+                        <h3>What is the average and worst-case Time Complexity of QuickSort?</h3>
+                        <p class="card-hint"><i class="fas fa-undo"></i> Click to flip</p>
+                    </div>
+                    <div class="card-back" id="cardBack">
+                        <h3>QuickSort Complexities</h3>
+                        <div class="complexity-row">
+                            <span>Average Case:</span>
+                            <strong class="text-success">O(N log N)</strong>
+                        </div>
+                        <div class="complexity-row">
+                            <span>Worst Case:</span>
+                            <strong class="text-danger">O(N²)</strong>
+                        </div>
+                        <p class="card-note">Worst case occurs when the array is already sorted and the pivot is chosen poorly (e.g., last element).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flashcard-controls">
+                <button class="btn btn-secondary" id="btnPrevCard" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="btn btn-primary" id="btnFlipCard"><i class="fas fa-sync-alt"></i> Flip Card</button>
+                <button class="btn btn-primary" id="btnNextCard">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Completion Modal -->
+    <div class="modal-overlay hidden" id="completionModal">
+        <div class="modal-content">
+            <i class="fas fa-rocket success-icon"></i>
+            <h2>Time's Up!</h2>
+            <p>You survived the panic mode. Take a deep breath, grab a glass of water, and crush that interview. You've got this.</p>
+            <button class="btn btn-primary w-100" id="btnCloseModal">Close & Return</button>
+        </div>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="/script.js"></script>
+    <script src="interview-panic-mode.js"></script>
+</body>
+</html>

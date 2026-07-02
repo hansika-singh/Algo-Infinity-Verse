@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Genome | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize the shared DNA between algorithms. See which structural genes algorithms share, their similarity score, and evolutionary lineage." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="algorithm-genome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="algorithm-genome">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="ag2-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ag2-hero-inner">
+        <div class="ag2-hero-eyebrow">🧬 Algorithmic Biology</div>
+        <h1 class="ag2-hero-title">Algorithm Genome</h1>
+        <p class="ag2-hero-sub">Every algorithm has DNA. Compare two and see exactly what they share.</p>
+        <p class="ag2-hero-desc">Algorithms aren't isolated inventions — they're variations on shared structural patterns. Dijkstra and Prim's share greedy selection and a priority queue. Merge Sort and Quick Sort both divide. See the genetic makeup of 20 algorithms, compare any two, and trace the evolutionary lineage.</p>
+        <a href="#lab" class="btn btn-primary ag2-btn-primary">
+          <i class="fas fa-dna"></i> Open the Lab
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section ag2-section">
+      <div class="container">
+
+        <!-- Algorithm selectors -->
+        <div class="ag2-selector-row">
+
+          <!-- Algorithm A -->
+          <div class="ag2-selector-panel" id="ag2SelectorA">
+            <div class="ag2-selector-label">
+              <span class="ag2-selector-dot" style="background:#00d4ff"></span>
+              Algorithm A
+            </div>
+            <div class="ag2-algo-grid" id="ag2GridA" role="radiogroup" aria-label="Select Algorithm A"></div>
+          </div>
+
+          <!-- VS badge -->
+          <div class="ag2-vs-badge">
+            <div class="ag2-vs-inner">VS</div>
+            <div class="ag2-sim-score-wrap" id="ag2SimWrap">
+              <div class="ag2-sim-label">Similarity</div>
+              <div class="ag2-sim-value" id="ag2SimValue">—</div>
+            </div>
+          </div>
+
+          <!-- Algorithm B -->
+          <div class="ag2-selector-panel" id="ag2SelectorB">
+            <div class="ag2-selector-label">
+              <span class="ag2-selector-dot" style="background:#a855f7"></span>
+              Algorithm B
+            </div>
+            <div class="ag2-algo-grid" id="ag2GridB" role="radiogroup" aria-label="Select Algorithm B"></div>
+          </div>
+
+        </div>
+
+        <!-- DNA Comparison -->
+        <div class="ag2-dna-section" id="ag2DnaSection">
+          <div class="ag2-dna-header">
+            <div class="ag2-dna-title"><i class="fas fa-dna"></i> DNA Strand Comparison</div>
+            <div class="ag2-dna-legend">
+              <span class="ag2-dna-leg-item"><span class="ag2-dna-leg-dot ag2-shared"></span>Shared gene</span>
+              <span class="ag2-dna-leg-item"><span class="ag2-dna-leg-dot ag2-only-a"></span>Only in A</span>
+              <span class="ag2-dna-leg-item"><span class="ag2-dna-leg-dot ag2-only-b"></span>Only in B</span>
+            </div>
+          </div>
+
+          <!-- Strand A -->
+          <div class="ag2-strand-wrap">
+            <div class="ag2-strand-name" id="ag2StrandNameA" style="color:#00d4ff">—</div>
+            <div class="ag2-strand" id="ag2StrandA">
+              <div class="ag2-strand-placeholder">Select Algorithm A above</div>
+            </div>
+          </div>
+
+          <!-- Connector lines -->
+          <div class="ag2-connectors" id="ag2Connectors"></div>
+
+          <!-- Strand B -->
+          <div class="ag2-strand-wrap">
+            <div class="ag2-strand-name" id="ag2StrandNameB" style="color:#a855f7">—</div>
+            <div class="ag2-strand" id="ag2StrandB">
+              <div class="ag2-strand-placeholder">Select Algorithm B above</div>
+            </div>
+          </div>
+
+          <!-- Gene hover detail -->
+          <div class="ag2-gene-detail" id="ag2GeneDetail">
+            <div class="ag2-gene-detail-placeholder">Hover a gene segment to see details</div>
+          </div>
+
+        </div>
+
+        <!-- Bottom row: breakdown + gene pool -->
+        <div class="ag2-bottom-row">
+
+          <!-- Similarity breakdown -->
+          <div class="ag2-breakdown-card" id="ag2BreakdownCard">
+            <div class="ag2-card-title"><i class="fas fa-chart-pie"></i> Gene Breakdown</div>
+            <div class="ag2-breakdown-body" id="ag2BreakdownBody">
+              <div class="ag2-breakdown-placeholder">Select two algorithms to see the breakdown</div>
+            </div>
+          </div>
+
+          <!-- Gene pool -->
+          <div class="ag2-genepool-card">
+            <div class="ag2-card-title"><i class="fas fa-layer-group"></i> Gene Pool — Click any gene to highlight all algorithms that carry it</div>
+            <div class="ag2-genepool-body" id="ag2GenePool"></div>
+          </div>
+
+        </div>
+
+        <!-- Evolutionary lineage tree -->
+        <div class="ag2-lineage-card">
+          <div class="ag2-card-title"><i class="fas fa-code-branch"></i> Evolutionary Lineage — Which Algorithm Inspired Which</div>
+          <div class="ag2-lineage-wrap">
+            <canvas id="ag2LineageCanvas" class="ag2-lineage-canvas" aria-label="Algorithm evolutionary lineage tree"></canvas>
+          </div>
+          <div class="ag2-lineage-legend">
+            <div class="ag2-lineage-leg-item"><span class="ag2-lin-dot" style="background:#00d4ff"></span>Algorithm A selected</div>
+            <div class="ag2-lineage-leg-item"><span class="ag2-lin-dot" style="background:#a855f7"></span>Algorithm B selected</div>
+            <div class="ag2-lineage-leg-item"><span class="ag2-lin-dot" style="background:#22c55e"></span>Common ancestor</div>
+            <div class="ag2-lineage-leg-item"><span class="ag2-lin-dot" style="background:#374151"></span>Other</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="algorithm-genome.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

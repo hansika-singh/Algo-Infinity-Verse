@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Theory Learning | Algo Infinity Verse</title>
+    <meta name="description" content="Master Number Theory for competitive programming — GCD, Sieve, Modular Arithmetic, Fast Exponentiation, Euler's Totient, and CRT with interactive exercises." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="number-theory-learning.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="number-theory-learning">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero nt-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">The Math Behind Every CP Contest</span>
+          <span class="main-title nt-gradient">Number Theory</span>
+          <span class="subtitle">GCD · Sieve · Modular Arithmetic · Fast Expo · Euler · CRT</span>
+        </h1>
+        <p class="section-subtitle">Number Theory powers competitive programming. Learn GCD, Sieve of Eratosthenes, modular arithmetic, fast exponentiation, Euler's Totient, and CRT — with interactive exercises and animated demos.</p>
+        <div class="hero-buttons">
+          <a href="#topics" class="btn btn-primary nt-btn-primary"><i class="fas fa-book-open"></i> Start Learning</a>
+          <a href="#exercises" class="btn btn-secondary"><i class="fas fa-pencil-alt"></i> Jump to Exercises</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress bar -->
+    <div class="nt-progress-wrap" id="ntProgressWrap">
+      <div class="nt-progress-inner">
+        <span class="nt-progress-label">Progress</span>
+        <div class="nt-progress-track"><div class="nt-progress-fill" id="ntProgressFill"></div></div>
+        <span class="nt-progress-count"><span id="ntDoneCount">0</span>/<span id="ntTotalCount">7</span> topics</span>
+      </div>
+    </div>
+
+    <!-- Sidebar + Content layout -->
+    <div class="nt-layout">
+
+      <!-- Sidebar -->
+      <nav class="nt-sidebar" id="ntSidebar" aria-label="Topic navigation">
+        <div class="nt-sidebar-title">Topics</div>
+        <a href="#gcd"        class="nt-sidebar-link" data-topic="gcd">        <span class="nt-sidebar-num">01</span> GCD &amp; LCM</a>
+        <a href="#sieve"      class="nt-sidebar-link" data-topic="sieve">      <span class="nt-sidebar-num">02</span> Sieve of Eratosthenes</a>
+        <a href="#primefact"  class="nt-sidebar-link" data-topic="primefact">  <span class="nt-sidebar-num">03</span> Prime Factorization</a>
+        <a href="#modular"    class="nt-sidebar-link" data-topic="modular">    <span class="nt-sidebar-num">04</span> Modular Arithmetic</a>
+        <a href="#fastexpo"   class="nt-sidebar-link" data-topic="fastexpo">   <span class="nt-sidebar-num">05</span> Fast Exponentiation</a>
+        <a href="#euler"      class="nt-sidebar-link" data-topic="euler">      <span class="nt-sidebar-num">06</span> Euler's Totient</a>
+        <a href="#crt"        class="nt-sidebar-link" data-topic="crt">        <span class="nt-sidebar-num">07</span> Chinese Remainder Theorem</a>
+        <div class="nt-sidebar-divider"></div>
+        <a href="#exercises"  class="nt-sidebar-link nt-sidebar-exercises">    <i class="fas fa-pencil-alt"></i> Exercises</a>
+      </nav>
+
+      <!-- Main content -->
+      <div class="nt-content">
+
+        <div id="topics">
+
+          <!-- ── Topic 1: GCD & LCM ── -->
+          <section id="gcd" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">01</div>
+              <div>
+                <h2 class="nt-topic-title">GCD &amp; LCM</h2>
+                <p class="nt-topic-sub">Greatest Common Divisor · Least Common Multiple</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="gcd" aria-label="Mark GCD & LCM as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">The <strong>GCD</strong> of two numbers is the largest number that divides both. The Euclidean algorithm computes it in O(log(min(a,b))) using the property: <code>gcd(a, b) = gcd(b, a % b)</code>.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Euclidean Algorithm</div>
+                <pre class="nt-code">gcd(a, b):
+  if b == 0: return a
+  return gcd(b, a % b)
+
+lcm(a, b) = (a * b) / gcd(a, b)   // avoid overflow: a / gcd(a,b) * b</pre>
+              </div>
+              <div class="nt-complexity-row">
+                <span class="nt-comp-chip">Time: O(log min(a,b))</span>
+                <span class="nt-comp-chip">Space: O(log min(a,b)) stack</span>
+              </div>
+            </div>
+
+            <!-- Interactive GCD Tracer -->
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Interactive GCD Trace</div>
+              <div class="nt-input-row">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntGcdA">a</label>
+                  <input type="number" id="ntGcdA" class="nt-input" value="48" aria-label="GCD input a" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntGcdB">b</label>
+                  <input type="number" id="ntGcdB" class="nt-input" value="18" aria-label="GCD input b" />
+                </div>
+                <button class="btn nt-run-btn" id="ntGcdBtn">Trace GCD</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntGcdTrace"></div>
+            </div>
+
+            <div class="nt-card">
+              <div class="nt-card-title">Key Properties</div>
+              <ul class="nt-list">
+                <li><code>gcd(a, 0) = a</code></li>
+                <li><code>gcd(a, b) = gcd(b, a % b)</code></li>
+                <li><code>lcm(a, b) × gcd(a, b) = a × b</code></li>
+                <li>Extended Euclidean: finds x, y such that <code>ax + by = gcd(a,b)</code></li>
+                <li>Used in: fraction reduction, modular inverse, Bezout's identity</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ── Topic 2: Sieve of Eratosthenes ── -->
+          <section id="sieve" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">02</div>
+              <div>
+                <h2 class="nt-topic-title">Sieve of Eratosthenes</h2>
+                <p class="nt-topic-sub">Generate all primes up to N in O(N log log N)</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="sieve" aria-label="Mark Sieve as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">Start with all numbers 2..N marked as prime. For each prime p, mark all multiples of p (starting from p²) as composite. Remaining unmarked numbers are prime.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Sieve of Eratosthenes</div>
+                <pre class="nt-code">function sieve(n):
+  is_prime = [true] * (n+1)
+  is_prime[0] = is_prime[1] = false
+  for p from 2 to sqrt(n):
+    if is_prime[p]:
+      for multiple from p*p to n step p:
+        is_prime[multiple] = false
+  return [i for i if is_prime[i]]</pre>
+              </div>
+              <div class="nt-complexity-row">
+                <span class="nt-comp-chip">Time: O(N log log N)</span>
+                <span class="nt-comp-chip">Space: O(N)</span>
+              </div>
+            </div>
+
+            <!-- Animated Sieve -->
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Animated Sieve</div>
+              <div class="nt-input-row">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntSieveN">N (max 100)</label>
+                  <input type="number" id="ntSieveN" class="nt-input" value="50" min="10" max="100" aria-label="Sieve N" />
+                </div>
+                <button class="btn nt-run-btn" id="ntSieveRunBtn">Run Sieve</button>
+                <button class="btn nt-secondary-btn" id="ntSieveStepBtn">Step</button>
+                <button class="btn nt-secondary-btn" id="ntSieveResetBtn">Reset</button>
+              </div>
+              <div class="nt-sieve-status" id="ntSieveStatus">Press Run or Step to animate.</div>
+              <div class="nt-sieve-grid" id="ntSieveGrid"></div>
+              <div class="nt-sieve-result" id="ntSieveResult"></div>
+            </div>
+          </section>
+
+          <!-- ── Topic 3: Prime Factorization ── -->
+          <section id="primefact" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">03</div>
+              <div>
+                <h2 class="nt-topic-title">Prime Factorization</h2>
+                <p class="nt-topic-sub">Decompose any number into prime factors</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="primefact" aria-label="Mark Prime Factorization as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">Trial division: divide by 2, then odd numbers up to √n. If n &gt; 1 after the loop, n itself is prime. With a precomputed Smallest Prime Factor (SPF) array, factorization of any n ≤ N is O(log n).</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Trial Division</div>
+                <pre class="nt-code">function factorize(n):
+  factors = []
+  d = 2
+  while d * d <= n:
+    while n % d == 0:
+      factors.append(d)
+      n = n / d
+    d++
+  if n > 1: factors.append(n)
+  return factors
+
+// Example: 360 = 2³ × 3² × 5</pre>
+              </div>
+              <div class="nt-complexity-row">
+                <span class="nt-comp-chip">Time: O(√n)</span>
+                <span class="nt-comp-chip">With SPF sieve: O(log n)</span>
+              </div>
+            </div>
+
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Factorize a Number</div>
+              <div class="nt-input-row">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntFactN">Number</label>
+                  <input type="number" id="ntFactN" class="nt-input" value="360" min="2" max="999999" aria-label="Number to factorize" />
+                </div>
+                <button class="btn nt-run-btn" id="ntFactBtn">Factorize</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntFactTrace"></div>
+            </div>
+          </section>
+
+          <!-- ── Topic 4: Modular Arithmetic ── -->
+          <section id="modular" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">04</div>
+              <div>
+                <h2 class="nt-topic-title">Modular Arithmetic</h2>
+                <p class="nt-topic-sub">Operations under a modulus — essential for large numbers in CP</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="modular" aria-label="Mark Modular Arithmetic as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">In competitive programming, answers are often required modulo a prime (typically 10⁹+7 or 998244353). Modular arithmetic allows us to keep numbers small while computing correctly.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Key Properties</div>
+                <pre class="nt-code">(a + b) % m = ((a % m) + (b % m)) % m
+(a - b) % m = ((a % m) - (b % m) + m) % m  // +m to avoid negative
+(a * b) % m = ((a % m) * (b % m)) % m
+(a / b) % m = (a * modInverse(b, m)) % m   // only when gcd(b,m)=1
+
+// Modular Inverse (Fermat's little theorem, m must be prime):
+modInverse(a, m) = pow(a, m-2, m)
+
+// Common mod: 1e9+7 = 1000000007 (prime)</pre>
+              </div>
+            </div>
+
+            <div class="nt-card">
+              <div class="nt-card-title">Modular Inverse</div>
+              <p class="nt-text">The modular inverse of a under modulus m is b such that <code>(a × b) ≡ 1 (mod m)</code>. Exists only when gcd(a, m) = 1. Computed via Fermat's little theorem when m is prime: <code>a⁻¹ = aᵐ⁻² mod m</code>.</p>
+              <div class="nt-card-title" style="margin-top:1rem">Why 10⁹+7?</div>
+              <ul class="nt-list">
+                <li>It is prime — modular inverse via Fermat's theorem works</li>
+                <li>Fits in a 32-bit integer (just under 2³¹)</li>
+                <li>Two values multiplied fit in a 64-bit integer (10⁹+7)² &lt; 2⁶³</li>
+              </ul>
+            </div>
+
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Modular Arithmetic Calculator</div>
+              <div class="nt-input-row" style="flex-wrap:wrap;gap:0.5rem">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntModA">a</label>
+                  <input type="number" id="ntModA" class="nt-input" value="123456789" aria-label="Modular a" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntModB">b</label>
+                  <input type="number" id="ntModB" class="nt-input" value="987654321" aria-label="Modular b" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntModM">mod</label>
+                  <input type="number" id="ntModM" class="nt-input" value="1000000007" aria-label="Modulus" />
+                </div>
+                <button class="btn nt-run-btn" id="ntModBtn">Calculate</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntModTrace"></div>
+            </div>
+          </section>
+
+          <!-- ── Topic 5: Fast Exponentiation ── -->
+          <section id="fastexpo" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">05</div>
+              <div>
+                <h2 class="nt-topic-title">Fast Exponentiation</h2>
+                <p class="nt-topic-sub">Binary exponentiation — compute aⁿ mod m in O(log n)</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="fastexpo" aria-label="Mark Fast Exponentiation as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">Naively computing aⁿ takes O(n) multiplications. Binary exponentiation uses the binary representation of n to compute it in O(log n) — squaring the base and multiplying when the current bit is 1.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Binary Exponentiation</div>
+                <pre class="nt-code">function fastPow(base, exp, mod):
+  result = 1
+  base = base % mod
+  while exp > 0:
+    if exp % 2 == 1:          // current bit is 1
+      result = result * base % mod
+    exp = exp >> 1             // shift right (divide by 2)
+    base = base * base % mod   // square the base
+  return result
+
+// Example: 2^10 = 1024
+// Bits of 10: 1010
+// Steps: base=2→4→16→256, multiply when bit=1</pre>
+              </div>
+              <div class="nt-complexity-row">
+                <span class="nt-comp-chip">Time: O(log n)</span>
+                <span class="nt-comp-chip">Space: O(1)</span>
+              </div>
+            </div>
+
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Trace Binary Exponentiation</div>
+              <div class="nt-input-row">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntExpBase">base</label>
+                  <input type="number" id="ntExpBase" class="nt-input" value="2" min="1" aria-label="Base" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntExpN">exp</label>
+                  <input type="number" id="ntExpN" class="nt-input" value="10" min="0" aria-label="Exponent" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntExpMod">mod</label>
+                  <input type="number" id="ntExpMod" class="nt-input" value="1000000007" aria-label="Mod" />
+                </div>
+                <button class="btn nt-run-btn" id="ntExpBtn">Trace</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntExpTrace"></div>
+            </div>
+          </section>
+
+          <!-- ── Topic 6: Euler's Totient ── -->
+          <section id="euler" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">06</div>
+              <div>
+                <h2 class="nt-topic-title">Euler's Totient Function</h2>
+                <p class="nt-topic-sub">φ(n) — count of integers ≤ n coprime to n</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="euler" aria-label="Mark Euler's Totient as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">φ(n) counts how many integers from 1 to n share no common factor with n (are coprime). This is foundational in RSA encryption and Fermat's little theorem.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">Formula &amp; Computation</div>
+                <pre class="nt-code">// φ(n) using prime factorization:
+// If n = p1^a1 × p2^a2 × ...
+// φ(n) = n × ∏(1 - 1/pi) for each distinct prime pi
+
+function totient(n):
+  result = n
+  p = 2
+  while p * p <= n:
+    if n % p == 0:
+      while n % p == 0: n //= p
+      result -= result // p   // result *= (1 - 1/p)
+    p++
+  if n > 1: result -= result // n
+  return result
+
+// Key facts:
+// φ(prime p) = p - 1
+// φ(1) = 1
+// Fermat: a^φ(n) ≡ 1 (mod n) when gcd(a,n)=1</pre>
+              </div>
+              <div class="nt-complexity-row">
+                <span class="nt-comp-chip">Single n: O(√n)</span>
+                <span class="nt-comp-chip">All up to N: O(N log log N)</span>
+              </div>
+            </div>
+
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Compute φ(n)</div>
+              <div class="nt-input-row">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntEulerN">n</label>
+                  <input type="number" id="ntEulerN" class="nt-input" value="36" min="1" max="999999" aria-label="Euler input n" />
+                </div>
+                <button class="btn nt-run-btn" id="ntEulerBtn">Compute φ(n)</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntEulerTrace"></div>
+            </div>
+          </section>
+
+          <!-- ── Topic 7: CRT ── -->
+          <section id="crt" class="nt-topic-section">
+            <div class="nt-topic-header">
+              <div class="nt-topic-num">07</div>
+              <div>
+                <h2 class="nt-topic-title">Chinese Remainder Theorem</h2>
+                <p class="nt-topic-sub">Solve a system of modular congruences</p>
+              </div>
+              <label class="nt-done-label">
+                <input type="checkbox" class="nt-done-check" data-topic="crt" aria-label="Mark CRT as done" />
+                <span>Done</span>
+              </label>
+            </div>
+
+            <div class="nt-card">
+              <p class="nt-text">Given a system of congruences with pairwise coprime moduli, CRT guarantees a unique solution modulo the product of all moduli. Essential for combining results computed under different moduli.</p>
+              <div class="nt-formula-box">
+                <div class="nt-formula-title">CRT — System of Congruences</div>
+                <pre class="nt-code">// Find x such that:
+// x ≡ r1 (mod m1)
+// x ≡ r2 (mod m2)
+// ...
+// where all mi are pairwise coprime
+
+// For two congruences:
+// x ≡ a (mod m),  x ≡ b (mod n),  gcd(m,n)=1
+// x = a + m * ((b - a) * modInverse(m, n) % n)
+// Solution is unique mod (m * n)
+
+// Extended Euclidean for general case:
+function crt2(a, m, b, n):
+  // find x = a + m*k such that a + m*k ≡ b (mod n)
+  diff = (b - a % n + n) % n
+  inv  = modInverse(m % n, n)
+  k    = diff * inv % n
+  x    = a + m * k
+  return x, m * n          // solution, new modulus</pre>
+              </div>
+            </div>
+
+            <div class="nt-card">
+              <div class="nt-card-title">Classic Example</div>
+              <div class="nt-example-box">
+                <div class="nt-example-line">x ≡ 2 (mod 3) — remainder 2 when divided by 3</div>
+                <div class="nt-example-line">x ≡ 3 (mod 5) — remainder 3 when divided by 5</div>
+                <div class="nt-example-line">x ≡ 2 (mod 7) — remainder 2 when divided by 7</div>
+                <div class="nt-example-sep">↓</div>
+                <div class="nt-example-answer">x = 23 (mod 105)  ✅</div>
+              </div>
+            </div>
+
+            <div class="nt-interactive-card">
+              <div class="nt-interactive-title"><i class="fas fa-play-circle"></i> Solve Two Congruences</div>
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.75rem">Find x such that x ≡ a (mod m) and x ≡ b (mod n), with gcd(m,n) = 1.</p>
+              <div class="nt-input-row" style="flex-wrap:wrap;gap:0.5rem">
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntCrtA">a</label>
+                  <input type="number" id="ntCrtA" class="nt-input" value="2" aria-label="CRT a" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntCrtM">m</label>
+                  <input type="number" id="ntCrtM" class="nt-input" value="3" aria-label="CRT m" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntCrtB">b</label>
+                  <input type="number" id="ntCrtB" class="nt-input" value="3" aria-label="CRT b" />
+                </div>
+                <div class="nt-input-group">
+                  <label class="nt-label" for="ntCrtN">n</label>
+                  <input type="number" id="ntCrtN" class="nt-input" value="5" aria-label="CRT n" />
+                </div>
+                <button class="btn nt-run-btn" id="ntCrtBtn">Solve</button>
+              </div>
+              <div class="nt-trace-wrap" id="ntCrtTrace"></div>
+            </div>
+
+          </section>
+        </div><!-- end #topics -->
+
+        <!-- ── Exercises ── -->
+        <section id="exercises" class="nt-topic-section">
+          <h2 class="nt-exercises-title"><i class="fas fa-pencil-alt"></i> Practice Exercises</h2>
+          <p class="nt-text" style="margin-bottom:1.5rem">Test your understanding. Try each problem before revealing the answer.</p>
+          <div id="ntExercisesGrid"></div>
+        </section>
+
+        <!-- Complexity Reference -->
+        <section class="nt-topic-section">
+          <h2 class="nt-exercises-title"><i class="fas fa-table"></i> Complexity Reference</h2>
+          <div class="nt-ref-table-wrap">
+            <table class="nt-ref-table">
+              <thead><tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Key Use</th></tr></thead>
+              <tbody>
+                <tr><td>GCD (Euclidean)</td><td class="nt-tc-log">O(log min(a,b))</td><td class="nt-tc-good">O(1)</td><td>LCM, modular inverse</td></tr>
+                <tr><td>Sieve of Eratosthenes</td><td class="nt-tc-log">O(N log log N)</td><td class="nt-tc-bad">O(N)</td><td>All primes up to N</td></tr>
+                <tr><td>Trial Division</td><td class="nt-tc-ok">O(√n)</td><td class="nt-tc-good">O(log n)</td><td>Single factorization</td></tr>
+                <tr><td>Modular Inverse (Fermat)</td><td class="nt-tc-log">O(log m)</td><td class="nt-tc-good">O(1)</td><td>Division under mod</td></tr>
+                <tr><td>Fast Exponentiation</td><td class="nt-tc-log">O(log n)</td><td class="nt-tc-good">O(1)</td><td>aⁿ mod m</td></tr>
+                <tr><td>Euler's Totient (single)</td><td class="nt-tc-ok">O(√n)</td><td class="nt-tc-good">O(1)</td><td>φ(n), Fermat's theorem</td></tr>
+                <tr><td>CRT (two equations)</td><td class="nt-tc-log">O(log m)</td><td class="nt-tc-good">O(1)</td><td>Combine modular results</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div><!-- end nt-content -->
+    </div><!-- end nt-layout -->
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="number-theory-learning.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

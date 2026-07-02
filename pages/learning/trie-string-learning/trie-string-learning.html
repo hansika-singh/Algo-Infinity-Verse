@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Trie & String Algorithms | Algo Infinity Verse</title>
+    <meta name="description" content="Master advanced string processing techniques: Trie, KMP, Z-Algorithm, Rolling Hash, and Aho-Corasick Automaton." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="trie-string-learning.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="trie-string-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="infinity-loader">∞</div>
+            <h2>Algo Infinity Verse</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="stars"></div>
+            <div class="stars2"></div>
+            <div class="stars3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Pattern Matching Perfected</span>
+                <span class="main-title gradient-text">Trie & String Algorithms</span>
+                <span class="subtitle">
+                    Master prefix structures, LPS arrays, and multi-pattern search with KMP, Z-Algorithm, and Aho-Corasick.
+                </span>
+            </h1>
+            <div class="typing-container">
+                <span class="typing-text_string" id="typingTextString"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#introduction" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Learning
+                </a>
+                <a href="#practice" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Practice Exercises
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="5">0</span>
+                    <span class="stat-label">Core Algorithms</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="10">0</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="string-learning" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">🔤</span>
+                Learn Advanced Strings
+            </h2>
+            <p class="section-subtitle">
+                Move beyond simple iteration. Learn how to pre-process strings to achieve linear time complexity O(N + M) for complex pattern matching.
+            </p>
+
+            <div class="string-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+                <span class="string-progress-text"><span id="stringProgressCount">0</span> / 6 topics completed</span>
+                <div class="string-progress-track">
+                    <div class="string-progress-fill" id="stringProgressFill"></div>
+                </div>
+            </div>
+
+            <div class="string-layout">
+                <aside class="string-sidebar" aria-label="Topic navigation">
+                    <div class="string-sidebar-title">Topics</div>
+                    <ul class="string-sidebar-nav" id="topicNav">
+                        <li><a href="#introduction" class="active"><span class="nav-icon">📖</span> Introduction</a></li>
+                        <li><a href="#trie"><span class="nav-icon">🌲</span> Trie (Prefix Tree)</a></li>
+                        <li><a href="#kmp"><span class="nav-icon">⏭️</span> KMP Algorithm</a></li>
+                        <li><a href="#z-algo"><span class="nav-icon">🇿</span> Z-Algorithm</a></li>
+                        <li><a href="#rolling-hash"><span class="nav-icon">#️⃣</span> Rolling Hash</a></li>
+                        <li><a href="#aho-corasick"><span class="nav-icon">🕸️</span> Aho-Corasick</a></li>
+                        <li><a href="#practice"><span class="nav-icon">🏋️</span> Exercises</a></li>
+                    </ul>
+                </aside>
+
+                <main class="string-main-content" id="mainContent">
+                    <!-- ============ INTRODUCTION ============ -->
+                    <article class="string-lesson" id="introduction" data-topic="0">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">00</span>
+                            <h3>String Matching Landscape</h3>
+                        </div>
+                        <p>
+                            String algorithms deal with finding patterns within text efficiently. A naive search takes <strong>O(N * M)</strong> time. Advanced algorithms preprocess either the <em>Pattern</em> or the <em>Text</em> to reduce this to <strong>O(N + M)</strong>.
+                        </p>
+                        <div class="string-complexity-grid">
+                            <div class="string-complexity-box">
+                                <h5>Prefix Structures</h5>
+                                <span class="string-chip">Trie (Retrieval Tree)</span>
+                                <span class="string-chip">Fast dict lookups</span>
+                            </div>
+                            <div class="string-complexity-box">
+                                <h5>Single Pattern</h5>
+                                <span class="string-chip">KMP, Z-Algorithm</span>
+                                <span class="string-chip">Linear time O(N+M)</span>
+                            </div>
+                            <div class="string-complexity-box">
+                                <h5>Multi-Pattern</h5>
+                                <span class="string-chip">Aho-Corasick</span>
+                                <span class="string-chip">Search many at once</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ TRIE ============ -->
+                    <article class="string-lesson" id="trie" data-topic="1">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">01</span>
+                            <h3>Trie (Prefix Tree)</h3>
+                        </div>
+                        <p>
+                            A Trie is a tree-like data structure whose nodes store the letters of an alphabet. It is exceptionally efficient for tasks like autocomplete, spell checking, and finding strings with a common prefix.
+                        </p>
+                        <div class="string-concept-box">
+                            <h4><i class="fas fa-lightbulb"></i> Core Operations</h4>
+                            <ul>
+                                <li><strong>Insert:</strong> O(L) where L is the length of the word.</li>
+                                <li><strong>Search:</strong> O(L) to find an exact match.</li>
+                                <li><strong>Autocomplete (StartsWith):</strong> O(L) to verify if a prefix exists.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="string-code-block string-lang-container">
+                            <div class="string-lang-switcher-tabs">
+                                <button class="string-lang-tab-btn active" onclick="switchStringLang(this, 'py')">Python</button>
+                                <button class="string-lang-tab-btn" onclick="switchStringLang(this, 'cpp')">C++</button>
+                            </div>
+                            <div class="string-lang-pane active" data-lang="py">
+                                <div class="string-code-header"><span class="string-code-lang">Python</span><button class="string-code-copy" aria-label="Copy code" data-code="class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def starts_with(self, prefix: str) -> bool:
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True">Copy</button></div>
+                                <pre><code><span class="tok-kw">class</span> <span class="tok-fn">TrieNode</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-var">self</span>):
+        <span class="tok-var">self</span>.children = {}
+        <span class="tok-var">self</span>.is_end_of_word = <span class="tok-kw">False</span>
+
+<span class="tok-kw">class</span> <span class="tok-fn">Trie</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-var">self</span>):
+        <span class="tok-var">self</span>.root = TrieNode()
+
+    <span class="tok-kw">def</span> <span class="tok-fn">insert</span>(<span class="tok-var">self</span>, <span class="tok-var">word</span>: <span class="tok-fn">str</span>) -> <span class="tok-kw">None</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">self</span>.root
+        <span class="tok-kw">for</span> <span class="tok-var">char</span> <span class="tok-kw">in</span> <span class="tok-var">word</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">char</span> <span class="tok-kw">not in</span> <span class="tok-var">node</span>.children:
+                <span class="tok-var">node</span>.children[<span class="tok-var">char</span>] = TrieNode()
+            <span class="tok-var">node</span> = <span class="tok-var">node</span>.children[<span class="tok-var">char</span>]
+        <span class="tok-var">node</span>.is_end_of_word = <span class="tok-kw">True</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">search</span>(<span class="tok-var">self</span>, <span class="tok-var">word</span>: <span class="tok-fn">str</span>) -> <span class="tok-kw">bool</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">self</span>.root
+        <span class="tok-kw">for</span> <span class="tok-var">char</span> <span class="tok-kw">in</span> <span class="tok-var">word</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">char</span> <span class="tok-kw">not in</span> <span class="tok-var">node</span>.children:
+                <span class="tok-kw">return False</span>
+            <span class="tok-var">node</span> = <span class="tok-var">node</span>.children[<span class="tok-var">char</span>]
+        <span class="tok-kw">return</span> <span class="tok-var">node</span>.is_end_of_word
+
+    <span class="tok-kw">def</span> <span class="tok-fn">starts_with</span>(<span class="tok-var">self</span>, <span class="tok-var">prefix</span>: <span class="tok-fn">str</span>) -> <span class="tok-kw">bool</span>:
+        <span class="tok-var">node</span> = <span class="tok-var">self</span>.root
+        <span class="tok-kw">for</span> <span class="tok-var">char</span> <span class="tok-kw">in</span> <span class="tok-var">prefix</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">char</span> <span class="tok-kw">not in</span> <span class="tok-var">node</span>.children:
+                <span class="tok-kw">return False</span>
+            <span class="tok-var">node</span> = <span class="tok-var">node</span>.children[<span class="tok-var">char</span>]
+        <span class="tok-kw">return True</span></code></pre>
+                            </div>
+                            <div class="string-lang-pane" data-lang="cpp">
+                                <div class="string-code-header"><span class="string-code-lang">C++</span><button class="string-code-copy" aria-label="Copy code" data-code="class TrieNode {
+public:
+    unordered_map<char, TrieNode*> children;
+    bool isEndOfWord = false;
+};
+
+class Trie {
+private:
+    TrieNode* root;
+public:
+    Trie() { root = new TrieNode(); }
+    
+    void insert(string word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            if (!node->children.count(c)) node->children[c] = new TrieNode();
+            node = node->children[c];
+        }
+        node->isEndOfWord = true;
+    }
+};">Copy</button></div>
+                                <pre><code><span class="tok-kw">class</span> <span class="tok-fn">TrieNode</span> {
+<span class="tok-kw">public</span>:
+    <span class="tok-var">unordered_map</span>&lt;<span class="tok-kw">char</span>, TrieNode*&gt; children;
+    <span class="tok-kw">bool</span> isEndOfWord = <span class="tok-kw">false</span>;
+};
+
+<span class="tok-kw">class</span> <span class="tok-fn">Trie</span> {
+<span class="tok-kw">private</span>:
+    TrieNode* root;
+<span class="tok-kw">public</span>:
+    <span class="tok-fn">Trie</span>() { root = <span class="tok-kw">new</span> TrieNode(); }
+    
+    <span class="tok-kw">void</span> <span class="tok-fn">insert</span>(<span class="tok-kw">string</span> <span class="tok-var">word</span>) {
+        TrieNode* node = root;
+        <span class="tok-kw">for</span> (<span class="tok-kw">char</span> c : <span class="tok-var">word</span>) {
+            <span class="tok-kw">if</span> (!node-&gt;children.count(c)) node-&gt;children[c] = <span class="tok-kw">new</span> TrieNode();
+            node = node-&gt;children[c];
+        }
+        node-&gt;isEndOfWord = <span class="tok-kw">true</span>;
+    }
+};</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ KMP ============ -->
+                    <article class="string-lesson" id="kmp" data-topic="2">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">02</span>
+                            <h3>KMP Algorithm (Prefix Function)</h3>
+                        </div>
+                        <p>
+                            Knuth-Morris-Pratt (KMP) searches for a pattern in O(N + M) time. Instead of backtracking the text pointer when a mismatch occurs, it uses an <strong>LPS (Longest Prefix Suffix) array</strong> to skip characters we know already match.
+                        </p>
+                        <div class="string-callout">
+                            <span class="string-callout-icon">🧠</span>
+                            <p><strong>The Prefix Function (LPS Array):</strong> <code>lps[i]</code> stores the length of the longest proper prefix of the sub-pattern <code>pat[0..i]</code> which is also a suffix of this sub-pattern. Example for "ABABC": <code>[0, 0, 1, 2, 0]</code>.</p>
+                        </div>
+                        
+                        <div class="string-code-block string-lang-container">
+                            <div class="string-lang-switcher-tabs">
+                                <button class="string-lang-tab-btn active" onclick="switchStringLang(this, 'py')">Python</button>
+                            </div>
+                            <div class="string-lang-pane active" data-lang="py">
+                                <div class="string-code-header"><span class="string-code-lang">Python</span><button class="string-code-copy" aria-label="Copy code" data-code="def compute_lps(pat):
+    lps = [0] * len(pat)
+    length = 0
+    i = 1
+    while i < len(pat):
+        if pat[i] == pat[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
+    return lps">Copy</button></div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">compute_lps</span>(<span class="tok-var">pat</span>):
+    <span class="tok-var">lps</span> = [<span class="tok-num">0</span>] * <span class="tok-fn">len</span>(<span class="tok-var">pat</span>)
+    <span class="tok-var">length</span> = <span class="tok-num">0</span>
+    <span class="tok-var">i</span> = <span class="tok-num">1</span>
+    <span class="tok-kw">while</span> <span class="tok-var">i</span> &lt; <span class="tok-fn">len</span>(<span class="tok-var">pat</span>):
+        <span class="tok-kw">if</span> <span class="tok-var">pat</span>[<span class="tok-var">i</span>] == <span class="tok-var">pat</span>[<span class="tok-var">length</span>]:
+            <span class="tok-var">length</span> += <span class="tok-num">1</span>
+            <span class="tok-var">lps</span>[<span class="tok-var">i</span>] = <span class="tok-var">length</span>
+            <span class="tok-var">i</span> += <span class="tok-num">1</span>
+        <span class="tok-kw">else</span>:
+            <span class="tok-kw">if</span> <span class="tok-var">length</span> != <span class="tok-num">0</span>:
+                <span class="tok-var">length</span> = <span class="tok-var">lps</span>[<span class="tok-var">length</span> - <span class="tok-num">1</span>] <span class="tok-cmt"># Fallback without moving i</span>
+            <span class="tok-kw">else</span>:
+                <span class="tok-var">lps</span>[<span class="tok-var">i</span>] = <span class="tok-num">0</span>
+                <span class="tok-var">i</span> += <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> <span class="tok-var">lps</span></code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ Z ALGORITHM ============ -->
+                    <article class="string-lesson" id="z-algo" data-topic="3">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">03</span>
+                            <h3>Z-Algorithm</h3>
+                        </div>
+                        <p>
+                            The Z-algorithm finds all occurrences of a pattern in a text in linear time. It builds a <strong>Z-array</strong> where <code>Z[i]</code> is the length of the longest substring starting from <code>S[i]</code> which is also a prefix of <code>S</code>.
+                        </p>
+                        <div class="string-callout">
+                            <span class="string-callout-icon">💡</span>
+                            <p><strong>Trick:</strong> Concatenate the pattern and text like this: <code>Pattern + "$" + Text</code>. Run the Z-algorithm. Any index <code>i</code> where <code>Z[i] == length(Pattern)</code> indicates a match in the text!</p>
+                        </div>
+                    </article>
+
+                    <!-- ============ ROLLING HASH ============ -->
+                    <article class="string-lesson" id="rolling-hash" data-topic="4">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">04</span>
+                            <h3>Rolling Hash (Rabin-Karp)</h3>
+                        </div>
+                        <p>
+                            Rabin-Karp uses a sliding window and a <strong>Rolling Hash</strong> to match patterns. Instead of comparing characters one by one, it compares the hash values of the current window and the pattern in O(1) time.
+                        </p>
+                        <div class="string-concept-box">
+                            <h4><i class="fas fa-shield-alt"></i> Handling Hash Collisions</h4>
+                            <p>Because multiple strings can produce the same hash modulo <code>M</code> (a collision), we must handle them:</p>
+                            <ul>
+                                <li><strong>Direct Verification:</strong> If hashes match, do a character-by-character comparison (O(L) worst case).</li>
+                                <li><strong>Double Hashing:</strong> Compute two distinct hashes using different prime bases and modulos. A match is only considered if <em>both</em> hashes match. This drastically reduces collision probability.</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- ============ AHO CORASICK ============ -->
+                    <article class="string-lesson" id="aho-corasick" data-topic="5">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">05</span>
+                            <h3>Aho-Corasick Automaton</h3>
+                        </div>
+                        <p>
+                            When searching for <strong>multiple patterns</strong> simultaneously, KMP must be run for each pattern. <strong>Aho-Corasick</strong> builds a Trie of all patterns and adds "failure links", allowing a single pass over the text to find all occurrences of all patterns.
+                        </p>
+                        <div class="string-callout" style="border-left: 4px solid var(--string-primary);">
+                            <span class="string-callout-icon">🕸️</span>
+                            <div>
+                                <strong>Understanding Failure Links (Crucial)</strong>
+                                <p style="margin-top: 0.5rem;">A failure link at a specific node <code>u</code> points to the node <code>v</code> which represents the <strong>longest proper suffix of the string formed at <code>u</code> that is also a prefix of some pattern in the Trie.</strong></p>
+                                <p>If you mismatch a character while traversing the Trie, you don't go back to the root. Instead, you follow the failure link to salvage the longest possible matching prefix you've already seen, exactly like the LPS array in KMP, but generalized for a tree.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ============ PRACTICE ============ -->
+                    <article class="string-lesson" id="practice" data-topic="6">
+                        <div class="string-lesson-header">
+                            <span class="string-lesson-number">✨</span>
+                            <h3>Practice Exercises</h3>
+                        </div>
+                        
+                        <div class="string-exercise">
+                            <div class="string-exercise-title"><i class="fas fa-search"></i> 1. Implement Trie (Prefix Tree)</div>
+                            <p>Implement the <code>Trie</code> class with <code>insert(word)</code>, <code>search(word)</code>, and <code>startsWith(prefix)</code> methods.</p>
+                            <button class="string-exercise-toggle" aria-controls="sol-1" aria-expanded="false">Show Solution</button>
+                            <div class="string-exercise-solution" id="sol-1">
+                                <p>Refer to the <strong>Trie (Prefix Tree)</strong> section above. Ensure you maintain a dictionary of children and an <code>is_end_of_word</code> boolean at every node.</p>
+                            </div>
+                        </div>
+
+                        <div class="string-exercise">
+                            <div class="string-exercise-title"><i class="fas fa-search"></i> 2. Implement strStr() via KMP</div>
+                            <p>Given two strings <code>needle</code> and <code>haystack</code>, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.</p>
+                            <button class="string-exercise-toggle" aria-controls="sol-2" aria-expanded="false">Show Solution</button>
+                            <div class="string-exercise-solution" id="sol-2">
+                                <div class="string-code-block">
+                                    <div class="string-code-header"><span class="string-code-lang">Python</span><button class="string-code-copy" aria-label="Copy code" data-code="def strStr(haystack, needle):
+    if not needle: return 0
+    lps = compute_lps(needle)
+    i = j = 0
+    while i < len(haystack):
+        if haystack[i] == needle[j]:
+            i += 1; j += 1
+        if j == len(needle):
+            return i - j
+        elif i < len(haystack) and haystack[i] != needle[j]:
+            if j != 0: j = lps[j-1]
+            else: i += 1
+    return -1">Copy</button></div>
+                                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">strStr</span>(<span class="tok-var">haystack</span>, <span class="tok-var">needle</span>):
+    <span class="tok-kw">if not</span> <span class="tok-var">needle</span>: <span class="tok-kw">return</span> <span class="tok-num">0</span>
+    <span class="tok-var">lps</span> = compute_lps(<span class="tok-var">needle</span>) <span class="tok-cmt"># From section 02</span>
+    <span class="tok-var">i</span> = <span class="tok-var">j</span> = <span class="tok-num">0</span>
+    <span class="tok-kw">while</span> <span class="tok-var">i</span> &lt; <span class="tok-fn">len</span>(<span class="tok-var">haystack</span>):
+        <span class="tok-kw">if</span> <span class="tok-var">haystack</span>[<span class="tok-var">i</span>] == <span class="tok-var">needle</span>[<span class="tok-var">j</span>]:
+            <span class="tok-var">i</span> += <span class="tok-num">1</span>; <span class="tok-var">j</span> += <span class="tok-num">1</span>
+        <span class="tok-kw">if</span> <span class="tok-var">j</span> == <span class="tok-fn">len</span>(<span class="tok-var">needle</span>):
+            <span class="tok-kw">return</span> <span class="tok-var">i</span> - <span class="tok-var">j</span>
+        <span class="tok-kw">elif</span> <span class="tok-var">i</span> &lt; <span class="tok-fn">len</span>(<span class="tok-var">haystack</span>) <span class="tok-kw">and</span> <span class="tok-var">haystack</span>[<span class="tok-var">i</span>] != <span class="tok-var">needle</span>[<span class="tok-var">j</span>]:
+            <span class="tok-kw">if</span> <span class="tok-var">j</span> != <span class="tok-num">0</span>: <span class="tok-var">j</span> = <span class="tok-var">lps</span>[<span class="tok-var">j</span>-<span class="tok-num">1</span>]
+            <span class="tok-kw">else</span>: <span class="tok-var">i</span> += <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> -<span class="tok-num">1</span></code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                </main>
+            </div>
+        </div>
+    </section>
+    
+    <!-- External Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script type="module" src="trie-string-learning.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

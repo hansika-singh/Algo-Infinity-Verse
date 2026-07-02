@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Design Interview Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Practice realistic system design interviews with timed phases, structured evaluation rubrics, and instant feedback scorecards." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="system-design-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="system-design-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero sds-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Design at Scale. Under Pressure.</span>
+          <span class="main-title sds-gradient">System Design Interview Simulator</span>
+          <span class="subtitle">Random prompts. Timed phases. Real rubric feedback.</span>
+        </h1>
+        <p class="section-subtitle">Simulate a real system design interview end-to-end — from clarifying requirements to deep-diving tradeoffs — then get scored on Scalability, Reliability, Availability, DB choices, and Caching strategy.</p>
+        <div class="hero-buttons">
+          <a href="#simulator" class="btn btn-primary sds-btn-primary">
+            <i class="fas fa-play"></i> Start Interview
+          </a>
+          <a href="#rubric" class="btn btn-secondary">
+            <i class="fas fa-list-check"></i> See Rubric
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulator -->
+    <section id="simulator" class="section">
+      <div class="container">
+
+        <!-- Start Screen -->
+        <div class="sds-start-screen" id="sdsStartScreen">
+          <div class="sds-start-card">
+            <div class="sds-start-icon">🏗️</div>
+            <h2 class="sds-start-title">Ready to Interview?</h2>
+            <p class="sds-start-desc">You'll get a random system design prompt and work through 5 structured phases. Your notes are evaluated against an industry rubric at the end.</p>
+
+            <div class="sds-phase-preview">
+              <div class="sds-phase-preview-item" style="--c:#06b6d4">
+                <span class="sds-phase-preview-icon">❓</span>
+                <span class="sds-phase-preview-name">Clarify</span>
+                <span class="sds-phase-preview-time">5 min</span>
+              </div>
+              <div class="sds-phase-arrow">→</div>
+              <div class="sds-phase-preview-item" style="--c:#f59e0b">
+                <span class="sds-phase-preview-icon">📊</span>
+                <span class="sds-phase-preview-name">Estimate</span>
+                <span class="sds-phase-preview-time">5 min</span>
+              </div>
+              <div class="sds-phase-arrow">→</div>
+              <div class="sds-phase-preview-item" style="--c:#a855f7">
+                <span class="sds-phase-preview-icon">🏛️</span>
+                <span class="sds-phase-preview-name">Design</span>
+                <span class="sds-phase-preview-time">20 min</span>
+              </div>
+              <div class="sds-phase-arrow">→</div>
+              <div class="sds-phase-preview-item" style="--c:#ef4444">
+                <span class="sds-phase-preview-icon">🔍</span>
+                <span class="sds-phase-preview-name">Deep Dive</span>
+                <span class="sds-phase-preview-time">10 min</span>
+              </div>
+              <div class="sds-phase-arrow">→</div>
+              <div class="sds-phase-preview-item" style="--c:#22c55e">
+                <span class="sds-phase-preview-icon">✅</span>
+                <span class="sds-phase-preview-name">Review</span>
+                <span class="sds-phase-preview-time">5 min</span>
+              </div>
+            </div>
+
+            <div class="sds-start-options">
+              <label class="sds-label">Choose a topic (or Random)</label>
+              <select id="sdsTopicSelect" class="sds-select" aria-label="Select system design topic">
+                <option value="random">🎲 Random Prompt</option>
+                <option value="urlshortener">URL Shortener</option>
+                <option value="twitter">Twitter / Social Feed</option>
+                <option value="netflix">Netflix / Video Streaming</option>
+                <option value="uber">Uber / Ride Sharing</option>
+                <option value="whatsapp">WhatsApp / Messaging</option>
+                <option value="googledrive">Google Drive / File Storage</option>
+                <option value="ratelimiter">Rate Limiter</option>
+                <option value="searchautocomplete">Search Autocomplete</option>
+                <option value="ticketmaster">Ticket Booking System</option>
+                <option value="amazoncart">Amazon Shopping Cart</option>
+              </select>
+
+              <label class="sds-label" style="margin-top:1rem">Session Duration</label>
+              <select id="sdsDurationSelect" class="sds-select" aria-label="Select session duration">
+                <option value="45">45 minutes (Full)</option>
+                <option value="30">30 minutes (Focused)</option>
+                <option value="15">15 minutes (Quick)</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary sds-btn-primary sds-start-btn" id="sdsStartBtn">
+              <i class="fas fa-play"></i> Begin Interview
+            </button>
+          </div>
+        </div>
+
+        <!-- Interview Screen -->
+        <div class="sds-interview-screen hidden" id="sdsInterviewScreen">
+
+          <!-- Top bar -->
+          <div class="sds-top-bar">
+            <div class="sds-prompt-label">
+              <i class="fas fa-building"></i>
+              <span id="sdsPromptLabel">Design a URL Shortener</span>
+            </div>
+            <div class="sds-timer-wrap">
+              <i class="fas fa-clock"></i>
+              <span class="sds-timer" id="sdsTimer">45:00</span>
+            </div>
+            <button class="btn btn-secondary sds-end-btn" id="sdsEndBtn">
+              <i class="fas fa-flag-checkered"></i> End & Score
+            </button>
+          </div>
+
+          <!-- Phase progress -->
+          <div class="sds-phases-bar" id="sdsPhasesBar"></div>
+
+          <!-- Phase header -->
+          <div class="sds-phase-header" id="sdsPhaseHeader">
+            <div class="sds-phase-icon" id="sdsPhaseIcon">❓</div>
+            <div class="sds-phase-info">
+              <div class="sds-phase-name" id="sdsPhaseName">Phase 1: Clarify Requirements</div>
+              <div class="sds-phase-desc" id="sdsPhaseDesc">Ask clarifying questions. Understand scope, users, and constraints.</div>
+            </div>
+            <div class="sds-phase-timer-wrap">
+              <div class="sds-phase-timer" id="sdsPhaseTimer">5:00</div>
+              <div class="sds-phase-timer-label">phase time</div>
+            </div>
+          </div>
+
+          <!-- Hints -->
+          <div class="sds-hints-bar" id="sdsHintsBar">
+            <div class="sds-hints-label"><i class="fas fa-lightbulb"></i> Guiding questions:</div>
+            <div class="sds-hints-list" id="sdsHintsList"></div>
+          </div>
+
+          <!-- Notes area -->
+          <div class="sds-notes-wrap">
+            <div class="sds-notes-header">
+              <span><i class="fas fa-pen"></i> Your Notes — <span id="sdsPhaseNameSmall">Phase 1</span></span>
+              <span class="sds-notes-hint">Write your design decisions, questions, and reasoning here.</span>
+            </div>
+            <textarea class="sds-textarea" id="sdsNotes" placeholder="Start writing here..." aria-label="Interview notes"></textarea>
+          </div>
+
+          <!-- Phase nav -->
+          <div class="sds-phase-nav">
+            <button class="btn btn-secondary sds-nav-btn" id="sdsPrevPhaseBtn" disabled>
+              <i class="fas fa-arrow-left"></i> Previous Phase
+            </button>
+            <div class="sds-phase-dots" id="sdsPhaseDots"></div>
+            <button class="btn btn-primary sds-btn-primary sds-nav-btn" id="sdsNextPhaseBtn">
+              Next Phase <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Results Screen -->
+        <div class="sds-results-screen hidden" id="sdsResultsScreen">
+          <div class="sds-results-header">
+            <div class="sds-results-icon">📋</div>
+            <h2 class="sds-results-title">Interview Complete</h2>
+            <div class="sds-results-prompt" id="sdsResultsPrompt"></div>
+          </div>
+
+          <!-- Overall Score -->
+          <div class="sds-score-card">
+            <div class="sds-overall-score-wrap">
+              <div class="sds-overall-score" id="sdsOverallScore">0</div>
+              <div class="sds-overall-label">/ 100</div>
+            </div>
+            <div class="sds-overall-grade" id="sdsOverallGrade"></div>
+          </div>
+
+          <!-- Rubric scores -->
+          <div class="sds-rubric-scores" id="sdsRubricScores"></div>
+
+          <!-- Phase notes review -->
+          <div class="sds-notes-review" id="sdsNotesReview"></div>
+
+          <!-- Strengths + Improvements -->
+          <div class="sds-feedback-grid" id="sdsFeedbackGrid"></div>
+
+          <!-- Actions -->
+          <div class="sds-result-actions">
+            <button class="btn btn-primary sds-btn-primary" id="sdsTryAgainBtn">
+              <i class="fas fa-redo"></i> Try Again
+            </button>
+            <button class="btn btn-secondary" id="sdsNewPromptBtn">
+              <i class="fas fa-dice"></i> New Prompt
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Rubric Reference -->
+    <section id="rubric" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📐</span> Evaluation Rubric</h2>
+        <p class="section-subtitle">Your interview is evaluated on 5 industry-standard dimensions.</p>
+        <div class="sds-rubric-grid" id="sdsRubricGrid"></div>
+      </div>
+    </section>
+
+    <!-- Tips -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🎯</span> Interview Tips</h2>
+        <div class="tips-grid">
+          <div class="tip-card"><h3>❓ Always Clarify First</h3><p>Never jump to designing. Ask about scale, read/write ratio, latency requirements, and whether you need strong or eventual consistency.</p></div>
+          <div class="tip-card"><h3>📊 Estimate Before Designing</h3><p>Back-of-envelope calculations show you understand scale. Estimate QPS, storage, bandwidth — then let it guide your architecture choices.</p></div>
+          <div class="tip-card"><h3>🏛️ Start High Level</h3><p>Draw the big picture first: clients, load balancer, services, database, cache. Then drill into the hardest components.</p></div>
+          <div class="tip-card"><h3>🗃️ Justify DB Choices</h3><p>Don't just say "use MySQL". Explain why: relational for transactions, NoSQL for unstructured data, time-series for metrics.</p></div>
+          <div class="tip-card"><h3>💾 Always Mention Caching</h3><p>Where to cache, what to cache, what eviction policy (LRU/LFU), and what consistency problems caching introduces.</p></div>
+          <div class="tip-card"><h3>⚖️ Discuss Trade-offs</h3><p>Interviewers want to hear you reason about trade-offs — consistency vs availability, cost vs latency, SQL vs NoSQL.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="system-design-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

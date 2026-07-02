@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persistent Data Structure Lab | Algo Infinity Verse</title>
+    <meta name="description" content="Watch path-copying create immutable BST versions that share subtrees. Scrub through history, compare two versions, and see exactly how much memory structural sharing saves." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="persistent-ds-lab.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="persistent-ds-lab">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="pd-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="pd-hero-inner">
+        <div class="pd-hero-eyebrow">🕰️ Immutable Data Structures</div>
+        <h1 class="pd-hero-title">Persistent Data Structure Lab</h1>
+        <p class="pd-hero-sub">Every update creates a new version. Old ones never die.</p>
+        <p class="pd-hero-desc">Git's object model, Clojure's core data structures, React's reconciler, every undo system worth using — all rely on persistent data structures. The trick: copy only the O(log n) nodes on the path from root to change, sharing all other subtrees with the previous version. Watch it happen node by node.</p>
+        <a href="#lab" class="btn btn-primary pd-btn-primary">
+          <i class="fas fa-code-branch"></i> Open the Lab
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="pd-lab-section">
+      <div class="pd-ide-shell">
+
+        <!-- Left sidebar: operations + version timeline -->
+        <div class="pd-sidebar">
+
+          <!-- Operations -->
+          <div class="pd-sidebar-section">
+            <div class="pd-sidebar-title"><i class="fas fa-terminal"></i> Operations</div>
+
+            <div class="pd-op-row">
+              <select id="pdOpType" class="pd-select" aria-label="Operation type">
+                <option value="insert">Insert</option>
+                <option value="delete">Delete</option>
+              </select>
+              <input type="number" id="pdOpValue" class="pd-val-input" value="50" min="1" max="99" aria-label="Value" placeholder="val" />
+              <button class="pd-op-btn" id="pdOpBtn">
+                <i class="fas fa-plus"></i> Execute
+              </button>
+            </div>
+
+            <div class="pd-presets">
+              <div class="pd-presets-label">Quick presets:</div>
+              <div class="pd-preset-chips">
+                <button class="pd-preset-chip" data-seq="[30,50,20,70,40,60,10,80]">Classic BST</button>
+                <button class="pd-preset-chip" data-seq="[50,25,75,12,37,62,87]">Balanced</button>
+                <button class="pd-preset-chip" data-seq="[10,20,30,40,50]">Degenerate</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version timeline -->
+          <div class="pd-sidebar-section pd-timeline-section">
+            <div class="pd-sidebar-title"><i class="fas fa-clock-rotate-left"></i> Version Timeline</div>
+            <div class="pd-timeline" id="pdTimeline"></div>
+          </div>
+
+          <!-- Compare mode -->
+          <div class="pd-sidebar-section">
+            <div class="pd-sidebar-title"><i class="fas fa-code-compare"></i> Compare Versions</div>
+            <div class="pd-compare-row">
+              <select id="pdCompareA" class="pd-select pd-compare-sel" aria-label="Version A">
+                <option value="">—</option>
+              </select>
+              <span class="pd-compare-vs">vs</span>
+              <select id="pdCompareB" class="pd-select pd-compare-sel" aria-label="Version B">
+                <option value="">—</option>
+              </select>
+            </div>
+            <button class="pd-compare-btn" id="pdCompareBtn">
+              <i class="fas fa-arrows-left-right"></i> Show Shared Nodes
+            </button>
+            <button class="pd-compare-clear-btn" id="pdCompareClearBtn">
+              Clear Compare
+            </button>
+          </div>
+
+          <!-- Memory stats -->
+          <div class="pd-sidebar-section pd-memory-section">
+            <div class="pd-sidebar-title"><i class="fas fa-microchip"></i> Memory Footprint</div>
+            <div class="pd-mem-stat-row">
+              <span>Unique nodes ever created</span>
+              <span class="pd-mem-val" id="pdUniqueNodes">0</span>
+            </div>
+            <div class="pd-mem-stat-row">
+              <span>Naive full-copy would need</span>
+              <span class="pd-mem-val pd-mem-naive" id="pdNaiveNodes">0</span>
+            </div>
+            <div class="pd-mem-stat-row pd-mem-saved-row">
+              <span>Nodes saved by sharing</span>
+              <span class="pd-mem-val pd-mem-saved" id="pdSavedNodes">0</span>
+            </div>
+            <div class="pd-mem-bar-wrap">
+              <div class="pd-mem-bar-track">
+                <div class="pd-mem-bar-fill" id="pdMemBarFill"></div>
+              </div>
+              <div class="pd-mem-bar-labels">
+                <span>Persistent</span>
+                <span>Naive</span>
+              </div>
+            </div>
+            <div class="pd-mem-pct" id="pdMemPct">—</div>
+          </div>
+
+        </div>
+
+        <!-- Center: tree canvas -->
+        <div class="pd-canvas-area">
+          <div class="pd-canvas-header">
+            <div class="pd-canvas-title" id="pdCanvasTitle">v0 — Empty</div>
+            <div class="pd-canvas-legend">
+              <span class="pd-leg"><span class="pd-leg-dot" style="background:#06b6d4;border:2px solid #06b6d4"></span>Normal node</span>
+              <span class="pd-leg"><span class="pd-leg-dot" style="background:rgba(34,197,94,0.35);border:2px solid #22c55e"></span>Newly copied</span>
+              <span class="pd-leg"><span class="pd-leg-dot" style="background:rgba(168,85,247,0.35);border:2px solid #a855f7"></span>Shared (version A)</span>
+              <span class="pd-leg"><span class="pd-leg-dot" style="background:rgba(245,158,11,0.35);border:2px solid #f59e0b"></span>Shared (version B)</span>
+              <span class="pd-leg"><span class="pd-leg-dot" style="background:rgba(239,68,68,0.35);border:2px solid #ef4444"></span>Shared by BOTH</span>
+            </div>
+          </div>
+          <div class="pd-canvas-wrap" id="pdCanvasWrap">
+            <svg id="pdSvg" class="pd-svg"></svg>
+          </div>
+          <div class="pd-canvas-status" id="pdStatus">Load a preset or insert values to begin building versions.</div>
+        </div>
+
+        <!-- Right: node inspector + operation log -->
+        <div class="pd-right-panel">
+
+          <div class="pd-right-section">
+            <div class="pd-right-title"><i class="fas fa-magnifying-glass"></i> Node Inspector</div>
+            <div class="pd-inspector" id="pdInspector">
+              <div class="pd-inspector-empty">Click any node to inspect it</div>
+            </div>
+          </div>
+
+          <div class="pd-right-section pd-log-section">
+            <div class="pd-right-title"><i class="fas fa-list-ul"></i> Operation Log</div>
+            <div class="pd-op-log" id="pdOpLog">
+              <div class="pd-log-empty">No operations yet.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How Path Copying Works</h2>
+        <div class="pd-learn-grid">
+          <div class="pd-learn-card" style="--lc:#06b6d4">
+            <div class="pd-learn-num">01</div>
+            <h3>Path Copying</h3>
+            <p>To insert a value into a persistent BST, copy only the nodes on the path from the root to the insertion point — O(log n) nodes. All other subtrees are shared with the previous version by reference. The new root becomes the root of version n+1.</p>
+          </div>
+          <div class="pd-learn-card" style="--lc:#22c55e">
+            <div class="pd-learn-num">02</div>
+            <h3>Structural Sharing</h3>
+            <p>After k insertions into a tree of height h, the total nodes created is k × h, not k × n. In a balanced BST with 1000 elements, 10 insertions creates only ~100 new nodes, not 10,000. The other 9,900 references point to existing nodes.</p>
+          </div>
+          <div class="pd-learn-card" style="--lc:#a855f7">
+            <div class="pd-learn-num">03</div>
+            <h3>Immutability</h3>
+            <p>Because no node is ever modified after creation, any code holding a reference to version n sees a stable, unchanging tree forever. This makes persistent structures inherently thread-safe and enables trivial undo — just keep a list of old roots.</p>
+          </div>
+          <div class="pd-learn-card" style="--lc:#f59e0b">
+            <div class="pd-learn-num">04</div>
+            <h3>Real Uses</h3>
+            <p>Git stores every commit as an immutable tree of blobs and subtrees, sharing unchanged directories. Clojure's vectors and maps are persistent. React's virtual DOM reuses unchanged subtrees. Haskell's data structures are persistent by default.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="persistent-ds-lab.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

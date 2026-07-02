@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Gladiator Arena | Algo Infinity Verse</title>
+    <meta name="description" content="Watch algorithms battle head-to-head with live visualizations, performance metrics, and dynamic datasets." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="algorithm-arena.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="algorithm-arena">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero arena-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Let the Best Algorithm Win</span>
+          <span class="main-title arena-gradient">Algorithm Gladiator Arena ⚔️</span>
+          <span class="subtitle">Side-by-side. Real data. One winner.</span>
+        </h1>
+        <p class="section-subtitle">Pick two algorithms, choose your dataset, and watch them race in real time — with live performance metrics, visualizations, and educational breakdowns.</p>
+        <div class="hero-buttons">
+          <a href="#arena" class="btn btn-primary arena-btn-primary">
+            <i class="fas fa-sword"></i> Enter the Arena
+          </a>
+          <a href="#learn" class="btn btn-secondary">
+            <i class="fas fa-graduation-cap"></i> Learn Trade-offs
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Arena -->
+    <section id="arena" class="section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="arena-controls-card">
+          <div class="arena-controls-row">
+
+            <!-- Algorithm A -->
+            <div class="arena-fighter-select">
+              <div class="arena-fighter-label arena-label-a">⚔️ Fighter A</div>
+              <select id="arenaAlgoA" class="arena-select" aria-label="Select algorithm A">
+                <option value="bubbleSort">Bubble Sort</option>
+                <option value="selectionSort">Selection Sort</option>
+                <option value="insertionSort">Insertion Sort</option>
+                <option value="mergeSort" selected>Merge Sort</option>
+                <option value="quickSort">Quick Sort</option>
+                <option value="heapSort">Heap Sort</option>
+              </select>
+            </div>
+
+            <div class="arena-vs-badge">VS</div>
+
+            <!-- Algorithm B -->
+            <div class="arena-fighter-select">
+              <div class="arena-fighter-label arena-label-b">🛡️ Fighter B</div>
+              <select id="arenaAlgoB" class="arena-select" aria-label="Select algorithm B">
+                <option value="bubbleSort">Bubble Sort</option>
+                <option value="selectionSort">Selection Sort</option>
+                <option value="insertionSort">Insertion Sort</option>
+                <option value="mergeSort">Merge Sort</option>
+                <option value="quickSort" selected>Quick Sort</option>
+                <option value="heapSort">Heap Sort</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="arena-controls-row arena-controls-row-2">
+            <!-- Dataset -->
+            <div class="arena-control-group">
+              <label class="arena-ctrl-label" for="arenaDataset">Dataset</label>
+              <select id="arenaDataset" class="arena-select" aria-label="Select dataset type">
+                <option value="random">Random</option>
+                <option value="sorted">Already Sorted</option>
+                <option value="reverse">Reverse Sorted</option>
+                <option value="nearlySorted">Nearly Sorted</option>
+                <option value="duplicates">Many Duplicates</option>
+              </select>
+            </div>
+
+            <!-- Size -->
+            <div class="arena-control-group">
+              <label class="arena-ctrl-label" for="arenaSize">
+                Array Size: <span id="arenaSizeLabel" class="arena-ctrl-val">40</span>
+              </label>
+              <input type="range" id="arenaSize" class="arena-range" min="10" max="80" value="40" aria-label="Array size" />
+            </div>
+
+            <!-- Speed -->
+            <div class="arena-control-group">
+              <label class="arena-ctrl-label" for="arenaSpeed">
+                Speed: <span id="arenaSpeedLabel" class="arena-ctrl-val">Normal</span>
+              </label>
+              <input type="range" id="arenaSpeed" class="arena-range" min="1" max="5" value="3" aria-label="Animation speed" />
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="arena-action-row">
+            <button class="btn btn-primary arena-btn-primary" id="arenaFightBtn">
+              <i class="fas fa-play"></i> Fight!
+            </button>
+            <button class="btn btn-secondary" id="arenaResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <button class="btn btn-secondary" id="arenaNewDataBtn">
+              <i class="fas fa-dice"></i> New Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Battle Stage -->
+        <div class="arena-stage">
+
+          <!-- Fighter A Panel -->
+          <div class="arena-fighter-panel" id="arenaPanelA">
+            <div class="arena-panel-header arena-header-a">
+              <span class="arena-panel-name" id="arenaPanelNameA">Merge Sort</span>
+              <span class="arena-panel-badge arena-badge-a">A</span>
+            </div>
+            <canvas class="arena-canvas" id="arenaCanvasA" aria-label="Algorithm A visualization"></canvas>
+            <div class="arena-metrics" id="arenaMetricsA">
+              <div class="arena-metric">
+                <span class="arena-metric-label">Comparisons</span>
+                <span class="arena-metric-val" id="arenaCompsA">0</span>
+              </div>
+              <div class="arena-metric">
+                <span class="arena-metric-label">Swaps</span>
+                <span class="arena-metric-val" id="arenaSwapsA">0</span>
+              </div>
+              <div class="arena-metric">
+                <span class="arena-metric-label">Time (ms)</span>
+                <span class="arena-metric-val" id="arenaTimeA">0</span>
+              </div>
+            </div>
+            <div class="arena-status" id="arenaStatusA">Ready</div>
+          </div>
+
+          <!-- Winner Banner (hidden until done) -->
+          <div class="arena-winner-banner hidden" id="arenaWinnerBanner">
+            <div class="arena-winner-content" id="arenaWinnerContent"></div>
+          </div>
+
+          <!-- Fighter B Panel -->
+          <div class="arena-fighter-panel" id="arenaPanelB">
+            <div class="arena-panel-header arena-header-b">
+              <span class="arena-panel-badge arena-badge-b">B</span>
+              <span class="arena-panel-name" id="arenaPanelNameB">Quick Sort</span>
+            </div>
+            <canvas class="arena-canvas" id="arenaCanvasB" aria-label="Algorithm B visualization"></canvas>
+            <div class="arena-metrics" id="arenaMetricsB">
+              <div class="arena-metric">
+                <span class="arena-metric-label">Comparisons</span>
+                <span class="arena-metric-val" id="arenaCompsB">0</span>
+              </div>
+              <div class="arena-metric">
+                <span class="arena-metric-label">Swaps</span>
+                <span class="arena-metric-val" id="arenaSwapsB">0</span>
+              </div>
+              <div class="arena-metric">
+                <span class="arena-metric-label">Time (ms)</span>
+                <span class="arena-metric-val" id="arenaTimeB">0</span>
+              </div>
+            </div>
+            <div class="arena-status" id="arenaStatusB">Ready</div>
+          </div>
+
+        </div>
+
+        <!-- Live Metric Bar Chart -->
+        <div class="arena-chart-card">
+          <div class="arena-chart-title"><i class="fas fa-chart-bar"></i> Live Performance Comparison</div>
+          <div class="arena-chart" id="arenaChart">
+            <div class="arena-chart-row">
+              <span class="arena-chart-label">Comparisons</span>
+              <div class="arena-chart-bars">
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-a" id="arenaBarCompsA" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValCompsA">0</span>
+                </div>
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-b" id="arenaBarCompsB" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValCompsB">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="arena-chart-row">
+              <span class="arena-chart-label">Swaps</span>
+              <div class="arena-chart-bars">
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-a" id="arenaBarSwapsA" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValSwapsA">0</span>
+                </div>
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-b" id="arenaBarSwapsB" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValSwapsB">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="arena-chart-row">
+              <span class="arena-chart-label">Time (ms)</span>
+              <div class="arena-chart-bars">
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-a" id="arenaBarTimeA" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValTimeA">0</span>
+                </div>
+                <div class="arena-bar-wrap">
+                  <div class="arena-bar arena-bar-b" id="arenaBarTimeB" style="width:0%"></div>
+                  <span class="arena-bar-val" id="arenaBarValTimeB">0</span>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="arena-chart-legend">
+              <span class="arena-legend-dot arena-legend-a"></span><span id="arenaLegendA">Fighter A</span>
+              <span class="arena-legend-dot arena-legend-b" style="margin-left:1.5rem"></span><span id="arenaLegendB">Fighter B</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Educational Breakdown -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📚</span> Algorithm Trade-offs</h2>
+        <p class="section-subtitle">Understanding when each algorithm wins — and why.</p>
+        <div class="arena-edu-grid" id="arenaEduGrid"></div>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🎓</span> Key Takeaways</h2>
+        <div class="tips-grid">
+          <div class="tip-card"><h3>⚡ No Universal Winner</h3><p>Every algorithm has its ideal scenario. Quick Sort wins on average but loses on sorted/reverse-sorted data.</p></div>
+          <div class="tip-card"><h3>📊 Worst Case Matters</h3><p>Merge Sort's O(n log n) worst case beats Quick Sort's O(n²) worst case — crucial for production systems.</p></div>
+          <div class="tip-card"><h3>💾 Memory is a Metric</h3><p>Merge Sort uses O(n) extra space. Heap Sort is O(1) in-place. Space complexity affects real-world performance.</p></div>
+          <div class="tip-card"><h3>🔄 Stability Matters</h3><p>Merge Sort is stable (equal elements maintain order). Quick Sort and Heap Sort are not — important for multi-key sorting.</p></div>
+          <div class="tip-card"><h3>📈 Data Distribution</h3><p>Nearly-sorted arrays are a slam dunk for Insertion Sort (O(n)) but Quick Sort struggles with them.</p></div>
+          <div class="tip-card"><h3>🎯 Choose Contextually</h3><p>Know your data. Small arrays? Insertion Sort. Large random? Quick Sort. Need stability? Merge Sort.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="/auth-gate.js"></script>
+    <script src="algorithm-arena.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

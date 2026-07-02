@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Playground – Live JSX Editor | Algo Infinity Verse</title>
+    <meta name="description" content="Write and preview React components live in the browser. Experiment with JSX, props, state, and hooks in real time." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="react-playground.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="react-playground">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero rp-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write React.</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #61dafb 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">See It Live.</span>
+          <span class="subtitle">In-Browser JSX Playground</span>
+        </h1>
+        <p class="rp-hero-desc">Write React components with JSX, render them instantly in the preview panel. No setup. No installs.</p>
+        <div class="hero-buttons">
+          <a href="#playground" class="btn btn-primary" style="background: linear-gradient(135deg, #61dafb 0%, #7c3aed 100%); border: none; color: #000; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Playground
+          </a>
+          <a href="#playground" class="btn btn-secondary">
+            <i class="fas fa-book-open"></i> View Examples
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="playground" class="section rp-section">
+      <div class="rp-container">
+        <div class="rp-toolbar">
+          <div class="rp-toolbar-left">
+            <span class="rp-label"><i class="fab fa-react rp-react-icon"></i> React Playground</span>
+            <select id="rpExampleSelect" class="rp-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="counter">useState Counter</option>
+              <option value="props">Props Example</option>
+              <option value="todo">Simple Todo</option>
+            </select>
+          </div>
+          <div class="rp-toolbar-right">
+            <button id="rpRunBtn" class="btn btn-primary rp-run-btn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button id="rpResetBtn" class="rp-icon-btn" title="Reset to example" aria-label="Reset to example">
+              <i class="fas fa-undo"></i>
+            </button>
+            <button id="rpCopyBtn" class="rp-icon-btn" title="Copy code" aria-label="Copy code">
+              <i class="fas fa-copy"></i>
+            </button>
+            <div class="rp-mode-toggle">
+              <label class="rp-toggle-label" for="rpAutoRender">Auto-run</label>
+              <input type="checkbox" id="rpAutoRender" class="rp-toggle-input" />
+              <label for="rpAutoRender" class="rp-toggle-switch"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="rp-split">
+          <div class="rp-editor-pane">
+            <div class="rp-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="rp-lang-badge">JSX</span>
+            </div>
+            <div class="rp-editor-wrap">
+              <div class="rp-line-numbers" id="rpLineNumbers">1</div>
+              <textarea id="rpEditor" class="rp-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="React code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="rp-divider" id="rpDivider"></div>
+
+          <div class="rp-preview-pane">
+            <div class="rp-pane-header">
+              <span><i class="fas fa-eye"></i> Preview</span>
+              <span id="rpStatusBadge" class="rp-status-badge rp-status-ready">Ready</span>
+            </div>
+            <iframe id="rpPreview" class="rp-preview" sandbox="allow-scripts" title="React component preview"></iframe>
+          </div>
+        </div>
+
+        <div class="rp-console">
+          <div class="rp-console-header" id="rpConsoleToggle">
+            <span><i class="fas fa-terminal"></i> Console</span>
+            <button class="rp-console-clear" id="rpConsoleClear" title="Clear console">
+              <i class="fas fa-trash"></i> Clear
+            </button>
+          </div>
+          <div class="rp-console-body" id="rpConsoleBody">
+            <span class="rp-console-placeholder">Console output will appear here...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./react-playground.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

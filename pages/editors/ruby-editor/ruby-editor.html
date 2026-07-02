@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Free in-browser Ruby code editor with live execution via Piston API. Write, run, and test Ruby scripts with real-time output, preloaded examples, and localStorage auto-save." />
+    <title>Ruby Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ruby-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="ruby-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero re-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Ruby.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #cc342d 0%, #e05252 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It For Real.</span>
+          <span class="subtitle">Powered by Piston API</span>
+        </h1>
+        <p class="re-hero-desc">Write Ruby scripts and execute them via a real Ruby interpreter. No installs. No backend setup. Powered by the Piston sandboxed execution API.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #cc342d 0%, #e05252 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/javascript-learning/javascript-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn Scripting</a>
+        </div>
+        <div class="re-note">
+          <i class="fas fa-bolt"></i>
+          Real Ruby execution via <strong>Piston API</strong> — sandboxed, safe, no API key required.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section re-section">
+      <div class="re-container">
+        <div class="re-toolbar">
+          <div class="re-toolbar-left">
+            <span class="re-label"><i class="fas fa-gem re-ruby-icon"></i> Ruby Editor</span>
+            <select id="reExampleSelect" class="re-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="loops">Loops & Iterators</option>
+              <option value="methods">Methods</option>
+              <option value="class">Classes & OOP</option>
+              <option value="strings">String Manipulation</option>
+            </select>
+          </div>
+          <div class="re-toolbar-right">
+            <div class="re-auto-toggle">
+              <span class="re-toggle-label">Auto-run</span>
+              <input type="checkbox" id="reAutoRun" class="re-toggle-input" />
+              <label for="reAutoRun" class="re-toggle-switch"></label>
+            </div>
+            <button id="reRunBtn" class="btn btn-primary re-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="reResetBtn" class="re-icon-btn" title="Reset to example" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="reCopyBtn" class="re-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="reSaveBtn" class="re-icon-btn" title="Save to browser storage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="re-split">
+          <div class="re-editor-pane">
+            <div class="re-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="re-lang-badge">Ruby</span>
+            </div>
+            <div class="re-editor-wrap">
+              <div class="re-line-numbers" id="reLineNumbers">1</div>
+              <textarea id="reEditor" class="re-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Ruby code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="re-output-pane">
+            <div class="re-pane-header">
+              <span><i class="fas fa-terminal"></i> Output</span>
+              <span id="reStatusBadge" class="re-status-badge re-status-ready">Ready</span>
+            </div>
+            <div class="re-output-body" id="reOutputBody">
+              <span class="re-output-placeholder">Run your code to see output here...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="re-console">
+          <div class="re-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Errors / stderr</span>
+            <button class="re-console-clear" id="reConsoleClear" aria-label="Clear error console"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="re-console-body" id="reConsoleBody">
+            <span class="re-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./ruby-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

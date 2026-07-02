@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pathfinding Arena - Side-by-Side Comparison | Algo Infinity Verse</title>
+    <meta name="description" content="Compare pathfinding algorithms side-by-side on synchronized grids. Visualize A*, Dijkstra's, BFS, and DFS in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="pathfinding-arena.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="arena-body">
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Main Workspace -->
+    <main class="arena-workspace">
+        
+        <!-- Controls Header Bar -->
+        <div class="arena-controls-bar">
+            <!-- Tool selection -->
+            <div class="control-segment tool-selection">
+                <span class="control-label"><i class="fas fa-tools"></i> Editing Tools:</span>
+                <div class="tool-buttons">
+                    <button class="btn btn-tool active" id="toolStart" data-tool="start" title="Click grid to move starting point">
+                        <i class="fas fa-play text-success"></i> Start
+                    </button>
+                    <button class="btn btn-tool" id="toolTarget" data-tool="target" title="Click grid to move target point">
+                        <i class="fas fa-bullseye text-danger"></i> Target
+                    </button>
+                    <button class="btn btn-tool" id="toolWall" data-tool="wall" title="Click & drag to draw walls">
+                        <i class="fas fa-square"></i> Wall
+                    </button>
+                    <button class="btn btn-tool" id="toolWeight" data-tool="weight" title="Click & drag to add weight/mud (cost = 5)">
+                        <i class="fas fa-weight-hanging text-warning"></i> Weight
+                    </button>
+                    <button class="btn btn-tool" id="toolEraser" data-tool="erase" title="Click & drag to clear walls/weights">
+                        <i class="fas fa-eraser"></i> Erase
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="control-segment simulation-actions">
+                <button class="btn btn-primary btn-run" id="btnStartRace" title="Start both pathfinding algorithms simultaneously">
+                    <i class="fas fa-flag-checkered"></i> Start Race
+                </button>
+                <button class="btn btn-outline" id="btnPauseRace" title="Pause simulation animation">
+                    <i class="fas fa-pause"></i> Pause
+                </button>
+                <button class="btn btn-outline" id="btnClearPaths" title="Clear pathfinding lines & search space">
+                    <i class="fas fa-broom"></i> Clear Paths
+                </button>
+                <button class="btn btn-outline" id="btnResetGrids" title="Reset grids completely (removes walls & weights)">
+                    <i class="fas fa-undo"></i> Reset Grids
+                </button>
+            </div>
+
+            <!-- Grid & Speed Settings -->
+            <div class="control-segment configuration-group">
+                <div class="config-item">
+                    <label for="gridSizeSelector"><i class="fas fa-th"></i> Grid Size:</label>
+                    <select id="gridSizeSelector">
+                        <option value="15">Small (15x15)</option>
+                        <option value="20" selected>Medium (20x20)</option>
+                        <option value="25">Large (25x25)</option>
+                    </select>
+                </div>
+                <div class="config-item">
+                    <label for="speedSlider"><i class="fas fa-running"></i> Speed:</label>
+                    <div class="slider-container">
+                        <input type="range" id="speedSlider" min="1" max="5" value="3" />
+                        <span id="speedDisplay">3x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Split Grid Panes -->
+        <div class="grids-split-pane">
+            
+            <!-- Left Pane: Algorithm 1 -->
+            <div class="grid-pane" id="paneLeft">
+                <div class="pane-header">
+                    <div class="pane-title">
+                        <i class="fas fa-map-marked-alt text-teal"></i> Left Grid Arena
+                    </div>
+                    <div class="pane-algorithm-select">
+                        <select id="algoSelectLeft">
+                            <option value="astar" selected>A* Heuristic Search</option>
+                            <option value="dijkstra">Dijkstra's Algorithm</option>
+                            <option value="bfs">Breadth-First Search (BFS)</option>
+                            <option value="dfs">Depth-First Search (DFS)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats HUD -->
+                <div class="stats-hud-bar teal-theme">
+                    <div class="hud-item">
+                        <span class="hud-label">Visited Nodes</span>
+                        <strong class="hud-value" id="visitedLeft">0</strong>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Path Length / Cost</span>
+                        <strong class="hud-value" id="costLeft">0</strong>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Search Wave Size</span>
+                        <strong class="hud-value" id="waveLeft">0</strong>
+                    </div>
+                </div>
+
+                <!-- Grid Visualizer Container -->
+                <div class="grid-outer-wrapper">
+                    <div class="grid-container" id="gridContainerLeft">
+                        <!-- Dynamic cells -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Pane: Algorithm 2 -->
+            <div class="grid-pane" id="paneRight">
+                <div class="pane-header">
+                    <div class="pane-title">
+                        <i class="fas fa-map-marked-alt text-orange"></i> Right Grid Arena
+                    </div>
+                    <div class="pane-algorithm-select">
+                        <select id="algoSelectRight">
+                            <option value="dijkstra" selected>Dijkstra's Algorithm</option>
+                            <option value="astar">A* Heuristic Search</option>
+                            <option value="bfs">Breadth-First Search (BFS)</option>
+                            <option value="dfs">Depth-First Search (DFS)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats HUD -->
+                <div class="stats-hud-bar orange-theme">
+                    <div class="hud-item">
+                        <span class="hud-label">Visited Nodes</span>
+                        <strong class="hud-value" id="visitedRight">0</strong>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Path Length / Cost</span>
+                        <strong class="hud-value" id="costRight">0</strong>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Search Wave Size</span>
+                        <strong class="hud-value" id="waveRight">0</strong>
+                    </div>
+                </div>
+
+                <!-- Grid Visualizer Container -->
+                <div class="grid-outer-wrapper">
+                    <div class="grid-container" id="gridContainerRight">
+                        <!-- Dynamic cells -->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Explanatory Info Card -->
+        <div class="arena-info-footer">
+            <div class="info-card">
+                <h5>Heuristics and Pathfinding Efficiency</h5>
+                <p>
+                    <strong>A* Search</strong> uses a heuristic (Manhattan distance to target) to prioritize paths that look closer, drastically reducing the search space. 
+                    <strong>Dijkstra's Algorithm</strong> expands radially in all directions (uninformed search), guaranteeing the shortest path but exploring more nodes. 
+                    <strong>BFS</strong> is unweighted and searches layer-by-layer, while <strong>DFS</strong> explores deeply along single branches (unsuitable for shortest paths).
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Core Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="pathfinding-arena.js"></script>
+
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

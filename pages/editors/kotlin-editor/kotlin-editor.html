@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kotlin Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="kotlin-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="kotlin-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero kt-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Kotlin.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #7F52FF 0%, #F88909 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser Kotlin Editor</span>
+        </h1>
+      </div>
+    </section>
+
+    <main class="editor-container">
+      <div class="editor-wrapper">
+        <div class="editor-header">
+          <div class="editor-info">
+            <i class="fab fa-kickstarter" style="color: #7F52FF;"></i>
+            <span id="ktActiveFileName">Main.kt</span>
+            <span id="ktStatusBadge" class="kt-status-badge kt-status-ready">Ready</span>
+          </div>
+          <div class="editor-actions">
+            <select id="ktExampleSelect" class="kt-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="collections">Collections Example</option>
+              <option value="function">Functions & Recursion</option>
+              <option value="class">Classes & OOP</option>
+            </select>
+            <button id="ktCopyBtn" class="kt-icon-btn" title="Copy Code" aria-label="Copy Code"><i class="fas fa-copy"></i></button>
+            <button id="ktSaveBtn" class="kt-icon-btn" title="Save Project" aria-label="Save Project"><i class="fas fa-save"></i></button>
+            <button id="ktResetBtn" class="kt-icon-btn kt-reset-btn" title="Reset Editor" aria-label="Reset Editor"><i class="fas fa-undo"></i></button>
+            <button id="ktRunBtn" class="kt-run-btn"><i class="fas fa-play"></i> Run Code</button>
+          </div>
+        </div>
+
+        <div class="editor-main">
+          <!-- File Explorer Sidebar -->
+          <aside class="file-explorer">
+            <div class="explorer-header">
+              <span><i class="fas fa-folder-open"></i> FILES</span>
+              <button id="ktNewFileBtn" class="explorer-action-btn" title="New File" aria-label="New File">
+                <i class="fas fa-file-circle-plus"></i>
+              </button>
+            </div>
+            <div id="ktFileList" class="file-list">
+              <!-- Dynamically populated -->
+            </div>
+          </aside>
+
+          <!-- Code Editor Workspace -->
+          <div class="code-editor-workspace">
+            <div class="code-editor">
+              <div class="line-numbers" id="ktLineNumbers">1</div>
+              <textarea id="ktEditor" class="code-textarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Kotlin code editor" placeholder="// Write your Kotlin code here..."></textarea>
+              <div class="syntax-highlight" id="ktHighlight"></div>
+            </div>
+            <div class="editor-shortcuts">
+              <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run Code</span>
+              <span><kbd>Ctrl</kbd>+<kbd>S</kbd> Save Project</span>
+              <span><kbd>Tab</kbd> Indent (4 Spaces)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <i class="fas fa-terminal" style="color: #7F52FF;"></i>
+            <span>Standard Output</span>
+          </div>
+          <div id="ktOutputBody" class="panel-body">
+            <span class="kt-output-placeholder">Output will appear here after running...</span>
+          </div>
+        </div>
+
+        <div class="panel console-panel">
+          <div class="panel-header">
+            <i class="fas fa-exclamation-triangle" style="color: #F88909;"></i>
+            <span>Console / Errors</span>
+            <button id="ktConsoleClear" class="console-clear-btn" title="Clear Console" aria-label="Clear Console"><i class="fas fa-trash-alt"></i></button>
+          </div>
+          <div id="ktConsoleBody" class="panel-body">
+            <span class="kt-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="kotlin-editor.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+  </body>
+</html>

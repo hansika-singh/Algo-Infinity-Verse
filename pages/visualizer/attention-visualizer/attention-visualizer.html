@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformer Self-Attention Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Matrix Visualizer for the LLM Scaled Dot-Product Attention Mechanism." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="attention-visualizer.css" />
+</head>
+<body class="attn-body">
+
+    <nav class="navbar attn-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-brain"></i> LLM Tensor Engine
+        </div>
+    </nav>
+
+    <main class="attn-workspace">
+        
+        <!-- Left Panel: Input & Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-keyboard"></i> Sequence Input</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Enter a short sentence to visualize <strong>Scaled Dot-Product Attention</strong>. Watch how tokens mathematically "attend" to each other based on context.
+                </p>
+
+                <div class="input-group">
+                    <label>Input Sequence (Max 6 words)</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="seqInput" value="The bank of the river" />
+                        <button class="btn btn-primary" id="btnProcess">Process</button>
+                    </div>
+                </div>
+
+                <div class="formula-box">
+                    <div class="formula-title">Attention Formula:</div>
+                    <div class="formula-math">
+                        <span class="math-func">Attention</span>(Q, K, V) = <span class="math-func">softmax</span><span class="math-paren">(</span><div class="math-frac"><span class="math-num">Q K<sup>T</sup></span><span class="math-den">√d<sub>k</sub></span></div><span class="math-paren">)</span> V
+                    </div>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-secondary w-100" id="btnStepFwd" disabled>
+                        Step Forward <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mathematical Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Tensor Operations</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Waiting for input sequence...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Matrix Flow -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> Tensor Execution Flow</span>
+                <span class="step-indicator" id="stepIndicator">Step 0: Input</span>
+            </div>
+            
+            <div class="matrix-flow-wrapper" id="matrixFlow">
+                
+                <!-- Step 1: Embeddings -->
+                <div class="flow-step hidden" id="stepEmbeddings">
+                    <div class="step-title">1. Token Embeddings (E)</div>
+                    <p class="step-desc">Tokens are mapped to continuous high-dimensional vectors.</p>
+                    <div class="matrix-container" id="matEmbeddings"></div>
+                </div>
+
+                <!-- Step 2: Q, K, V Projections -->
+                <div class="flow-step hidden" id="stepQKV">
+                    <div class="step-title">2. Linear Projections (Q, K, V)</div>
+                    <p class="step-desc">Embeddings are multiplied by learned weight matrices W<sub>q</sub>, W<sub>k</sub>, W<sub>v</sub>.</p>
+                    <div class="qkv-grid">
+                        <div class="matrix-wrapper">
+                            <span class="mat-label color-q">Query (Q)</span>
+                            <div class="matrix-container" id="matQ"></div>
+                        </div>
+                        <div class="matrix-wrapper">
+                            <span class="mat-label color-k">Key (K)</span>
+                            <div class="matrix-container" id="matK"></div>
+                        </div>
+                        <div class="matrix-wrapper">
+                            <span class="mat-label color-v">Value (V)</span>
+                            <div class="matrix-container" id="matV"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Raw Scores -->
+                <div class="flow-step hidden" id="stepScores">
+                    <div class="step-title">3. Raw Attention Scores (Q × K<sup>T</sup>)</div>
+                    <p class="step-desc">Dot product of Queries and Keys determines raw relational affinity.</p>
+                    <div class="math-row">
+                        <div class="matrix-wrapper"><span class="mat-label color-q">Q</span><div class="matrix-container mini" id="matQ_mini"></div></div>
+                        <span class="math-operator">×</span>
+                        <div class="matrix-wrapper"><span class="mat-label color-k">K<sup>T</sup></span><div class="matrix-container mini" id="matK_T"></div></div>
+                        <span class="math-operator">=</span>
+                        <div class="matrix-wrapper"><span class="mat-label">Scores</span><div class="matrix-container" id="matScores"></div></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Panel: Heatmap & Output -->
+        <div class="panel-right">
+            
+            <div class="panel-header">
+                <h3><i class="fas fa-fire"></i> Attention Heatmap</h3>
+            </div>
+            
+            <div class="heatmap-section">
+                <p class="desc-text" style="font-size: 0.8rem; margin: 1rem;">
+                    <strong>4. Softmax Normalization:</strong> Raw scores are scaled and passed through Softmax to create a probability distribution (rows sum to 1). Hover over cells to inspect weights.
+                </p>
+                
+                <div class="heatmap-container" id="heatmapContainer">
+                    <div class="empty-state" id="heatmapEmpty">
+                        <i class="fas fa-th"></i>
+                        <p>Heatmap generates at Step 4.</p>
+                    </div>
+                    <!-- Heatmap Grid Injected Here -->
+                </div>
+                
+                <!-- Custom Tooltip -->
+                <div class="heatmap-tooltip hidden" id="heatmapTooltip">
+                    "<span id="ttQuery" class="color-q">Query</span>" pays <strong id="ttValue">0.00</strong> attention to "<span id="ttKey" class="color-k">Key</span>"
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="panel-header">
+                    <h3><i class="fas fa-sign-out-alt"></i> Final Contextual Output</h3>
+                </div>
+                <div class="output-body">
+                    <p class="desc-text" style="font-size: 0.8rem; margin-bottom: 1rem;">
+                        <strong>5. Attention × V:</strong> The attention probabilities dictate how much of each Value vector is mixed into the final contextualized embedding.
+                    </p>
+                    <div class="matrix-container" id="matOutput"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="attention-visualizer.js"></script>
+</body>
+</html>

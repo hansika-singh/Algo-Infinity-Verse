@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regex Compiler & Automata Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Compile Regular Expressions into NFA State Machines and visualize string matching in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="regex-automata-visualizer.css" />
+    
+    <!-- Cytoscape.js for Graph Visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="regex-body">
+
+    <nav class="navbar regex-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> Automata Engine: Ready
+        </div>
+    </nav>
+
+    <main class="regex-workspace">
+        
+        <!-- Left Panel: Compiler & Simulator Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-code-branch"></i> Regex Compiler</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="input-group">
+                    <label for="regexInput">Regular Expression</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="regexInput" value="(a|b)*abb" placeholder="e.g., (a|b)*abb" />
+                        <button class="btn btn-primary" id="btnCompile">Compile NFA</button>
+                    </div>
+                    <small class="help-text">Supported ops: <code>*</code>, <code>+</code>, <code>?</code>, <code>|</code>, <code>()</code> and concat.</small>
+                </div>
+
+                <div class="compiler-logs" id="compilerLogs">
+                    <div class="log-line sys">> Awaiting compilation...</div>
+                </div>
+            </div>
+
+            <div class="panel-header" style="border-top: 1px solid var(--glass-border);">
+                <h3><i class="fas fa-play-circle"></i> NFA Simulator</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="input-group">
+                    <label for="testStringInput">Test String</label>
+                    <input type="text" id="testStringInput" value="ababb" placeholder="String to evaluate..." disabled />
+                </div>
+                
+                <div class="simulation-controls">
+                    <button class="btn btn-secondary" id="btnReset" disabled><i class="fas fa-undo"></i> Reset</button>
+                    <button class="btn btn-primary w-100" id="btnStep" disabled>Step Forward <i class="fas fa-step-forward"></i></button>
+                </div>
+
+                <div class="string-tracker">
+                    <div class="tracker-label">String Processing:</div>
+                    <div class="char-display" id="charDisplay">
+                        <!-- Characters injected by JS -->
+                        <span class="char placeholder">No string loaded</span>
+                    </div>
+                </div>
+
+                <div class="verdict-box" id="verdictBox">
+                    <i class="fas fa-info-circle"></i> Simulation idle.
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Automata Graph Canvas -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="canvas-title">
+                    <i class="fas fa-project-diagram"></i> Non-deterministic Finite Automaton (NFA)
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch start"></span> Start State</span>
+                    <span class="legend-item"><span class="node-swatch end"></span> Accept State</span>
+                    <span class="legend-item"><span class="node-swatch active"></span> Active State</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div id="cy" class="cy-container"></div>
+                <div class="empty-state" id="graphEmptyState">
+                    <i class="fas fa-network-wired"></i>
+                    <p>Enter a Regex and click "Compile" to generate the state machine.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="regex-automata-visualizer.js"></script>
+</body>
+</html>

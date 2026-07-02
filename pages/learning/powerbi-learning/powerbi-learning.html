@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Power BI – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly Power BI tutorial covering data import, Power Query transformation, Star Schema modeling, DAX, visualizations, slicers, and publishing." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="powerbi-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="powerbi-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #ffd000 0%, #f2a100 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Power BI Learning</span>
+          <span class="subtitle">Beginner-Friendly Business Intelligence, Data Modeling &amp; Reports</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_powerbi" id="typingTextPowerBI"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #ffd000 0%, #f2a100 100%); border: none; color: #000; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-introduction" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="35">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- Power BI Learning Section -->
+    <section id="powerbi-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">📊</span>
+          Learn Power BI
+        </h2>
+        <p class="section-subtitle">
+          Master the art of data analytics and dashboard design with step-by-step interactive lessons
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="pbi-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="pbi-progress-text"><span id="progressCount">0</span> / 12 topics completed</span>
+          <div class="pbi-progress-track">
+            <div class="pbi-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="pbi-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="pbi-sidebar" aria-label="Topic navigation">
+            <div class="pbi-sidebar-title">Topics</div>
+            <ul class="pbi-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#setup"><span class="nav-icon">⚙️</span> Installation &amp; Setup</a></li>
+              <li><a href="#import"><span class="nav-icon">📥</span> Data Import</a></li>
+              <li><a href="#powerquery"><span class="nav-icon">🛠️</span> Power Query Basics</a></li>
+              <li><a href="#cleaning"><span class="nav-icon">🧼</span> Data Cleaning</a></li>
+              <li><a href="#modeling"><span class="nav-icon">📐</span> Data Modeling</a></li>
+              <li><a href="#relationships"><span class="nav-icon">🔗</span> Relationships</a></li>
+              <li><a href="#dax"><span class="nav-icon">🧮</span> DAX Fundamentals</a></li>
+              <li><a href="#visuals"><span class="nav-icon">📈</span> Visualizations</a></li>
+              <li><a href="#filters"><span class="nav-icon">🔍</span> Filters &amp; Slicers</a></li>
+              <li><a href="#dashboards"><span class="nav-icon">🎨</span> Dashboard Creation</a></li>
+              <li><a href="#publishing"><span class="nav-icon">🌐</span> Publishing &amp; Share</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="pbi-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="pbi-lesson" id="introduction" data-topic="1">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">01</span>
+                <h3>Introduction to Power BI</h3>
+              </div>
+              <p>
+                <strong>Power BI</strong> is a powerful, unified business intelligence (BI) and data visualization platform developed by Microsoft. It helps organizations connect to disparate data sources, visualize patterns, and share actionable insights through interactive dashboards.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Core Components of the Ecosystem</h4>
+                <ul>
+                  <li><strong>Power BI Desktop</strong> – A free, Windows-native application used to connect to data, model relationships, write DAX, and construct reports.</li>
+                  <li><strong>Power BI Service</strong> – A cloud-based SaaS platform (`powerbi.com`) used to share reports, configure workspace collaborations, and schedule data refreshes.</li>
+                  <li><strong>Power BI Mobile</strong> – Mobile apps for iOS, Android, and Windows devices to view dashboards on the go.</li>
+                </ul>
+              </div>
+              <p>The standard analytics workflow follows a natural data progression:</p>
+              <div class="pbi-table-wrap">
+                <table class="pbi-table" aria-label="Power BI Workflow Steps">
+                  <thead>
+                    <tr>
+                      <th scope="col">Phase</th>
+                      <th scope="col">Tool Location</th>
+                      <th scope="col">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>1. Extract (Import)</strong></td><td>Power BI Desktop</td><td>Connect to files, databases, or API feeds</td></tr>
+                    <tr><td><strong>2. Transform (Clean)</strong></td><td>Power Query Editor</td><td>Shape columns, merge tables, set data types</td></tr>
+                    <tr><td><strong>3. Model</strong></td><td>Model View</td><td>Define relationships, write DAX columns and measures</td></tr>
+                    <tr><td><strong>4. Visualize</strong></td><td>Report View</td><td>Create charts, tables, KPIs, and maps</td></tr>
+                    <tr><td><strong>5. Publish &amp; Share</strong></td><td>Power BI Service</td><td>Upload to cloud workspaces and share report URLs</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Exercise 1 -->
+              <div class="pbi-exercise" id="exercise-introduction">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Understanding BI Components
+                </div>
+                <p>Which component of the Power BI ecosystem is primarily used to perform data ingestion, cleaning, and model development?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-intro">
+                  <p><strong>Answer:</strong> Power BI Desktop</p>
+                  <p><strong>Explanation:</strong> While the cloud-based Power BI Service allows for minor edits and sharing, all core data preparation, transformation (Power Query), table modeling, and expression writing (DAX) are executed in the desktop tool.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Installation & Setup -->
+            <article class="pbi-lesson" id="setup" data-topic="2">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">02</span>
+                <h3>Power BI Installation &amp; Setup</h3>
+              </div>
+              <p>
+                To build reports, you must install **Power BI Desktop**. It is free and updated monthly by Microsoft.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>System Requirements &amp; Installation Steps</h4>
+                <ul>
+                  <li><strong>Operating System</strong>: Native installation is supported only on <strong>Windows</strong> (Windows 10/11 or Windows Server equivalents).</li>
+                  <li><strong>Mac/Linux Users</strong>: Must run a Windows Virtual Machine (e.g., Parallels, VirtualBox) or use cloud-based Remote Desktop environments.</li>
+                  <li><strong>Installation Method 1 (Recommended)</strong>: Open the <strong>Microsoft Store</strong> on Windows, search for "Power BI Desktop", and click install. This manages automatic monthly updates in the background.</li>
+                  <li><strong>Installation Method 2</strong>: Download the standalone `.msi` installer executable from the official Microsoft download center.</li>
+                </ul>
+              </div>
+              <p>Upon opening Power BI Desktop, you are greeted with the main landing interface consisting of three primary views accessible on the left-side panel:</p>
+              
+              <div class="pbi-media-card">
+                <img loading="lazy" src="images/powerbi-interface.png" alt="Microsoft Power BI Desktop User Interface Layout" />
+                <div class="pbi-media-caption">Figure 2.1: The main workspace interface of Power BI Desktop including the canvas, filters pane, and data panel.</div>
+              </div>
+
+              <ul>
+                <li><strong>Report View</strong>: The visual layout canvas where you drag-and-drop charts, format text, and place slicers.</li>
+                <li><strong>Data View</strong>: A spreadsheet grid layout allowing you to inspect, sort, filter, and review raw loaded data rows.</li>
+                <li><strong>Model View</strong>: A graphical schematic layout showing table boxes and active relationship lines connecting key columns.</li>
+              </ul>
+
+              <!-- Exercise 2 -->
+              <div class="pbi-exercise" id="exercise-setup">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Installation OS Compatibility
+                </div>
+                <p>True or False: A developer running macOS can install Power BI Desktop directly without any virtual machine or emulation layer.</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-setup">Show Solution</button>
+                <div class="pbi-exercise-solution">
+                  <p><strong>Answer:</strong> False</p>
+                  <p><strong>Explanation:</strong> Power BI Desktop is strictly a Windows-native application. Mac developers must utilize emulation tools (like Boot Camp or Parallels) or a cloud-hosted Windows environment to run Power BI Desktop.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Data Sources & Data Import -->
+            <article class="pbi-lesson" id="import" data-topic="3">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">03</span>
+                <h3>Data Sources and Data Import</h3>
+              </div>
+              <p>
+                Power BI can load data from hundreds of different sources. You initiate data retrieval by clicking the <strong>Get Data</strong> button on the Home ribbon.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Common Connectors</h4>
+                <ul>
+                  <li><strong>Flat Files</strong>: Excel Workbooks (`.xlsx`), CSV text files (`.csv`), XML, and JSON feeds.</li>
+                  <li><strong>Relational Databases</strong>: Microsoft SQL Server, PostgreSQL, MySQL, Oracle, and Access.</li>
+                  <li><strong>Online Services</strong>: SharePoint Folders, Salesforce, Google Analytics, and Dynamics 365.</li>
+                  <li><strong>Web/APIs</strong>: Scraping tabular data directly from a public URL or calling JSON REST API endpoints.</li>
+                </ul>
+              </div>
+              <p>When connecting to enterprise data sources, you must choose between three distinct storage modes:</p>
+              <div class="pbi-concept-card">
+                <h4>Storage Mode Comparison</h4>
+                <ul>
+                  <li><strong>Import Mode (Default)</strong>: Data is loaded and compressed directly into Power BI's in-memory cache. Highly performant but file sizes are capped (1GB in free tier), and data must be refreshed.</li>
+                  <li><strong>DirectQuery</strong>: Power BI holds no local data. Instead, it queries the database in real-time as users interact with visuals. Ideal for massive datasets or real-time updates, but slower performance.</li>
+                  <li><strong>Live Connection</strong>: Connects to a pre-defined semantic model in Analysis Services or the Power BI Service.</li>
+                </ul>
+              </div>
+
+              <!-- Exercise 3 -->
+              <div class="pbi-exercise" id="exercise-import">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: In-Memory Storage Modes
+                </div>
+                <p>Which storage mode provides the fastest visual rendering speed by caching tables directly in the local system RAM?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-import">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-import">
+                  <p><strong>Answer:</strong> Import Mode</p>
+                  <p><strong>Explanation:</strong> Import Mode uses the VertiPaq database engine to compress and store data in-memory, resulting in extremely fast analytical aggregations compared to DirectQuery which sends SQL statements on every click.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Power Query Basics -->
+            <article class="pbi-lesson" id="powerquery" data-topic="4">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">04</span>
+                <h3>Power Query Basics</h3>
+              </div>
+              <p>
+                Once you select a data source, click **Transform Data** to open the **Power Query Editor**. This is a dedicated data-preparation window.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>The Power Query Interface</h4>
+                <ul>
+                  <li><strong>Query Ribbon</strong>: The toolbar filled with common data-shaping shortcuts (split columns, change types, pivot).</li>
+                  <li><strong>Queries Pane</strong>: The left sidebar listing all imported tables (queries).</li>
+                  <li><strong>Data Preview Area</strong>: The center grid showcasing a sample preview of rows.</li>
+                  <li><strong>Applied Steps</strong>: The right sidebar tracking every transformation step sequentially.</li>
+                </ul>
+              </div>
+              <p>
+                Every button click in Power Query writes code in Microsoft's proprietary functional language: <strong>M Formula Language</strong> (or simply <strong>M</strong>). Power Query records these steps so they can be re-run whenever new data is loaded.
+              </p>
+              <div class="pbi-code-block">
+                <div class="pbi-code-header">
+                  <span class="pbi-code-lang">M Language Query</span>
+                  <button class="pbi-code-copy" aria-label="Copy M query" data-code="let
+    Source = Csv.Document(File.Contents(&quot;C:\data\sales.csv&quot;), [Delimiter=&quot;,&quot;, Columns=3, Encoding=1252]),
+    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    ChangedType = Table.TransformColumnTypes(PromotedHeaders, {{&quot;SalesAmount&quot;, type number}, {&quot;OrderDate&quot;, type date}})
+in
+    ChangedType">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">let</span>
+    Source = Csv.Document(File.Contents(<span class="tok-str">"C:\data\sales.csv"</span>), [Delimiter=<span class="tok-str">","</span>]),
+    PromotedHeaders = Table.PromoteHeaders(Source),
+    ChangedType = Table.TransformColumnTypes(PromotedHeaders, {{<span class="tok-str">"SalesAmount"</span>, <span class="tok-kw">type</span> <span class="tok-num">number</span>}})
+<span class="tok-kw">in</span>
+    ChangedType</code></pre>
+              </div>
+
+              <!-- Exercise 4 -->
+              <div class="pbi-exercise" id="exercise-powerquery">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Under the Hood of Power Query
+                </div>
+                <p>What scripting language is written in the background as you click buttons in the Power Query Editor?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-powerquery">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-powerquery">
+                  <p><strong>Answer:</strong> M Formula Language (often shortened to "M")</p>
+                  <p><strong>Explanation:</strong> M is a functional, case-sensitive language designed specifically for data mashup and extraction. The query steps recorded in the "Applied Steps" pane are just GUI representations of M code blocks.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Data Transformation and Cleaning -->
+            <article class="pbi-lesson" id="cleaning" data-topic="5">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">05</span>
+                <h3>Data Transformation and Cleaning</h3>
+              </div>
+              <p>
+                Real-world datasets are rarely ready for report building. Power Query offers diverse operations to scrub, structure, and clean tables.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Core Data Cleaning Transformations</h4>
+                <ul>
+                  <li><strong>Setting Correct Data Types</strong>: Cast columns explicitly (e.g., convert numeric codes to strings, ensure dates are recognized as Calendar formats).</li>
+                  <li><strong>Promote Headers</strong>: Set the first row of data as the actual column headers.</li>
+                  <li><strong>Remove Duplicates &amp; Nulls</strong>: Clean keys and empty cells to ensure database integrity.</li>
+                  <li><strong>Split Column</strong>: Split strings (e.g., splitting "LastName, FirstName" by the comma delimiter).</li>
+                  <li><strong>Unpivot Columns</strong>: Convert wide data tables (e.g., columns for Jan, Feb, Mar) into narrow data tables (a single "Month" column and an "Amount" column).</li>
+                </ul>
+              </div>
+              <p>Below is a visual example of pivoting vs unpivoting datasets for clean ingestion:</p>
+              <div class="pbi-table-wrap">
+                <table class="pbi-table" aria-label="Wide vs Narrow Table Formats">
+                  <thead>
+                    <tr>
+                      <th scope="col">Format Type</th>
+                      <th scope="col">Structure</th>
+                      <th scope="col">Best Practice Recommendation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Wide (Pivoted)</strong></td><td><code>Product | JanSales | FebSales | MarSales</code></td><td>Bad. Difficult to filter and aggregates poorly in charts.</td></tr>
+                    <tr><td><strong>Narrow (Unpivoted)</strong></td><td><code>Product | Month | SalesAmount</code></td><td>Excellent. Ideal structure for relational databases.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Exercise 5 -->
+              <div class="pbi-exercise" id="exercise-cleaning">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Unpivoting Use Case
+                </div>
+                <p>If you import a financial table that has 12 columns for monthly budget figures (Jan-Dec), which Power Query operation should you apply to consolidate these into a single "Month" column and a single "BudgetAmount" column?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-cleaning">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-cleaning">
+                  <p><strong>Answer:</strong> Unpivot Columns (or Unpivot Other Columns)</p>
+                  <p><strong>Explanation:</strong> Unpivoting rotates the columns into attribute-value pairs, converting your wide dataset into a clean vertical table, which is the preferred format for analytical modeling.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Data Modeling Basics -->
+            <article class="pbi-lesson" id="modeling" data-topic="6">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">06</span>
+                <h3>Data Modeling Basics</h3>
+              </div>
+              <p>
+                Once tables are cleaned and loaded, you enter the **Data Modeling** phase in Power BI. A well-designed model is critical for accurate calculations and fast reports.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>The Star Schema Concept</h4>
+                <p>
+                  The industry-standard approach for Power BI models is the <strong>Star Schema</strong>. In a Star Schema, tables are separated into two distinct roles:
+                </p>
+                <ul>
+                  <li><strong>Fact Tables</strong>: Contain quantitative observational business measurements (e.g., `SalesAmount`, `TransactionQty`, `DiscountPrice`) along with foreign keys connecting to dimensions. Usually long and narrow.</li>
+                  <li><strong>Dimension Tables</strong>: Contain descriptive text details about business entities (e.g., product names, customer addresses, calendar dates). Usually wide and short.</li>
+                </ul>
+              </div>
+              <p>Organizing data in a Star Schema minimizes data redundancy and maximizes cross-filtering speed, preventing formula errors.</p>
+              
+              <div class="pbi-media-card">
+                <img loading="lazy" src="images/powerbi-datamodel.png" alt="Star Schema Data Model Relationship Diagram" />
+                <div class="pbi-media-caption">Figure 6.1: Star Schema structure where descriptive dimension tables circle a central transaction fact table.</div>
+              </div>
+
+              <!-- Exercise 6 -->
+              <div class="pbi-exercise" id="exercise-modeling">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Fact vs Dimension
+                </div>
+                <p>Classify the following tables as either a Fact table or a Dimension table: (1) `ProductList` (containing names, weights, and categories), (2) `InternetSalesTransactions` (containing timestamps, order numbers, and quantities sold).</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-modeling">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-modeling">
+                  <p><strong>Answer:</strong> (1) `ProductList` is a Dimension table; (2) `InternetSalesTransactions` is a Fact table.</p>
+                  <p><strong>Explanation:</strong> `ProductList` contains descriptive context metadata about products, whereas `InternetSalesTransactions` stores quantitative records of events that occur continuously over time.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Relationships and Cardinality -->
+            <article class="pbi-lesson" id="relationships" data-topic="7">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">07</span>
+                <h3>Relationships and Cardinality</h3>
+              </div>
+              <p>
+                Tables are connected in the **Model View** by dragging matching key columns (e.g., `ProductID` in the Fact table to `ProductID` in the Product Dimension).
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Relationship Properties</h4>
+                <ul>
+                  <li><strong>Cardinality</strong>:
+                    <ul>
+                      <li><strong>One-to-Many (1:*)</strong> (Standard): One row in the dimension table relates to many rows in the fact table (e.g., one customer makes many purchases).</li>
+                      <li><strong>One-to-One (1:1)</strong>: Columns match row-for-row; usually indicates the tables should be merged.</li>
+                      <li><strong>Many-to-Many (*:*)</strong>: Extremely complex; should generally be avoided using bridge tables.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Cross Filter Direction</strong>:
+                    <ul>
+                      <li><strong>Single</strong> (Recommended): Filtering flows from the "one" side (Dimension) to the "many" side (Fact).</li>
+                      <li><strong>Both</strong>: Filters flow in both directions. While convenient, it can lead to performance issues and ambiguity in calculations.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              <div class="pbi-callout">
+                <span class="pbi-callout-icon">💡</span>
+                <p>Always build relationships with a <strong>Single</strong> cross filter direction pointing from Dimension tables to Fact tables. This ensures query results remain logical and predictable.</p>
+              </div>
+
+              <!-- Exercise 7 -->
+              <div class="pbi-exercise" id="exercise-relationships">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Relationship Flows
+                </div>
+                <p>You have a `Customers` table (with unique customer keys) and an `Orders` table. How should the cardinality and cross filter direction be configured for optimal design?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-relationships">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-relationships">
+                  <p><strong>Answer:</strong> Cardinality: One-to-Many (1:*) from `Customers` (1) to `Orders` (*); Cross Filter Direction: Single.</p>
+                  <p><strong>Explanation:</strong> A single customer can place multiple orders, and filtering customer attributes (like City) should filter the orders table, not vice versa.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. DAX Fundamentals -->
+            <article class="pbi-lesson" id="dax" data-topic="8">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">08</span>
+                <h3>DAX (Data Analysis Expressions) Fundamentals</h3>
+              </div>
+              <p>
+                **DAX** is a formula language used to create custom calculations in Power BI. DAX formulas look similar to Excel formulas but operate on tables and columns rather than individual cell addresses.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Calculated Columns vs Measures</h4>
+                <ul>
+                  <li><strong>Calculated Column</strong>: Evaluated row-by-row during data load. Takes up storage space. Used for slices or rows.</li>
+                  <li><strong>Measure</strong>: Evaluated dynamically in real-time as users click on visuals (uses <strong>Filter Context</strong>). Takes no storage space. Used for totals and metrics.</li>
+                </ul>
+              </div>
+              <p>Here are three essential DAX functions commonly used in reports:</p>
+              
+              <div class="pbi-code-block">
+                <div class="pbi-code-header">
+                  <span class="pbi-code-lang">DAX Measure Calculations</span>
+                  <button class="pbi-code-copy" aria-label="Copy DAX code" data-code="Total Revenue = SUM(Sales[SalesAmount])
+
+Profit Margin = DIVIDE([Total Profit], [Total Revenue], 0)
+
+USA Revenue = CALCULATE([Total Revenue], Customers[Country] = &quot;United States&quot;)">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// Sum of a column</span>
+Total Revenue = <span class="tok-fn">SUM</span>(Sales[SalesAmount])
+
+<span class="tok-cmt">// Safe division avoiding divide-by-zero errors</span>
+Profit Margin = <span class="tok-fn">DIVIDE</span>([Total Profit], [Total Revenue], <span class="tok-num">0</span>)
+
+<span class="tok-cmt">// CALCULATE overrides the current filter context</span>
+USA Revenue = <span class="tok-fn">CALCULATE</span>([Total Revenue], Customers[Country] = <span class="tok-str">"United States"</span>)</code></pre>
+              </div>
+
+              <!-- Exercise 8 -->
+              <div class="pbi-exercise" id="exercise-dax">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Writing DAX
+                </div>
+                <p>Write a DAX measure named `AverageUnitCost` that calculates the average of the `UnitCost` column in the `Products` table, utilizing safe division to handle empty states.</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-dax">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-dax">
+                  <div class="pbi-code-block">
+                    <div class="pbi-code-header">
+                      <span class="pbi-code-lang">DAX</span>
+                      <button class="pbi-code-copy" aria-label="Copy code" data-code="AverageUnitCost = AVERAGE(Products[UnitCost])">Copy</button>
+                    </div>
+                    <pre><code>AverageUnitCost = <span class="tok-fn">AVERAGE</span>(Products[UnitCost])</code></pre>
+                  </div>
+                  <p>Or alternatively, to calculate this row-by-row or to divide aggregate totals:</p>
+                  <div class="pbi-code-block">
+                    <div class="pbi-code-header">
+                      <span class="pbi-code-lang">DAX (Alternative)</span>
+                      <button class="pbi-code-copy" aria-label="Copy code" data-code="AverageUnitCost = DIVIDE(SUM(Products[TotalCost]), SUM(Products[Units]), 0)">Copy</button>
+                    </div>
+                    <pre><code>AverageUnitCost = <span class="tok-fn">DIVIDE</span>(<span class="tok-fn">SUM</span>(Products[TotalCost]), <span class="tok-fn">SUM</span>(Products[Units]), <span class="tok-num">0</span>)</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Visualizations -->
+            <article class="pbi-lesson" id="visuals" data-topic="9">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">09</span>
+                <h3>Visualizations (Charts, Tables, Cards, Maps)</h3>
+              </div>
+              <p>
+                With data modeled and metrics written, you drag fields onto the Report view canvas to create visualizations.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Choosing the Right Visual</h4>
+                <ul>
+                  <li><strong>KPI Card</strong>: Shows a single summary value (e.g., Total Revenue). Ideal for key performance metrics at the top of a report.</li>
+                  <li><strong>Line Chart</strong>: Shows continuous trend data over time (e.g., Monthly Sales).</li>
+                  <li><strong>Bar / Column Chart</strong>: Compares categorical counts or values side-by-side (e.g., Sales by Product Category).</li>
+                  <li><strong>Matrix</strong>: A cross-tabular grid (like Excel Pivot Tables) supporting expandable row hierarchies.</li>
+                  <li><strong>Map</strong>: Visualizes geographic distributions.</li>
+                </ul>
+              </div>
+              <p>Best practices in formatting visualizations include limiting the number of visual elements per page to avoid clutter, using clear descriptive titles, and selecting a simple, high-contrast color palette.</p>
+
+              <!-- Exercise 9 -->
+              <div class="pbi-exercise" id="exercise-visuals">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Selecting Visuals
+                </div>
+                <p>Which visualization type is most effective for displaying a single numerical summary value like "Total Customer Count"?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-visuals">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-visuals">
+                  <p><strong>Answer:</strong> Card Visual (or KPI Card)</p>
+                  <p><strong>Explanation:</strong> Card visuals display a single big number, making them ideal for high-level summary KPIs that users need to digest instantly at the top of the dashboard page.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. Filters, Slicers, and Drill-Down -->
+            <article class="pbi-lesson" id="filters" data-topic="10">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">10</span>
+                <h3>Filters, Slicers, and Drill-Down</h3>
+              </div>
+              <p>
+                Reports must be interactive. Power BI supports several built-in features to let users filter and drill into metrics.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Filtering Mechanisms</h4>
+                <ul>
+                  <li><strong>Slicers</strong>: Visual controls on the report canvas (checkboxes, dropdowns, date sliders) that let users filter charts in real-time.</li>
+                  <li><strong>Filter Pane</strong>: Collapsible right-hand panel where developers configure filters scoped at different levels:
+                    <ul>
+                      <li><em>Visual-level</em>: Applies to only one chart.</li>
+                      <li><em>Page-level</em>: Applies to all charts on the active page.</li>
+                      <li><em>Report-level</em>: Filters all pages across the entire `.pbix` file.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Drill-Down</strong>: When a chart uses a hierarchical field structure (e.g., Category -> Subcategory -> Product), clicking the down-arrow button enables users to navigate from high-level totals down to granular details.</li>
+                </ul>
+              </div>
+
+              <!-- Exercise 10 -->
+              <div class="pbi-exercise" id="exercise-filters">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Filter Scopes
+                </div>
+                <p>If you want to filter out a defunct store branch across all 5 pages of your report, which filter scope should you apply in the Filter Pane?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-filters">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-filters">
+                  <p><strong>Answer:</strong> Filter on all pages (Report-level filter)</p>
+                  <p><strong>Explanation:</strong> Placing the store branch filter under the "Filter on all pages" section ensures that it is applied uniformly across the entire report file without needing to configure it manually on every page.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 11. Dashboard and Report Creation -->
+            <article class="pbi-lesson" id="dashboards" data-topic="11">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">11</span>
+                <h3>Dashboard and Report Creation</h3>
+              </div>
+              <p>
+                A high-quality dashboard must guide the viewer's eye and tell a clear story. 
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Design Principles</h4>
+                <ul>
+                  <li><strong>Grid Layout</strong>: Align elements to invisible grid lines to keep the report structure looking clean and professional.</li>
+                  <li><strong>Visual Hierarchy</strong>: Place key figures (KPI Cards) at the top left, aggregate trend charts in the center, and raw matrix lists at the bottom.</li>
+                  <li><strong>Color Consistency</strong>: Use colors to highlight key data points rather than decorating the page. Match colors to company branding.</li>
+                </ul>
+              </div>
+
+              <div class="pbi-media-card">
+                <img loading="lazy" src="images/powerbi-dashboard.png" alt="Finished Power BI Retail Sales Dashboard layout" />
+                <div class="pbi-media-caption">Figure 11.1: A structured retail sales dashboard showing performance metrics, line trend charts, and geographic coordinates.</div>
+              </div>
+
+              <!-- Exercise 11 -->
+              <div class="pbi-exercise" id="exercise-dashboards">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Design Rules
+                </div>
+                <p>According to reading hierarchy guidelines, where is the best position on the report page to display high-level KPI cards?</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-dashboards">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-dashboards">
+                  <p><strong>Answer:</strong> The top-left corner / top row of the page.</p>
+                  <p><strong>Explanation:</strong> In Western culture, users read from top-left to bottom-right. Positioning core KPI numbers at the top ensure they are the first metrics seen when a user opens the report.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 12. Publishing and Sharing Reports -->
+            <article class="pbi-lesson" id="publishing" data-topic="12">
+              <div class="pbi-lesson-header">
+                <span class="pbi-lesson-number">12</span>
+                <h3>Publishing and Sharing Reports</h3>
+              </div>
+              <p>
+                To share your report, you must publish it from Power BI Desktop to the cloud-based **Power BI Service**.
+              </p>
+              <div class="pbi-concept-card">
+                <h4>Publishing Steps</h4>
+                <ol>
+                  <li>Save your report locally as a `.pbix` file.</li>
+                  <li>Click the <strong>Publish</strong> button in the home ribbon of Power BI Desktop.</li>
+                  <li>Select a target cloud workspace (e.g., "My Workspace" or an enterprise collaboration workspace).</li>
+                  <li>Open the published URL in a web browser.</li>
+                </ol>
+              </div>
+              <p>Once published, you can share access, embed the interactive report on a SharePoint site or Teams channel, or export snapshots as a PDF file.</p>
+              
+              <div class="pbi-callout">
+                <span class="pbi-callout-icon">⚠️</span>
+                <p>Sharing reports securely within an organization typically requires users to hold a paid <strong>Power BI Pro</strong> or <strong>Premium Per User (PPU)</strong> license, unless the workspace is hosted on dedicated Power BI Premium capacity.</p>
+              </div>
+
+              <!-- Exercise 12 -->
+              <div class="pbi-exercise" id="exercise-publishing">
+                <div class="pbi-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: License Sharing Requirements
+                </div>
+                <p>True or False: Any user with a free Power BI account can view a report shared securely by another user, even if the report is not hosted on Premium capacity.</p>
+                <button class="pbi-exercise-toggle" aria-expanded="false" aria-controls="solution-publishing">Show Solution</button>
+                <div class="pbi-exercise-solution" id="solution-publishing">
+                  <p><strong>Answer:</strong> False</p>
+                  <p><strong>Explanation:</strong> Secure sharing in standard workspaces requires both the publisher and the viewer to hold a Pro or PPU license. Free users can only view reports if they are published to public webs (unsecure) or hosted on Premium capacity nodes.</p>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div><!-- /.pbi-layout -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./powerbi-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

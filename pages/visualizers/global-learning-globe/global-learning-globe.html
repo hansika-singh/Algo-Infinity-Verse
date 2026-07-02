@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Learning Globe | Algo Infinity Verse</title>
+  <meta name="description" content="View real-time anonymous learning activity and coding progress across the world on an interactive 3D WebGL globe." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="global-learning-globe.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- WebGL Library & Camera Controls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="global-learning-globe">
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="globe-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      <div class="globe-nebula"></div>
+    </div>
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-line">Shared Knowledge Network</span>
+        <span class="main-title globe-gradient">Global Learning Globe 🌍</span>
+        <span class="subtitle">Real-time anonymous learning pulses from around the world.</span>
+      </h1>
+      <p class="section-subtitle">
+        Observe real-time data structure and algorithm practice pulses across continents. Filter topics and watch signal beams ignite the 3D grid.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container py-4">
+    
+    <div class="row layout-row-gap">
+      
+      <!-- Left Panel: Activity Feed & Filters -->
+      <div class="col-lg-4 col-md-12">
+        <div class="dream-card flex-column justify-between p-4 height-100" id="activity-panel">
+          <div>
+            <div class="panel-header border-bottom pb-3 mb-3 flex justify-between align-center">
+              <h3 class="m-0"><i class="fas fa-tower-broadcast"></i> Pulse Feed</h3>
+              <div class="live-indicator flex align-center gap-2">
+                <span class="pulsing-red-dot"></span>
+                <span class="live-text">Live Network</span>
+              </div>
+            </div>
+
+            <!-- Topic Filters -->
+            <div class="topic-filters mb-3">
+              <label class="text-xs text-muted block mb-2 font-semibold uppercase">Filter Live Pulses:</label>
+              <div class="filter-flex flex gap-1 wrap">
+                <button class="btn btn-xs filter-btn active" data-filter="all">All</button>
+                <button class="btn btn-xs filter-btn" data-filter="trees">Trees</button>
+                <button class="btn btn-xs filter-btn" data-filter="graphs">Graphs</button>
+                <button class="btn btn-xs filter-btn" data-filter="sorting">Sorting</button>
+                <button class="btn btn-xs filter-btn" data-filter="dp">DP</button>
+              </div>
+            </div>
+
+            <!-- Scrolling Feed -->
+            <div class="feed-wrapper" id="feed-scroller">
+              <div id="empty-feed-placeholder" class="text-center py-5 hidden">
+                <i class="fas fa-wind text-muted" style="font-size: 2rem;"></i>
+                <p class="text-muted text-sm mt-2">No signals match filter...</p>
+              </div>
+              <!-- Feed items will be prepended here -->
+            </div>
+          </div>
+
+          <!-- Bottom Control Box -->
+          <div class="control-box border-top pt-3 mt-3">
+            <button id="btn-simulate-event" class="btn btn-primary btn-block mb-3">
+              <i class="fas fa-bolt"></i> Simulate Learning Pulse
+            </button>
+
+            <div class="globe-settings flex justify-between align-center text-xs text-muted">
+              <label class="flex align-center gap-2 cursor-pointer">
+                <input type="checkbox" id="chk-auto-rotate" checked /> Auto-Rotate Globe
+              </label>
+              <div class="flex align-center gap-1">
+                <span>Speed:</span>
+                <input type="range" id="slider-rotate-speed" min="1" max="10" value="3" style="width: 60px; height: 3px;" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: WebGL Interactive Globe & Statistics -->
+      <div class="col-lg-8 col-md-12">
+        <div class="dream-card position-relative overflow-hidden" id="globe-viewport-card" style="height: 600px;">
+          
+          <!-- WebGL Container -->
+          <div id="canvas3d-container" class="canvas3d-wrapper">
+            <!-- Three.js Canvas Injected Here -->
+          </div>
+
+          <!-- Top-Right Camera HUD Overlay -->
+          <div class="hud-overlay-text position-absolute p-3" style="top: 0; right: 0; pointer-events: none;">
+            <div class="camera-control-hint text-xs text-muted">
+              <i class="fas fa-mouse"></i> Drag to rotate | Scroll to zoom
+            </div>
+          </div>
+
+          <!-- Bottom Floating Stats Bar -->
+          <div class="hud-stats-panel position-absolute p-3 m-3" style="bottom: 0; left: 0; right: 0; pointer-events: none;">
+            <div class="hud-stats-grid">
+              <div class="hud-stat-card">
+                <span class="hud-stat-label">Daily Power Generated</span>
+                <span class="hud-stat-value text-glow" id="stat-total-xp">1,240 XP</span>
+              </div>
+              <div class="hud-stat-card">
+                <span class="hud-stat-label">Top Active Topic</span>
+                <span class="hud-stat-value text-emerald" id="stat-top-topic">Dynamic Prog.</span>
+              </div>
+              <div class="hud-stat-card">
+                <span class="hud-stat-label">Peak Node Load</span>
+                <span class="hud-stat-value text-cyan" id="stat-active-nodes">India (🇮🇳)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="./global-learning-globe.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Sliding Window – Algorithm Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Master the Sliding Window pattern. Learn fixed and variable window techniques used in optimization problems, strings, and arrays." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sliding-window-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="sliding-window-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the</span>
+          <span class="main-title gradient-text">Sliding Window Pattern</span>
+          <span class="subtitle">Optimize Array &amp; String Problems</span>
+        </h1>
+        <div class="typing-container">
+          <span
+            class="typing-text_sliding_window"
+            id="typingTextSlidingWindow"
+          ></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#practice" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Problems
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- Sliding Window Learning Section -->
+    <section id="sliding-window-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🪟</span>
+          Learn Sliding Window
+        </h2>
+        <p class="section-subtitle">
+          Optimize nested loops into a single linear pass with fixed and
+          variable windows.
+        </p>
+
+        <!-- Progress Bar -->
+        <div
+          class="sliding-window-progress-bar"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Learning progress"
+        >
+          <span class="sliding-window-progress-text"
+            ><span id="progressCount">0</span> / 5 topics completed</span
+          >
+          <div class="sliding-window-progress-track">
+            <div class="sliding-window-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="sliding-window-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="sliding-window-sidebar" aria-label="Topic navigation">
+            <div class="sliding-window-sidebar-title">Topics</div>
+            <ul class="sliding-window-sidebar-nav" id="topicNav">
+              <li>
+                <a href="#introduction"
+                  ><span class="nav-icon">📖</span> Introduction</a
+                >
+              </li>
+              <li>
+                <a href="#fixed-window"
+                  ><span class="nav-icon">📏</span> Fixed Window Technique</a
+                >
+              </li>
+              <li>
+                <a href="#variable-window"
+                  ><span class="nav-icon">↔️</span> Variable Window Technique</a
+                >
+              </li>
+              <li>
+                <a href="#use-cases"
+                  ><span class="nav-icon">🎯</span> Common Use Cases</a
+                >
+              </li>
+              <li>
+                <a href="#practice"
+                  ><span class="nav-icon">🏋️</span> Practice Problems</a
+                >
+              </li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="sliding-window-main-content" id="mainContent">
+            <!-- 1. Introduction -->
+            <article
+              class="sliding-window-lesson"
+              id="introduction"
+              data-topic="1"
+            >
+              <div class="sliding-window-lesson-header">
+                <span class="sliding-window-lesson-number">01</span>
+                <h3>Introduction to Sliding Window</h3>
+              </div>
+
+              <p>
+                The <strong>Sliding Window</strong> pattern is a subset of the
+                two-pointer technique. It is used to convert nested loops into a
+                single loop, reducing the time complexity from
+                <strong>O(N&sup2;)</strong> to <strong>O(N)</strong>. It is
+                mainly used for finding subarrays or substrings that satisfy
+                certain conditions.
+              </p>
+
+              <div class="sliding-window-concept-card">
+                <h4>What is a "Window"?</h4>
+                <p>
+                  A window is a sublist formed over an array or string. By
+                  maintaining a left and right pointer, we "slide" this window
+                  forward to process continuous elements efficiently.
+                </p>
+              </div>
+
+              <div class="sliding-window-callout">
+                <span class="sliding-window-callout-icon">💡</span>
+                <p>
+                  If you see a problem asking for the "longest", "shortest",
+                  "maximum", or "minimum" contiguous subarray or substring, it's
+                  highly likely a sliding window problem!
+                </p>
+              </div>
+            </article>
+
+            <!-- 2. Fixed Window -->
+            <article
+              class="sliding-window-lesson"
+              id="fixed-window"
+              data-topic="2"
+            >
+              <div class="sliding-window-lesson-header">
+                <span class="sliding-window-lesson-number">02</span>
+                <h3>Fixed Window Technique</h3>
+              </div>
+
+              <p>
+                In a fixed window problem, the length of the subarray or
+                substring is predefined as a constant <code>K</code>. We need to
+                find something (like the maximum sum) among all windows of size
+                <code>K</code>.
+              </p>
+
+              <div class="sliding-window-concept-card">
+                <h4>The Algorithm</h4>
+                <ul>
+                  <li>
+                    Compute the result for the first window of size
+                    <code>K</code>.
+                  </li>
+                  <li>Slide the window by 1 element at a time.</li>
+                  <li>
+                    To update the window's state, <strong>add</strong> the new
+                    element entering the window on the right, and
+                    <strong>subtract</strong> the element leaving the window on
+                    the left.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="sliding-window-code-block">
+                <div class="sliding-window-code-header">
+                  <span class="sliding-window-code-lang">Python</span>
+                  <button
+                    class="sliding-window-code-copy"
+                    aria-label="Copy code"
+                    data-code="def max_sum_subarray(arr, k):
+    if len(arr) &lt; k:
+        return 0
+        
+    window_sum = sum(arr[:k])
+    max_sum = window_sum
+    
+    for i in range(k, len(arr)):
+        window_sum += arr[i] - arr[i-k]
+        max_sum = max(max_sum, window_sum)
+        
+    return max_sum"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">max_sum_subarray</span>(<span class="tok-var">arr</span>, <span class="tok-var">k</span>):
+    <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">arr</span>) &lt; <span class="tok-var">k</span>:
+        <span class="tok-kw">return</span> <span class="tok-num">0</span>
+        
+    <span class="tok-var">window_sum</span> = <span class="tok-fn">sum</span>(<span class="tok-var">arr</span>[:<span class="tok-var">k</span>])
+    <span class="tok-var">max_sum</span> = <span class="tok-var">window_sum</span>
+    
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">k</span>, <span class="tok-fn">len</span>(<span class="tok-var">arr</span>)):
+        <span class="tok-var">window_sum</span> += <span class="tok-var">arr</span>[<span class="tok-var">i</span>] - <span class="tok-var">arr</span>[<span class="tok-var">i</span>-<span class="tok-var">k</span>]
+        <span class="tok-var">max_sum</span> = <span class="tok-fn">max</span>(<span class="tok-var">max_sum</span>, <span class="tok-var">window_sum</span>)
+        
+    <span class="tok-kw">return</span> <span class="tok-var">max_sum</span></code></pre>
+              </div>
+              <!-- Sliding Window Motion Visualizer -->
+              <div class="sliding-window-visualizer">
+                <h4>🎬 Sliding Window Motion Visualizer</h4>
+
+                <div class="visualizer-controls">
+                  <button id="swStartBtn" class="btn btn-primary">Start</button>
+                  <button id="swNextBtn" class="btn btn-secondary">
+                    Next Step
+                  </button>
+                  <button id="swResetBtn" class="btn btn-secondary">
+                    Reset
+                  </button>
+                </div>
+
+                <div
+                  class="array-container"
+                  id="swArray"
+                  aria-label="Sliding window visualization"
+                ></div>
+
+                <div class="pointer-info">
+                  <span>Left: <strong id="swLeft">0</strong></span>
+                  <span>Right: <strong id="swRight">2</strong></span>
+                </div>
+
+                <div class="visualizer-stats">
+                  <div>Current Sum: <span id="swCurrentSum">0</span></div>
+                  <div>Best Sum: <span id="swBestSum">0</span></div>
+                </div>
+
+                <div class="visualizer-explanation" id="swExplanation">
+                  Click Start to visualize window movement.
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Variable Window -->
+            <article
+              class="sliding-window-lesson"
+              id="variable-window"
+              data-topic="3"
+            >
+              <div class="sliding-window-lesson-header">
+                <span class="sliding-window-lesson-number">03</span>
+                <h3>Variable Window Technique</h3>
+              </div>
+
+              <p>
+                In a variable window problem, the window size changes
+                dynamically. We expand the window from the right until a
+                condition is violated, then shrink it from the left until the
+                condition is satisfied again.
+              </p>
+
+              <div class="sliding-window-concept-card">
+                <h4>The Algorithm Template</h4>
+                <ul>
+                  <li>
+                    Initialize <code>left = 0</code>, <code>right = 0</code>.
+                  </li>
+                  <li>
+                    Expand the window by moving <code>right</code> and adding to
+                    the state.
+                  </li>
+                  <li>
+                    If the window state violates the problem's constraint, use a
+                    <code>while</code> loop to shrink it by moving
+                    <code>left</code> and removing from the state.
+                  </li>
+                  <li>
+                    Record the max/min window size that satisfies the
+                    constraint.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="sliding-window-code-block">
+                <div class="sliding-window-code-header">
+                  <span class="sliding-window-code-lang">JavaScript</span>
+                  <button
+                    class="sliding-window-code-copy"
+                    aria-label="Copy code"
+                    data-code="function minSubArrayLen(target, nums) {
+  let minLen = Infinity;
+  let left = 0;
+  let sum = 0;
+
+  for (let right = 0; right &lt; nums.length; right++) {
+    sum += nums[right];
+
+    while (sum >= target) {
+      minLen = Math.min(minLen, right - left + 1);
+      sum -= nums[left];
+      left++;
+    }
+  }
+
+  return minLen === Infinity ? 0 : minLen;
+}"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">minSubArrayLen</span>(<span class="tok-var">target</span>, <span class="tok-var">nums</span>) {
+  <span class="tok-kw">let</span> <span class="tok-var">minLen</span> = <span class="tok-var">Infinity</span>;
+  <span class="tok-kw">let</span> <span class="tok-var">left</span> = <span class="tok-num">0</span>;
+  <span class="tok-kw">let</span> <span class="tok-var">sum</span> = <span class="tok-num">0</span>;
+
+  <span class="tok-kw">for</span> (<span class="tok-kw">let</span> <span class="tok-var">right</span> = <span class="tok-num">0</span>; <span class="tok-var">right</span> &lt; <span class="tok-var">nums</span>.<span class="tok-var">length</span>; <span class="tok-var">right</span>++) {
+    <span class="tok-var">sum</span> += <span class="tok-var">nums</span>[<span class="tok-var">right</span>];
+
+    <span class="tok-kw">while</span> (<span class="tok-var">sum</span> &gt;= <span class="tok-var">target</span>) {
+      <span class="tok-var">minLen</span> = <span class="tok-var">Math</span>.<span class="tok-fn">min</span>(<span class="tok-var">minLen</span>, <span class="tok-var">right</span> - <span class="tok-var">left</span> + <span class="tok-num">1</span>);
+      <span class="tok-var">sum</span> -= <span class="tok-var">nums</span>[<span class="tok-var">left</span>];
+      <span class="tok-var">left</span>++;
+    }
+  }
+
+  <span class="tok-kw">return</span> <span class="tok-var">minLen</span> === <span class="tok-var">Infinity</span> ? <span class="tok-num">0</span> : <span class="tok-var">minLen</span>;
+}</code></pre>
+              </div>
+            </article>
+
+            <!-- 4. Applications -->
+            <article
+              class="sliding-window-lesson"
+              id="use-cases"
+              data-topic="4"
+            >
+              <div class="sliding-window-lesson-header">
+                <span class="sliding-window-lesson-number">04</span>
+                <h3>Common Use Cases</h3>
+              </div>
+
+              <p>
+                Sliding window optimization is highly versatile. Here are the
+                most common patterns:
+              </p>
+
+              <div class="sliding-window-concept-card">
+                <h4>1. String Anagrams / Permutations</h4>
+                <p>
+                  Finding all anagrams of a string <code>P</code> within a
+                  string <code>S</code>. You use a fixed window of size
+                  <code>len(P)</code> and compare frequency maps.
+                </p>
+              </div>
+
+              <div class="sliding-window-concept-card">
+                <h4>2. Longest Substring with K Distinct Characters</h4>
+                <p>
+                  Using a hash map to track character frequencies, expand the
+                  window until you have > K distinct characters, then shrink
+                  until you are back to K.
+                </p>
+              </div>
+
+              <div class="sliding-window-concept-card">
+                <h4>3. Maximum Consecutive Ones (with Flips)</h4>
+                <p>
+                  Given a binary array, find the maximum number of consecutive
+                  1s you can get by flipping up to <code>k</code> zeros. Here,
+                  the "constraint" is that the window cannot contain more than
+                  <code>k</code> zeros.
+                </p>
+              </div>
+            </article>
+
+            <!-- 5. Practice Exercises -->
+            <article class="sliding-window-lesson" id="practice" data-topic="5">
+              <div class="sliding-window-lesson-header">
+                <span class="sliding-window-lesson-number">05</span>
+                <h3>Practice Problems</h3>
+              </div>
+
+              <p>Test your understanding of the sliding window technique.</p>
+
+              <div class="sliding-window-exercise">
+                <div class="sliding-window-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 1: Max Sum
+                </div>
+                <p>
+                  Given <code>arr = [2, 1, 5, 1, 3, 2]</code> and
+                  <code>K = 3</code>, what is the maximum sum of any contiguous
+                  subarray of size K?
+                </p>
+                <button
+                  class="sliding-window-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-ex1"
+                >
+                  Show Solution
+                </button>
+                <div class="sliding-window-exercise-solution" id="solution-ex1">
+                  <p><strong>Answer: 9</strong></p>
+                  <p>
+                    Explanation: The subarrays of size 3 are: [2,1,5] (sum 8),
+                    [1,5,1] (sum 7), [5,1,3] (sum 9), [1,3,2] (sum 6). The
+                    maximum is 9.
+                  </p>
+                </div>
+              </div>
+
+              <div class="sliding-window-exercise">
+                <div class="sliding-window-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 2: Identify Pattern
+                </div>
+                <p>
+                  Is the problem "Find the longest substring without repeating
+                  characters" a Fixed or Variable window problem?
+                </p>
+                <button
+                  class="sliding-window-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-ex2"
+                >
+                  Show Solution
+                </button>
+                <div class="sliding-window-exercise-solution" id="solution-ex2">
+                  <p><strong>Answer: Variable Window</strong></p>
+                  <p>
+                    Explanation: We do not know the length of the longest
+                    substring beforehand. We must dynamically expand the window
+                    and shrink it whenever a duplicate character is encountered.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="sliding-window-learning.js"></script>
+
+    <script>
+      loadPartial("navbar-placeholder", "/partials/navbar.html");
+      loadPartial("footer-placeholder", "/partials/footer.html");
+    </script>
+  </body>
+</html>

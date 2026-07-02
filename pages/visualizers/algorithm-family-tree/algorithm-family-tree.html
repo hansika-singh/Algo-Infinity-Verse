@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Algorithm Family Tree | Algo Infinity Verse</title>
+  <meta name="description" content="Explore the historical evolution, relationships, and inheritance traits of algorithms and data structure techniques through an interactive family tree." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="algorithm-family-tree.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="algorithm-family-tree">
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="ft-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      <div class="ft-aurora"></div>
+    </div>
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-line">Genealogy of Logic</span>
+        <span class="main-title ft-gradient">Interactive Algorithm Family Tree 🌿</span>
+        <span class="subtitle">Understand how algorithms inherit, adapt, and evolve.</span>
+      </h1>
+      <p class="section-subtitle">
+        Trace the origins of algorithm design. Select any node to trace its ancestors, highlight its descendants, and inspect its evolutionary mutations.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content Container -->
+  <main class="container py-4">
+    
+    <!-- Controls Bar -->
+    <div class="ft-controls-card dream-card p-3 mb-4">
+      <div class="controls-row flex justify-between align-center wrap gap-3">
+        <!-- Search -->
+        <div class="search-box position-relative">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="search-node" placeholder="Find algorithm (e.g. Dijkstra, Parametric)..." class="ft-search-input" />
+          <button id="btn-clear-search" class="clear-search-btn hidden">&times;</button>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filter-group flex gap-2 wrap">
+          <button class="btn btn-sm filter-btn active" data-family="all">All Families</button>
+          <button class="btn btn-sm filter-btn" data-family="search">Search</button>
+          <button class="btn btn-sm filter-btn" data-family="sort">Sorting</button>
+          <button class="btn btn-sm filter-btn" data-family="graph">Graphs</button>
+          <button class="btn btn-sm filter-btn" data-family="dp">DP & Recursion</button>
+        </div>
+
+        <!-- Action Panel -->
+        <div class="action-buttons">
+          <button id="btn-open-compare" class="btn btn-primary btn-sm">
+            <i class="fas fa-arrows-left-right-to-line"></i> Compare Room
+          </button>
+          <button id="btn-reset-tree" class="btn btn-secondary btn-sm">
+            <i class="fas fa-rotate-left"></i> Reset Focus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tree Workspace -->
+    <div class="row layout-row-gap">
+      
+      <!-- Tree Canvas Container -->
+      <div class="col-lg-8 col-md-12">
+        <div class="dream-card canvas-card position-relative overflow-hidden">
+          <div class="card-header p-3 border-bottom flex justify-between align-center">
+            <h4 class="m-0"><i class="fas fa-sitemap"></i> Interactive Pedigree Map</h4>
+            <span class="text-muted text-sm"><i class="fas fa-circle-info"></i> Click nodes to expand details</span>
+          </div>
+          <div class="card-body p-0">
+            <div id="tree-canvas-container" class="tree-canvas-scroll">
+              <!-- SVG Family Tree Container -->
+              <svg id="svg-tree-canvas" width="1400" height="650">
+                <!-- SVG elements generated in JS -->
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Node Inspector Sidebar -->
+      <div class="col-lg-4 col-md-12">
+        <div id="node-inspector" class="dream-card height-100 flex-column justify-between p-4">
+          <div id="inspector-placeholder" class="text-center py-5">
+            <div class="placeholder-icon mb-3"><i class="fas fa-seedling"></i></div>
+            <h4>No Algorithm Selected</h4>
+            <p class="text-muted text-sm">Select any node on the tree diagram to inspect its ancestral properties, complexities, history, and code signature.</p>
+          </div>
+
+          <div id="inspector-content" class="hidden">
+            <div class="inspector-header border-bottom pb-3 mb-3 flex justify-between align-start">
+              <div>
+                <span class="badge" id="insp-badge-family">Search</span>
+                <h3 class="m-0 text-glow" id="insp-node-name">Binary Search</h3>
+              </div>
+              <button id="btn-insp-compare-shortcut" class="btn btn-sm btn-outline-secondary" title="Compare this algorithm">
+                <i class="fas fa-exchange-alt"></i> Compare
+              </button>
+            </div>
+
+            <div class="inspector-body flex-grow-1 overflow-auto pr-1">
+              <!-- Evolutionary Link -->
+              <div class="evolution-box mb-3 p-3">
+                <div class="evolution-title"><i class="fas fa-code-branch"></i> Evolutionary Linkage</div>
+                <p id="insp-evolution-desc" class="text-sm m-0">Evolved from parent algorithm by optimizing...</p>
+              </div>
+
+              <!-- History & Context -->
+              <div class="meta-section mb-3">
+                <h5 class="section-title-sm"><i class="fas fa-hourglass-half"></i> History & Context</h5>
+                <p id="insp-history-text" class="text-sm text-muted">Created in 1946 by John Mauchly...</p>
+              </div>
+
+              <!-- Traits (Complexity Metrics) -->
+              <div class="meta-section mb-3">
+                <h5 class="section-title-sm"><i class="fas fa-gauge"></i> Complexity Attributes</h5>
+                <div class="traits-grid">
+                  <div class="trait-item">
+                    <label>Worst-case Time</label>
+                    <span id="insp-val-time-worst" class="trait-val text-red">O(N)</span>
+                  </div>
+                  <div class="trait-item">
+                    <label>Average-case Time</label>
+                    <span id="insp-val-time-avg" class="trait-val text-yellow">O(log N)</span>
+                  </div>
+                  <div class="trait-item">
+                    <label>Space Complexity</label>
+                    <span id="insp-val-space" class="trait-val text-cyan">O(1)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Code Signature -->
+              <div class="meta-section">
+                <h5 class="section-title-sm flex justify-between align-center">
+                  <span><i class="fas fa-terminal"></i> Signature Code</span>
+                  <span class="text-xs text-muted" id="insp-code-lang">Python</span>
+                </h5>
+                <pre class="insp-code-pre"><code id="insp-code-body">
+                  <!-- JS/Python code -->
+                </code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comparative Reunion Room Modal Overlay -->
+    <div id="compare-modal" class="compare-modal-overlay hidden">
+      <div class="compare-modal-content dream-card p-4">
+        <div class="modal-header border-bottom pb-3 mb-4 flex justify-between align-center">
+          <h3 class="m-0"><i class="fas fa-arrows-left-right-to-line"></i> The Comparative Reunion Room</h3>
+          <button id="btn-close-compare" class="close-modal-btn">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="compare-selection-row flex gap-4 mb-4">
+            <div class="flex-grow-1">
+              <label for="select-compare-1" class="text-sm font-semibold mb-2 block">Algorithm 1:</label>
+              <select id="select-compare-1" class="dream-input w-100">
+                <!-- Populated via JS -->
+              </select>
+            </div>
+            <div class="compare-vs flex align-center">VS</div>
+            <div class="flex-grow-1">
+              <label for="select-compare-2" class="text-sm font-semibold mb-2 block">Algorithm 2:</label>
+              <select id="select-compare-2" class="dream-input w-100">
+                <!-- Populated via JS -->
+              </select>
+            </div>
+          </div>
+
+          <div class="compare-table-wrapper">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%">Trait</th>
+                  <th style="width: 37.5%" id="compare-col-header-1">Algorithm 1</th>
+                  <th style="width: 37.5%" id="compare-col-header-2">Algorithm 2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Family Line</strong></td>
+                  <td id="comp-family-1">-</td>
+                  <td id="comp-family-2">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Worst-case Time</strong></td>
+                  <td id="comp-time-worst-1" class="text-red">-</td>
+                  <td id="comp-time-worst-2" class="text-red">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Average-case Time</strong></td>
+                  <td id="comp-time-avg-1" class="text-yellow">-</td>
+                  <td id="comp-time-avg-2" class="text-yellow">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Space Complexity</strong></td>
+                  <td id="comp-space-1" class="text-cyan">-</td>
+                  <td id="comp-space-2" class="text-cyan">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Evolutionary Mutation</strong></td>
+                  <td id="comp-mutation-1">-</td>
+                  <td id="comp-mutation-2">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Core Description</strong></td>
+                  <td id="comp-desc-1">-</td>
+                  <td id="comp-desc-2">-</td>
+                </tr>
+                <tr>
+                  <td><strong>Implementation Snippet</strong></td>
+                  <td>
+                    <pre class="compare-code-pre"><code id="comp-code-1">-</code></pre>
+                  </td>
+                  <td>
+                    <pre class="compare-code-pre"><code id="comp-code-2">-</code></pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./algorithm-family-tree.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

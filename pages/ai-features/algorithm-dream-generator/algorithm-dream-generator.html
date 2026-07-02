@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algorithm Dream Generator | Algo Infinity Verse</title>
+  <meta name="description" content="Generate surreal, story-based visual narratives that explain algorithms through memorable characters and adventures." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="algorithm-dream-generator.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="algorithm-dream-generator">
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="dream-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      <div class="dream-nebula"></div>
+    </div>
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-line">Explore Surreal Realms</span>
+        <span class="main-title dream-gradient">Algorithm Dream Generator 🌌</span>
+        <span class="subtitle">Story-based narrative visualizations of algorithms.</span>
+      </h1>
+      <p class="section-subtitle">
+        Watch abstract logic dissolve into memorable characters, visual adventures, and surreal quests that cement computer science concepts in your subconscious.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container py-5">
+    
+    <!-- 1. Dream Weaver Console (Input Screen) -->
+    <section id="dream-weaver-console" class="dream-card">
+      <div class="card-header text-center">
+        <h2><i class="fas fa-wand-magic-sparkles"></i> Custom Dream Portal</h2>
+        <p>Select your algorithmic structure and synthesize a surreal dream dimension.</p>
+      </div>
+      <div class="card-body">
+        <form id="dream-form" onsubmit="event.preventDefault();">
+          <div class="form-grid">
+            <!-- Col 1: Algorithm -->
+            <div class="form-group">
+              <label for="select-algo"><i class="fas fa-microchip"></i> Select Algorithm</label>
+              <select id="select-algo" class="dream-input">
+                <option value="dijkstra" selected>Dijkstra's Shortest Path</option>
+                <option value="binary_search">Binary Search</option>
+                <option value="merge_sort">Merge Sort</option>
+                <option value="knapsack_dp">Knapsack (Dynamic Programming)</option>
+              </select>
+              <div class="form-help">The logical skeleton of the dream sequence.</div>
+            </div>
+
+            <!-- Col 2: Realm/Theme -->
+            <div class="form-group">
+              <label for="select-realm"><i class="fas fa-earth-asia"></i> Choose Dream Realm</label>
+              <select id="select-realm" class="dream-input">
+                <option value="cyberpunk" selected>Cyberpunk Metropolis (Neon & Tech)</option>
+                <option value="fantasy">The Whispering Library (Magic & Arcane)</option>
+                <option value="undersea">Atlantis Trench (Depths & Sonars)</option>
+                <option value="space">Cosmic Void (Stars & Warp Gates)</option>
+              </select>
+              <div class="form-help">The aesthetic environment and skin of your narrative.</div>
+            </div>
+
+            <!-- Col 3: Protagonist -->
+            <div class="form-group">
+              <label for="input-protagonist"><i class="fas fa-user-astronaut"></i> Hero's Name</label>
+              <input type="text" id="input-protagonist" class="dream-input" placeholder="Dexter" value="Dexter" maxlength="15" />
+              <div class="form-help">Name of the protagonist who embarks on the quest.</div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="button" id="btn-weave" class="btn-dream-large">
+              <i class="fas fa-brain"></i> Weave Surreal Dream
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. REM Loader Screen (Processing) -->
+    <section id="rem-loader" class="dream-card hidden">
+      <div class="loader-content text-center py-5">
+        <div class="dream-spinner">
+          <div class="spinner-ring ring-1"></div>
+          <div class="spinner-ring ring-2"></div>
+          <div class="spinner-ring ring-3"></div>
+          <div class="brain-icon"><i class="fas fa-brain"></i></div>
+        </div>
+        <h3 id="loader-status" class="mt-4 text-glow">Synchronizing REM Cycles...</h3>
+        <p id="loader-subtext" class="text-muted">Extracting algorithmic logic and preparing dimensions...</p>
+        <div class="loading-progress-container mt-3">
+          <div class="loading-progress-fill" id="rem-progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Dream Chamber (The Narrative & Visualization Workspace) -->
+    <section id="dream-chamber" class="hidden">
+      <div class="row dream-row-layout">
+        
+        <!-- Left Panel: Narrative Slidebook -->
+        <div class="col-lg-5 col-md-12">
+          <div class="dream-card height-100 flex-column justify-between">
+            <div class="narrative-top">
+              <div class="dream-realm-badge mb-3">
+                <span id="display-realm-icon">🏙️</span> <span id="display-realm-name">Cyberpunk Metropolis</span>
+              </div>
+              <div class="dream-title-container">
+                <h3 id="dream-heading" class="text-glow">The Swift Postman in Neon Metropolis</h3>
+                <div class="dream-steps-indicator" id="dream-steps-counter">Page 1 / 4</div>
+              </div>
+              
+              <!-- Story Text -->
+              <div class="dream-story-content mt-4" id="dream-story-text">
+                Loading story...
+              </div>
+
+              <!-- Metaphor to DSA Dictionary -->
+              <div class="metaphor-dictionary mt-4">
+                <div class="dict-title"><i class="fas fa-book-open"></i> Dream Translation</div>
+                <div class="dict-body" id="dream-translation">
+                  Loading translation...
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide Navigation Controls -->
+            <div class="narrative-controls mt-4 pt-3 border-top">
+              <div class="control-row">
+                <button id="btn-prev" class="btn btn-secondary" disabled>
+                  <i class="fas fa-chevron-left"></i> Back
+                </button>
+                
+                <button id="btn-play-pause" class="btn btn-primary">
+                  <i class="fas fa-play"></i> Auto Play
+                </button>
+
+                <button id="btn-next" class="btn btn-secondary">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <div class="speed-control mt-3">
+                <label for="speed-slider"><i class="fas fa-clock"></i> Auto-Play Speed:</label>
+                <div class="slider-wrapper">
+                  <input type="range" id="speed-slider" min="1500" max="6000" step="500" value="3000">
+                  <span id="speed-display">3.0s</span>
+                </div>
+              </div>
+
+              <div class="exit-row mt-4">
+                <button id="btn-wake-up" class="btn btn-danger btn-block">
+                  <i class="fas fa-power-off"></i> Wake Up (Return to Portal)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: Visual Sandbox & Code interpreter -->
+        <div class="col-lg-7 col-md-12">
+          <div class="flex-column gap-4 height-100">
+            
+            <!-- Visual Sandbox -->
+            <div class="dream-card flex-grow-1">
+              <div class="card-header flex justify-between align-center p-3 border-bottom">
+                <h4 class="m-0"><i class="fas fa-compass"></i> Interactive Vision</h4>
+                <div class="visualizer-status-indicator" id="visualizer-status-badge">Relaxing Edges</div>
+              </div>
+              <div class="card-body p-0 position-relative text-center">
+                <div id="visualizer-canvas-container" class="visualizer-canvas">
+                  <!-- Dynamic SVG will be rendered here -->
+                  <svg id="svg-canvas" width="100%" height="100%"></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data State & Code Panel -->
+            <div class="dream-card">
+              <div class="card-header flex justify-between align-center p-3 border-bottom">
+                <div class="panel-tabs">
+                  <button id="tab-btn-state" class="panel-tab-btn active" data-tab="tab-state">
+                    <i class="fas fa-list-check"></i> Algorithmic State
+                  </button>
+                  <button id="tab-btn-code" class="panel-tab-btn" data-tab="tab-code">
+                    <i class="fas fa-code"></i> Live Code Inspector
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <!-- Tab: State -->
+                <div id="tab-state" class="tab-panel">
+                  <div class="state-variables-grid" id="state-vars-display">
+                    <!-- Queue, Distances, Array partitions etc. -->
+                  </div>
+                </div>
+
+                <!-- Tab: Code -->
+                <div id="tab-code" class="tab-panel hidden">
+                  <div class="code-wrapper">
+                    <div class="code-header flex justify-between">
+                      <span id="code-lang-label">JavaScript</span>
+                      <button class="btn btn-sm btn-outline-secondary" id="btn-copy-code">Copy</button>
+                    </div>
+                    <pre class="code-editor-pre"><code id="code-lines-display">
+                      <!-- Syntax-highlighted/line-numbered code -->
+                    </code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. Dreamer's Challenge (Quiz Modal/Overlay/Section) -->
+    <section id="dreamers-challenge" class="dream-card hidden mt-5">
+      <div class="card-header text-center">
+        <h2><i class="fas fa-brain"></i> The Dreamer's Challenge</h2>
+        <p>Test your understanding of the conceptual links between the surreal metaphors and the algorithm.</p>
+      </div>
+      <div class="card-body">
+        <div class="quiz-container">
+          <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+          </div>
+          <div class="quiz-counter" id="quiz-counter">Question 1 / 3</div>
+          <h4 class="quiz-question mt-3" id="quiz-question-text">
+            In Dijkstra's dream, what does the fuel cost represent?
+          </h4>
+          <div class="quiz-options mt-4" id="quiz-options-container">
+            <!-- Option buttons -->
+          </div>
+          <div class="quiz-feedback hidden mt-3" id="quiz-feedback-box"></div>
+          
+          <div class="text-right mt-4">
+            <button class="btn btn-primary hidden" id="btn-quiz-next">
+              Next Question <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="quiz-result hidden text-center py-4" id="quiz-result-box">
+          <!-- Quiz summary, score, grade -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="./algorithm-dream-generator.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

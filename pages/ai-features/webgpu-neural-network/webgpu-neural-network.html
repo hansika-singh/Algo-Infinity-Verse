@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGPU Neural Network Builder | Algo Infinity Verse</title>
+    <meta name="description" content="Build, compile, and train Neural Networks directly on your GPU via WebGPU." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for Live Loss Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="webgpu-nn.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="gpu-body">
+
+    <nav class="navbar gpu-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="gpu-badge" id="gpuStatusBadge">
+            <i class="fas fa-spinner fa-spin"></i> Initializing WebGPU...
+        </div>
+    </nav>
+
+    <main class="gpu-workspace">
+        
+        <!-- Left Panel: Layer Palette -->
+        <aside class="panel-sidebar">
+            <div class="panel-header">
+                <h3><i class="fas fa-cubes"></i> Network Layers</h3>
+            </div>
+            
+            <div class="palette-container">
+                <p class="palette-instruction">Drag layers into the workspace to construct your network topology.</p>
+                
+                <div class="layer-node input-layer" draggable="true" data-type="Input" data-features="2">
+                    <div class="layer-icon"><i class="fas fa-sign-in-alt"></i></div>
+                    <div class="layer-info">
+                        <strong>Input Layer</strong>
+                        <span>Features: 2 (XOR Dataset)</span>
+                    </div>
+                </div>
+
+                <div class="layer-node hidden-layer" draggable="true" data-type="Dense" data-features="4">
+                    <div class="layer-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="layer-info">
+                        <strong>Dense Layer</strong>
+                        <span>Neurons: 4 | Act: ReLU</span>
+                    </div>
+                </div>
+
+                <div class="layer-node hidden-layer" draggable="true" data-type="Dense" data-features="8">
+                    <div class="layer-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="layer-info">
+                        <strong>Dense Layer</strong>
+                        <span>Neurons: 8 | Act: ReLU</span>
+                    </div>
+                </div>
+
+                <div class="layer-node output-layer" draggable="true" data-type="Output" data-features="1">
+                    <div class="layer-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="layer-info">
+                        <strong>Output Layer</strong>
+                        <span>Features: 1 (Binary) | Act: Sigmoid</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-danger w-100" id="btnClearGraph"><i class="fas fa-trash"></i> Clear Graph</button>
+            </div>
+        </aside>
+
+        <!-- Center Panel: Visual Graph Builder -->
+        <div class="panel-center">
+            <div class="workspace-header">
+                <div class="header-title">
+                    <i class="fas fa-project-diagram"></i> Architecture Blueprint
+                </div>
+                <div class="compile-actions">
+                    <button class="btn btn-primary" id="btnCompile" disabled>
+                        <i class="fas fa-cogs"></i> Compile to WGSL
+                    </button>
+                </div>
+            </div>
+
+            <div class="graph-workspace" id="workspace">
+                <svg class="connections-layer" id="connectionLayer">
+                    <path class="temp-connection hidden" id="tempLine" d="M0,0 L0,0"></path>
+                </svg>
+                
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-brain"></i>
+                    <p>Connect an Input layer to Dense layers, and finally to an Output layer.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: WebGPU Compiler & Training Console -->
+        <aside class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-microchip"></i> Training Hardware</h3>
+            </div>
+            
+            <div class="training-dashboard">
+                <div class="dashboard-stats">
+                    <div class="stat-group">
+                        <span class="stat-label">Epoch</span>
+                        <span class="stat-value" id="epochCount">0 / 500</span>
+                    </div>
+                    <div class="stat-group">
+                        <span class="stat-label">Loss (MSE)</span>
+                        <span class="stat-value" id="lossValue">0.0000</span>
+                    </div>
+                </div>
+
+                <!-- Chart.js Canvas -->
+                <div class="chart-container">
+                    <canvas id="lossChart"></canvas>
+                </div>
+
+                <div class="training-controls">
+                    <button class="btn btn-success w-100" id="btnTrain" disabled>
+                        <i class="fas fa-bolt"></i> Start GPU Training
+                    </button>
+                </div>
+            </div>
+
+            <div class="wgsl-console">
+                <div class="console-header">
+                    <span><i class="fas fa-code"></i> Generated WGSL Shader</span>
+                </div>
+                <div class="console-body" id="wgslOutput">
+                    // Awaiting graph compilation...
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="webgpu-nn.js"></script>
+</body>
+</html>

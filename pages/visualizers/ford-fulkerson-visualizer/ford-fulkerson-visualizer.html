@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ford-Fulkerson Max Flow Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive step-by-step visualization of the Ford-Fulkerson and Edmonds-Karp maximum flow algorithms. Graph capacities, search strategies (DFS/BFS), and residual network updates."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ford-fulkerson-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="ford-fulkerson-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Network Flow</span>
+          <span class="main-title gradient-text">Ford-Fulkerson Visualizer</span>
+          <span class="subtitle">Animate Augmenting Paths & Residual Network Updates</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextFlow"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          
+          <!-- LEFT SIDEBAR: Controls & Inputs -->
+          <div class="visualizer-sidebar">
+            
+            <!-- Canvas Editor -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-edit" style="color: var(--accent); margin-right: 0.5rem"></i>Canvas Editor
+              </h3>
+              <p class="sidebar-help-text">Select edit modes. Double click links to specify custom capacities.</p>
+              
+              <div class="editor-modes-grid">
+                <button class="btn mode-btn active" data-mode="node">
+                  <i class="fas fa-plus-circle"></i> Add Node
+                </button>
+                <button class="btn mode-btn" data-mode="edge">
+                  <i class="fas fa-arrow-right"></i> Add Edge
+                </button>
+                <button class="btn mode-btn" data-mode="delete">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <button class="btn mode-btn" data-mode="source">
+                  <i class="fas fa-sign-in-alt"></i> Set Src (S)
+                </button>
+                <button class="btn mode-btn" data-mode="sink" style="grid-column: span 2;">
+                  <i class="fas fa-sign-out-alt"></i> Set Sink (T)
+                </button>
+              </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-sliders-h" style="color: var(--accent); margin-right: 0.5rem"></i>Configuration
+              </h3>
+
+              <!-- Preset Dropdown -->
+              <div class="control-group">
+                <label for="presetSelect">Load Preset Graph</label>
+                <select id="presetSelect" class="control-input">
+                  <option value="diamond">Diamond Network</option>
+                  <option value="multi-path">Multi-Path Network</option>
+                  <option value="disjoint">Disjoint Paths</option>
+                  <option value="empty">Clear Workspace</option>
+                </select>
+              </div>
+
+              <!-- Strategy Selector -->
+              <div class="control-group">
+                <label for="strategySelect">Path Search Strategy</label>
+                <select id="strategySelect" class="control-input">
+                  <option value="bfs">BFS / Edmonds-Karp (Shortest Paths)</option>
+                  <option value="dfs">DFS / Ford-Fulkerson (Any Path)</option>
+                </select>
+              </div>
+
+              <!-- Residual Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem;">
+                  <label for="residualToggle" style="margin-bottom: 0;">Show Residual Graph</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="residualToggle">
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Step Delay -->
+              <div class="control-group">
+                <label for="speedRange">Step Delay <span class="val-display" id="speedDisplay">800ms</span></label>
+                <input type="range" id="speedRange" min="200" max="2500" step="50" value="800" class="slider-custom" />
+              </div>
+
+              <!-- Audio -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="soundToggle" style="margin-bottom: 0;">Audio Synthesis</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Playback controls -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-play" style="color: var(--accent); margin-right: 0.5rem"></i>Execution
+              </h3>
+              <div class="btn-control-row">
+                <button id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Run Max Flow
+                </button>
+                <button id="pauseBtn" class="btn btn-secondary btn-control" style="display: none;">
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+              </div>
+              <div class="btn-control-row" style="margin-top: 0.5rem;">
+                <button id="stepBackBtn" class="btn btn-secondary btn-control-icon" title="Step Back" disabled>
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="stepForwardBtn" class="btn btn-secondary btn-control-icon" title="Step Forward" disabled>
+                  <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="resetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset Animation">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- MAIN CANVAS & WORKSPACE -->
+          <div class="visualizer-main-panel">
+            
+            <!-- SVG Viewport Card -->
+            <div class="visualizer-card canvas-card" style="padding: 0; position: relative;">
+              
+              <!-- HUD stats and indices -->
+              <div class="canvas-hud">
+                <span id="canvasModeBadge" class="hud-badge mode-badge">Mode: Add Node</span>
+                <span id="flowInfoBadge" class="hud-badge success-badge">Max Flow: 0</span>
+              </div>
+              
+              <div class="svg-container-wrapper">
+                <svg id="visualizerSvg" width="100%" height="450">
+                  <defs>
+                    <marker id="arrowhead" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--text-secondary)" />
+                    </marker>
+                    <marker id="arrowhead-active" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--active-blue)" />
+                    </marker>
+                    <marker id="arrowhead-residual" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--warning-orange)" />
+                    </marker>
+                    <marker id="arrowhead-back" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--collision-red)" />
+                    </marker>
+                    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.02)" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  
+                  <rect width="100%" height="100%" fill="url(#gridPattern)" id="canvasBg"/>
+                  
+                  <!-- Layers -->
+                  <g id="svgEdges"></g>
+                  <g id="svgNodes"></g>
+                </svg>
+
+                <div class="canvas-placeholder-text" id="canvasPlaceholder" style="display: none;">
+                  Click anywhere inside the grid to place Source Node 'S'.
+                </div>
+              </div>
+            </div>
+
+            <!-- Flow Scoreboard -->
+            <div class="scoreboard-grid">
+              <div class="visualizer-card score-box">
+                <div class="score-label"><i class="fas fa-tint"></i> Maximum Flow Value</div>
+                <div class="score-value green-text" id="totalFlowVal">0</div>
+              </div>
+            </div>
+
+            <!-- Active queue/stack monitors -->
+            <div class="visualizer-card data-structures-dashboard">
+              <h4 class="card-section-title"><span id="activeStructureTitle">BFS Queue (FIFO)</span></h4>
+              <div class="spfa-row">
+                <div class="spfa-stat">
+                  <span class="label">Structure Items:</span>
+                  <span class="value" id="activeStructureItems">[Empty]</span>
+                </div>
+                <div class="spfa-stat">
+                  <span class="label">Predecessors Map:</span>
+                  <span class="value" id="predecessorsDisplay">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- History Augmentation Table -->
+            <div class="visualizer-card table-card">
+              <h3>
+                <i class="fas fa-history" style="color: var(--accent); margin-right: 0.5rem"></i>Augmenting Paths Log
+              </h3>
+              <div class="table-scroll-container">
+                <table class="history-table" id="historyTable">
+                  <thead>
+                    <tr>
+                      <th>Step</th>
+                      <th>Augmenting Path</th>
+                      <th>Bottleneck Capacity (df)</th>
+                      <th>Cumulative Flow</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody">
+                    <tr>
+                      <td colspan="4" class="empty-table-message">No path augmentations recorded. Click Run to begin.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Console logs -->
+            <div class="visualizer-card logs-card-wrapper">
+              <div class="logs-card-header">
+                <h3><i class="fas fa-terminal" style="color: var(--accent); margin-right: 0.5rem"></i>Algorithm Process Trace</h3>
+                <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" id="clearLogsBtn">Clear</button>
+              </div>
+              <div class="console-logs-container" id="logPanel">
+                <div class="log-entry sys">Flow workspace ready. Position nodes S and T.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Theory Section -->
+    <section class="section" id="theory-section" style="padding-top: 0;">
+      <div class="container">
+        <div class="visualizer-card theory-panel">
+          <h2 class="theory-title"><i class="fas fa-book-open"></i> Ford-Fulkerson Algorithm Concepts</h2>
+          
+          <div class="theory-grid">
+            <div class="theory-column">
+              <h4><i class="fas fa-code-branch"></i> Augmenting Path Search Strategies</h4>
+              <p>
+                The **Ford-Fulkerson** method works by searching for any path from source $S$ to sink $T$ in the residual graph with remaining capacity. The strategy used to find this path affects the complexity:
+              </p>
+              <p>
+                - **Edmonds-Karp (BFS)**: Guarantees finding the path with the fewest edges. This bounds the total augmentations and yields a polynomial runtime of $O(V E^2)$.
+                - **DFS Pathfinding**: Searches deep. In networks with very large capacities, poor path choices can cause DFS to take $O(f \cdot E)$ augmentations, where $f$ is the max flow.
+              </p>
+            </div>
+            
+            <div class="theory-column">
+              <h4><i class="fas fa-compress-alt"></i> Bottlenecks & Max-Flow Min-Cut</h4>
+              <p>
+                When an augmenting path is discovered, we identify the edge with the **minimum remaining capacity** along that path. This value is the **bottleneck**.
+              </p>
+              <p>
+                We can push exactly this bottleneck amount of flow through the path. By the **Max-Flow Min-Cut Theorem**, the value of the maximum flow is equal to the capacity of the minimum cut separating source $S$ from sink $T$. When no more augmenting paths can be found, the network has reached maximum flow.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you master max flow and augmenting paths in networks today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="What is the difference between Ford-Fulkerson and Edmonds-Karp?"
+          >
+            DFS vs BFS
+          </button>
+          <button
+            class="quick-q"
+            data-question="Explain what a bottleneck is in flow networks."
+          >
+            Bottleneck Capacity
+          </button>
+          <button class="quick-q" data-question="How does Max-Flow Min-Cut Theorem work?">
+            Max-Flow Min-Cut Theorem
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="ford-fulkerson-visualizer.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

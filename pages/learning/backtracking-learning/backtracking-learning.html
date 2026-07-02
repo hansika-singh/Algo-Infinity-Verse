@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Backtracking & State Space Search | Algo Infinity Verse</title>
+    <meta name="description"
+        content="Master Backtracking techniques. Learn state space search, generating subsets, permutations, solving N-Queens, Sudoku, pruning, and optimizing recursion paths." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="backtracking-learning.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Multi-language Tab Switching Logic & Layout */
+        .lang-switcher-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.25rem 0.5rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 0.25rem;
+        }
+
+        .lang-tab-btn {
+            background: none;
+            border: 1px solid transparent;
+            border-bottom: none;
+            color: var(--text-secondary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: -1px;
+        }
+
+        .lang-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .lang-tab-btn.active {
+            color: var(--backtracking-primary);
+            background: #0d1117;
+            border-color: var(--glass-border);
+        }
+
+        .lang-pane {
+            display: none;
+        }
+
+        .lang-pane.active {
+            display: block;
+        }
+    </style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="backtracking-learning">
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="infinity-loader">∞</div>
+            <h2>Algo Infinity Verse</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="stars"></div>
+            <div class="stars2"></div>
+            <div class="stars3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Explore All Paths, Prune the Wrong Ones</span>
+                <span class="main-title gradient-text">Master Backtracking</span>
+                <span class="subtitle">
+                    Learn State Space Search, Subset Generation, N-Queens, Sudoku, and Pruning Strategies
+                </span>
+            </h1>
+            <div class="typing-container">
+                <span class="typing-text_backtracking" id="typingTextBacktracking"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#introduction" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Learning
+                </a>
+                <a href="#practice" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Practice Problems
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="8">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Algorithms</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="15">0</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="backtracking-learning" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon"><i class="fas fa-compass"></i></span>
+                Learn Backtracking
+            </h2>
+            <p class="section-subtitle">
+                Systematically search for solutions to a problem by exploring all possibilities and pruning dead ends.
+            </p>
+
+            <div class="backtracking-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                aria-valuemax="100" aria-label="Learning progress">
+                <span class="backtracking-progress-text"><span id="progressCount">0</span> / 8 topics completed</span>
+                <div class="backtracking-progress-track">
+                    <div class="backtracking-progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="backtracking-layout">
+                <aside class="backtracking-sidebar" aria-label="Topic navigation">
+                    <div class="backtracking-sidebar-title">Topics</div>
+                    <ul class="backtracking-sidebar-nav" id="topicNav">
+                        <li><a href="#introduction"><span class="nav-icon"><i class="fas fa-book-open"></i></span> Introduction to Backtracking</a></li>
+                        <li><a href="#state-space-tree"><span class="nav-icon"><i class="fas fa-tree"></i></span> State Space Tree</a></li>
+                        <li><a href="#subsets"><span class="nav-icon"><i class="fas fa-box-open"></i></span> Subset Generation</a></li>
+                        <li><a href="#permutations"><span class="nav-icon"><i class="fas fa-random"></i></span> Permutations</a></li>
+                        <li><a href="#n-queens"><span class="nav-icon"><i class="fas fa-chess-queen"></i></span> N-Queens Problem</a></li>
+                        <li><a href="#sudoku"><span class="nav-icon"><i class="fas fa-puzzle-piece"></i></span> Sudoku Solver</a></li>
+                        <li><a href="#pruning"><span class="nav-icon"><i class="fas fa-cut"></i></span> Pruning Strategies</a></li>
+                        <li><a href="#complexity"><span class="nav-icon"><i class="fas fa-stopwatch"></i></span> Complexity Analysis</a></li>
+                    </ul>
+                </aside>
+
+                <main class="backtracking-main-content" id="mainContent">
+
+                    <article class="backtracking-lesson" id="introduction" data-topic="1">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">01</span>
+                            <h3>Introduction to Backtracking</h3>
+                        </div>
+
+                        <p>
+                            <strong>Backtracking</strong> is an algorithmic-technique for solving problems recursively by trying to build a solution incrementally, one piece at a time, removing those solutions that fail to satisfy the constraints of the problem at any point of time.
+                        </p>
+
+                        <div class="backtracking-concept-card">
+                            <h4>Real-World Analogy</h4>
+                            <p>Imagine navigating a maze. You pick a path and follow it. If you hit a dead end, you retrace your steps (backtrack) to the previous junction and try a different path. You keep doing this until you find the exit or explore all paths.</p>
+                        </div>
+
+                        <div class="backtracking-callout">
+                            <span class="backtracking-callout-icon"><i class="fas fa-lightbulb"></i></span>
+                            <p>Backtracking is an optimized version of <strong>brute-force search</strong>. It explores all possible solutions but uses bounding/pruning conditions to stop exploring paths that can never lead to a valid solution.</p>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="state-space-tree" data-topic="2">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">02</span>
+                            <h3>State Space Tree Visualization</h3>
+                        </div>
+
+                        <p>
+                            A <strong>State Space Tree</strong> represents all possible states (partial solutions) of a problem. The root represents the initial state, intermediate nodes are partial solutions, and leaf nodes are either full solutions or invalid states.
+                        </p>
+
+                        <div class="backtracking-svg-container" aria-label="State Space Tree Diagram">
+                            <svg class="backtracking-svg-diagram" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="300" y1="45" x2="175" y2="115" stroke="#f59e0b" stroke-width="2" />
+                                <line x1="300" y1="45" x2="425" y2="115" stroke="#f59e0b" stroke-width="2" />
+
+                                <line x1="175" y1="115" x2="95" y2="185" stroke="#f59e0b" stroke-width="2" />
+                                <line x1="175" y1="115" x2="255" y2="185" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+                                <line x1="425" y1="115" x2="345" y2="185" stroke="#f59e0b" stroke-width="2" />
+                                <line x1="425" y1="115" x2="505" y2="185" stroke="#f59e0b" stroke-width="2" />
+
+                                <circle cx="300" cy="45" r="30" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2" />
+                                <text x="300" y="50" text-anchor="middle" fill="#e2e8f0" font-family="Fira Code,monospace" font-size="12">Root</text>
+
+                                <circle cx="175" cy="115" r="28" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2" />
+                                <text x="175" y="120" text-anchor="middle" fill="#e2e8f0" font-family="Fira Code,monospace" font-size="11">Choice 1</text>
+
+                                <circle cx="425" cy="115" r="28" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2" />
+                                <text x="425" y="120" text-anchor="middle" fill="#e2e8f0" font-family="Fira Code,monospace" font-size="11">Choice 2</text>
+
+                                <circle cx="95" cy="185" r="26" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="2" />
+                                <text x="95" y="190" text-anchor="middle" fill="#34d399" font-family="Fira Code,monospace" font-size="10">Valid</text>
+
+                                <circle cx="255" cy="185" r="26" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="2" />
+                                <text x="255" y="190" text-anchor="middle" fill="#f87171" font-family="Fira Code,monospace" font-size="10">Dead End</text>
+
+                                <circle cx="345" cy="185" r="26" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="2" />
+                                <text x="345" y="190" text-anchor="middle" fill="#34d399" font-family="Fira Code,monospace" font-size="10">Valid</text>
+
+                                <circle cx="505" cy="185" r="26" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="2" />
+                                <text x="505" y="190" text-anchor="middle" fill="#f87171" font-family="Fira Code,monospace" font-size="10">Dead End</text>
+
+                                <!-- Legend -->
+                                <circle cx="200" cy="270" r="8" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="1.5" />
+                                <text x="215" y="274" fill="#94a3b8" font-family="Poppins,sans-serif" font-size="11">Pruned Path (Backtrack)</text>
+
+                                <circle cx="380" cy="270" r="8" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="1.5" />
+                                <text x="395" y="274" fill="#94a3b8" font-family="Poppins,sans-serif" font-size="11">Valid Solution</text>
+                            </svg>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="subsets" data-topic="3">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">03</span>
+                            <h3>Subset Generation</h3>
+                        </div>
+
+                        <p>
+                            Generating all subsets of a given set (Power Set) is a classic backtracking problem. At each element, we have two choices: <strong>include</strong> it in our current subset, or <strong>exclude</strong> it.
+                        </p>
+
+                        <div class="backtracking-code-block font-lang-container">
+                            <div class="lang-switcher-tabs" role="tablist">
+                                <button class="lang-tab-btn active" role="tab" aria-selected="true" aria-controls="panel-1-py" id="tab-1-py" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-1-java" id="tab-1-java" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-1-cpp" id="tab-1-cpp" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Python</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">subsets</span>(<span class="tok-var">nums</span>):
+    <span class="tok-var">res</span> = []
+    
+    <span class="tok-kw">def</span> <span class="tok-fn">backtrack</span>(<span class="tok-var">start</span>, <span class="tok-var">path</span>):
+        <span class="tok-var">res</span>.append(<span class="tok-fn">list</span>(<span class="tok-var">path</span>))
+        
+        <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">start</span>, <span class="tok-fn">len</span>(<span class="tok-var">nums</span>)):
+            <span class="tok-var">path</span>.append(<span class="tok-var">nums</span>[<span class="tok-var">i</span>])        <span class="tok-cmt"># Choose</span>
+            <span class="tok-fn">backtrack</span>(<span class="tok-var">i</span> + <span class="tok-num">1</span>, <span class="tok-var">path</span>)      <span class="tok-cmt"># Explore</span>
+            <span class="tok-var">path</span>.pop()                  <span class="tok-cmt"># Unchoose (Backtrack)</span>
+            
+    <span class="tok-fn">backtrack</span>(<span class="tok-num">0</span>, [])
+    <span class="tok-kw">return</span> <span class="tok-var">res</span></code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="java">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Java</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="tok-fn">subsets</span>(<span class="tok-kw">int</span>[] <span class="tok-var">nums</span>) {
+    List&lt;List&lt;Integer&gt;&gt; <span class="tok-var">res</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;();
+    <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-kw">new</span> ArrayList&lt;&gt;(), <span class="tok-var">nums</span>, <span class="tok-num">0</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}
+
+<span class="tok-kw">private void</span> <span class="tok-fn">backtrack</span>(List&lt;List&lt;Integer&gt;&gt; <span class="tok-var">res</span>, List&lt;Integer&gt; <span class="tok-var">path</span>, <span class="tok-kw">int</span>[] <span class="tok-var">nums</span>, <span class="tok-kw">int</span> <span class="tok-var">start</span>) {
+    <span class="tok-var">res</span>.add(<span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">path</span>));
+    
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-var">start</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">nums</span>.length; <span class="tok-var">i</span>++) {
+        <span class="tok-var">path</span>.add(<span class="tok-var">nums</span>[<span class="tok-var">i</span>]);           <span class="tok-cmt">// Choose</span>
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-var">i</span> + <span class="tok-num">1</span>); <span class="tok-cmt">// Explore</span>
+        <span class="tok-var">path</span>.remove(<span class="tok-var">path</span>.size() - <span class="tok-num">1</span>);<span class="tok-cmt">// Unchoose (Backtrack)</span>
+    }
+}</code></pre>
+                            </div>
+
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">C++</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code>vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt; <span class="tok-fn">subsets</span>(vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">nums</span>) {
+    vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt; <span class="tok-var">res</span>;
+    vector&lt;<span class="tok-kw">int</span>&gt; <span class="tok-var">path</span>;
+    <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-num">0</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}
+
+<span class="tok-kw">void</span> <span class="tok-fn">backtrack</span>(vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt;&amp; <span class="tok-var">res</span>, vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">path</span>, vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">nums</span>, <span class="tok-kw">int</span> <span class="tok-var">start</span>) {
+    <span class="tok-var">res</span>.push_back(<span class="tok-var">path</span>);
+    
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-var">start</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">nums</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-var">path</span>.push_back(<span class="tok-var">nums</span>[<span class="tok-var">i</span>]);    <span class="tok-cmt">// Choose</span>
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-var">i</span> + <span class="tok-num">1</span>); <span class="tok-cmt">// Explore</span>
+        <span class="tok-var">path</span>.pop_back();            <span class="tok-cmt">// Unchoose (Backtrack)</span>
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="permutations" data-topic="4">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">04</span>
+                            <h3>Permutations</h3>
+                        </div>
+
+                        <p>
+                            Generating permutations requires exploring all possible orderings. To avoid using the same element multiple times in a single permutation, we keep track of which elements have been used, or simply swap elements in place.
+                        </p>
+
+                        <div class="backtracking-code-block font-lang-container">
+                            <div class="lang-switcher-tabs" role="tablist">
+                                <button class="lang-tab-btn active" role="tab" aria-selected="true" aria-controls="panel-2-py" id="tab-2-py" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-2-java" id="tab-2-java" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-2-cpp" id="tab-2-cpp" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Python</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">permute</span>(<span class="tok-var">nums</span>):
+    <span class="tok-var">res</span> = []
+    
+    <span class="tok-kw">def</span> <span class="tok-fn">backtrack</span>(<span class="tok-var">path</span>, <span class="tok-var">used</span>):
+        <span class="tok-kw">if</span> <span class="tok-fn">len</span>(<span class="tok-var">path</span>) == <span class="tok-fn">len</span>(<span class="tok-var">nums</span>):
+            <span class="tok-var">res</span>.append(<span class="tok-fn">list</span>(<span class="tok-var">path</span>))
+            <span class="tok-kw">return</span>
+            
+        <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-fn">len</span>(<span class="tok-var">nums</span>)):
+            <span class="tok-kw">if</span> <span class="tok-kw">not</span> <span class="tok-var">used</span>[<span class="tok-var">i</span>]:
+                <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">True</span>
+                <span class="tok-var">path</span>.append(<span class="tok-var">nums</span>[<span class="tok-var">i</span>])
+                <span class="tok-fn">backtrack</span>(<span class="tok-var">path</span>, <span class="tok-var">used</span>)
+                <span class="tok-var">path</span>.pop()
+                <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">False</span>
+                
+    <span class="tok-fn">backtrack</span>([], [<span class="tok-kw">False</span>] * <span class="tok-fn">len</span>(<span class="tok-var">nums</span>))
+    <span class="tok-kw">return</span> <span class="tok-var">res</span></code></pre>
+                            </div>
+                            <!-- Implement Java and C++ too -->
+                            <div class="lang-pane" data-lang="java">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Java</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="tok-fn">permute</span>(<span class="tok-kw">int</span>[] <span class="tok-var">nums</span>) {
+    List&lt;List&lt;Integer&gt;&gt; <span class="tok-var">res</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;();
+    <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-kw">new</span> ArrayList&lt;&gt;(), <span class="tok-var">nums</span>, <span class="tok-kw">new</span> <span class="tok-kw">boolean</span>[<span class="tok-var">nums</span>.length]);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}
+
+<span class="tok-kw">private void</span> <span class="tok-fn">backtrack</span>(List&lt;List&lt;Integer&gt;&gt; <span class="tok-var">res</span>, List&lt;Integer&gt; <span class="tok-var">path</span>, <span class="tok-kw">int</span>[] <span class="tok-var">nums</span>, <span class="tok-kw">boolean</span>[] <span class="tok-var">used</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">path</span>.size() == <span class="tok-var">nums</span>.length) {
+        <span class="tok-var">res</span>.add(<span class="tok-kw">new</span> ArrayList&lt;&gt;(<span class="tok-var">path</span>));
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-var">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">nums</span>.length; <span class="tok-var">i</span>++) {
+        <span class="tok-kw">if</span> (<span class="tok-var">used</span>[<span class="tok-var">i</span>]) <span class="tok-kw">continue</span>;
+        <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">true</span>;
+        <span class="tok-var">path</span>.add(<span class="tok-var">nums</span>[<span class="tok-var">i</span>]);
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-var">used</span>);
+        <span class="tok-var">path</span>.remove(<span class="tok-var">path</span>.size() - <span class="tok-num">1</span>);
+        <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">false</span>;
+    }
+}</code></pre>
+                            </div>
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">C++</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code>vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt; <span class="tok-fn">permute</span>(vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">nums</span>) {
+    vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt; <span class="tok-var">res</span>;
+    vector&lt;<span class="tok-kw">int</span>&gt; <span class="tok-var">path</span>;
+    vector&lt;<span class="tok-kw">bool</span>&gt; <span class="tok-var">used</span>(<span class="tok-var">nums</span>.size(), <span class="tok-kw">false</span>);
+    <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-var">used</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}
+
+<span class="tok-kw">void</span> <span class="tok-fn">backtrack</span>(vector&lt;vector&lt;<span class="tok-kw">int</span>&gt;&gt;&amp; <span class="tok-var">res</span>, vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">path</span>, vector&lt;<span class="tok-kw">int</span>&gt;&amp; <span class="tok-var">nums</span>, vector&lt;<span class="tok-kw">bool</span>&gt;&amp; <span class="tok-var">used</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">path</span>.size() == <span class="tok-var">nums</span>.size()) {
+        <span class="tok-var">res</span>.push_back(<span class="tok-var">path</span>);
+        <span class="tok-kw">return</span>;
+    }
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-var">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">nums</span>.size(); <span class="tok-var">i</span>++) {
+        <span class="tok-kw">if</span> (<span class="tok-var">used</span>[<span class="tok-var">i</span>]) <span class="tok-kw">continue</span>;
+        <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">true</span>;
+        <span class="tok-var">path</span>.push_back(<span class="tok-var">nums</span>[<span class="tok-var">i</span>]);
+        <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">path</span>, <span class="tok-var">nums</span>, <span class="tok-var">used</span>);
+        <span class="tok-var">path</span>.pop_back();
+        <span class="tok-var">used</span>[<span class="tok-var">i</span>] = <span class="tok-kw">false</span>;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="n-queens" data-topic="5">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">05</span>
+                            <h3>The N-Queens Problem</h3>
+                        </div>
+
+                        <p>
+                            The N-Queens problem asks us to place N chess queens on an N×N chessboard so that no two queens threaten each other. This means no two queens can share the same row, column, or diagonal.
+                        </p>
+
+                        <div class="backtracking-concept-card">
+                            <h4>Constraint Checking (Pruning)</h4>
+                            <p>We place queens row by row. Before placing a queen in a specific column of the current row, we check if it's safe. If it's not safe, we prune that branch of the state space tree immediately, avoiding unnecessary recursive calls.</p>
+                        </div>
+
+                        <div class="backtracking-code-block font-lang-container">
+                            <div class="lang-switcher-tabs" role="tablist">
+                                <button class="lang-tab-btn active" role="tab" aria-selected="true" aria-controls="panel-3-py" id="tab-3-py" onclick="switchLang(this, 'py')">Python</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-3-java" id="tab-3-java" onclick="switchLang(this, 'java')">Java</button>
+                                <button class="lang-tab-btn" role="tab" aria-selected="false" aria-controls="panel-3-cpp" id="tab-3-cpp" onclick="switchLang(this, 'cpp')">C++</button>
+                            </div>
+
+                            <div class="lang-pane active" data-lang="py">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Python</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">solveNQueens</span>(<span class="tok-var">n</span>):
+    <span class="tok-var">res</span> = []
+    <span class="tok-var">board</span> = [[<span class="tok-str">'.'</span>] * <span class="tok-var">n</span> <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>)]
+    
+    <span class="tok-var">col</span> = <span class="tok-fn">set</span>()
+    <span class="tok-var">posDiag</span> = <span class="tok-fn">set</span>()  <span class="tok-cmt"># (r + c)</span>
+    <span class="tok-var">negDiag</span> = <span class="tok-fn">set</span>()  <span class="tok-cmt"># (r - c)</span>
+    
+    <span class="tok-kw">def</span> <span class="tok-fn">backtrack</span>(<span class="tok-var">r</span>):
+        <span class="tok-kw">if</span> <span class="tok-var">r</span> == <span class="tok-var">n</span>:
+            <span class="tok-var">copy</span> = [<span class="tok-str">""</span>.join(<span class="tok-var">row</span>) <span class="tok-kw">for</span> <span class="tok-var">row</span> <span class="tok-kw">in</span> <span class="tok-var">board</span>]
+            <span class="tok-var">res</span>.append(<span class="tok-var">copy</span>)
+            <span class="tok-kw">return</span>
+            
+        <span class="tok-kw">for</span> <span class="tok-var">c</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-var">n</span>):
+            <span class="tok-kw">if</span> <span class="tok-var">c</span> <span class="tok-kw">in</span> <span class="tok-var">col</span> <span class="tok-kw">or</span> (<span class="tok-var">r</span> + <span class="tok-var">c</span>) <span class="tok-kw">in</span> <span class="tok-var">posDiag</span> <span class="tok-kw">or</span> (<span class="tok-var">r</span> - <span class="tok-var">c</span>) <span class="tok-kw">in</span> <span class="tok-var">negDiag</span>:
+                <span class="tok-kw">continue</span>  <span class="tok-cmt"># PRUNING</span>
+                
+            <span class="tok-var">col</span>.add(<span class="tok-var">c</span>)
+            <span class="tok-var">posDiag</span>.add(<span class="tok-var">r</span> + <span class="tok-var">c</span>)
+            <span class="tok-var">negDiag</span>.add(<span class="tok-var">r</span> - <span class="tok-var">c</span>)
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'Q'</span>
+            
+            <span class="tok-fn">backtrack</span>(<span class="tok-var">r</span> + <span class="tok-num">1</span>)
+            
+            <span class="tok-var">col</span>.remove(<span class="tok-var">c</span>)
+            <span class="tok-var">posDiag</span>.remove(<span class="tok-var">r</span> + <span class="tok-var">c</span>)
+            <span class="tok-var">negDiag</span>.remove(<span class="tok-var">r</span> - <span class="tok-var">c</span>)
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'.'</span>
+            
+    <span class="tok-fn">backtrack</span>(<span class="tok-num">0</span>)
+    <span class="tok-kw">return</span> <span class="tok-var">res</span></code></pre>
+                            </div>
+                            <!-- Implement Java and C++ too -->
+                            <div class="lang-pane" data-lang="java">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">Java</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code><span class="tok-kw">public</span> List&lt;List&lt;String&gt;&gt; <span class="tok-fn">solveNQueens</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    List&lt;List&lt;String&gt;&gt; <span class="tok-var">res</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;();
+    <span class="tok-kw">char</span>[][] <span class="tok-var">board</span> = <span class="tok-kw">new char</span>[<span class="tok-var">n</span>][<span class="tok-var">n</span>];
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">i</span> = <span class="tok-var">0</span>; <span class="tok-var">i</span> &lt; <span class="tok-var">n</span>; <span class="tok-var">i</span>++) Arrays.fill(<span class="tok-var">board</span>[<span class="tok-var">i</span>], <span class="tok-str">'.'</span>);
+    
+    <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">board</span>, <span class="tok-var">0</span>, <span class="tok-var">n</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}
+
+<span class="tok-kw">private void</span> <span class="tok-fn">backtrack</span>(List&lt;List&lt;String&gt;&gt; <span class="tok-var">res</span>, <span class="tok-kw">char</span>[][] <span class="tok-var">board</span>, <span class="tok-kw">int</span> <span class="tok-var">r</span>, <span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    <span class="tok-kw">if</span> (<span class="tok-var">r</span> == <span class="tok-var">n</span>) {
+        List&lt;String&gt; <span class="tok-var">copy</span> = <span class="tok-kw">new</span> ArrayList&lt;&gt;();
+        <span class="tok-kw">for</span> (<span class="tok-kw">char</span>[] <span class="tok-var">row</span> : <span class="tok-var">board</span>) <span class="tok-var">copy</span>.add(<span class="tok-kw">new</span> String(<span class="tok-var">row</span>));
+        <span class="tok-var">res</span>.add(<span class="tok-var">copy</span>);
+        <span class="tok-kw">return</span>;
+    }
+    
+    <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">c</span> = <span class="tok-var">0</span>; <span class="tok-var">c</span> &lt; <span class="tok-var">n</span>; <span class="tok-var">c</span>++) {
+        <span class="tok-kw">if</span> (<span class="tok-fn">isSafe</span>(<span class="tok-var">board</span>, <span class="tok-var">r</span>, <span class="tok-var">c</span>, <span class="tok-var">n</span>)) {
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'Q'</span>;
+            <span class="tok-fn">backtrack</span>(<span class="tok-var">res</span>, <span class="tok-var">board</span>, <span class="tok-var">r</span> + <span class="tok-num">1</span>, <span class="tok-var">n</span>);
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'.'</span>;
+        }
+    }
+}</code></pre>
+                            </div>
+                            <div class="lang-pane" data-lang="cpp">
+                                <div class="backtracking-code-header">
+                                    <span class="backtracking-code-lang">C++</span>
+                                    <button class="backtracking-code-copy" aria-label="Copy code">Copy</button>
+                                </div>
+                                <pre><code>vector&lt;vector&lt;string&gt;&gt; <span class="tok-fn">solveNQueens</span>(<span class="tok-kw">int</span> <span class="tok-var">n</span>) {
+    vector&lt;vector&lt;string&gt;&gt; <span class="tok-var">res</span>;
+    vector&lt;string&gt; <span class="tok-var">board</span>(<span class="tok-var">n</span>, string(<span class="tok-var">n</span>, <span class="tok-str">'.'</span>));
+    vector&lt;<span class="tok-kw">int</span>&gt; <span class="tok-var">col</span>(<span class="tok-var">n</span>, <span class="tok-num">0</span>), <span class="tok-var">posDiag</span>(<span class="tok-num">2</span>*<span class="tok-var">n</span>-<span class="tok-num">1</span>, <span class="tok-num">0</span>), <span class="tok-var">negDiag</span>(<span class="tok-num">2</span>*<span class="tok-var">n</span>-<span class="tok-num">1</span>, <span class="tok-num">0</span>);
+    
+    <span class="tok-kw">auto</span> <span class="tok-fn">backtrack</span> = [&amp;](<span class="tok-kw">auto</span>&amp; <span class="tok-fn">self</span>, <span class="tok-kw">int</span> <span class="tok-var">r</span>) -&gt; <span class="tok-kw">void</span> {
+        <span class="tok-kw">if</span> (<span class="tok-var">r</span> == <span class="tok-var">n</span>) {
+            <span class="tok-var">res</span>.push_back(<span class="tok-var">board</span>);
+            <span class="tok-kw">return</span>;
+        }
+        <span class="tok-kw">for</span> (<span class="tok-kw">int</span> <span class="tok-var">c</span> = <span class="tok-var">0</span>; <span class="tok-var">c</span> &lt; <span class="tok-var">n</span>; <span class="tok-var">c</span>++) {
+            <span class="tok-kw">if</span> (<span class="tok-var">col</span>[<span class="tok-var">c</span>] || <span class="tok-var">posDiag</span>[<span class="tok-var">r</span> + <span class="tok-var">c</span>] || <span class="tok-var">negDiag</span>[<span class="tok-var">r</span> - <span class="tok-var">c</span> + <span class="tok-var">n</span> - <span class="tok-num">1</span>]) <span class="tok-kw">continue</span>;
+            
+            <span class="tok-var">col</span>[<span class="tok-var">c</span>] = <span class="tok-var">posDiag</span>[<span class="tok-var">r</span> + <span class="tok-var">c</span>] = <span class="tok-var">negDiag</span>[<span class="tok-var">r</span> - <span class="tok-var">c</span> + <span class="tok-var">n</span> - <span class="tok-num">1</span>] = <span class="tok-num">1</span>;
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'Q'</span>;
+            <span class="tok-fn">self</span>(<span class="tok-fn">self</span>, <span class="tok-var">r</span> + <span class="tok-num">1</span>);
+            <span class="tok-var">board</span>[<span class="tok-var">r</span>][<span class="tok-var">c</span>] = <span class="tok-str">'.'</span>;
+            <span class="tok-var">col</span>[<span class="tok-var">c</span>] = <span class="tok-var">posDiag</span>[<span class="tok-var">r</span> + <span class="tok-var">c</span>] = <span class="tok-var">negDiag</span>[<span class="tok-var">r</span> - <span class="tok-var">c</span> + <span class="tok-var">n</span> - <span class="tok-num">1</span>] = <span class="tok-num">0</span>;
+        }
+    };
+    <span class="tok-fn">backtrack</span>(<span class="tok-fn">backtrack</span>, <span class="tok-num">0</span>);
+    <span class="tok-kw">return</span> <span class="tok-var">res</span>;
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="sudoku" data-topic="6">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">06</span>
+                            <h3>Sudoku Solver</h3>
+                        </div>
+
+                        <p>
+                            Sudoku is another popular application of backtracking. We try filling an empty cell with a digit from 1 to 9. If the digit is valid, we recursively try to fill the next empty cell. If we hit a cell where no digit works, we backtrack and change the previously placed digit.
+                        </p>
+
+                        <div class="backtracking-concept-card">
+                            <h4>Validation Rules</h4>
+                            <ul>
+                                <li>The digit must not exist in the same row.</li>
+                                <li>The digit must not exist in the same column.</li>
+                                <li>The digit must not exist in the corresponding 3x3 sub-box.</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="pruning" data-topic="7">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">07</span>
+                            <h3>Pruning Strategies</h3>
+                        </div>
+                        <p>Pruning is what makes backtracking faster than pure brute-force search. It involves detecting early that a partial solution cannot possibly be extended to a valid final solution, and stopping the search along that path.</p>
+                        
+                        <div class="backtracking-concept-card">
+                            <h4>Techniques for Avoiding Redundancy</h4>
+                            <p><strong>1. Forward Checking:</strong> Maintain domains of legal values for unassigned variables and prune when a domain becomes empty.</p>
+                            <p><strong>2. Symmetry Breaking:</strong> If a problem has symmetrical solutions, restrict the search space to only find one of them.</p>
+                            <p><strong>3. Memoization / DP:</strong> If state spaces overlap, cache the results of subproblems to avoid redundant recursion paths.</p>
+                        </div>
+                    </article>
+
+                    <article class="backtracking-lesson" id="complexity" data-topic="8">
+                        <div class="backtracking-lesson-header">
+                            <span class="backtracking-lesson-number">08</span>
+                            <h3>Complexity Analysis</h3>
+                        </div>
+                        <p>Backtracking algorithms are fundamentally exponential in time, but pruning can drastically reduce the number of visited states in practice.</p>
+
+                        <div class="backtracking-concept-card">
+                            <h4>Time &amp; Space Complexity</h4>
+                            <ul>
+                                <li><strong>Subsets:</strong> Time O(2^N), Space O(N) for recursion stack.</li>
+                                <li><strong>Permutations:</strong> Time O(N * N!), Space O(N).</li>
+                                <li><strong>N-Queens:</strong> Time O(N!), Space O(N). (Strictly less than N^N due to pruning).</li>
+                                <li><strong>Sudoku:</strong> Time O(9^(EmptyCells)), Space O(81) = O(1).</li>
+                            </ul>
+                        </div>
+                    </article>
+                    
+
+
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="backtracking-learning.js"></script>
+
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

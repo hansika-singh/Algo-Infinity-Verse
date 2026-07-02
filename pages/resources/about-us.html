@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | Algo Infinity Verse</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.classList.toggle(
+          'light-mode',
+          (t || (p ? 'light' : 'dark')) === 'light'
+        );
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* ============================================================
+       ABOUT US — REDESIGN  |  Issue #1061
+       All classes prefixed "au-" to avoid collisions.
+    ============================================================ */
+
+    /* ── Scroll-reveal base ───────────────────────────────── */
+    .au-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .au-reveal.au-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .au-reveal-delay-1 { transition-delay: .1s; }
+    .au-reveal-delay-2 { transition-delay: .2s; }
+    .au-reveal-delay-3 { transition-delay: .3s; }
+    .au-reveal-delay-4 { transition-delay: .4s; }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .au-hero {
+      position     : relative;
+      min-height   : 90vh;
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      text-align   : center;
+      padding      : 7rem 1.5rem 5rem;
+      overflow     : hidden;
+    }
+
+    /* animated background blobs */
+    .au-hero-bg {
+      position      : absolute;
+      inset         : 0;
+      pointer-events: none;
+      overflow      : hidden;
+    }
+    .au-blob {
+      position     : absolute;
+      border-radius: 50%;
+      filter       : blur(90px);
+      opacity      : .18;
+      animation    : auBlobDrift 12s ease-in-out infinite alternate;
+    }
+    .au-blob-1 {
+      width : 520px; height: 520px;
+      background: #8b5cf6;
+      top: -140px; left: -100px;
+      animation-delay: 0s;
+    }
+    .au-blob-2 {
+      width : 400px; height: 400px;
+      background: #06b6d4;
+      bottom: -120px; right: -80px;
+      animation-delay: -5s;
+    }
+    .au-blob-3 {
+      width : 280px; height: 280px;
+      background: #ec4899;
+      top: 40%; left: 55%;
+      animation-delay: -9s;
+    }
+
+    @keyframes auBlobDrift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    .au-hero-content  { position:relative; z-index:1; max-width:820px; }
+
+    .au-eyebrow {
+      display      : inline-flex;
+      align-items  : center;
+      gap          : .5rem;
+      font-size    : .8rem;
+      font-weight  : 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color        : #a78bfa;
+      background   : rgba(139,92,246,.12);
+      border       : 1px solid rgba(139,92,246,.3);
+      border-radius: 999px;
+      padding      : .4rem 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .au-hero-title {
+      font-family   : 'Orbitron', sans-serif;
+      font-size     : clamp(2.2rem, 5vw, 4rem);
+      font-weight   : 900;
+      line-height   : 1.15;
+      margin-bottom : 1.25rem;
+    }
+
+    .au-gradient {
+      background             : linear-gradient(135deg, #8b5cf6, #06b6d4, #8b5cf6);
+      background-size        : 200% auto;
+      background-clip        : text;
+      -webkit-background-clip: text;
+      color                  : transparent;
+      -webkit-text-fill-color: transparent;
+      animation              : auGradientShift 4s linear infinite;
+    }
+
+    @keyframes auGradientShift {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .au-hero-sub {
+      font-size  : 1.1rem;
+      color      : #94a3b8;
+      line-height: 1.75;
+      max-width  : 620px;
+      margin     : 0 auto 2.5rem;
+    }
+
+    .au-hero-btns { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+
+    /* ── Stats strip ──────────────────────────────────────── */
+    .au-stats-strip {
+      padding    : 0 2rem 5rem;
+      position   : relative;
+      z-index    : 1;
+    }
+
+    .au-stats-inner {
+      max-width    : 1100px;
+      margin       : 0 auto;
+      display      : grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap          : 1.25rem;
+    }
+
+    .au-stat {
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding      : 2rem 1.5rem;
+      text-align   : center;
+      position     : relative;
+      overflow     : hidden;
+      transition   : transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .au-stat::before {
+      content  : '';
+      position : absolute;
+      inset    : 0;
+      background: linear-gradient(135deg, rgba(139,92,246,.08) 0%, transparent 70%);
+      transition: opacity .3s;
+    }
+    .au-stat:hover {
+      transform  : translateY(-6px);
+      border-color: rgba(139,92,246,.35);
+      box-shadow  : 0 20px 40px rgba(139,92,246,.15);
+    }
+
+    .au-stat-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size  : 2.4rem;
+      font-weight: 900;
+      background : linear-gradient(135deg, #8b5cf6, #06b6d4);
+      background-clip        : text;
+      -webkit-background-clip: text;
+      color      : transparent;
+      -webkit-text-fill-color: transparent;
+      display    : block;
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+
+    .au-stat-label {
+      font-size  : .9rem;
+      color      : #94a3b8;
+      font-weight: 500;
+    }
+
+    /* ── Section wrapper ──────────────────────────────────── */
+    .au-section {
+      padding   : 5rem 2rem;
+      position  : relative;
+    }
+
+    .au-container {
+      max-width: 1100px;
+      margin   : 0 auto;
+    }
+
+    .au-section-tag {
+      display     : flex;
+      align-items : center;
+      gap         : .6rem;
+      font-size   : .78rem;
+      font-weight : 700;
+      color       : #8b5cf6;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .75rem;
+    }
+    .au-section-tag::before {
+      content: '';
+      display: block;
+      width  : 28px; height: 2px;
+      background: #8b5cf6;
+      border-radius: 2px;
+    }
+
+    .au-section-title {
+      font-family   : 'Orbitron', sans-serif;
+      font-size     : clamp(1.6rem, 3vw, 2.4rem);
+      font-weight   : 800;
+      color         : #f8fafc;
+      margin-bottom : .75rem;
+      line-height   : 1.25;
+    }
+
+    .au-section-desc {
+      font-size  : 1rem;
+      color      : #94a3b8;
+      line-height: 1.75;
+      max-width  : 600px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── Story section ────────────────────────────────────── */
+    .au-story-grid {
+      display              : grid;
+      grid-template-columns: 1fr 1fr;
+      gap                  : 3rem;
+      align-items          : center;
+    }
+
+    .au-story-text p {
+      color      : #94a3b8;
+      line-height: 1.8;
+      font-size  : .98rem;
+      margin-bottom: 1.25rem;
+    }
+    .au-story-text p:last-child { margin-bottom: 0; }
+
+    .au-story-visual {
+      position : relative;
+      display  : flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .au-story-card-stack {
+      position: relative;
+      width   : 280px;
+      height  : 280px;
+    }
+
+    .au-stack-card {
+      position     : absolute;
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      display      : flex;
+      flex-direction: column;
+      align-items  : center;
+      justify-content: center;
+      gap          : .75rem;
+      font-weight  : 600;
+      color        : #f8fafc;
+      font-size    : .9rem;
+      transition   : .3s;
+    }
+    .au-stack-card i { font-size: 1.8rem; color:#8b5cf6; }
+
+    .au-stack-card-1 {
+      width: 200px; height: 120px;
+      top: 0; left: 0;
+      transform: rotate(-4deg);
+      animation: auFloat 6s ease-in-out infinite;
+    }
+    .au-stack-card-2 {
+      width: 220px; height: 130px;
+      bottom: 40px; right: 0;
+      transform: rotate(3deg);
+      animation: auFloat 6s ease-in-out infinite;
+      animation-delay: -3s;
+    }
+    .au-stack-card-3 {
+      width: 180px; height: 100px;
+      bottom: 0; left: 20px;
+      transform: rotate(-2deg);
+      animation: auFloat 6s ease-in-out infinite;
+      animation-delay: -1.5s;
+    }
+
+    @keyframes auFloat {
+      0%,100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+      50%     { transform: translateY(-10px) rotate(var(--r, 0deg)); }
+    }
+
+    /* ============================================================
+       TIMELINE SECTION  (Issue #1061 — main new feature)
+    ============================================================ */
+    .au-timeline-section {
+      background: linear-gradient(180deg, transparent, rgba(139,92,246,.04), transparent);
+      padding   : 6rem 2rem;
+    }
+
+    /* Vertical centred line */
+    .au-tl-wrap {
+      position  : relative;
+      max-width : 900px;
+      margin    : 0 auto;
+      padding-top: 1rem;
+    }
+
+    .au-tl-wrap::before {
+      content      : '';
+      position     : absolute;
+      left         : 50%;
+      top          : 0;
+      bottom       : 0;
+      width        : 3px;
+      transform    : translateX(-50%);
+      background   : linear-gradient(to bottom,
+                       transparent,
+                       #8b5cf6 10%,
+                       #06b6d4 50%,
+                       #8b5cf6 90%,
+                       transparent);
+      border-radius: 2px;
+    }
+
+    /* Individual item */
+    .au-tl-item {
+      position    : relative;
+      display     : grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap         : 0;
+      align-items : center;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Left content slot */
+    .au-tl-left {
+      padding-right: 40px;
+      text-align   : right;
+    }
+
+    /* Right content slot */
+    .au-tl-right {
+      padding-left: 40px;
+      text-align  : left;
+    }
+
+    /* For odd items: card on right, date on left */
+    .au-tl-item.right .au-tl-left  { order: 1; }
+    .au-tl-item.right .au-tl-center { order: 2; }
+    .au-tl-item.right .au-tl-right  { order: 3; }
+
+    /* For even items: card on left, date on right */
+    .au-tl-item.left .au-tl-left  { order: 3; padding-left:40px; padding-right:0; text-align:left; }
+    .au-tl-item.left .au-tl-center { order: 2; }
+    .au-tl-item.left .au-tl-right  { order: 1; padding-right:40px; padding-left:0; text-align:right; }
+
+    /* Centre column — dot */
+    .au-tl-center {
+      display        : flex;
+      align-items    : center;
+      justify-content: center;
+      z-index        : 2;
+    }
+
+    .au-tl-dot {
+      width        : 58px;
+      height       : 58px;
+      border-radius: 50%;
+      background   : linear-gradient(135deg, #8b5cf6, #06b6d4);
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      color        : #fff;
+      font-size    : 1.2rem;
+      box-shadow   : 0 0 0 6px rgba(139,92,246,.15),
+                     0 0 28px rgba(139,92,246,.4);
+      flex-shrink  : 0;
+      transition   : transform .3s, box-shadow .3s;
+    }
+
+    .au-tl-dot:hover {
+      transform : scale(1.12);
+      box-shadow: 0 0 0 10px rgba(139,92,246,.2),
+                  0 0 36px rgba(139,92,246,.55);
+    }
+
+    /* Date badge */
+    .au-tl-date {
+      display      : inline-block;
+      padding      : .3rem .8rem;
+      background   : rgba(139,92,246,.14);
+      border       : 1px solid rgba(139,92,246,.3);
+      border-radius: 999px;
+      font-size    : .75rem;
+      font-weight  : 700;
+      color        : #a78bfa;
+      letter-spacing: .04em;
+      margin-bottom: .5rem;
+    }
+
+    /* Timeline card */
+    .au-tl-card {
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding      : 1.5rem;
+      transition   : transform .3s, border-color .3s, box-shadow .3s;
+      position     : relative;
+      overflow     : hidden;
+    }
+
+    .au-tl-card::before {
+      content   : '';
+      position  : absolute;
+      top       : 0;
+      left      : 0;
+      right     : 0;
+      height    : 3px;
+      background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+      opacity   : 0;
+      transition: opacity .3s;
+    }
+
+    .au-tl-card:hover {
+      transform  : translateY(-4px);
+      border-color: rgba(139,92,246,.3);
+      box-shadow  : 0 16px 36px rgba(139,92,246,.14);
+    }
+    .au-tl-card:hover::before { opacity: 1; }
+
+    .au-tl-card h3 {
+      font-family  : 'Orbitron', sans-serif;
+      font-size    : .95rem;
+      font-weight  : 700;
+      color        : #f8fafc;
+      margin-bottom: .5rem;
+    }
+
+    .au-tl-card p {
+      font-size  : .85rem;
+      color      : #94a3b8;
+      line-height: 1.65;
+      margin     : 0;
+    }
+
+    /* Connector lines (horizontal dashes) */
+    .au-tl-item.right .au-tl-card::after {
+      content : '';
+      position: absolute;
+      top     : 50%;
+      right   : -44px;
+      width   : 44px;
+      height  : 2px;
+      background: linear-gradient(to right, transparent, rgba(139,92,246,.4));
+      transform: translateY(-50%);
+    }
+    .au-tl-item.left .au-tl-left .au-tl-card::after {
+      content : '';
+      position: absolute;
+      top     : 50%;
+      left    : -44px;
+      width   : 44px;
+      height  : 2px;
+      background: linear-gradient(to left, transparent, rgba(139,92,246,.4));
+      transform: translateY(-50%);
+    }
+
+    /* ── Mission & Vision ─────────────────────────────────── */
+    .au-mv-grid {
+      display              : grid;
+      grid-template-columns: 1fr 1fr;
+      gap                  : 1.5rem;
+    }
+
+    .au-mv-card {
+      padding      : 2.5rem 2rem;
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      position     : relative;
+      overflow     : hidden;
+      transition   : transform .3s, box-shadow .3s;
+    }
+    .au-mv-card:hover {
+      transform : translateY(-6px);
+      box-shadow: 0 24px 48px rgba(139,92,246,.14);
+    }
+
+    .au-mv-icon {
+      width        : 60px;
+      height       : 60px;
+      border-radius: 16px;
+      background   : linear-gradient(135deg, #8b5cf6, #06b6d4);
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      font-size    : 1.4rem;
+      color        : #fff;
+      margin-bottom: 1.25rem;
+      box-shadow   : 0 8px 20px rgba(139,92,246,.35);
+    }
+
+    .au-mv-card h3 {
+      font-family  : 'Orbitron', sans-serif;
+      font-size    : 1.1rem;
+      font-weight  : 700;
+      color        : #f8fafc;
+      margin-bottom: .75rem;
+    }
+
+    .au-mv-card p { font-size:.95rem; color:#94a3b8; line-height:1.75; }
+
+    /* ── Goals & Tech grid ────────────────────────────────── */
+    .au-4-grid {
+      display              : grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap                  : 1.25rem;
+    }
+
+    .au-icon-card {
+      padding      : 2rem 1.5rem;
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      text-align   : center;
+      transition   : transform .3s, border-color .3s, box-shadow .3s;
+      position     : relative;
+      overflow     : hidden;
+    }
+    .au-icon-card:hover {
+      transform  : translateY(-8px);
+      border-color: rgba(139,92,246,.3);
+      box-shadow  : 0 20px 40px rgba(139,92,246,.14);
+    }
+
+    .au-icon-wrap {
+      width        : 56px;
+      height       : 56px;
+      border-radius: 16px;
+      background   : rgba(139,92,246,.15);
+      border       : 1px solid rgba(139,92,246,.25);
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      margin       : 0 auto 1.25rem;
+      font-size    : 1.4rem;
+      color        : #a78bfa;
+      transition   : background .3s, box-shadow .3s;
+    }
+    .au-icon-card:hover .au-icon-wrap {
+      background: rgba(139,92,246,.28);
+      box-shadow: 0 0 20px rgba(139,92,246,.35);
+    }
+
+    .au-icon-card h3 {
+      font-size    : .95rem;
+      font-weight  : 700;
+      color        : #f8fafc;
+      margin-bottom: .6rem;
+    }
+    .au-icon-card p { font-size:.83rem; color:#94a3b8; line-height:1.6; }
+
+    /* ── Team section ─────────────────────────────────────── */
+    .au-team-grid {
+      display              : grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap                  : 1.5rem;
+    }
+
+    .au-team-card {
+      padding      : 2rem 1.5rem;
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      text-align   : center;
+      transition   : transform .3s, box-shadow .3s;
+    }
+    .au-team-card:hover {
+      transform : translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.3);
+    }
+
+    .au-avatar {
+      width        : 72px;
+      height       : 72px;
+      border-radius: 50%;
+      background   : linear-gradient(135deg,#8b5cf6,#06b6d4);
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      font-size    : 1.7rem;
+      color        : #fff;
+      margin       : 0 auto 1rem;
+      box-shadow   : 0 8px 24px rgba(139,92,246,.35);
+    }
+
+    .au-team-card h3 {
+      font-size    : 1rem;
+      font-weight  : 700;
+      color        : #f8fafc;
+      margin-bottom: .4rem;
+    }
+    .au-team-card p { font-size:.83rem; color:#94a3b8; }
+
+    /* ── Contact section ──────────────────────────────────── */
+    .au-contact-card {
+      background   : rgba(255,255,255,.04);
+      border       : 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      padding      : 3.5rem 2rem;
+      text-align   : center;
+      max-width    : 650px;
+      margin       : 0 auto;
+      position     : relative;
+      overflow     : hidden;
+    }
+    .au-contact-card::before {
+      content   : '';
+      position  : absolute;
+      top       : 0; left: 0; right: 0;
+      height    : 3px;
+      background: linear-gradient(90deg, #8b5cf6, #06b6d4, #ec4899);
+    }
+
+    .au-contact-card p {
+      color      : #94a3b8;
+      font-size  : 1rem;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .au-social-row {
+      display        : flex;
+      justify-content: center;
+      gap            : .85rem;
+      margin-bottom  : 2rem;
+      flex-wrap      : wrap;
+    }
+
+    .au-social-btn {
+      width        : 52px;
+      height       : 52px;
+      border-radius: 50%;
+      background   : rgba(255,255,255,.06);
+      border       : 1px solid rgba(255,255,255,.1);
+      display      : flex;
+      align-items  : center;
+      justify-content: center;
+      color        : #94a3b8;
+      font-size    : 1.15rem;
+      text-decoration: none;
+      transition   : all .3s;
+    }
+    .au-social-btn:hover {
+      background   : #8b5cf6;
+      border-color : #8b5cf6;
+      color        : #fff;
+      transform    : translateY(-5px);
+      box-shadow   : 0 12px 28px rgba(139,92,246,.45);
+    }
+
+    /* ── Divider ──────────────────────────────────────────── */
+    .au-divider {
+      height     : 1px;
+      background : linear-gradient(to right, transparent, rgba(255,255,255,.1), transparent);
+      max-width  : 800px;
+      margin     : 0 auto;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .au-4-grid { grid-template-columns: repeat(2,1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .au-stats-inner { grid-template-columns: repeat(2,1fr); }
+      .au-story-grid  { grid-template-columns: 1fr; }
+      .au-story-visual { display: none; }
+      .au-mv-grid     { grid-template-columns: 1fr; }
+      .au-4-grid      { grid-template-columns: repeat(2,1fr); }
+
+      /* ── Mobile timeline — single left column ── */
+      .au-tl-wrap::before {
+        left     : 28px;
+        transform: none;
+      }
+
+      .au-tl-item,
+      .au-tl-item.right,
+      .au-tl-item.left {
+        display       : flex;
+        flex-direction: row;
+        align-items   : flex-start;
+        gap           : 1rem;
+        margin-bottom : 2rem;
+      }
+
+      .au-tl-item.right .au-tl-left,
+      .au-tl-item.right .au-tl-center,
+      .au-tl-item.right .au-tl-right,
+      .au-tl-item.left  .au-tl-left,
+      .au-tl-item.left  .au-tl-center,
+      .au-tl-item.left  .au-tl-right {
+        order: unset; padding: 0; text-align: left;
+      }
+
+      /* Hide the empty date slot on mobile */
+      .au-tl-item.right .au-tl-right,
+      .au-tl-item.left  .au-tl-right { display: none; }
+      .au-tl-item.right .au-tl-left,
+      .au-tl-item.left  .au-tl-left  { display: none; }
+
+      .au-tl-center {
+        flex-shrink: 0;
+        margin-left: 7px;
+      }
+
+      .au-tl-dot {
+        width : 42px;
+        height: 42px;
+        font-size: .95rem;
+      }
+
+      .au-tl-card::after { display:none; }
+
+      .au-tl-item.right .au-tl-right { display: block; flex: 1; }
+      .au-tl-item.left  .au-tl-right { display: block; flex: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .au-4-grid     { grid-template-columns: 1fr; }
+      .au-stats-inner{ grid-template-columns: repeat(2,1fr); }
+      .au-hero-title { font-size: 2rem; }
+      .au-section    { padding: 3.5rem 1.25rem; }
+      .au-timeline-section { padding: 4rem 1.25rem; }
+    }
+  </style>
+</head>
+
+<body data-page="about-us">
+
+<!-- NAVBAR -->
+<div id="navbar-placeholder"></div>
+
+<!-- ══════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════ -->
+<section class="au-hero">
+  <div class="au-hero-bg">
+    <div class="au-blob au-blob-1"></div>
+    <div class="au-blob au-blob-2"></div>
+    <div class="au-blob au-blob-3"></div>
+  </div>
+
+  <div class="au-hero-content">
+    <span class="au-eyebrow au-reveal">
+      <i class="fas fa-infinity"></i>
+      Algo Infinity Verse
+    </span>
+
+    <h1 class="au-hero-title au-reveal au-reveal-delay-1">
+      Building the Future of
+      <br />
+      <span class="au-gradient">DSA Learning</span>
+    </h1>
+
+    <p class="au-hero-sub au-reveal au-reveal-delay-2">
+      A modern learning platform helping students and developers master
+      Data Structures, Algorithms, and technical interviews through
+      structured, engaging, and practical content.
+    </p>
+
+    <div class="au-hero-btns au-reveal au-reveal-delay-3">
+      <a href="/pages/community/support/index.html" class="btn btn-primary">
+        <i class="fas fa-headset"></i> Get Support
+      </a>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="btn btn-secondary">
+        <i class="fab fa-github"></i> Contribute
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     STATS STRIP
+══════════════════════════════════════════════════ -->
+<div class="au-stats-strip">
+  <div class="au-stats-inner">
+    <div class="au-stat au-reveal">
+      <span class="au-stat-num" data-target="500">0+</span>
+      <span class="au-stat-label">Practice Problems</span>
+    </div>
+    <div class="au-stat au-reveal au-reveal-delay-1">
+      <span class="au-stat-num" data-target="50">0+</span>
+      <span class="au-stat-label">DSA Topics</span>
+    </div>
+    <div class="au-stat au-reveal au-reveal-delay-2">
+      <span class="au-stat-num" data-target="100">0+</span>
+      <span class="au-stat-label">Interview Questions</span>
+    </div>
+    <div class="au-stat au-reveal au-reveal-delay-3">
+      <span class="au-stat-num" data-target="10000">0+</span>
+      <span class="au-stat-label">Learners</span>
+    </div>
+  </div>
+</div>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     OUR STORY
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-story-grid">
+
+      <div class="au-story-text">
+        <div class="au-section-tag au-reveal">Our Story</div>
+        <h2 class="au-section-title au-reveal au-reveal-delay-1">
+          Why We Built This
+        </h2>
+        <div class="au-reveal au-reveal-delay-2">
+          <p>
+            Algo Infinity Verse was born from a simple frustration — learning
+            Data Structures &amp; Algorithms was fragmented, dry, and hard to stay
+            motivated through. We wanted to change that.
+          </p>
+          <p>
+            Our platform combines structured learning paths, coding practice,
+            interactive quizzes, roadmaps, interview preparation, and progress
+            tracking into a single engaging experience.
+          </p>
+          <p>
+            Whether you're preparing for coding interviews, competitive programming,
+            or simply strengthening your computer science fundamentals — Algo
+            Infinity Verse helps you progress confidently toward your goals.
+          </p>
+        </div>
+      </div>
+
+      <div class="au-story-visual au-reveal au-reveal-delay-3">
+        <div class="au-story-card-stack">
+          <div class="au-stack-card au-stack-card-1">
+            <i class="fas fa-code"></i>
+            <span>500+ Problems</span>
+          </div>
+          <div class="au-stack-card au-stack-card-2">
+            <i class="fas fa-brain"></i>
+            <span>Smart Quizzes</span>
+          </div>
+          <div class="au-stack-card au-stack-card-3">
+            <i class="fas fa-chart-line"></i>
+            <span>Track Progress</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     TIMELINE  (Issue #1061 — key new section)
+══════════════════════════════════════════════════ -->
+<section class="au-timeline-section">
+  <div class="au-container">
+
+    <div style="text-align:center;margin-bottom:3.5rem">
+      <div class="au-section-tag au-reveal" style="justify-content:center">
+        Our Journey
+      </div>
+      <h2 class="au-section-title au-reveal au-reveal-delay-1" style="text-align:center">
+        From Idea to Impact
+      </h2>
+      <p class="au-section-desc au-reveal au-reveal-delay-2" style="margin:0 auto">
+        Every big platform starts with a single commit. Here's how Algo Infinity
+        Verse grew from an idea into a thriving learning community.
+      </p>
+    </div>
+
+    <div class="au-tl-wrap">
+
+      <!-- Milestone 1 -->
+      <div class="au-tl-item right au-reveal">
+        <div class="au-tl-left">
+          <span class="au-tl-date">May 2026</span>
+          <div class="au-tl-card">
+            <h3>🚀 Project Founded</h3>
+            <p>
+              Algo Infinity Verse was officially started with a mission to make
+              DSA learning structured, visual, and actually enjoyable for every
+              learner.
+            </p>
+          </div>
+        </div>
+        <div class="au-tl-center">
+          <div class="au-tl-dot"><i class="fas fa-rocket"></i></div>
+        </div>
+        <div class="au-tl-right"></div>
+      </div>
+
+      <!-- Milestone 2 -->
+      <div class="au-tl-item left au-reveal au-reveal-delay-1">
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center">
+          <div class="au-tl-dot"><i class="fas fa-award"></i></div>
+        </div>
+        <div class="au-tl-right">
+          <span class="au-tl-date">June 2026</span>
+          <div class="au-tl-card">
+            <h3>🏅 Social Summer of Code</h3>
+            <p>
+              Registered for Social Summer of Code (SSoC'26), opening the
+              platform to open-source contributors and the broader developer
+              community.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Milestone 3 -->
+      <div class="au-tl-item right au-reveal au-reveal-delay-2">
+        <div class="au-tl-left">
+          <span class="au-tl-date">June 2026</span>
+          <div class="au-tl-card">
+            <h3>🤝 First Contribution</h3>
+            <p>
+              Received the very first open-source contribution — a milestone that
+              marked the start of a growing collaborative community building the
+              platform together.
+            </p>
+          </div>
+        </div>
+        <div class="au-tl-center">
+          <div class="au-tl-dot"><i class="fas fa-code-branch"></i></div>
+        </div>
+        <div class="au-tl-right"></div>
+      </div>
+
+      <!-- Milestone 4 -->
+      <div class="au-tl-item left au-reveal au-reveal-delay-3">
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center">
+          <div class="au-tl-dot"><i class="fas fa-fire"></i></div>
+        </div>
+        <div class="au-tl-right">
+          <span class="au-tl-date">June 2026 — Present</span>
+          <div class="au-tl-card">
+            <h3>🔥 Active &amp; Growing</h3>
+            <p>
+              Contributions continue to grow every week. New features, visualizers,
+              tools, and learning modules are being shipped by a passionate global
+              community.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     MISSION & VISION
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-section-tag au-reveal">Our Purpose</div>
+    <h2 class="au-section-title au-reveal au-reveal-delay-1">
+      Mission &amp; Vision
+    </h2>
+
+    <div class="au-mv-grid">
+      <div class="au-mv-card au-reveal au-reveal-delay-1">
+        <div class="au-mv-icon"><i class="fas fa-bullseye"></i></div>
+        <h3>Mission</h3>
+        <p>
+          Make high-quality technical education accessible, engaging, and
+          practical for every learner worldwide — regardless of their background
+          or experience level.
+        </p>
+      </div>
+      <div class="au-mv-card au-reveal au-reveal-delay-2">
+        <div class="au-mv-icon"><i class="fas fa-eye"></i></div>
+        <h3>Vision</h3>
+        <p>
+          Build a global learning community where every developer can master
+          problem-solving, land their dream role, and continuously grow their
+          technical skills.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     LEARNING GOALS
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-section-tag au-reveal">What You'll Achieve</div>
+    <h2 class="au-section-title au-reveal au-reveal-delay-1">Learning Goals</h2>
+    <p class="au-section-desc au-reveal au-reveal-delay-2">
+      Every feature on the platform is designed to move you closer to one of these core outcomes.
+    </p>
+
+    <div class="au-4-grid">
+      <div class="au-icon-card au-reveal">
+        <div class="au-icon-wrap"><i class="fas fa-code"></i></div>
+        <h3>Master DSA</h3>
+        <p>Learn core data structures and algorithms from first principles to advanced topics.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-1">
+        <div class="au-icon-wrap"><i class="fas fa-brain"></i></div>
+        <h3>Problem Solving</h3>
+        <p>Develop strong analytical and logical thinking through hands-on practice.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-2">
+        <div class="au-icon-wrap"><i class="fas fa-briefcase"></i></div>
+        <h3>Interview Prep</h3>
+        <p>Prepare confidently for coding assessments and technical interviews.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-3">
+        <div class="au-icon-wrap"><i class="fas fa-chart-line"></i></div>
+        <h3>Continuous Growth</h3>
+        <p>Track your progress with XP, streaks, and achievement milestones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     TECH STACK
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-section-tag au-reveal">Under the Hood</div>
+    <h2 class="au-section-title au-reveal au-reveal-delay-1">Technologies Used</h2>
+    <p class="au-section-desc au-reveal au-reveal-delay-2">
+      Built with modern, reliable tools chosen for performance, scalability, and developer experience.
+    </p>
+
+    <div class="au-4-grid">
+      <div class="au-icon-card au-reveal">
+        <div class="au-icon-wrap"><i class="fab fa-html5"></i></div>
+        <h3>Frontend</h3>
+        <p>HTML5, CSS3, and vanilla JavaScript — fast, accessible, no unnecessary bloat.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-1">
+        <div class="au-icon-wrap"><i class="fas fa-database"></i></div>
+        <h3>Database</h3>
+        <p>Firebase Firestore for real-time data storage and seamless synchronization.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-2">
+        <div class="au-icon-wrap"><i class="fas fa-user-shield"></i></div>
+        <h3>Authentication</h3>
+        <p>Firebase Authentication with Google Sign-In for secure, frictionless login.</p>
+      </div>
+      <div class="au-icon-card au-reveal au-reveal-delay-3">
+        <div class="au-icon-wrap"><i class="fas fa-cloud"></i></div>
+        <h3>Hosting</h3>
+        <p>Deployed on Firebase Hosting with CDN delivery for fast global access.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     CONTRIBUTORS / TEAM
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-section-tag au-reveal">The People</div>
+    <h2 class="au-section-title au-reveal au-reveal-delay-1">Contributors</h2>
+    <p class="au-section-desc au-reveal au-reveal-delay-2">
+      Built by a passionate team and a growing open-source community.
+    </p>
+
+    <div class="au-team-grid">
+      <div class="au-team-card au-reveal">
+        <div class="au-avatar"><i class="fas fa-user"></i></div>
+        <h3>Eshajha19</h3>
+        <p>Project Lead &amp; Frontend Developer</p>
+      </div>
+      <div class="au-team-card au-reveal au-reveal-delay-1">
+        <div class="au-avatar" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6)">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>SSoC'26 Contributors</h3>
+        <p>Improving features, accessibility, and learning resources every day.</p>
+      </div>
+      <div class="au-team-card au-reveal au-reveal-delay-2">
+        <div class="au-avatar" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">
+          <i class="fab fa-github"></i>
+        </div>
+        <h3>Open Source Community</h3>
+        <p>Contributors from around the world making this platform better.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="au-divider"></div>
+
+<!-- ══════════════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════════════ -->
+<section class="au-section">
+  <div class="au-container">
+    <div class="au-contact-card au-reveal">
+      <div class="au-section-tag au-reveal" style="justify-content:center;margin-bottom:.5rem">
+        Get In Touch
+      </div>
+      <h2 class="au-section-title" style="text-align:center;margin-bottom:1rem">
+        Let's Build Together
+      </h2>
+      <p>
+        Have suggestions, spotted a bug, or want to contribute? We'd love to hear
+        from you. Every issue, PR, and piece of feedback helps make this platform better.
+      </p>
+
+      <div class="au-social-row">
+        <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank"
+           class="au-social-btn" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="#" class="au-social-btn" aria-label="Twitter/X">
+          <i class="fab fa-x-twitter"></i>
+        </a>
+        <a href="#" class="au-social-btn" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="#" class="au-social-btn" aria-label="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="mailto:support@algoinfinityverse.com" class="au-social-btn" aria-label="Email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
+
+      <a href="/pages/community/support/index.html" class="btn btn-primary">
+        <i class="fas fa-headset"></i> Visit Support Center
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<script src="/script.js"></script>
+<script src="/auth.js"></script>
+<script src="/theme.js"></script>
+
+<script>
+  loadPartial('navbar-placeholder', '/partials/navbar.html');
+  loadPartial('footer-placeholder', '/partials/footer.html');
+</script>
+
+<script>
+  /* ── Scroll-reveal via IntersectionObserver ── */
+  (function () {
+    const els = document.querySelectorAll('.au-reveal');
+    if (!els.length) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('au-visible');
+            obs.unobserve(entry.target);  // fire once
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    els.forEach((el) => obs.observe(el));
+  })();
+
+  /* ── Animated stat counters ── */
+  (function () {
+    const counters = document.querySelectorAll('.au-stat-num[data-target]');
+    if (!counters.length) return;
+
+    const animate = (el) => {
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = target >= 1000 ? 'K+' : '+';
+      const end    = target >= 1000 ? target / 1000 : target;
+      const step   = end / 60;
+      let current  = 0;
+
+      const tick = () => {
+        current = Math.min(current + step, end);
+        const display = target >= 1000
+          ? Math.floor(current) + 'K+'
+          : Math.floor(current) + '+';
+        el.textContent = display;
+        if (current < end) requestAnimationFrame(tick);
+        else el.textContent = display;
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate(entry.target);
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    counters.forEach((el) => obs.observe(el));
+  })();
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Algo Infinity Verse</title>
+
+  <link rel="stylesheet" href="/styles.css">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  >
+
+  <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+  />
+
+  <style>
+    .about-hero {
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1rem;
+    }
+
+    .about-hero-content {
+      max-width: 900px;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .about-stat {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .about-stat h3 {
+      font-size: 2rem;
+      color: #8b5cf6;
+      margin-bottom: .5rem;
+    }
+
+    .about-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      line-height: 1.8;
+    }
+
+    .goals-grid,
+    .tech-grid,
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 1.5rem;
+    }
+
+    .goal-card,
+    .tech-card,
+    .team-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: .3s;
+    }
+
+    .goal-card:hover,
+    .tech-card:hover,
+    .team-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .goal-card i,
+    .tech-card i,
+    .team-card i {
+      font-size: 2rem;
+      color: #8b5cf6;
+      margin-bottom: 1rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-links a {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: .3s;
+    }
+
+    .social-links a:hover {
+      background: #8b5cf6;
+      transform: translateY(-5px);
+    }
+
+    .contact-box {
+      text-align: center;
+    }
+
+    @media(max-width:768px){
+      .about-hero{
+        min-height:40vh;
+      }
+    }
+
+    /* ── Coding Motivation Dashboard ─────────────────────────────────────── */
+    .motivation-dashboard {
+      background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(59,130,246,0.08) 100%);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 24px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .motivation-dashboard::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Daily Quote Card */
+    .quote-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 18px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      text-align: center;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quote-icon {
+      font-size: 2rem;
+      margin-bottom: .75rem;
+      filter: drop-shadow(0 0 8px rgba(139,92,246,0.6));
+    }
+
+    .quote-text {
+      font-size: 1.15rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: .75rem;
+      transition: opacity .4s;
+    }
+
+    .quote-author {
+      font-size: .85rem;
+      color: #a78bfa;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+
+    .quote-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: linear-gradient(135deg,#7c3aed,#2563eb);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: .25rem .65rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    /* Randomise button */
+    .btn-randomise {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: .65rem 1.5rem;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    }
+
+    .btn-randomise:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(124,58,237,0.55);
+    }
+
+    .btn-randomise i { font-size: 1rem; }
+
+    /* Stories Carousel */
+    .stories-carousel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .story-nav-btns {
+      display: flex;
+      gap: .5rem;
+    }
+
+    .story-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,92,246,0.4);
+      background: rgba(139,92,246,0.1);
+      color: #a78bfa;
+      font-size: .95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      flex-shrink: 0;
+    }
+
+    .story-arrow:hover {
+      background: rgba(139,92,246,0.35);
+      transform: scale(1.1);
+      box-shadow: 0 0 14px rgba(139,92,246,0.45);
+    }
+
+    .story-arrow:active { transform: scale(0.92); }
+
+    /* Horizontal scroll track */
+    .stories-carousel-wrap {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .stories-carousel-track {
+      display: flex;
+      gap: 1.25rem;
+      /* smooth CSS transition for manual arrow scroll */
+      transition: transform .5s cubic-bezier(.25,.8,.25,1);
+      will-change: transform;
+    }
+
+    /* Each card fixed width inside the carousel */
+    .stories-carousel-track .story-card {
+      flex: 0 0 280px;
+      min-width: 280px;
+    }
+
+    @media (max-width: 600px) {
+      .stories-carousel-track .story-card { flex: 0 0 240px; min-width: 240px; }
+    }
+
+
+    /* Progress bar for daily streak */
+    .streak-bar-wrap {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .streak-label {
+      font-size: .82rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: .4rem;
+    }
+
+    .streak-bar {
+      height: 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .streak-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #7c3aed, #06b6d4);
+      animation: streak-glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes streak-glow {
+      from { box-shadow: 0 0 6px #7c3aed; }
+      to   { box-shadow: 0 0 18px #06b6d4; }
+    }
+
+    /* Success Stories */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .story-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform .3s, border-color .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .story-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(139,92,246,0.06), transparent);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .story-card:hover { transform: translateY(-6px); border-color: rgba(139,92,246,0.4); }
+    .story-card:hover::after { opacity: 1; }
+
+    .story-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .story-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: .2rem;
+    }
+
+    .story-role {
+      font-size: .78rem;
+      color: #a78bfa;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .75rem;
+    }
+
+    .story-text {
+      font-size: .88rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.65;
+    }
+
+    .story-company {
+      margin-top: .85rem;
+      font-size: .78rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .story-company strong { color: rgba(255,255,255,0.7); }
+
+    .dash-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 2rem 0;
+    }
+
+    .dash-subtitle {
+      font-size: 1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    @media (max-width: 600px) {
+      .motivation-dashboard { padding: 1.5rem; }
+      .quote-text { font-size: 1rem; }
+    }
+  </style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="about-us">
+
+<!-- NAVBAR -->
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="hero about-hero">
+  <div class="about-hero-content">
+    <h1 class="hero-title">
+      <span class="main-title gradient-text">
+        About Algo Infinity Verse
+      </span>
+    </h1>
+
+    <p class="section-subtitle">
+      A modern learning platform built to help students and developers
+      master Data Structures, Algorithms, problem-solving, and technical interviews.
+    </p>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="container">
+
+    <div class="about-stats">
+
+      <div class="about-stat">
+        <h3>500+</h3>
+        <p>Practice Problems</p>
+      </div>
+
+      <div class="about-stat">
+        <h3>50+</h3>
+        <p>DSA Topics</p>
+      </div>
+
+      <div class="about-stat">
+        <h3>100+</h3>
+        <p>Interview Questions</p>
+      </div>
+
+      <div class="about-stat">
+        <h3>10K+</h3>
+        <p>Learners</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">
+      🚀 About The Platform
+    </h2>
+
+    <div class="about-card">
+      <p>
+        Algo Infinity Verse is designed to provide a complete ecosystem for learning
+        Data Structures and Algorithms. Our platform combines structured learning,
+        coding practice, quizzes, roadmaps, interview preparation, and progress tracking
+        into a single engaging experience.
+      </p>
+
+      <br>
+
+      <p>
+        Whether you are preparing for coding interviews, competitive programming,
+        or strengthening computer science fundamentals, Algo Infinity Verse helps
+        learners progress confidently toward their goals.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- MISSION & VISION -->
+<section class="section">
+  <div class="container">
+
+    <div class="goals-grid">
+
+      <div class="goal-card">
+        <i class="fas fa-bullseye"></i>
+        <h3>Mission</h3>
+        <p>
+          Make high-quality technical education accessible, engaging,
+          and practical for learners worldwide.
+        </p>
+      </div>
+
+      <div class="goal-card">
+        <i class="fas fa-eye"></i>
+        <h3>Vision</h3>
+        <p>
+          Build a global learning community where every learner can
+          master problem-solving and achieve career success.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- LEARNING GOALS -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">
+      🎯 Learning Goals
+    </h2>
+
+    <div class="goals-grid">
+
+      <div class="goal-card">
+        <i class="fas fa-code"></i>
+        <h3>Master DSA</h3>
+        <p>Learn core data structures and algorithms.</p>
+      </div>
+
+      <div class="goal-card">
+        <i class="fas fa-brain"></i>
+        <h3>Problem Solving</h3>
+        <p>Develop analytical and logical thinking skills.</p>
+      </div>
+
+      <div class="goal-card">
+        <i class="fas fa-briefcase"></i>
+        <h3>Interview Prep</h3>
+        <p>Prepare for coding assessments and interviews.</p>
+      </div>
+
+      <div class="goal-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Continuous Growth</h3>
+        <p>Track progress and stay motivated.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- TECHNOLOGIES -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">
+      ⚙️ Technologies Used
+    </h2>
+
+    <div class="tech-grid">
+
+      <div class="tech-card">
+        <i class="fab fa-html5"></i>
+        <h3>Frontend</h3>
+        <p>HTML5, CSS3, JavaScript</p>
+      </div>
+
+      <div class="tech-card">
+        <i class="fas fa-database"></i>
+        <h3>Database</h3>
+        <p>Firebase Firestore</p>
+      </div>
+
+      <div class="tech-card">
+        <i class="fas fa-user-shield"></i>
+        <h3>Authentication</h3>
+        <p>Firebase Authentication</p>
+      </div>
+
+      <div class="tech-card">
+        <i class="fas fa-cloud"></i>
+        <h3>Hosting</h3>
+        <p>Firebase, Netlify, Vercel</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTRIBUTORS -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">
+      👨‍💻 Contributors
+    </h2>
+
+    <div class="team-grid">
+
+      <div class="team-card">
+        <i class="fas fa-user"></i>
+        <h3>Your Name</h3>
+        <p>Project Lead & Frontend Developer</p>
+      </div>
+
+      <div class="team-card">
+        <i class="fas fa-users"></i>
+        <h3>Community Contributors</h3>
+        <p>Helping improve features, accessibility, and learning resources.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- CODING MOTIVATION DASHBOARD -->
+<section class="section" id="motivation-dashboard">
+  <div class="container">
+
+    <h2 class="section-title">💡 Coding Motivation Dashboard</h2>
+
+    <div class="motivation-dashboard">
+
+      <!-- Daily Quote (no arrows, just the card + Random button) -->
+      <div class="quote-card" id="quoteCard">
+        <span class="quote-badge">✨ Daily Boost</span>
+        <div class="quote-icon" id="quoteIcon">🧠</div>
+        <p class="quote-text" id="quoteText">Loading your quote…</p>
+        <p class="quote-author" id="quoteAuthor"></p>
+      </div>
+
+      <div style="text-align:center; margin-top:1rem;">
+        <button class="btn-randomise" id="newQuoteBtn">
+          <i class="fas fa-shuffle"></i> Random
+        </button>
+      </div>
+
+      <div class="streak-bar-wrap">
+        <p class="streak-label">Today's Motivation Level</p>
+        <div class="streak-bar">
+          <div class="streak-fill" id="streakFill" style="width:70%"></div>
+        </div>
+      </div>
+
+      <hr class="dash-divider">
+
+      <!-- Success Stories Carousel -->
+      <div class="stories-carousel-header">
+        <p class="dash-subtitle">🏆 Success Stories</p>
+        <div class="story-nav-btns">
+          <button class="story-arrow" id="storyPrevBtn" aria-label="Previous story">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="story-arrow" id="storyNextBtn" aria-label="Next story">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="stories-carousel-wrap">
+        <div class="stories-carousel-track" id="storiesTrack">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section">
+  <div class="container">
+
+    <h2 class="section-title">
+      📬 Contact & Support
+    </h2>
+
+    <div class="about-card contact-box">
+
+      <p>
+        Have suggestions, feedback, or want to contribute?
+      </p>
+
+      <div class="social-links">
+        <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+
+      <br>
+
+      <a href="/pages/community/support/index.html" class="btn btn-primary">
+        Visit Support Center
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<script src="/script.js"></script>
+    <script src="/auth.js"></script>
+<script src="/theme.js"></script>
+
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+
+  <!-- ── Coding Motivation Dashboard Script ── -->
+  <script>
+  (() => {
+    /* ─── Quotes (30) ─────────────────────────────────────────────── */
+    const QUOTES = [
+      { icon:"🧠", text:"Every expert was once a beginner. Keep going.", author:"Helen Hayes" },
+      { icon:"🚀", text:"The only way to do great work is to love what you do.", author:"Steve Jobs" },
+      { icon:"💡", text:"First, solve the problem. Then, write the code.", author:"John Johnson" },
+      { icon:"😄", text:"Code is like humor. When you have to explain it, it's bad.", author:"Cory House" },
+      { icon:"🔍", text:"Programming isn't about what you know; it's about what you can figure out.", author:"Chris Pine" },
+      { icon:"⏳", text:"The best time to start was yesterday. The second best time is now.", author:"Anonymous" },
+      { icon:"🐛", text:"It's not a bug — it's an undocumented feature.", author:"Anonymous" },
+      { icon:"🌱", text:"One algorithm at a time. You're making progress every day.", author:"AIV Community" },
+      { icon:"🔧", text:"Debugging is twice as hard as writing code. So write clever code and you'll be stuck forever.", author:"Brian Kernighan" },
+      { icon:"💬", text:"Talk is cheap. Show me the code.", author:"Linus Torvalds" },
+      { icon:"📖", text:"Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", author:"Martin Fowler" },
+      { icon:"🎨", text:"Software is a great combination of artistry and engineering.", author:"Bill Gates" },
+      { icon:"✨", text:"The function of good software is to make the complex appear simple.", author:"Grady Booch" },
+      { icon:"⚡", text:"Simplicity is the soul of efficiency.", author:"Austin Freeman" },
+      { icon:"🏆", text:"Keep pushing. Every line of code is a step closer to your dream job.", author:"AIV Community" },
+      { icon:"🎯", text:"In order to be irreplaceable, one must always be different.", author:"Coco Chanel" },
+      { icon:"🔥", text:"If you think you can do a thing or think you can't do a thing, you're right.", author:"Henry Ford" },
+      { icon:"🌟", text:"The secret of getting ahead is getting started.", author:"Mark Twain" },
+      { icon:"💪", text:"Believe you can and you're halfway there.", author:"Theodore Roosevelt" },
+      { icon:"🎓", text:"An investment in knowledge pays the best interest.", author:"Benjamin Franklin" },
+      { icon:"🛠️", text:"It always seems impossible until it's done.", author:"Nelson Mandela" },
+      { icon:"📊", text:"Without data, you're just another person with an opinion.", author:"W. Edwards Deming" },
+      { icon:"🌍", text:"The computer was born to solve problems that did not exist before.", author:"Bill Gates" },
+      { icon:"⚙️", text:"Make it work, make it right, make it fast.", author:"Kent Beck" },
+      { icon:"🎪", text:"Measuring programming progress by lines of code is like measuring aircraft building progress by weight.", author:"Bill Gates" },
+      { icon:"🦾", text:"The only real mistake is the one from which we learn nothing.", author:"Henry Ford" },
+      { icon:"🌊", text:"Don't watch the clock; do what it does. Keep going.", author:"Sam Levenson" },
+      { icon:"💎", text:"Quality is not an act, it is a habit.", author:"Aristotle" },
+      { icon:"🔑", text:"Hard work beats talent when talent doesn't work hard.", author:"Tim Notke" },
+      { icon:"🎵", text:"Strive not to be a success, but rather to be of value.", author:"Albert Einstein" },
+    ];
+
+    /* ─── Success Stories (8) ──────────────────────────────────────── */
+    const STORIES = [
+      { emoji:"👨‍💻", name:"Arjun Mehta",   role:"Software Engineer",     text:"After 3 months on Algo Infinity Verse, I cracked my Google interview. The DSA roadmap and practice problems were exactly what I needed.",               company:"Now at",        place:"Google" },
+      { emoji:"👩‍💻", name:"Priya Sharma",  role:"Backend Developer",     text:"I went from zero to landing a role at a fintech startup. The spaced-repetition memory scanner helped me retain concepts I used to forget.",              company:"Now at",        place:"Razorpay" },
+      { emoji:"🧑‍🎓", name:"Carlos Rivera", role:"CS Student → SDE",      text:"The algorithm visualizers made graph problems click for me. Got my first full-time offer before graduation!",                                              company:"Now at",        place:"Microsoft" },
+      { emoji:"👩‍🔬", name:"Aisha Patel",   role:"Data Engineer",         text:"I used AIV every day for 60 days straight. The spaced-repetition on trees and graphs transformed my weak spots into strengths.",                          company:"Now at",        place:"Amazon" },
+      { emoji:"🧑‍💼", name:"Luca Ferretti", role:"Full Stack Developer",  text:"The system design section gave me the confidence to ace my Meta interview loop. Landed a senior role I didn't think I was ready for.",                    company:"Now at",        place:"Meta" },
+      { emoji:"👨‍🏫", name:"Ryo Tanaka",    role:"Competitive Programmer", text:"I reached Specialist on Codeforces after working through the DP and Graph sections. AIV's step-by-step explanations are unmatched.",                   company:"Ranked in",     place:"Top 5% on Codeforces" },
+      { emoji:"👩‍💻", name:"Sofia Morales", role:"Mobile Engineer",       text:"Switched from design to engineering at 27. AIV's structured roadmap made the transition far less scary than I expected.",                                 company:"Now at",        place:"Spotify" },
+      { emoji:"🧑‍🚀", name:"Dev Kapoor",    role:"Open Source Contributor",text:"Started as a user, ended up contributing features back! The community and codebase quality inspired me to level up my own skills.",                      company:"Contributing to",place:"AIV Open Source" },
+    ];
+
+    /* ════════════════════════════════════════════════════════════════
+       QUOTE – simple fade, no arrows / dots
+    ════════════════════════════════════════════════════════════════ */
+    const quoteText   = document.getElementById('quoteText');
+    const quoteAuthor = document.getElementById('quoteAuthor');
+    const quoteIcon   = document.getElementById('quoteIcon');
+    const newQuoteBtn = document.getElementById('newQuoteBtn');
+    const streakFill  = document.getElementById('streakFill');
+
+    const TODAY_KEY = 'aiv_daily_quote_' + new Date().toDateString();
+    let currentQuoteIdx;
+
+    const stored = localStorage.getItem(TODAY_KEY);
+    if (stored !== null) {
+      currentQuoteIdx = Number(stored) % QUOTES.length;
+    } else {
+      const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+      currentQuoteIdx = dayOfYear % QUOTES.length;
+    }
+
+    function showQuote(q, animate) {
+      if (animate) {
+        [quoteText, quoteAuthor, quoteIcon].forEach(el => el.style.opacity = '0');
+        setTimeout(() => {
+          quoteIcon.textContent   = q.icon;
+          quoteText.textContent   = `"${q.text}"`;
+          quoteAuthor.textContent = `— ${q.author}`;
+          [quoteText, quoteAuthor, quoteIcon].forEach(el => el.style.opacity = '1');
+        }, 280);
+      } else {
+        quoteIcon.textContent   = q.icon;
+        quoteText.textContent   = `"${q.text}"`;
+        quoteAuthor.textContent = `— ${q.author}`;
+      }
+      localStorage.setItem(TODAY_KEY, currentQuoteIdx);
+    }
+
+    showQuote(QUOTES[currentQuoteIdx], false);
+
+    newQuoteBtn.addEventListener('click', () => {
+      let rnd;
+      do { rnd = Math.floor(Math.random() * QUOTES.length); } while (rnd === currentQuoteIdx);
+      currentQuoteIdx = rnd;
+      showQuote(QUOTES[currentQuoteIdx], true);
+      const level = 55 + Math.floor(Math.random() * 45);
+      streakFill.style.transition = 'width .6s ease';
+      streakFill.style.width = level + '%';
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+       STORIES CAROUSEL – horizontal, auto-slides left every 3 s
+    ════════════════════════════════════════════════════════════════ */
+    const track     = document.getElementById('storiesTrack');
+    const prevBtn   = document.getElementById('storyPrevBtn');
+    const nextBtn   = document.getElementById('storyNextBtn');
+    const CARD_GAP  = 20;  // px — matches CSS gap (1.25rem ≈ 20px)
+
+    // Render cards (random order, duplicated for seamless loop)
+    const shuffled = [...STORIES].sort(() => Math.random() - 0.5);
+    const allItems = [...shuffled, ...shuffled];   // double for infinite effect
+    allItems.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'story-card';
+      card.innerHTML = `
+        <div class="story-avatar">${s.emoji}</div>
+        <p class="story-name">${s.name}</p>
+        <p class="story-role">${s.role}</p>
+        <p class="story-text">"${s.text}"</p>
+        <p class="story-company">${s.company} <strong>${s.place}</strong></p>
+      `;
+      track.appendChild(card);
+    });
+
+    // Calculate card width after a frame (layout must be done)
+    let cardWidth = 0;
+    let currentOffset = 0;
+    let autoTimer = null;
+
+    function getCardWidth() {
+      const firstCard = track.querySelector('.story-card');
+      return firstCard ? firstCard.offsetWidth + CARD_GAP : 300;
+    }
+
+    function slideTo(offset, instant = false) {
+      if (instant) {
+        track.style.transition = 'none';
+      } else {
+        track.style.transition = 'transform .5s cubic-bezier(.25,.8,.25,1)';
+      }
+      track.style.transform = `translateX(${-offset}px)`;
+      currentOffset = offset;
+    }
+
+    function clampOffset() {
+      cardWidth = getCardWidth();
+      const halfLen = shuffled.length * cardWidth;
+      // If we've scrolled past the first copy, reset silently to same position in second copy
+      if (currentOffset >= halfLen) {
+        slideTo(currentOffset - halfLen, true);
+      } else if (currentOffset < 0) {
+        slideTo(currentOffset + halfLen, true);
+      }
+    }
+
+    function slideNext() {
+      cardWidth = getCardWidth();
+      currentOffset += cardWidth;
+      clampOffset();
+      slideTo(currentOffset);
+    }
+
+    function slidePrev() {
+      cardWidth = getCardWidth();
+      currentOffset -= cardWidth;
+      clampOffset();
+      slideTo(currentOffset);
+    }
+
+    function startAuto() {
+      stopAuto();
+      autoTimer = setInterval(slideNext, 3000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+
+    // Init on next frame so card dimensions are ready
+    requestAnimationFrame(() => {
+      slideTo(0, true);
+      startAuto();
+    });
+
+    nextBtn.addEventListener('click', () => { slideNext(); stopAuto(); startAuto(); });
+    prevBtn.addEventListener('click', () => { slidePrev(); stopAuto(); startAuto(); });
+
+    // Pause auto on hover
+    track.parentElement.addEventListener('mouseenter', stopAuto);
+    track.parentElement.addEventListener('mouseleave', startAuto);
+
+    /* ─── Motivation bar ──────────────────────────────────────────── */
+    streakFill.style.width = (55 + Math.floor(Math.random() * 45)) + '%';
+  })();
+  </script>
+</body>
+</html>
+
