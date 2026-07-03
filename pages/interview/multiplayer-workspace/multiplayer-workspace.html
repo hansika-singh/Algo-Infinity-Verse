@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplayer Workspace | Algo Infinity Verse</title>
+    <meta name="description" content="Collaborate on algorithms in real-time with peers — live code, whiteboard & voice." />
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css" />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="multiplayer-workspace.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="workspace-body">
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar workspace-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li class="nav-item"><a href="/index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active" style="color:var(--multi-primary);">Interview Room</a></li>
+            <li class="nav-item"><a href="/index.html#practice" class="nav-link">Practice</a></li>
+        </ul>
+    </nav>
+
+    <!-- ── Toolbar ── -->
+    <div class="workspace-toolbar">
+        <div class="toolbar-left">
+            <div class="room-status">
+                <div class="pulse-dot"></div>
+                <span id="connectionStatus">Connected</span>
+            </div>
+            <div class="room-link-container">
+                <span class="room-label">Room:</span>
+                <code id="roomIdDisplay">...</code>
+                <button id="btnCopyLink" class="btn-icon" title="Copy invite link">
+                    <i class="fas fa-link"></i> Copy
+                </button>
+            </div>
+            <!-- Session Timer -->
+            <div class="session-timer" id="sessionTimer" title="Interview session time remaining">
+                <i class="fas fa-clock"></i>
+                <span id="timerDisplay">60:00</span>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <span class="participants-label">In room:</span>
+            <div class="participants-list" id="participantsList">
+                <div class="avatar my-avatar" title="You (Host)">You</div>
+            </div>
+            <button class="btn btn-end btn-sm" id="btnEndSession">
+                <i class="fas fa-sign-out-alt"></i> End
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Main Workspace ── -->
+    <main class="workspace-main">
+
+        <!-- ── LEFT PANEL ── -->
+        <div class="panel-left">
+
+            <!-- Problem Header -->
+            <div class="panel-header">
+                <h3><i class="fas fa-file-code"></i> Problem</h3>
+                <select class="problem-selector" id="problemSelector">
+                    <option value="twosum">Two Sum</option>
+                    <option value="lru">LRU Cache</option>
+                    <option value="islands">Number of Islands</option>
+                </select>
+            </div>
+
+            <!-- Problem Content -->
+            <div class="panel-content problem-content">
+                <h2 id="probTitle">Two Sum</h2>
+                <div class="prob-tags">
+                    <span class="tag tag-easy">Easy</span>
+                    <span class="tag">Arrays</span>
+                    <span class="tag">Hash Table</span>
+                </div>
+                <p id="probDesc">
+                    Given an array of integers <code>nums</code> and an integer <code>target</code>,
+                    return indices of the two numbers such that they add up to <code>target</code>.<br><br>
+                    You may assume each input has exactly one solution, and you may not use the same element twice.
+                </p>
+                <div class="test-cases">
+                    <h4>Example 1:</h4>
+                    <pre><strong>Input:</strong>  nums = [2,7,11,15], target = 9
+<strong>Output:</strong> [0,1]
+<strong>Explain:</strong> nums[0] + nums[1] = 9 → return [0, 1].</pre>
+                    <h4 style="margin-top:0.75rem;">Example 2:</h4>
+                    <pre><strong>Input:</strong>  nums = [3,2,4], target = 6
+<strong>Output:</strong> [1,2]</pre>
+                </div>
+            </div>
+
+            <!-- Shared Notes (collapsible) -->
+            <div class="notes-panel">
+                <div class="notes-header" id="notesToggle">
+                    <span><i class="fas fa-sticky-note" style="color:var(--multi-primary);margin-right:0.4rem;"></i>Shared Notes</span>
+                    <i class="fas fa-chevron-down notes-toggle-icon" style="transition:transform 0.2s;font-size:0.75rem;"></i>
+                </div>
+                <div class="notes-body" id="notesBody">
+                    <textarea
+                        id="sharedNotes"
+                        class="notes-textarea"
+                        placeholder="Shared notes — visible to all participants. Write approach, hints, edge cases..."></textarea>
+                </div>
+            </div>
+
+            <!-- Voice Chat Panel -->
+            <div class="voice-panel">
+                <div class="voice-header">
+                    <span>
+                        <div class="voice-status-dot" id="voiceStatusDot"></div>
+                        Voice Chat
+                    </span>
+                    <div class="audio-visualizer" id="audioViz">
+                        <div class="audio-bar" style="height:4px;"></div>
+                        <div class="audio-bar" style="height:8px;"></div>
+                        <div class="audio-bar" style="height:6px;"></div>
+                        <div class="audio-bar" style="height:10px;"></div>
+                        <div class="audio-bar" style="height:4px;"></div>
+                    </div>
+                </div>
+                <div class="voice-body">
+                    <div class="voice-participants" id="voiceParticipants"></div>
+                    <div class="voice-controls">
+                        <button class="voice-btn voice-btn-join" id="btnJoinVoice">
+                            <i class="fas fa-microphone"></i> Join Voice
+                        </button>
+                        <button class="voice-btn voice-btn-leave" id="btnLeaveVoice" style="display:none;">
+                            <i class="fas fa-phone-slash"></i> Leave
+                        </button>
+                        <button class="voice-btn voice-btn-mute" id="btnToggleMute" style="display:none;">
+                            <i class="fas fa-microphone"></i> Mute
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <i class="fas fa-comments"></i> Session Chat
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="msg system">Room created. Share the link to invite peers.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off" />
+                    <button id="btnSendChat" title="Send"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+        </div>
+        <!-- ── END LEFT PANEL ── -->
+
+        <!-- ── RIGHT PANEL ── -->
+        <div class="panel-right">
+
+            <!-- Editor Header / Tabs -->
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="editor-tab active" id="tabCode">
+                        <i class="fas fa-code"></i> solution.js
+                    </button>
+                    <button class="editor-tab" id="tabBoard">
+                        <i class="fas fa-paint-brush"></i> Whiteboard
+                        <span class="tab-badge pulse-badge" id="wbTabBadge">New ✨</span>
+                    </button>
+                </div>
+                <div class="editor-controls">
+                    <select class="lang-selector" id="langSelector">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                    </select>
+                    <button class="btn btn-success btn-sm" id="btnRunCode">
+                        <i class="fas fa-play"></i> Run
+                    </button>
+                </div>
+            </div>
+
+            <!-- Code Editor -->
+            <div class="editor-wrapper" id="editorContainer"></div>
+
+            <!-- Whiteboard Container -->
+            <div id="whiteboardContainer">
+                <!-- Whiteboard Toolbar -->
+                <div class="wb-toolbar">
+                    <!-- Draw tools -->
+                    <button class="wb-tool active" data-tool="pen" title="Pen">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="wb-tool" data-tool="eraser" title="Eraser">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                    <button class="wb-tool" data-tool="rect" title="Rectangle">
+                        <i class="far fa-square"></i>
+                    </button>
+                    <button class="wb-tool" data-tool="arrow" title="Arrow">
+                        <i class="fas fa-long-arrow-alt-right"></i>
+                    </button>
+                    <button class="wb-tool" data-tool="line" title="Line">
+                        <i class="fas fa-minus"></i>
+                    </button>
+
+                    <div class="wb-divider"></div>
+
+                    <!-- Color swatches -->
+                    <div class="wb-color-picker">
+                        <div class="wb-color active" data-color="#8b5cf6" style="background:#8b5cf6;" title="Violet"></div>
+                        <div class="wb-color" data-color="#2dd4bf" style="background:#2dd4bf;" title="Teal"></div>
+                        <div class="wb-color" data-color="#ec4899" style="background:#ec4899;" title="Pink"></div>
+                        <div class="wb-color" data-color="#f59e0b" style="background:#f59e0b;" title="Amber"></div>
+                        <div class="wb-color" data-color="#10b981" style="background:#10b981;" title="Green"></div>
+                        <div class="wb-color" data-color="#ef4444" style="background:#ef4444;" title="Red"></div>
+                        <div class="wb-color" data-color="#f8fafc" style="background:#f8fafc;border:1px solid #334155;" title="White"></div>
+                    </div>
+
+                    <div class="wb-divider"></div>
+
+                    <!-- Stroke size -->
+                    <div class="wb-stroke-size">
+                        <button class="wb-stroke-btn" data-size="1" title="Thin">1</button>
+                        <button class="wb-stroke-btn active" data-size="3" title="Medium">3</button>
+                        <button class="wb-stroke-btn" data-size="6" title="Thick">6</button>
+                    </div>
+
+                    <!-- Right-side actions -->
+                    <div class="wb-toolbar-right">
+                        <div class="wb-undo-redo">
+                            <button class="wb-tool" id="btnWbUndo" title="Undo (last stroke)">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="wb-tool" id="btnWbRedo" title="Redo">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                        <button class="wb-tool" id="btnWbClear" title="Clear board" style="color:#ef4444;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="wb-canvas-wrap">
+                    <canvas id="whiteboardCanvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Console -->
+            <div class="console-panel">
+                <div class="console-header">
+                    <span><i class="fas fa-terminal"></i> Console</span>
+                    <button class="btn-icon" id="btnClearConsole" title="Clear console">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                </div>
+                <div class="console-content" id="consoleOutput">&gt; Ready to execute...</div>
+            </div>
+
+        </div>
+        <!-- ── END RIGHT PANEL ── -->
+
+    </main>
+
+    <!-- Toast container (JS populates) -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="multiplayer-workspace.js"></script>
+</body>
+</html>

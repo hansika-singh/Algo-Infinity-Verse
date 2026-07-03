@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B+ Tree Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive B+ Tree visualizer with configurable order, animated splits, merges, and search." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="bplus-tree-visualizer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="bplus-tree-visualizer">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero bpt-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">How Does Your Database Find Rows Instantly?</span>
+        <span class="main-title bpt-gradient">B+ Tree Visualizer</span>
+        <span class="subtitle">Splits, Merges, and Linked Leaves — Live</span>
+      </h1>
+      <p class="section-subtitle">Every major database index runs on this structure. Watch nodes split as they overflow, merge as they shrink, and see why leaves are chained together for fast range scans.</p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary bpt-btn-primary"><i class="fas fa-diagram-project"></i> Open Simulator</a>
+        <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Why B+ Trees?</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Simulator -->
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <!-- Controls -->
+      <div class="bpt-control-card">
+
+        <div class="bpt-row">
+          <span class="bpt-row-label">Order:</span>
+          <select id="bptOrderSelect" class="bpt-select">
+            <option value="3">3 (max 2 keys/node)</option>
+            <option value="4" selected>4 (max 3 keys/node)</option>
+            <option value="5">5 (max 4 keys/node)</option>
+          </select>
+          <button class="btn bpt-btn-primary bpt-preset-btn" id="bptPresetBtn">
+            <i class="fas fa-bolt"></i> Preset: Insert 1–20
+          </button>
+        </div>
+
+        <div class="bpt-row">
+          <span class="bpt-row-label">Operation:</span>
+          <div class="bpt-ops-wrap" id="bptOpsWrap"></div>
+        </div>
+
+        <div class="bpt-row">
+          <span class="bpt-row-label">Value:</span>
+          <input type="number" id="bptValueInput" class="bpt-val-input" value="10" aria-label="Key value" />
+          <button class="btn bpt-btn-primary bpt-exec-btn" id="bptExecBtn">
+            <i class="fas fa-play"></i> Execute
+          </button>
+        </div>
+
+        <div class="bpt-row">
+          <span class="bpt-row-label">Playback:</span>
+          <button class="btn btn-secondary bpt-exec-btn" id="bptStepBtn">
+            <i class="fas fa-step-forward"></i> Step
+          </button>
+          <button class="btn btn-secondary bpt-exec-btn" id="bptPlayBtn">
+            <i class="fas fa-play"></i> Play
+          </button>
+          <button class="btn btn-secondary bpt-exec-btn" id="bptResetBtn">
+            <i class="fas fa-undo"></i> Reset Tree
+          </button>
+          <label class="bpt-speed-label">
+            Speed
+            <input type="range" id="bptSpeedSlider" min="150" max="1500" step="50" value="700" />
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Status -->
+      <div class="bpt-status" id="bptStatus">Choose an order, pick an operation, and execute to see it animate.</div>
+
+      <!-- Main layout -->
+      <div class="bpt-main-layout">
+
+        <!-- Tree area -->
+        <div class="bpt-tree-section">
+          <div class="bpt-tree-header">
+            <div class="bpt-tree-title"><i class="fas fa-sitemap"></i> Tree Structure</div>
+            <div class="bpt-step-counter" id="bptStepCounter">Step 0 / 0</div>
+          </div>
+          <div class="bpt-tree-wrap">
+            <svg id="bptLinesSvg" class="bpt-lines-svg"></svg>
+            <div class="bpt-tree-area" id="bptTreeArea"></div>
+          </div>
+        </div>
+
+        <!-- Info panel -->
+        <div class="bpt-info-panel">
+
+          <div class="bpt-meta-card">
+            <div class="bpt-panel-title">Tree Stats</div>
+            <div class="bpt-meta-row"><span>Height</span><strong id="bptHeightVal">1</strong></div>
+            <div class="bpt-meta-row"><span>Total Keys</span><strong id="bptCountVal">0</strong></div>
+          </div>
+
+          <div class="bpt-legend-card">
+            <div class="bpt-panel-title">Legend</div>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-active"></span>Active path</span>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-split"></span>Splitting</span>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-merge"></span>Merging / Borrowing</span>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-found"></span>Found</span>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-internal"></span>Internal node</span>
+            <span class="bpt-legend-item"><span class="bpt-ldot bpt-ldot-leaf"></span>Leaf node</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Learn -->
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🗄️</span> Why Databases Love B+ Trees</h2>
+      <div class="bpt-learn-grid">
+
+        <div class="bpt-learn-card bpt-learn-leaf">
+          <div class="bpt-learn-icon">🍃</div>
+          <h3>Data Only In Leaves</h3>
+          <p>Unlike a plain B-Tree, every key's actual data lives in a leaf node. Internal nodes hold only routing keys — no data — so more keys fit per page, keeping the tree shallow.</p>
+        </div>
+
+        <div class="bpt-learn-card bpt-learn-chain">
+          <div class="bpt-learn-icon">🔗</div>
+          <h3>Linked Leaves</h3>
+          <p>Every leaf points to the next leaf in sorted order (dashed lines below). This makes range queries like "WHERE id BETWEEN 10 AND 50" a simple linear scan instead of repeated tree descents.</p>
+        </div>
+
+        <div class="bpt-learn-card bpt-learn-split">
+          <div class="bpt-learn-icon">✂️</div>
+          <h3>Splitting On Overflow</h3>
+          <p>When a node exceeds its max key count, it splits in two and pushes a key up to its parent. If the root splits, a brand new root is created — this is the only way a B+ Tree grows taller.</p>
+        </div>
+
+        <div class="bpt-learn-card bpt-learn-merge">
+          <div class="bpt-learn-icon">🧩</div>
+          <h3>Borrow Before Merge</h3>
+          <p>When a node shrinks below its minimum, it first tries to borrow a key from a sibling. Only if no sibling can spare one does it merge — keeping the tree balanced with minimal restructuring.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="bplus-tree-visualizer.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

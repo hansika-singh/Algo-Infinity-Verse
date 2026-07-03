@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Complexity Calculator | Algo Infinity Verse
+    </title>
+    <meta
+      name="description"
+      content="Compare algorithms, visualize growth rates, and plot Big-O graphs dynamically."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="complexity-calculator.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="complexity-calculator">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+        <!-- Hero Section -->
+    <section id="home" class="hero complexity-hero">
+      <div class="complexity-hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="complexity-hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Big-O Notation</span>
+          <span class="main-title gradient-text">Complexity Calculator</span>
+          <span class="subtitle">Visualize Growth Rates & Compare Algorithms</span>
+        </h1>
+        <p class="complexity-desc">Dynamically plot O(1), O(log n), O(n), and more to understand how different algorithms scale as input size increases.</p>
+      </div>
+    </section>
+
+        <!-- Main Calculator Dashboard -->
+    <section class="section" id="calculator-section">
+      <div class="cc-dashboard">
+        <!-- LEFT: Graph Canvas -->
+        <div class="cc-graph-container">
+          <div class="cc-graph-header">
+            <div class="cc-graph-title"><i class="fas fa-chart-area"></i> Big-O Growth Visualization</div>
+          </div>
+          <div class="cc-canvas-wrapper">
+            <canvas id="complexityChart" role="img" aria-label="Interactive line graph visualizing Big-O complexities">
+              <p class="sr-only">A dynamic chart showing the growth rates of selected Big-O functions based on the current input size.</p>
+            </canvas>
+          </div>
+        </div>
+
+        <!-- RIGHT: Control Panel -->
+        <div class="cc-controls">
+          <div class="cc-control-section">
+            <div class="cc-control-title"><i class="fas fa-sliders-h"></i> Parameters</div>
+            <div class="cc-slider-wrap">
+              <div class="cc-slider-header">
+                <span>Input Size (N)</span>
+                <span class="cc-val-badge" id="nValDisplay">50</span>
+              </div>
+              <input type="range" id="nSlider" min="5" max="200" value="50" aria-label="Input Size (N)" aria-valuenow="50" aria-valuemin="5" aria-valuemax="200" />
+            </div>
+          </div>
+
+          <div class="cc-control-section">
+            <div class="cc-control-title"><i class="fas fa-layer-group"></i> Complexities</div>
+            <div class="cc-toggles">
+              <label class="cc-toggle-label t-o1" role="switch" tabindex="0" aria-checked="true"><input type="checkbox" id="chk_o1" checked tabindex="-1"><div class="cc-toggle-box"></div> O(1) Constant</label>
+              <label class="cc-toggle-label t-ologn" role="switch" tabindex="0" aria-checked="true"><input type="checkbox" id="chk_ologn" checked tabindex="-1"><div class="cc-toggle-box"></div> O(log N) Logarithmic</label>
+              <label class="cc-toggle-label t-on" role="switch" tabindex="0" aria-checked="true"><input type="checkbox" id="chk_on" checked tabindex="-1"><div class="cc-toggle-box"></div> O(N) Linear</label>
+              <label class="cc-toggle-label t-onlogn" role="switch" tabindex="0" aria-checked="true"><input type="checkbox" id="chk_onlogn" checked tabindex="-1"><div class="cc-toggle-box"></div> O(N log N) Linearithmic</label>
+              <label class="cc-toggle-label t-on2" role="switch" tabindex="0" aria-checked="true"><input type="checkbox" id="chk_on2" checked tabindex="-1"><div class="cc-toggle-box"></div> O(N²) Quadratic</label>
+              <label class="cc-toggle-label t-o2n" role="switch" tabindex="0" aria-checked="false"><input type="checkbox" id="chk_o2n" tabindex="-1"><div class="cc-toggle-box"></div> O(2^N) Exponential</label>
+              <label class="cc-toggle-label t-onfact" role="switch" tabindex="0" aria-checked="false"><input type="checkbox" id="chk_onfact" tabindex="-1"><div class="cc-toggle-box"></div> O(N!) Factorial</label>
+            </div>
+          </div>
+
+          <div class="cc-control-section cc-compare">
+            <div class="cc-control-title"><i class="fas fa-balance-scale"></i> Compare Algorithms</div>
+            <select id="algoA" class="cc-select">
+              <option value="binary_search">Binary Search</option>
+              <option value="linear_search">Linear Search</option>
+              <option value="bubble_sort">Bubble Sort</option>
+              <option value="merge_sort">Merge Sort</option>
+              <option value="fib_recursive">Fibonacci (Recursive)</option>
+            </select>
+            <div class="cc-compare-vs">VS</div>
+            <select id="algoB" class="cc-select">
+              <option value="bubble_sort">Bubble Sort</option>
+              <option value="binary_search">Binary Search</option>
+              <option value="linear_search">Linear Search</option>
+              <option value="merge_sort">Merge Sort</option>
+              <option value="fib_recursive">Fibonacci (Recursive)</option>
+            </select>
+            <div class="cc-stats-box" id="compareStats">
+              Select two algorithms to compare their estimated operations at N.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="What is the time complexity of this problem?"
+          >
+            Time Complexity
+          </button>
+          <button
+            class="quick-q"
+            data-question="Can you give me a hint for this problem?"
+          >
+            Hint
+          </button>
+          <button class="quick-q" data-question="What approach should I use?">
+            Approach
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="complexity-calculator.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>
+

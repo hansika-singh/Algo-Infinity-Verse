@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Learn Greedy Algorithms | Algo Infinity Verse</title>
+<meta
+name="description"
+content="Master Greedy Algorithms. Learn optimization techniques, Fractional Knapsack, Job Sequencing, Activity Selection, practice exercises, and interview-focused problems."
+/>
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="greedy-algorithms.css" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="greedy-learning"><!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="infinity-loader">∞</div>
+            <h2>Algo Infinity Verse</h2>
+            <div class="loading-bar"><div class="loading-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-nodes" id="heroNodes"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="main-title gradient-text">Master Greedy Algorithms</span>
+                <span class="subtitle">Optimization · Scheduling · Resource Allocation · Interview Patterns</span>
+            </h1>
+            
+            <div class="typing-container">
+                <span id="typingTextGreedy"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Core Topics</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Practice Checks</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-number" data-target="5">0</span>
+                    <span class="stat-label">Quiz Questions</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Section -->
+    <section class="learning-section">
+        <div class="container">
+
+        <!-- Progress Bar -->
+        <div class="greedy-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <span class="greedy-progress-text">Your Progress: <span id="progressCount">0</span>/8 Topics Completed</span>
+            <div class="greedy-progress-track">
+                <div class="greedy-progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="greedy-layout">
+
+        <!-- Sidebar -->
+        <aside class="greedy-sidebar">
+            <h2 class="greedy-sidebar-title">Greedy Algorithms - Learning Guide</h2>
+            <nav aria-label="Greedy topics">
+                <ul class="greedy-sidebar-nav">
+                    <li><a href="#intro" class="active"><span class="nav-icon"><i class="fas fa-info-circle"></i></span><span>1. Getting Started with Greedy Algorithms</span></a></li>
+                    <li><a href="#characteristics"><span class="nav-icon"><i class="fas fa-tag"></i></span><span>2. Characteristics of Greedy Algorithms</span></a></li>
+                    <li><a href="#cookies"><span class="nav-icon"><i class="fas fa-layer-group"></i></span><span>3. Assign Cookies</span></a></li>
+                    <li><a href="#knapsack"><span class="nav-icon"><i class="fas fa-arrow-down"></i></span><span>4. Fractional Knapsack</span></a></li>
+                    <li><a href="#job"><span class="nav-icon"><i class="fas fa-globe"></i></span><span>5. Job Sequencing</span></a></li>
+                    <li><a href="#activity"><span class="nav-icon"><i class="fas fa-project-diagram"></i></span><span>6. Activity Selection</span></a></li>
+                    <li><a href="#exercises"><span class="nav-icon"><i class="fas fa-dumbbell"></i></span><span>7. Practice Exercises</span></a></li>
+                    <li><a href="#quiz"><span class="nav-icon"><i class="fas fa-question-circle"></i></span><span>8. Knowledge Quiz</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="greedy-main-content">
+
+        <!-- ───────────────────────── 01. Greedy Fundamentals ───────────────────────── -->
+        <article class="greedy-lesson" id="intro" data-topic="1">
+            <div class="greedy-lesson-header">
+                <span class="greedy-lesson-number">01</span>
+                <h3>Getting Started with Greedy Algorithms</h3>
+            </div>
+            <p>In <strong>Greedy Algorithm</strong>, a locally optimal choice is made at each step with the hope of finding a globally optimum solution.</p>
+            <p>Unlike Dynamic Programming, which explores multiple possibilities, Greedy Algorithms make decisions immediately and never reconsider them. Hence, they're considered more efficient and easy to implement for many optimization problems.</p>
+
+            <div class="greedy-card">
+                <h3>Key Idea:</h3>
+                <p>Make the best choice available right now and move forward</p>
+            </div>
+
+            <div class="greedy-box">
+                <h3>Real-Life Example</h3>
+
+                <p>Imagine you are selecting activities to fit into a day. Choosing the activity that finishes earliest leaves maximum room for future activities. This is a classic greedy strategy.</p>
+            </div>
+        </article>
+
+            <!-- ───────────────────────── 02. Characteristics of Greedy Algorithms ───────────────────────── -->
+            <article class="greedy-lesson" id="characteristics" data-topic="2">
+                <div class="greedy-lesson-header">
+                    <span class="greedy-lesson-number">02</span>
+                <h3>Characteristics of Greedy Algorithms</h3>
+            </div>
+            <p>Greedy Algorithms make decisions step-by-step, choosing the best immediate option without reconsidering previous choices.</p>
+
+            <div class="greedy-card">
+                <h3>Main Characteristics</h3>
+                <ul>
+                    <li>Make locally optimal choices at each step.</li>
+                    <li>Do not revisit previous decisions.</li>
+                    <li>Usually faster and simpler than Dynamic Programming.</li>
+                    <li>May not always produce the optimal solution.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>Two Important Properties</h3>
+                <p><strong>Greedy Choice Property:</strong></p>
+                <p>A globally optimal solution can be reached by making locally optimal choices.</p>
+                <p><strong>Optimal Substructure:</strong></p>
+                <p>The optimal solution can be built from optimal solutions of smaller subproblems.</p>
+            </div>
+
+            <div class="warning-box">
+                <h3>Important Note</h3>
+                <p>
+                    Not every optimization problem can be solved using a
+                    Greedy approach. Some problems require Dynamic Programming
+                    because local optimal choices do not always lead to a
+                    globally optimal solution.
+                </p>
+            </div>
+        </article>
+
+        <!-- ───────────────────────── 03. Assign Cookies ───────────────────────── -->
+        <article class="greedy-lesson" id="cookies" data-topic="3">
+                <div class="greedy-lesson-header">
+                    <span class="greedy-lesson-number">03</span>
+                    <h3>Assign Cookies</h3>
+                </div>
+
+                <p>
+                    Imagine you're an amazing parent to your children and you want to give them some cookies. But each child should get at most one cookie.
+
+                    Given two arrays, children and cookie, the ith value in the children array describes the minimum size of cookie that the ith child can be assigned. 
+                    The jth value in the cookie array represents the size of the jth cookie. 
+                    
+                    If cookie[j] >= children[i], the jth cookie can be assigned to the ith child. 
+                    
+                    Maximize the number of your content children and output the maximum number.
+                </p>
+
+                <div class="example-box">
+                    <h3>Example</h3>
+                    <p>g = [1, 2, 3]</p>
+                    <p>s = [1, 1]</p>
+                    <p>You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. 
+                    And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.
+                    You need to output 1.
+                    </p>
+                </div>
+                
+                <div class="algorithm-box">
+                    <h3>Algorithm</h3>
+                    <ol>
+                        <li>Sort both children and cookie array in ascending order.</li>
+                        <li>Start with the first child and first cookie. Using the two-pointer approach, traverse the array.</li>
+                        <li>Check if current cookie can satisfy the child's greed, if so, assign the cookie to the child and move to the next child and next cookie.</li>
+                        <li>If not, move to the next cookie.</li>
+                        <li>Count the number of children who've been satisfied. Return the count.</li>
+                    </ol>
+                </div>
+
+                <div class="companies">
+                    <h3>
+                        <i class="fa-solid fa-building"></i>
+                        Frequently Asked In
+                    </h3>
+                    <div class="company">
+                        <span class="badge"><i class="fa-brands fa-amazon"></i>Amazon</span>
+                        <span class="badge"><i class="fa-brands fa-google"></i>Google</span>
+                        <span class="badge"><i class="fa-brands fa-uber"></i>Uber</span>
+                    </div>
+                </div>
+                
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Python Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                    </div>
+                <pre><code>
+                    def findContentChildren(self, g, s):
+                        g.sort()
+                        s.sort()
+
+                        i = 0
+                        j = 0
+
+                        while i < len(g) and j < len(s):
+                            if s[j] >= g[i]:
+                                i = i + 1
+                            else:
+                                j = j + 1
+                            
+                        return i;
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Java Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    public int findContentChildren(int[] g, int[] s) {
+                        Arrays.sort(g);
+                        Arrays.sort(s);
+
+                        int i = 0;
+                        int j = 0;
+
+                        int x = g.length;
+                        int y = s.length;
+
+                        while (i < x && j < y) {
+                            if (s[j] >= g[i]) {
+                                i++;
+                            }
+
+                            j++;
+                        }
+
+                        return i;
+                    }
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">C++ Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    int findContentChildren(vector<int>& g, vector<int>& s) {
+                        sort(g.begin(), g.end());
+                        sort(s.begin(), s.end());
+                            
+                        int i = 0;
+                        int j = 0;
+                            
+                        int x = g.size();
+                        int y = s.size();
+                            
+                        while (i < x && j < y) {
+                            if (s[j] >= g[i]) {
+                                i++;
+                            }
+                                
+                            j++;
+                        }
+                            
+                        return i;
+                    }
+                </code></pre></div>
+
+                <div class="greedy-complexity">
+                    <h3>Time Complexity</h3>
+                    <p>O(n*logn + m*logm) - Both the arrays are sorted in increasing order.</p>
+
+                    <h3>Space Complexity</h3>
+                    <p>O(1) - No extra space is used.</p>
+                </div>
+            </article>
+
+            <!-- ───────────────────────── 04. Fractional Knapsack ───────────────────────── -->
+            <article class="greedy-lesson" id="knapsack" data-topic="4">
+                <div class="greedy-lesson-header">
+                    <span class="greedy-lesson-number">04</span>
+                    <h3>Fractional Knapsack</h3>
+                </div>
+                
+                <p>
+                <strong>Fractional Knapsack</strong> problem allows us to take fractions of items.
+                Each item has a value and a weight.
+
+                The goal is to maximize the total value placed inside a knapsack with limited capacity.
+                </p>
+
+                <p>Unlike the 0/1 Knapsack problem, we are allowed to take only a part of an item if needed.</p>
+
+                <div class="example-box">
+                    <h3>Example</h3>
+                    <p>value = [60, 100, 120]</p>
+                    <p>weight = [10, 20, 30]</p>
+                    <p>capacity = 50</p>
+                    <p>- Take item 0 (weight = 10, value = 60)  
+                        - Take item 1 (weight = 20, value = 100)  
+                        - Take 2⁄3 of item 2 (weight = 20, value = 80)  
+                        Total value = 60 + 100 + 80 = 240
+                    </p>
+                </div>
+
+                <div class="algorithm-box">
+                    <h3>Algorithm</h3>
+                    <ol>
+                        <li>Sort the items in decreasing order based on their value-to-weight ratio.</li>
+                        <li>Iterate through the items and pick those whose weight is less than or equal to the current capacity of the knapsack.</li>
+                        <li>If an item's weight exceeds the remaining capacity, break the item into smaller units, calculate its value according to the remaining capacity, and add this value to the total.</li>
+                    </ol>
+                </div>
+
+                <div class="companies">
+                    <h3>
+                        <i class="fa-solid fa-building"></i>
+                        Frequently Asked In
+                    </h3>
+                    <div class="company">
+                        <span class="badge"><i class="fa-brands fa-microsoft"></i>Microsoft</span>
+                    </div>
+                </div>
+                
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Python Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    def __init__(self, value, weight):
+                        self.value = value
+                        self.weight = weight
+                        
+                    def knapsack(W, arr, n):
+                        arr.sort(key=lambda x: (x.value / x.weight), reverse=True)
+
+                        current = 0
+                        res = 0.0
+
+                        for i in range(n):
+                            if current + arr[i].weight <= W:
+                                current = current + arr[i].weight
+                                res = res + arr[i].value
+                                
+                            else:
+                                remaining = W - current
+                                res = res + (arr[i].value / arr[i].weight) * remaining
+                                break
+
+                        return res
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Java Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    import java.util.*;
+                        
+                    class Item {
+                        int value;
+                        int weight;
+                            
+                        Item(int value, int weight) {
+                            this.value = value;
+                            this.weight = weight;
+                        }
+                    }
+                        
+                    public class FractionalKnapsack {
+                        static double knapsack(int W, Item[] arr, int n) {
+                            Arrays.sort(arr, (a, b) -> Double.compare((double)b.value / b.weight, (double)a.value / a.weight));
+                                
+                            int current = 0;
+                            double res = 0.0;
+                                
+                            for (int i = 0; i < n; i++) {
+                                if (current + arr[i].weight <= W) {
+                                    current = current + arr[i].weight;
+                                    res = res + arr[i].value;
+                                }
+                                    
+                                else {
+                                    int remaining = W - current;
+                                    res = res + ((double)arr[i].value / arr[i].weight) * remaining;
+                                    break;
+                                }
+                            }
+                                
+                            return res;
+                        }
+                    }
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">C++ Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    #include &lt;iostream&gt;
+                    #include &lt;vector&gt;
+                    #include &lt;algorithm&gt;
+                            
+                    using namespace std;
+                            
+                    struct Item {
+                        int value;
+                        int weight;
+                    };
+                        
+                    double knapsack(int W, vector&lt;Item&gt;& arr, int n) {
+                        sort(arr.begin(), arr.end(), [](Item a, Item b) {
+                            return (double)a.value / a.weight > (double)b.value / b.weight;
+                        }
+                    );
+                        
+                    int current = 0;
+                    double res = 0.0;
+                        
+                    for (int i = 0; i < n; i++) {
+                        if (current + arr[i].weight <= W) {
+                            current = current + arr[i].weight;
+                            res = res + arr[i].value;
+                        }
+                            
+                        else {
+                            int remaining = W - current;
+                            res = res + ((double)arr[i].value / arr[i].weight) * remaining;
+                            break;
+                        }
+                    }
+                        
+                    return res;
+                }
+                </code></pre></div>
+
+                <div class="greedy-complexity">
+                    <h3>Time Complexity</h3>
+                    <p>O(n*logn + n) - O(n log n) to sort the items and O(n) to iterate through all the items for calculating the answer.</p>
+
+                    <h3>Space Complexity</h3>
+                    <p>O(1) - No additional data structure has been used.</p>
+                </div>
+        </article>
+
+        <!-- ───────────────────────── 05. Job Sequencing ───────────────────────── -->
+        <article class="greedy-lesson" id="job" data-topic="5">
+            <div class="greedy-lesson-header">
+                <span class="greedy-lesson-number">05</span>
+                <h3>Job Sequencing</h3>
+            </div>
+
+            <p>You are given a set of N jobs where each job comes with a deadline and profit. The profit can only be earned upon completing the job within its deadline. Find the number of jobs done and the maximum profit that can be obtained. Each job takes a single unit of time and only one job can be performed at a time.</p>
+
+                <div class="example-box">
+                    <h3>Example</h3>
+                    <p>N = 4</p>
+                    <p>Jobs = {(1, 4, 20), (2, 1, 10), (3, 1, 40), (4, 1, 30)}</p>
+                    <p>- The 3rd job with a deadline of 1 is performed during the first unit of time.  
+                        - The 1st job is performed during the second unit of time as its deadline is 4.  
+                    Profit = 40 + 20 = 60.  
+                    So, the result is 2 jobs with a total profit of 60.
+                    </p>
+                </div>
+
+                <div class="algorithm-box">
+                    <h3>Algorithm</h3>
+                    <ol>
+                        <li>Sort the jobs in descending order.</li>
+                        <li>Create an array of size x if the maximum deadline is x.</li>
+                        <li>Initialize each array index to -1 to represent that no jobs have been performed yet.</li>
+                        <li>Check if each job can be performed on its last day.</li>
+                        <li>If so, mark that index with the job ID and add the profit to the total.</li>
+                        <li>If not, loop through the previous indexes to find an empty slot and schedule the job there.</li>
+                    </ol>
+                </div>
+
+                <div class="companies">
+                    <h3>
+                        <i class="fa-solid fa-building"></i>
+                        Frequently Asked In
+                    </h3>
+                    <div class="company">
+                        <span class="badge"><i class="fa-brands fa-microsoft"></i>Microsoft</span>
+                        <span class="badge"><i class="fa-brands fa-airbnb"></i>Airbnb</span>
+                        <span class="badge"><i class="fa-brands fa-amazon"></i>Amazon</span>
+                    </div>
+                </div>
+                
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Python Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    def __init__(self, id, dead, profit):
+                        self.id = id
+                        self.dead = dead
+                        self.profit = profit
+                        
+                    def job(arr, n):
+                        arr.sort(key=lambda x: x.profit, reverse=True)
+
+                        max_deadline = arr[0].dead
+
+                        for i in range(1, n):
+                            max_deadline = max(max_deadline, arr[i].dead)
+                            
+                        slot = [-1]*(max_deadline + 1)
+
+                        count = 0
+                        job_profit = 0
+
+                        for i in range(n):
+                            for j in range(arr[i].dead, 0, -1):
+                                if slot[j] == -1:
+                                    slot[j] = i
+                                    count = count + 1
+
+                                    job_profit = job_profit + arr[i].profit
+
+                                    break
+
+                        return count, job_profit
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Java Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    import java.util.*;
+                        
+                    class Job {
+                        int id;
+                        int dead;
+                        int profit;
+                            
+                        Job(int id, int dead, int profit) {
+                            this.id = id;
+                            this.dead = dead;
+                            this.profit = profit;
+                        }
+                    }
+                        
+                    public class JobSequencing {
+                        static int[] job(Job[] arr, int n) {
+                            Arrays.sort(arr, (a, b) -> b.profit - a.profit);
+                                
+                            int max_deadline = arr[0].dead;
+                                
+                            for (int i = 1; i < n; i++) {
+                                max_deadline = Math.max(max_deadline, arr[i].dead);
+                            }
+                                
+                            int[] slot = new int[max_deadline + 1];
+                            Arrays.fill(slot, -1);
+                                
+                            int count = 0;
+                            int job_profit = 0;
+                                
+                            for (int i = 0; i < n; i++) {
+                                for (int j = arr[i].dead; j > 0; j--) {
+                                    if (slot[j] == -1) {
+                                        slot[j] = i;
+                                        count++;
+                                        job_profit = job_profit + arr[i].profit;
+                                        break;
+                                    }
+                                }
+                            }
+                                
+                            return new int[] {
+                                count, job_profit
+                            };
+                        }
+                    }
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">C++ Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    #include &lt;iostream&gt;
+                    #include &lt;vector&gt;
+                    #include &lt;algorithm&gt;
+                            
+                    using namespace std;
+                            
+                    struct Job {
+                        int id;
+                        int dead;
+                        int profit
+                    };
+                        
+                    pair&lt;int, int&gt; job(vector&lt;Job&gt;& arr, int n) {
+                        sort(arr.begin(), arr.end(), [](Job a, Job b) {
+                            return a.profit > b.profit;
+                        });
+                            
+                        int max_deadline = arr[0].dead;
+                            
+                        for (int i = 1; i < n; i++) {
+                            max_deadline = max(max_deadline, arr[i].dead);
+                        }
+                            
+                        vector&lt;int&gt; slot(max_deadline + 1, -1);
+                                
+                        int count = 0;
+                        int job_profit = 0;
+                            
+                        for (int i = 0; i < n; i++) {
+                            for (int j = arr[i].dead; j > 0; j--) {
+                                if (slot[j] == -1) {
+                                    slot[j] = i;
+                                    count++;
+                                    job_profit = job_profit + arr[i].profit;
+                                    break;
+                                }
+                            }
+                        }
+                            
+                        return {
+                            count, job_profit
+                        };
+                    }
+                </code></pre></div>
+
+                <div class="greedy-complexity">
+                    <h3>Time Complexity</h3>
+                    <p>O(N log N) + O(N * M) - O(N log N) for sorting the jobs in decreasing order of profit. O(N * M) since we are iterating through all N jobs and for every job, we are checking from the last deadline, say M deadlines in the worst case.</p>
+
+                    <h3>Space Complexity</h3>
+                    <p> O(M) - For an array that keeps track of which day each job is performed if M is the maximum deadline available.</p>
+                </div>
+            </article>
+
+            <!-- ───────────────────────── 06. Activity Selection ───────────────────────── -->
+            <article class="greedy-lesson" id="activity" data-topic="6">
+                <div class="greedy-lesson-header">
+                    <span class="greedy-lesson-number">06</span>
+                    <h3>Activity Selection</h3>
+                </div>
+                <p>Given a set of activities, each with a <strong>start time</strong> and a <strong>finish time</strong>, represented by the arrays <strong>start[]</strong> and <strong>finish[]</strong>, respectively. A single person can perform only <strong>one activity</strong> at a time, meaning <strong>no two activities can overlap</strong>. Determine the <strong>maximum</strong> number of activities that a person can complete in a day.</p>
+
+                <div class="example-box">
+                    <h3>Example</h3>
+                    <p>start[] = [1, 3, 0, 5, 8, 5]</p>
+                    <p>finish[] = [2, 4, 6, 7, 9, 9]</p>
+                    <p>A person can perform at most four activities. The maximum set of activities that can be executed is {0, 1, 3, 4}</p>
+                </div>
+
+                <div class="algorithm-box">
+                    <h3>Algorithm</h3>
+                    <ol>
+                        <li>Sort the activities by finish time.</li>
+                        <li>Select the first activity.</li>
+                        <li>For each remaining activity, if its start time is >= previous finish time, select it</li>
+                        <li>Count the selected number of activities.</li>
+                    </ol>
+                </div>
+
+                <div class="companies">
+                    <h3>
+                        <i class="fa-solid fa-building"></i>
+                        Frequently Asked In
+                    </h3>
+                    <div class="company">
+                        <span class="badge"><i class="fa-brands fa-microsoft"></i>Microsoft</span>
+                        <span class="badge"><i class="fa-brands fa-amazon"></i>Amazon</span>
+                        <span class="badge"><i class="fa-brands fa-google"></i>Google</span>
+                        <span class="badge"><i class="fa-brands fa-meta"></i>Meta</span>
+                    </div>
+                </div>
+                
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Python Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    def activity(start, finish):
+                        activities = list(zip(start, finish))
+                        activities.sort(key=lambda x: x[1])
+                            
+                        count = 1
+                        last_finish = activities[0][1]
+                            
+                        for i in range(1, len(activities)):
+                            if activities[i][0] >= last_finish:
+                                count = count + 1
+                                last_finish = activities[i][1]
+                                
+                        return count
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">Java Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    import java.util.*;
+                        
+                    class Activity {
+                        static int activity(int[] start, int[] finish) {
+                            int n = start.length;
+                                
+                            int[][] activities = new int[n][2];
+                                
+                            for (int i = 0; i < n; i++) {
+                                activities[i][0] = start[i];
+                                activities[i][1] = finish[i];
+                            }
+                                
+                            Arrays.sort(activities, (a, b) -> a[1] - b[1]);
+                                
+                            int count = 1;
+                            int last_finish = activities[0][1];
+                                
+                            for (int i = 1; i < n; i++) {
+                                if (activities[i][0] >= last_finish) {
+                                    count++;
+                                    last_finish = activities[i][1];
+                                }
+                            }
+                                
+                            return count;
+                        }
+                    }
+                </code></pre></div>
+
+                <div class="greedy-code-block">
+                    <div class="greedy-code-header">
+                        <span class="greedy-code-lang">C++ Code</span>
+                        <button class="greedy-code-copy">Copy</button>
+                </div>
+                <pre><code>
+                    #include &lt;iostream&gt;
+                    #include &lt;vector&gt;
+                    #include &lt;algorithm&gt;
+                            
+                    using namespace std;
+                        
+                    int activity(vector&lt;int&gt;& start, vector&lt;int&gt;& finish) {
+                        vector&lt;pair&lt;int, int&gt;&gt; activities;
+
+                        int x = start.size();
+                                
+                        for (int i = 0; i < x; i++) {
+                            activities.push_back({
+                                finish[i], start[i]
+                            });
+                        }
+                            
+                        sort(activities.begin(), activities.end());
+                            
+                        int count = 1;
+                        int last_finish = activities[0].first;
+
+                        int y = activities.size();
+                            
+                        for (int i = 1; i < y; i++) {
+                            if (activities[i].second >= last_finish) {
+                                count++;
+                                last_finish = activities[i].first;
+                            }
+                        }
+                            
+                        return count;
+                    }
+                </code></pre></div>
+
+                <div class="greedy-complexity">
+                    <h3>Time Complexity</h3>
+                    <p>O(N log N) - The activities must be sorted by their finish times before selection.</p>
+                    <h3>Space Complexity</h3>
+                    <p> O(N) - Only a few variables are used apart from the input data.</p>
+                </div>
+        </article>
+
+        <!-- ───────────────────────── 07. Practice Exercises ───────────────────────── -->
+        <article class="greedy-lesson" id="exercises" data-topic="7">
+            <div class="greedy-lesson-header">
+                <span class="greedy-lesson-number">07</span>
+                <h3>Practice Exercises</h3>
+            </div>
+            <p>Work through the following problems to solidify your understanding of Greedy Algorithms.</p>
+
+            <div class="greedy-exercise" id="exercise-ex1">
+                <div class="greedy-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 1: Lemonade Change</div>
+                <p>At a lemonade stand, each lemonade costs $5. Customers are standing in a queue to buy from you and order one at a time (in the order specified by bills). Each customer will only buy one lemonade and pay with either a $5, $10, or $20 bill. You must provide the correct change to each customer so that the net transaction is that the customer pays $5.
+                    
+                    Note that you do not have any change in hand at first.
+                    Given an integer array bills where bills[i] is the bill the ith customer pays, return true if you can provide every customer with the correct change, or false otherwise.</p>
+
+                <p>Input: bills = [5, 5, 5, 10, 20]</p>
+                <p>Output: true</p>
+
+                <button class="greedy-exercise-toggle" aria-expanded="false" aria-controls="solution-ex1">Show Answer</button>
+                <div class="greedy-exercise-solution" id="solution-ex1">
+                    <p><strong>Answer:</strong></p>
+                    <p><pre><code>
+                        bool lemonadeChange(vector&lt;int&gt;& bills) {
+                            int five = 0;
+                            int ten = 0;
+                            
+                            for (int i : bills) {
+                                if (i == 5) {
+                                    five++;
+                                }
+                                
+                                else if (i == 10) {
+                                    if (five > 0) {
+                                        ten++;
+                                        five--;
+                                    }
+                                    
+                                    else {
+                                        return false;
+                                    }
+                                }
+                                
+                                else {
+                                    if (five > 0 && ten > 0) {
+                                        five--;
+                                        ten--;
+                                    }
+                                    
+                                    else if (five >= 3) {
+                                        five = five - 3;
+                                    }
+                                    
+                                    else {
+                                        return false;
+                                    }
+                                }
+                            }
+                            
+                            return true;
+                        }
+                    </code></pre></p>
+                </div>
+            </div>
+
+            <div class="greedy-exercise" id="exercise-ex2">
+                <div class="greedy-exercise-title"><i class="fas fa-dumbbell"></i> Exercise 2: Candy</div>
+                <p>There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.
+                    You're giving candies to these children subjected to the following requirements:
+                    1. Each child must have at least one candy.
+                    2. Children with a higher rating get more candies than their neighbors.
+                    Return the minimum number of candies you need to have to distribute the candies to the children.</p>
+
+                <p>Input: ratings = [1, 0, 2]</p>
+                <p>Output: 5</p>
+
+                <button class="greedy-exercise-toggle" aria-expanded="false" aria-controls="solution-ex2">Show Answer</button>
+                <div class="greedy-exercise-solution" id="solution-ex2">
+                    <p><strong>Answer:</strong></p>
+                    <p><pre><code>
+                        int candy(vector&lt;int&gt;& ratings) {
+                            int n = ratings.size();
+                            vector&lt;int&gt; candy(n, 1);
+                            
+                            for (int i = 1; i < n; i++) {
+                                if (ratings[i] > ratings[i-1]) {
+                                    candy[i] = candy[i-1] + 1;
+                                }
+                            }
+                            
+                            for (int i = n-2; i >= 0; i--) {
+                                if (ratings[i] > ratings[i + 1]) {
+                                    candy[i] = max(candy[i], candy[i + 1] + 1);
+                                }
+                            }
+                            
+                            int total = 0;
+                            
+                            for (int j : candy) {
+                                total = total + j;
+                            }
+                            
+                            return total;
+                        }
+                    </code></pre></p>
+                </div>
+            </div>
+        </article>
+
+        <!-- ───────────────────────── 08. Quiz ───────────────────────── -->
+        <article class="greedy-lesson" id="quiz" data-topic="8">
+            <div class="greedy-lesson-header">
+                <span class="greedy-lesson-number">08</span>
+                <h3>Quiz &amp; Knowledge Check</h3>
+            </div>
+            <p>Test your understanding of Greedy Algorithms. Choose the best answer for each question, then submit.</p>
+
+            <div class="greedy-quiz-container">
+
+            <!-- Q1 -->
+            <div class="greedy-quiz-question-card">
+                <div class="greedy-quiz-question-text">
+                    <span class="greedy-quiz-question-num">Q1.</span>
+                    <span>Which condition must hold true for a Greedy Algorithm to produce an optimal solution?</span>
+                </div>
+
+                <div class="greedy-quiz-options">
+                    <label class="greedy-quiz-option"><input type="radio" name="q1" value="a"/><span>A) Overlapping Subproblems</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q1" value="b"/><span>B) Memoization Property</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q1" value="c"/><span>C) Greedy Choice Property</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q1" value="d"/><span>D) Divide and Conquer Property</span></label>
+                </div>
+
+                <div class="greedy-quiz-feedback" id="feedback-q1"></div>
+                <div class="greedy-quiz-explanation" id="explanation-q1">The <strong>Greedy Choice Property</strong> ensures that making locally optimal choices leads to a globally optimal solution.</div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="greedy-quiz-question-card">
+                <div class="greedy-quiz-question-text">
+                    <span class="greedy-quiz-question-num">Q2.</span>
+                    <span>Why does the Fractional Knapsack problem work with a Greedy approach while the 0/1 Knapsack problem does not?</span>
+                </div>
+
+                <div class="greedy-quiz-options">
+                    <label class="greedy-quiz-option"><input type="radio" name="q2" value="a"/><span>A) Fractional Knapsack has fewer items</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q2" value="b"/><span>B) Fractions of items can be selected</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q2" value="c"/><span>C) Items are already sorted</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q2" value="d"/><span>D) Deadlines are provided</span></label>
+                </div>
+
+                <div class="greedy-quiz-feedback" id="feedback-q2"></div>
+                <div class="greedy-quiz-explanation" id="explanation-q2">Since fractions can be taken, selecting items with the highest value-to-weight ratio always remains optimal.</div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="greedy-quiz-question-card">
+                <div class="greedy-quiz-question-text">
+                    <span class="greedy-quiz-question-num">Q3.</span>
+                    <span>In the Activity Selection Problem, what is the correct Greedy strategy?</span>
+                </div>
+
+                <div class="greedy-quiz-options">
+                    <label class="greedy-quiz-option"><input type="radio" name="q3" value="a"/><span>A) Select the activity with the earliest start time</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q3" value="b"/><span>B) Select the activity with the shortest duration</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q3" value="c"/><span>C) Select the activity with the highest profit</span></label>
+                    <label class="greedy-quiz-option"><input type="radio" name="q3" value="d"/><span>D) Select the activity with the earliest finish time</span></label>
+                </div>
+
+                <div class="greedy-quiz-feedback" id="feedback-q3"></div>
+                <div class="greedy-quiz-explanation" id="explanation-q3">Choosing the <strong>earliest finishing activity</strong> leaves maximum room for future activities.</div>
+            </div>
+
+            <div class="greedy-quiz-actions">
+                <button class="greedy-quiz-btn" id="submitQuizBtn">Submit Quiz</button>
+                <button class="greedy-quiz-btn-secondary" id="resetQuizBtn" style="display:none">Reset Quiz</button>
+            </div>
+
+            <div class="greedy-quiz-score-banner" id="quizScoreBanner">
+                <div class="greedy-quiz-score-title">Quiz Results</div>
+                <div class="greedy-quiz-score-text">
+                    You scored <span id="quizScoreValue">0 / 3</span>
+                    <span id="quizScorePercent"></span>
+                </div>
+            </div>
+            </article>
+
+        </main>
+        </div>
+    </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="greedy-algorithms.js" defer></script>
+    
+    <script>
+    if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+    </script>
+</body>
+</html>

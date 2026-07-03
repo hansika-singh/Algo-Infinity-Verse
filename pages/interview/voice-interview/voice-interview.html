@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Mock Interview | Algo Infinity Verse</title>
+    <meta name="description" content="Practice verbal technical interviews with an autonomous local AI." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="voice-interview.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="voice-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="ai-status" id="aiStatusBadge">
+            <i class="fas fa-microchip"></i> AI Engine: Initializing...
+        </div>
+    </nav>
+
+    <main class="interview-workspace">
+        <!-- Visualizer & Controls -->
+        <div class="interview-stage">
+            <div class="stage-header">
+                <h2>Mock Interview Room</h2>
+                <p>System Design & Architecture</p>
+            </div>
+
+            <!-- Web Audio API Visualizer -->
+            <div class="visualizer-container">
+                <div class="glow-ring" id="glowRing"></div>
+                <div class="mic-button" id="btnStartInterview">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <div class="visualizer-status" id="statusText">Click to Start Interview</div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-danger hidden" id="btnEndInterview"><i class="fas fa-phone-slash"></i> End Interview</button>
+            </div>
+        </div>
+
+        <!-- Live Transcript -->
+        <div class="transcript-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-file-alt"></i> Live Transcript</span>
+            </div>
+            <div class="transcript-content" id="transcriptContent">
+                <div class="msg system">
+                    <div class="msg-bubble">Waiting to start... Ensure your microphone permissions are granted.</div>
+                </div>
+            </div>
+            <div class="typing-indicator hidden" id="typingIndicator">
+                AI is thinking<span class="dots">...</span>
+            </div>
+        </div>
+    </main>
+
+    <script src="voice-interview.js"></script>
+</body>
+</html>

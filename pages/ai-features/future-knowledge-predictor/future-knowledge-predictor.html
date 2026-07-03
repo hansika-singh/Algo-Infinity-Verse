@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future Knowledge Predictor | Algo Infinity Verse</title>
+  <meta name="description" content="Predict future learning difficulties, forecast weaknesses, and receive proactive study plans using performance analytics." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="future-knowledge-predictor.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="future-knowledge-predictor">
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="fk-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      <div class="fk-aurora"></div>
+    </div>
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-line">Proactive Analytics</span>
+        <span class="main-title fk-gradient">Future Knowledge Predictor 🔮</span>
+        <span class="subtitle">Forecast learning obstacles before you encounter them.</span>
+      </h1>
+      <p class="section-subtitle">
+        We analyze your current DSA topic accuracy to simulate your future learning curve. Adjust your skills below to reveal advanced topic risks and custom mitigation paths.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container py-4">
+    
+    <div class="row layout-row-gap">
+      
+      <!-- Left Column: Skills Adjuster & Charts -->
+      <div class="col-lg-5 col-md-12">
+        <div class="flex-column gap-4 height-100">
+          
+          <!-- Skills Adjuster (Simulator) -->
+          <div class="dream-card p-4">
+            <div class="card-header pb-3 mb-3 border-bottom flex justify-between align-center">
+              <h3 class="m-0"><i class="fas fa-sliders"></i> Proficiency Simulator</h3>
+              <button id="btn-reset-simulator" class="btn btn-secondary btn-xs"><i class="fas fa-rotate-left"></i> Reset</button>
+            </div>
+            <div class="card-body">
+              <p class="text-xs text-muted mb-3">Adjust your base accuracy values below to calculate risks for advanced data structures and algorithms:</p>
+              
+              <div class="simulator-sliders-grid">
+                <!-- Arrays -->
+                <div class="slider-group">
+                  <div class="slider-header flex justify-between text-sm mb-1">
+                    <span><i class="fas fa-list-ol text-cyan"></i> Arrays & Matrices</span>
+                    <strong id="val-display-arrays">85%</strong>
+                  </div>
+                  <input type="range" id="slider-arrays" min="10" max="100" value="85" class="fk-range-slider" />
+                </div>
+
+                <!-- Searching -->
+                <div class="slider-group">
+                  <div class="slider-header flex justify-between text-sm mb-1">
+                    <span><i class="fas fa-magnifying-glass text-gold"></i> Searching & Bounds</span>
+                    <strong id="val-display-searching">90%</strong>
+                  </div>
+                  <input type="range" id="slider-searching" min="10" max="100" value="90" class="fk-range-slider" />
+                </div>
+
+                <!-- Trees -->
+                <div class="slider-group">
+                  <div class="slider-header flex justify-between text-sm mb-1">
+                    <span><i class="fas fa-tree text-emerald"></i> Trees & Recursion</span>
+                    <strong id="val-display-trees">70%</strong>
+                  </div>
+                  <input type="range" id="slider-trees" min="10" max="100" value="70" class="fk-range-slider" />
+                </div>
+
+                <!-- Graphs -->
+                <div class="slider-group">
+                  <div class="slider-header flex justify-between text-sm mb-1">
+                    <span><i class="fas fa-circle-nodes text-purple"></i> Graphs & Traversals</span>
+                    <strong id="val-display-graphs">40%</strong>
+                  </div>
+                  <input type="range" id="slider-graphs" min="10" max="100" value="40" class="fk-range-slider" />
+                </div>
+
+                <!-- DP -->
+                <div class="slider-group">
+                  <div class="slider-header flex justify-between text-sm mb-1">
+                    <span><i class="fas fa-box-archive text-pink"></i> Dynamic Programming</span>
+                    <strong id="val-display-dp">55%</strong>
+                  </div>
+                  <input type="range" id="slider-dp" min="10" max="100" value="55" class="fk-range-slider" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Analysis Chart -->
+          <div class="dream-card p-4 flex-grow-1">
+            <div class="card-header pb-3 mb-3 border-bottom">
+              <h3 class="m-0"><i class="fas fa-chart-line"></i> Learning Trend Analysis</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container text-center mb-3">
+                <!-- Dynamic SVG line chart -->
+                <svg id="svg-trend-chart" width="100%" height="200" viewBox="0 0 450 200">
+                  <!-- Generated dynamically in JS -->
+                </svg>
+              </div>
+
+              <!-- HUD Mini Metrics -->
+              <div class="metrics-hud-grid mt-4">
+                <div class="hud-item">
+                  <label>Consistency</label>
+                  <span id="metric-consistency">82%</span>
+                </div>
+                <div class="hud-item">
+                  <label>Weekly Velocity</label>
+                  <span id="metric-velocity">14 Solved</span>
+                </div>
+                <div class="hud-item">
+                  <label>Error Margin</label>
+                  <span id="metric-error" class="text-orange">24%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Weakness Forecasting Grid -->
+      <div class="col-lg-7 col-md-12">
+        <div class="dream-card p-4 height-100">
+          <div class="card-header pb-3 mb-3 border-bottom flex justify-between align-center">
+            <h3 class="m-0"><i class="fas fa-triangle-exclamation"></i> Advanced Topic Risks</h3>
+            <span class="badge" id="risk-count-badge">3 High Risks</span>
+          </div>
+          <div class="card-body">
+            
+            <div class="topic-risks-vertical-grid" id="risks-container">
+              <!-- Dynamically rendered advanced topic risk cards -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="./future-knowledge-predictor.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

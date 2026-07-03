@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garbage Collector Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Watch Mark & Sweep, Reference Counting, and Generational GC run on a live object graph. See exactly why reference counting fails on cycles." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="gc-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="gc-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="gcs-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="gcs-hero-inner">
+        <div class="gcs-hero-eyebrow">🗑️ Memory Management</div>
+        <h1 class="gcs-hero-title">Garbage Collector Simulator</h1>
+        <p class="gcs-hero-sub">Mark & Sweep · Reference Counting · Generational GC</p>
+        <p class="gcs-hero-desc">Build an object graph, add references, and watch three different garbage collection strategies decide what lives and what dies. See reference counting visibly fail on cycles — the exact bug that broke early Python.</p>
+        <a href="#lab" class="btn btn-primary gcs-btn-primary">
+          <i class="fas fa-microscope"></i> Open the Lab
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section gcs-section">
+      <div class="container">
+
+        <!-- Toolbar -->
+        <div class="gcs-toolbar">
+
+          <div class="gcs-tool-group">
+            <span class="gcs-tool-label">GC Algorithm</span>
+            <div class="gcs-algo-btns">
+              <button class="gcs-algo-btn active" data-algo="marksweep">
+                <i class="fas fa-paintbrush"></i> Mark &amp; Sweep
+              </button>
+              <button class="gcs-algo-btn" data-algo="refcount">
+                <i class="fas fa-hashtag"></i> Reference Counting
+              </button>
+              <button class="gcs-algo-btn" data-algo="generational">
+                <i class="fas fa-layer-group"></i> Generational
+              </button>
+            </div>
+          </div>
+
+          <div class="gcs-tool-group">
+            <span class="gcs-tool-label">Graph Tools</span>
+            <div class="gcs-graph-btns">
+              <button class="gcs-graph-btn active" data-tool="move" title="Drag to move objects">
+                <i class="fas fa-arrows-up-down-left-right"></i> Move
+              </button>
+              <button class="gcs-graph-btn" data-tool="link" title="Drag between objects to add a reference">
+                <i class="fas fa-link"></i> Link
+              </button>
+              <button class="gcs-graph-btn" data-tool="unlink" title="Click a reference arrow to remove it">
+                <i class="fas fa-link-slash"></i> Unlink
+              </button>
+              <button class="gcs-graph-btn" data-tool="root" title="Click an object to toggle it as a root">
+                <i class="fas fa-house"></i> Toggle Root
+              </button>
+            </div>
+          </div>
+
+          <div class="gcs-tool-group">
+            <span class="gcs-tool-label">Object</span>
+            <button class="gcs-add-btn" id="gcsAddObjBtn">
+              <i class="fas fa-plus"></i> Add Object
+            </button>
+          </div>
+
+          <div class="gcs-tool-group">
+            <span class="gcs-tool-label">Presets</span>
+            <div class="gcs-preset-btns">
+              <button class="gcs-preset-btn" data-preset="acyclic">Simple (Acyclic)</button>
+              <button class="gcs-preset-btn" data-preset="cycle">With Cycle</button>
+              <button class="gcs-preset-btn" data-preset="nested">Deeply Nested</button>
+            </div>
+          </div>
+
+          <div class="gcs-tool-group">
+            <span class="gcs-tool-label">Run</span>
+            <div class="gcs-run-btns">
+              <button class="gcs-run-btn" id="gcsRunBtn">
+                <i class="fas fa-play"></i> Run GC
+              </button>
+              <button class="gcs-step-btn" id="gcsStepBtn" disabled>
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+              <button class="gcs-reset-btn" id="gcsResetGcBtn">
+                <i class="fas fa-undo"></i> Reset GC
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Status -->
+        <div class="gcs-status" id="gcsStatus">
+          <span class="gcs-status-icon" id="gcsStatusIcon">🗑️</span>
+          <span class="gcs-status-msg" id="gcsStatusMsg">Build an object graph above, then click Run GC to see the algorithm in action.</span>
+        </div>
+
+        <!-- Main layout -->
+        <div class="gcs-layout">
+
+          <!-- Graph canvas -->
+          <div class="gcs-graph-section">
+            <div class="gcs-graph-header">
+              <span class="gcs-graph-title"><i class="fas fa-diagram-project"></i> Object Reference Graph</span>
+              <span class="gcs-graph-hint" id="gcsToolHint">Move mode — drag objects to reposition</span>
+            </div>
+            <div class="gcs-graph-wrap" id="gcsGraphWrap">
+              <svg id="gcsSvg" class="gcs-svg"></svg>
+            </div>
+            <div class="gcs-graph-legend">
+              <span class="gcs-leg"><span class="gcs-leg-dot gcs-leg-root"></span>Root</span>
+              <span class="gcs-leg"><span class="gcs-leg-dot gcs-leg-reachable"></span>Reachable</span>
+              <span class="gcs-leg"><span class="gcs-leg-dot gcs-leg-garbage"></span>Garbage</span>
+              <span class="gcs-leg"><span class="gcs-leg-dot gcs-leg-young"></span>Young Gen</span>
+              <span class="gcs-leg"><span class="gcs-leg-dot gcs-leg-old"></span>Old Gen</span>
+            </div>
+          </div>
+
+          <!-- Algorithm panel -->
+          <div class="gcs-algo-panel">
+
+            <!-- Mark & Sweep panel -->
+            <div class="gcs-algo-detail active" id="gcsPanelMarksweep">
+              <div class="gcs-panel-title"><i class="fas fa-paintbrush"></i> Mark &amp; Sweep</div>
+              <div class="gcs-phase-indicator">
+                <div class="gcs-phase" id="gcsPhaseMark">
+                  <span class="gcs-phase-num">1</span>
+                  <span class="gcs-phase-name">Mark</span>
+                </div>
+                <div class="gcs-phase-arrow">→</div>
+                <div class="gcs-phase" id="gcsPhaseSweep">
+                  <span class="gcs-phase-num">2</span>
+                  <span class="gcs-phase-name">Sweep</span>
+                </div>
+              </div>
+              <p class="gcs-algo-desc">Phase 1 traverses from root objects, marking everything reachable. Phase 2 scans the entire heap and frees anything not marked.</p>
+              <div class="gcs-stat-rows" id="gcsMsStats">
+                <div class="gcs-stat-row"><span>Objects marked</span><span id="gcsMsMarked">0</span></div>
+                <div class="gcs-stat-row"><span>Objects swept</span><span id="gcsMsSwept">0</span></div>
+                <div class="gcs-stat-row"><span>Heap before / after</span><span id="gcsMsHeap">— / —</span></div>
+              </div>
+            </div>
+
+            <!-- Reference Counting panel -->
+            <div class="gcs-algo-detail" id="gcsPanelRefcount">
+              <div class="gcs-panel-title"><i class="fas fa-hashtag"></i> Reference Counting</div>
+              <p class="gcs-algo-desc">Every object tracks how many references point to it. When count hits 0, it's freed immediately. <strong style="color:#ef4444">Fatal flaw:</strong> cyclic references never reach 0, even when unreachable from root.</p>
+              <div class="gcs-refcount-list" id="gcsRefcountList"></div>
+              <div class="gcs-cycle-warning hidden" id="gcsCycleWarning">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>Cycle detected! These objects reference each other but are unreachable from root. Refcount &gt; 0 forever. <strong>Memory leak.</strong></span>
+              </div>
+            </div>
+
+            <!-- Generational panel -->
+            <div class="gcs-algo-detail" id="gcsPanelGenerational">
+              <div class="gcs-panel-title"><i class="fas fa-layer-group"></i> Generational GC</div>
+              <p class="gcs-algo-desc">New objects start in the <strong style="color:#22c55e">young generation</strong> (nursery). Surviving 2 collections promotes them to the <strong style="color:#a855f7">old generation</strong>, which is collected far less often — most objects die young.</p>
+              <div class="gcs-gen-bars">
+                <div class="gcs-gen-bar-wrap">
+                  <div class="gcs-gen-bar-label">Young Gen <span id="gcsYoungCount">0</span></div>
+                  <div class="gcs-gen-bar-track"><div class="gcs-gen-bar-fill gcs-young-fill" id="gcsYoungBar" style="width:0%"></div></div>
+                </div>
+                <div class="gcs-gen-bar-wrap">
+                  <div class="gcs-gen-bar-label">Old Gen <span id="gcsOldCount">0</span></div>
+                  <div class="gcs-gen-bar-track"><div class="gcs-gen-bar-fill gcs-old-fill" id="gcsOldBar" style="width:0%"></div></div>
+                </div>
+              </div>
+              <div class="gcs-run-type-row">
+                <button class="gcs-run-type-btn active" id="gcsMinorBtn">Minor GC (Young only)</button>
+                <button class="gcs-run-type-btn" id="gcsMajorBtn">Major GC (Full heap)</button>
+              </div>
+              <div class="gcs-stat-rows">
+                <div class="gcs-stat-row"><span>Minor collections</span><span id="gcsMinorCount">0</span></div>
+                <div class="gcs-stat-row"><span>Promoted to old gen</span><span id="gcsPromotedCount">0</span></div>
+              </div>
+            </div>
+
+            <!-- Heap stats (shared) -->
+            <div class="gcs-heap-card">
+              <div class="gcs-panel-title" style="margin-bottom:0.5rem"><i class="fas fa-server"></i> Heap Status</div>
+              <div class="gcs-heap-grid">
+                <div class="gcs-heap-stat"><span id="gcsHeapTotal">0</span><label>Total Objects</label></div>
+                <div class="gcs-heap-stat"><span id="gcsHeapLive" style="color:#22c55e">0</span><label>Live</label></div>
+                <div class="gcs-heap-stat"><span id="gcsHeapDead" style="color:#ef4444">0</span><label>Garbage</label></div>
+                <div class="gcs-heap-stat"><span id="gcsHeapFreed" style="color:#94a3b8">0</span><label>Freed (total)</label></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📚</span> Why GC Strategy Matters</h2>
+        <div class="gcs-learn-grid">
+          <div class="gcs-learn-card" style="--lc:#06b6d4">
+            <div class="gcs-learn-icon">⏱️</div>
+            <h3>Mark & Sweep: Stop-the-World</h3>
+            <p>Mark & Sweep must pause your entire program during collection — no allocations or mutations can happen mid-mark, or you'd corrupt the graph. This causes the "GC pause" that makes apps stutter. Used by Java's default collector and Python's cycle detector.</p>
+          </div>
+          <div class="gcs-learn-card" style="--lc:#ef4444">
+            <div class="gcs-learn-icon">💀</div>
+            <h3>Why Python Added Cycle Detection</h3>
+            <p>CPython uses reference counting as its primary GC — fast, deterministic, immediate. But pure refcounting leaks cycles forever. Python 2.0 added a generational Mark & Sweep specifically to catch cycles that refcounting misses.</p>
+          </div>
+          <div class="gcs-learn-card" style="--lc:#a855f7">
+            <div class="gcs-learn-icon">📈</div>
+            <h3>The Generational Hypothesis</h3>
+            <p>Empirically, most objects die young — a temporary string, a loop variable, a short-lived closure. Generational GC exploits this: collecting the small young generation frequently is cheap, while the large old generation (likely all alive) is scanned rarely.</p>
+          </div>
+          <div class="gcs-learn-card" style="--lc:#22c55e">
+            <div class="gcs-learn-icon">🦀</div>
+            <h3>Why Rust Has No GC</h3>
+            <p>Rust's ownership system enforces memory rules at compile time — every value has exactly one owner, freed when the owner goes out of scope. No runtime GC pause, no cycle leaks possible by design (with safe Rust), but the programmer (and compiler) does more work upfront.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="gc-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

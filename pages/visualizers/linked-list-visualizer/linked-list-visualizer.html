@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linked List Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Singly, Doubly, and Circular Linked Lists." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="linked-list-visualizer.css" />
+</head>
+<body class="ll-body">
+
+    <nav class="navbar ll-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-link"></i> Memory Engine: Idle
+        </div>
+    </nav>
+
+    <main class="ll-workspace">
+        
+        <!-- Left Panel: Controls & Operations -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> List Operations</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="input-group">
+                    <label>Linked List Type</label>
+                    <select id="listTypeSelect">
+                        <option value="singly">Singly Linked List</option>
+                        <option value="doubly">Doubly Linked List</option>
+                        <option value="circular">Circular Linked List</option>
+                    </select>
+                </div>
+                
+                <div class="action-row">
+                    <button class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-trash-alt"></i> Clear List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Insertion Controls -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-plus-circle"></i> Insertion</h4>
+                <div class="input-group">
+                    <input type="number" id="insertVal" placeholder="Node Value (e.g., 42)" />
+                </div>
+                <div class="input-group">
+                    <input type="number" id="insertPos" placeholder="Index (Optional)" min="0" />
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnInsertHead">Insert Head</button>
+                    <button class="btn btn-primary" id="btnInsertTail">Insert Tail</button>
+                    <button class="btn btn-secondary w-100" style="grid-column: span 2;" id="btnInsertAt">Insert at Index</button>
+                </div>
+            </div>
+
+            <!-- Deletion Controls -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-minus-circle"></i> Deletion</h4>
+                <div class="input-group">
+                    <input type="number" id="deleteVal" placeholder="Node Value or Index" />
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-danger" id="btnDeleteHead">Del Head</button>
+                    <button class="btn btn-danger" id="btnDeleteTail">Del Tail</button>
+                    <button class="btn btn-outline-danger w-100" style="grid-column: span 2;" id="btnDeleteVal">Delete by Value</button>
+                </div>
+            </div>
+
+            <!-- Search & Traversal -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-search"></i> Search & Traverse</h4>
+                <div class="input-group">
+                    <input type="number" id="searchVal" placeholder="Value to search..." />
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-accent w-100" id="btnSearch">Search Value</button>
+                    <button class="btn btn-outline w-100" id="btnTraverse">Traverse All</button>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Pointer Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Visualizer initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Area -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch head-ptr"></span> HEAD</span>
+                    <span class="legend-item"><span class="node-swatch tail-ptr"></span> TAIL</span>
+                    <span class="legend-item"><span class="node-swatch active"></span> CURRENT</span>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="animSpeed" min="100" max="1500" value="600" style="direction: rtl;">
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <!-- SVG Layer for Pointers (Arrows) -->
+                <svg id="svgLayer" class="svg-layer">
+                    <defs>
+                        <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                        </marker>
+                        <marker id="arrowhead-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#06b6d4" />
+                        </marker>
+                        <marker id="arrowhead-prev" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6" />
+                        </marker>
+                    </defs>
+                    <g id="arrowsGroup"></g>
+                </svg>
+                
+                <!-- HTML Layer for Memory Nodes -->
+                <div id="nodesLayer" class="nodes-layer"></div>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-link"></i>
+                    <p>List is empty. Add a node to begin.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="linked-list-visualizer.js"></script>
+</body>
+</html>

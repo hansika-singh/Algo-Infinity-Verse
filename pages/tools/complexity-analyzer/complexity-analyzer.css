@@ -1,0 +1,510 @@
+/* ─────────────────────────────────────────────
+   Code to Complexity Analyzer
+   ───────────────────────────────────────────── */
+
+/* ── Hero ── */
+.ca-hero {
+  position: relative;
+  min-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7rem 1.5rem 3rem;
+  overflow: hidden;
+}
+
+.ca-hero-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.ca-hero-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(6,182,212,0.1);
+  border: 1px solid rgba(6,182,212,0.3);
+  color: #06b6d4;
+  margin-bottom: 1.25rem;
+}
+
+.ca-hero-title {
+  font-family: Orbitron, sans-serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.ca-hero-sub {
+  font-family: Fira Code, monospace;
+  font-size: 0.9rem;
+  color: #06b6d4;
+  font-style: italic;
+  margin-bottom: 0.85rem;
+}
+
+.ca-hero-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 1.75rem;
+}
+
+.ca-btn-primary {
+  background: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Section ── */
+.ca-section { padding: 2rem 0 4rem; }
+
+/* ── Layout ── */
+.ca-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* ── Editor column ── */
+.ca-editor-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Presets */
+.ca-preset-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.ca-preset-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ca-preset-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.ca-preset-btn {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 7px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ca-preset-btn:hover { color: var(--text-primary); border-color: #06b6d4; }
+.ca-preset-btn.active { background: rgba(6,182,212,0.12); border-color: rgba(6,182,212,0.4); color: #06b6d4; }
+
+/* Editor wrap */
+.ca-editor-wrap {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.ca-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.02);
+}
+
+.ca-editor-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ca-editor-actions { display: flex; gap: 0.4rem; }
+
+.ca-action-btn {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.ca-action-btn:hover { color: var(--text-primary); }
+.ca-action-copy:hover { border-color: #06b6d4; color: #06b6d4; }
+
+/* Editor body: line nums + textarea + annotations */
+.ca-editor-body {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  position: relative;
+  min-height: 360px;
+}
+
+.ca-line-nums {
+  padding: 1rem 0;
+  background: rgba(0,0,0,0.15);
+  border-right: 1px solid var(--glass-border);
+  user-select: none;
+  counter-reset: line;
+  font-family: Fira Code, monospace;
+  font-size: 0.72rem;
+  color: rgba(148,163,184,0.35);
+  line-height: 1.6;
+  text-align: right;
+  overflow: hidden;
+}
+
+.ca-line-num {
+  display: block;
+  padding: 0 6px 0 0;
+  height: 1.6em;
+  line-height: 1.6em;
+}
+
+.ca-textarea {
+  padding: 1rem 0.75rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: Fira Code, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  resize: none;
+  min-height: 360px;
+  width: 100%;
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.ca-textarea:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: -2px;
+}
+
+
+.ca-textarea::placeholder { color: rgba(148,163,184,0.3); }
+
+/* Annotations panel */
+.ca-annotations {
+  padding: 1rem 0.5rem 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  pointer-events: none;
+  min-width: 90px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.ca-anno-line {
+  height: 1.6em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Complexity badges */
+.ca-badge {
+  display: inline-block;
+  font-family: Fira Code, monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.ca-o1     { background: rgba(100,116,139,0.2); border-color: rgba(100,116,139,0.3); color: #94a3b8; }
+.ca-ologn  { background: rgba(34,197,94,0.15);  border-color: rgba(34,197,94,0.3);  color: #22c55e; }
+.ca-on     { background: rgba(6,182,212,0.15);  border-color: rgba(6,182,212,0.3);  color: #06b6d4; }
+.ca-onlogn { background: rgba(168,85,247,0.15); border-color: rgba(168,85,247,0.3); color: #a855f7; }
+.ca-on2    { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: #f59e0b; }
+.ca-on3    { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.3); color: #f97316; }
+.ca-o2n    { background: rgba(239,68,68,0.15);  border-color: rgba(239,68,68,0.3);  color: #ef4444; }
+.ca-ofact  { background: rgba(236,72,153,0.15); border-color: rgba(236,72,153,0.3); color: #ec4899; }
+
+/* Analyze button */
+.ca-analyze-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* ── Results column ── */
+.ca-results-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.ca-card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Verdict card */
+.ca-verdict-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease;
+}
+
+.ca-verdict-placeholder {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ca-verdict-placeholder i { font-size: 2rem; opacity: 0.3; }
+
+/* Verdict result */
+.ca-verdict-result { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.ca-verdict-time, .ca-verdict-space {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ca-verdict-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  min-width: 50px;
+}
+
+.ca-verdict-badge {
+  font-family: Orbitron, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  padding: 0.2rem 0.85rem;
+  border-radius: 8px;
+}
+
+.ca-verdict-explanation {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 0.65rem 0.85rem;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border-left: 3px solid #06b6d4;
+}
+
+.ca-danger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ca-danger-bad  { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #ef4444; }
+.ca-danger-warn { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+.ca-danger-ok   { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.25); color: #22c55e; }
+
+/* Derivation */
+.ca-derivation-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(10px);
+}
+
+.ca-deriv-placeholder {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.ca-derivation-body { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.ca-deriv-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.6rem;
+  border-radius: 7px;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.2s ease;
+}
+
+.ca-deriv-step:hover { background: rgba(255,255,255,0.03); }
+
+.ca-deriv-step.ca-deriv-multiply { border-left-color: #f59e0b; }
+.ca-deriv-step.ca-deriv-add      { border-left-color: #06b6d4; }
+.ca-deriv-step.ca-deriv-final    { border-left-color: #a855f7; font-weight: 700; color: var(--text-primary); }
+.ca-deriv-step.ca-deriv-base     { border-left-color: #22c55e; }
+
+.ca-deriv-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 0.1rem; }
+.ca-deriv-text { flex: 1; }
+.ca-deriv-complexity { flex-shrink: 0; }
+
+/* Patterns */
+.ca-patterns-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(10px);
+}
+
+.ca-patterns-body { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.ca-pattern-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.03);
+}
+
+.ca-pattern-icon { font-size: 0.9rem; flex-shrink: 0; }
+.ca-pattern-text { color: var(--text-secondary); flex: 1; line-height: 1.4; }
+.ca-pattern-line { font-family: Fira Code, monospace; font-size: 0.65rem; color: rgba(148,163,184,0.5); }
+
+/* Legend */
+.ca-legend-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(10px);
+}
+
+.ca-legend-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ca-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+/* ── Learn section ── */
+.ca-pattern-learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.ca-pattern-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+}
+
+.ca-pattern-card:hover { transform: translateY(-3px); }
+.ca-pattern-badge { display: inline-block; margin-bottom: 0.6rem; font-size: 0.85rem; padding: 0.2rem 0.6rem; border-radius: 6px; }
+.ca-pattern-card h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.5rem; }
+
+.ca-pattern-code {
+  font-family: Fira Code, monospace;
+  font-size: 0.68rem;
+  color: #06b6d4;
+  background: rgba(6,182,212,0.06);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.65;
+  white-space: pre;
+}
+
+.ca-pattern-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 900px) {
+  .ca-layout { grid-template-columns: 1fr; }
+  .ca-results-col { position: static; }
+}
+
+@media (max-width: 600px) {
+  .ca-editor-body { grid-template-columns: 28px 1fr auto; }
+}

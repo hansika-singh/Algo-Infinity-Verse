@@ -1,0 +1,78 @@
+:root {
+    --bg-main: #1e1e2e;
+    --panel-bg: #181825;
+    --border-color: #313244;
+    --text-main: #cdd6f4;
+    --primary: #89b4fa;
+    --primary-hover: #b4befe;
+    
+    /* Visualization Colors */
+    --bar-default: #89b4fa;
+    --bar-compare: #f9e2af;
+    --bar-swap: #f38ba8;
+    --bar-sorted: #a6e3a1;
+}
+
+body.debugger-body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+.debugger-nav { height: 60px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--primary); }
+.nav-title { font-size: 0.9rem; color: #a6adc8; font-family: 'Fira Code', monospace; }
+
+.debugger-workspace { flex: 1; display: flex; overflow: hidden; }
+
+/* Panels */
+.editor-panel, .visualizer-panel { display: flex; flex-direction: column; height: 100%; }
+.editor-panel { width: 45%; border-right: 1px solid var(--border-color); }
+.visualizer-panel { width: 55%; background: #11111b; }
+
+.panel-header { height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 1.2rem; font-size: 0.85rem; color: #a6adc8; }
+.btn { padding: 0.4rem 1rem; border: none; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; gap: 0.5rem; align-items: center; }
+.btn-primary { background: var(--primary); color: #11111b; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+/* CodeMirror Override */
+.editor-container { flex: 1; overflow: hidden; }
+.CodeMirror { height: 100% !important; font-family: 'Fira Code', monospace !important; font-size: 14px; background: var(--bg-main) !important; }
+
+/* Memory Visualizer */
+.legend { display: flex; gap: 1rem; }
+.legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; }
+.box { width: 12px; height: 12px; border-radius: 2px; }
+.box.default { background: var(--bar-default); }
+.box.compare { background: var(--bar-compare); }
+.box.swap { background: var(--bar-swap); }
+.box.sorted { background: var(--bar-sorted); }
+
+.canvas-container { flex: 1; display: flex; flex-direction: column; padding: 2rem; }
+.array-container { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding-bottom: 2rem; border-bottom: 2px solid var(--border-color); }
+
+.array-bar { width: 30px; background: var(--bar-default); border-radius: 4px 4px 0 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 0.5rem; color: #11111b; font-weight: 700; font-size: 0.8rem; transition: height 0.3s ease, background-color 0.2s; }
+.array-bar.compare { background: var(--bar-compare); }
+.array-bar.swap { background: var(--bar-swap); }
+.array-bar.sorted { background: var(--bar-sorted); }
+
+.debug-vars { margin-top: 1.5rem; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+.debug-vars h4 { margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #a6adc8; }
+.debug-vars code { color: #f9e2af; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+
+/* Timeline Controls */
+.timeline-controls { height: 70px; background: var(--panel-bg); border-top: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 2rem; gap: 2rem; }
+.playback-buttons { display: flex; gap: 1rem; align-items: center; }
+.btn-icon { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+.btn-icon:hover { background: rgba(255,255,255,0.05); color: var(--primary); }
+.play-btn { background: var(--primary); color: #11111b; }
+.play-btn:hover { background: var(--primary-hover); color: #11111b; }
+
+.timeline-scrubber { flex: 1; display: flex; align-items: center; gap: 1rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; }
+input[type=range] { flex: 1; cursor: pointer; accent-color: var(--primary); height: 6px; background: var(--border-color); border-radius: 3px; outline: none; }
+input[type=range]:disabled { cursor: not-allowed; opacity: 0.5; }

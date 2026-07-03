@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Scanner | Algo Infinity Verse</title>
+  <link rel="stylesheet" href="memory-scanner.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/theme.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="memory-scanner">
+  <main class="memory-scanner-container">
+    <header class="memory-header">
+      <h1><i class="fas fa-brain"></i> AI Code Memory Scanner</h1>
+      <p>Track topics you've practiced and let spaced repetition tell you what to revise next.</p>
+    </header>
+
+    <div id="sessionNotice" class="session-notice" role="status" aria-live="polite"></div>
+
+    <section class="add-topic-section">
+      <h2>Log a Practice Session</h2>
+      <form id="logForm" class="log-form">
+        <div class="form-group">
+          <label for="topicInput">Topic</label>
+          <input type="text" id="topicInput" name="topic" placeholder="e.g. Binary Search, Recursion, Sliding Window" required minlength="1" />
+        </div>
+        <div class="form-group">
+          <label for="qualityInput">How well did you recall it?</label>
+          <select id="qualityInput" name="quality" required>
+            <option value="">Select a rating</option>
+            <option value="0">0 - Total blackout, couldn't recall at all</option>
+            <option value="1">1 - Incorrect, but recognized on seeing the answer</option>
+            <option value="2">2 - Incorrect, but felt familiar</option>
+            <option value="3">3 - Correct, but with serious difficulty</option>
+            <option value="4">4 - Correct, with some hesitation</option>
+            <option value="5">5 - Perfect recall</option>
+          </select>
+        </div>
+        <button type="submit" id="logBtn" class="btn-primary">
+          <span class="btn-text">Log Session</span>
+          <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i></span>
+        </button>
+      </form>
+      <p id="logMessage" class="form-message hidden" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="due-section">
+      <h2>Due for Revision</h2>
+      <div id="dueList" class="topic-list">
+        <p class="empty-state">Loading...</p>
+      </div>
+    </section>
+
+    <section class="all-topics-section">
+      <h2>All Tracked Topics</h2>
+      <div id="allList" class="topic-list">
+        <p class="empty-state">Loading...</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="memory-scanner.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+<script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  </body>
+</html>

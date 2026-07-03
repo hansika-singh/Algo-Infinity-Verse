@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local AI Tutor | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <link rel="stylesheet" href="ai-tutor.css" />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="tutor-body">
+    <nav class="tutor-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="ai-status" id="aiStatusBadge">
+            <i class="fas fa-microchip"></i> AI Engine: Initializing...
+        </div>
+    </nav>
+
+    <main class="tutor-workspace">
+        <div class="editor-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-code"></i> solution.js</span>
+            </div>
+            <div id="editorContainer" class="editor-container"></div>
+        </div>
+
+        <div class="chat-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-robot"></i> Local AI Tutor</span>
+                <span class="badge">Zero-Server</span>
+            </div>
+            
+            <div class="model-loader hidden" id="modelLoader">
+                <p>Downloading AI Model (First time only)...</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <span id="progressText">0%</span>
+            </div>
+
+            <div class="chat-history" id="chatHistory">
+                <div class="message ai">
+                    <div class="msg-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="msg-bubble">Hello! I am your completely private, local AI tutor. I run directly in your browser. Ask me to review your code!</div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <textarea id="chatInput" placeholder="Ask a question about your code... (e.g., 'What is the time complexity?')" rows="2"></textarea>
+                <button id="btnSend" disabled><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="ai-tutor.js"></script>
+</body>
+</html>

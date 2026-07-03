@@ -3,18 +3,28 @@ import fs from "fs/promises";
 import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { initializeFirebase, getDb, COLLECTIONS } from "./firebase.js";
+import { initializeFirebase, getDb, COLLECTIONS } from "../firebase.js";
+import multer from "multer";
+import { extractResumeText } from "./resume-analyzer/parser.js";
+import { calculateATS } from "./resume-analyzer/atsScore.js";
+import { findMissingSkills } from "./resume-analyzer/skills.js";
+import { getSuggestions } from "./resume-analyzer/suggestions.js";
+
+const MAX_RESUME_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_RESUME_FILE_SIZE_BYTES, files: 1 },
+}).single("resume");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
+const CodingPersonalityAnalyzer = require('./personalityAnalyzer.js');
 const MEMORY_FILE = path.join(DATA_DIR, "memory.json");
 const SESSION_COOKIE = "aiv_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
-const PBKDF2_ITERATIONS = 210000;
-const PASSWORD_KEY_LENGTH = 32;
 
 // ── Rate limiting ────────────────────────────────────────────────────────────
 const SIGNUP_RATE_LIMIT = 5;
@@ -48,7 +58,7 @@ const TRUSTED_PROXIES = new Set(
   (process.env.TRUSTED_PROXIES || "")
     .split(",")
     .map((s) => s.trim())
-    .filter(Boolean)
+    .filter(Boolean),
 );
 
 function getClientIdentifier(req) {
@@ -94,6 +104,56 @@ function recordSignupAttempt(identifier) {
 async function normalizeAuthDelay() {
   return new Promise((resolve) => setTimeout(resolve, 500));
 }
+// ── Login Rate Limiting (failed attempts only) ──────────────────────────────
+const LOGIN_RATE_LIMIT = 5;          // max failed attempts before lockout
+const LOGIN_WINDOW_MS = 15 * 60 * 1000; // 15-minute sliding window
+const loginFailures = new Map();     // identifier → [timestamp, ...]
+
+// Periodic sweeper — mirrors the signup sweeper to prevent unbounded growth.
+const _loginSweeper = setInterval(() => {
+  const now = Date.now();
+  for (const [identifier, timestamps] of loginFailures) {
+    const fresh = timestamps.filter((t) => now - t < LOGIN_WINDOW_MS);
+    if (fresh.length === 0) {
+      loginFailures.delete(identifier);
+    } else {
+      loginFailures.set(identifier, fresh);
+    }
+  }
+}, LOGIN_WINDOW_MS);
+if (_loginSweeper.unref) _loginSweeper.unref();
+
+/**
+ * Returns true when the given identifier has reached the failed-login limit
+ * within the current sliding window.
+ */
+function isLoginRateLimited(identifier) {
+  const now = Date.now();
+  const attempts = loginFailures.get(identifier) || [];
+  const recent = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  loginFailures.set(identifier, recent); // keep array trimmed
+  return recent.length >= LOGIN_RATE_LIMIT;
+}
+
+/**
+ * Records a single failed login attempt for the given identifier.
+ * Only call this after confirming the credentials were wrong.
+ */
+function recordLoginFailure(identifier) {
+  const now = Date.now();
+  const attempts = loginFailures.get(identifier) || [];
+  const recent = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  recent.push(now);
+  loginFailures.set(identifier, recent);
+}
+
+/**
+ * Clears the failure counter for the given identifier on successful login
+ * so a legitimate user is never locked out after a prior mistake.
+ */
+function clearLoginFailures(identifier) {
+  loginFailures.delete(identifier);
+}
 // ────────────────────────────────────────────────────────────────────────────
 
 const protectedPaths = new Set([
@@ -115,7 +175,8 @@ const mimeTypes = {
   ".webp": "image/webp",
   ".php": "text/html; charset=utf-8",
   ".pdf": "application/pdf",
-  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".docx":
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
 async function loadEnvFile() {
@@ -169,7 +230,10 @@ function sessionSecret() {
 }
 
 function sign(value) {
-  return crypto.createHmac("sha256", sessionSecret()).update(value).digest("base64url");
+  return crypto
+    .createHmac("sha256", sessionSecret())
+    .update(value)
+    .digest("base64url");
 }
 
 function createSessionToken(user) {
@@ -204,7 +268,8 @@ function verifySessionToken(token) {
 
   try {
     const session = JSON.parse(fromBase64Url(payload));
-    if (!session.exp || session.exp < Math.floor(Date.now() / 1000)) return null;
+    if (!session.exp || session.exp < Math.floor(Date.now() / 1000))
+      return null;
     return session;
   } catch {
     return null;
@@ -246,7 +311,11 @@ async function getUserByEmail(email) {
     const users = await readUsers();
     return users.find((u) => u.email === email) || null;
   }
-  const snapshot = await db.collection(COLLECTIONS.USERS).where("email", "==", email).limit(1).get();
+  const snapshot = await db
+    .collection(COLLECTIONS.USERS)
+    .where("email", "==", email)
+    .limit(1)
+    .get();
   if (snapshot.empty) return null;
   return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
 }
@@ -362,28 +431,11 @@ function applySM2(card, quality) {
 }
 // ──────────────────────────────────────────────────────────────────────────
 
-function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
-  const hash = crypto
-    .pbkdf2Sync(password, salt, PBKDF2_ITERATIONS, PASSWORD_KEY_LENGTH, "sha256")
-    .toString("hex");
-  return { salt, hash, iterations: PBKDF2_ITERATIONS, digest: "sha256" };
-}
-
-function passwordMatches(password, stored) {
-  const calculated = crypto.pbkdf2Sync(
-    password,
-    stored.salt,
-    stored.iterations || PBKDF2_ITERATIONS,
-    PASSWORD_KEY_LENGTH,
-    stored.digest || "sha256",
-  );
-  const saved = Buffer.from(stored.hash, "hex");
-  return saved.length === calculated.length && crypto.timingSafeEqual(saved, calculated);
-}
-
 function validateSignup({ name, email, password, confirmPassword }) {
   const cleanName = String(name || "").trim();
-  const cleanEmail = String(email || "").trim().toLowerCase();
+  const cleanEmail = String(email || "")
+    .trim()
+    .toLowerCase();
   const rawPassword = String(password || "");
   const rawConfirm = String(confirmPassword || "");
 
@@ -392,7 +444,11 @@ function validateSignup({ name, email, password, confirmPassword }) {
     return "Enter a valid email address.";
   }
   if (rawPassword.length < 8) return "Password must be at least 8 characters.";
-  if (!/[a-z]/.test(rawPassword) || !/[A-Z]/.test(rawPassword) || !/\d/.test(rawPassword)) {
+  if (
+    !/[a-z]/.test(rawPassword) ||
+    !/[A-Z]/.test(rawPassword) ||
+    !/\d/.test(rawPassword)
+  ) {
     return "Password must include uppercase, lowercase, and a number.";
   }
   if (rawPassword !== rawConfirm) return "Passwords do not match.";
@@ -403,7 +459,8 @@ async function readJsonBody(req) {
   let body = "";
   for await (const chunk of req) {
     body += chunk;
-    if (body.length > 1024 * 1024) throw new Error("Request body is too large.");
+    if (body.length > 1024 * 1024)
+      throw new Error("Request body is too large.");
   }
   return body ? JSON.parse(body) : {};
 }
@@ -435,7 +492,7 @@ function isProtectedRoute(pathname) {
   return protectedPaths.has(pathname);
 }
 
-function authorizeRequest(req, pathname) {
+async function authorizeRequest(req, pathname) {
   if (!isProtectedRoute(pathname)) {
     return { authorized: true };
   }
@@ -447,6 +504,21 @@ function authorizeRequest(req, pathname) {
       authorized: false,
       redirectTo: `/login?next=${encodeURIComponent(pathname)}`,
     };
+  }
+
+  if (!useFirestore) {
+    const users = await readUsers();
+
+    const user = users.find(
+      (u) => u.id === session.sub
+    );
+
+    if (!user || user.isDeactivated) {
+      return {
+        authorized: false,
+        redirectTo: "/login",
+      };
+    }
   }
 
   return {
@@ -470,9 +542,54 @@ function validateRequest(req) {
 }
 
 async function handleApi(req, res, pathname) {
+  if (pathname === "/api/analyze-resume" && req.method === "POST") {
+    try {
+      await new Promise((resolve, reject) => {
+        upload(req, res, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+
+      if (!req.file) {
+        return sendJson(res, 400, { error: "No resume file uploaded." });
+      }
+
+      const text = await extractResumeText(req.file);
+      const atsScore = calculateATS(text);
+      const missingSkills = findMissingSkills(text);
+      const suggestions = getSuggestions(atsScore);
+
+      return sendJson(res, 200, {
+        atsScore,
+        missingSkills,
+        suggestions,
+      });
+    } catch (error) {
+      console.error("Resume analysis error:", error);
+      return sendJson(res, 500, { error: error.message || "Failed to analyze resume." });
+    }
+  }
+
   if (pathname === "/api/session" && req.method === "GET") {
     const session = getSession(req);
-    return sendJson(res, 200, { authenticated: Boolean(session), user: session });
+
+    if (session) {
+      const users = await readUsers();
+
+      const user = users.find((u) => u.id === session.sub);
+
+      if (user?.isDeactivated) {
+        return sendJson(res, 200, {
+          authenticated: false,
+          user: null,
+        });
+      }
+    }
+    return sendJson(res, 200, {
+      authenticated: Boolean(session),
+      user: session,
+    });
   }
 
   if (pathname === "/api/signup" && req.method === "POST") {
@@ -521,6 +638,8 @@ async function handleApi(req, res, pathname) {
       email,
       password: hashPassword(String(payload.password)),
       createdAt: new Date().toISOString(),
+      isDeactivated: false,
+      deactivatedAt: null,
     };
     await createUser(user);
 
@@ -534,15 +653,63 @@ async function handleApi(req, res, pathname) {
   }
 
   if (pathname === "/api/login" && req.method === "POST") {
+    // ── Rate-limit check (failed attempts only) ───────────────────────────────
+    const clientId = getClientIdentifier(req);
+
+    if (isLoginRateLimited(clientId)) {
+      console.warn("[login] rate limited", {
+        ip: clientId,
+        at: new Date().toISOString(),
+      });
+      await normalizeAuthDelay();
+      return sendJson(
+        res,
+        429,
+        {
+          error:
+            "Too many failed login attempts. " +
+            "Please wait 15 minutes before trying again.",
+          retryAfterSeconds: Math.ceil(LOGIN_WINDOW_MS / 1000),
+        },
+        // Inform standards-compliant clients how long to back off.
+        { "Retry-After": String(Math.ceil(LOGIN_WINDOW_MS / 1000)) },
+      );
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     const payload = await readJsonBody(req);
-    const email = String(payload.email || "").trim().toLowerCase();
+    const email = String(payload.email || "")
+      .trim()
+      .toLowerCase();
     const password = String(payload.password || "");
     const user = useFirestore
       ? await getUserByEmail(email)
       : (await readUsers()).find((candidate) => candidate.email === email);
+
     if (!user || !passwordMatches(password, user.password)) {
+      // Record the failure ONLY when credentials are wrong, not for every request.
+      recordLoginFailure(clientId);
+      await normalizeAuthDelay();
       return sendJson(res, 401, { error: "Invalid email or password." });
     }
+    if (user.isDeactivated) {
+      user.isDeactivated = false;
+      user.deactivatedAt = null;
+    }
+    if (!useFirestore) {
+      const users = await readUsers();
+
+      const index = users.findIndex((u) => u.id === user.id);
+
+      if (index !== -1) {
+        users[index] = user;
+        await writeUsers(users);
+      }
+    }
+
+    // Successful login — clear any accumulated failure count so a legitimate
+    // user who mistyped their password earlier is not locked out.
+    clearLoginFailures(clientId);
 
     const token = createSessionToken(user);
     return sendJson(
@@ -553,8 +720,49 @@ async function handleApi(req, res, pathname) {
     );
   }
 
+  if (pathname === "/api/deactivate-account" && req.method === "POST") {
+    const session = getSession(req);
+
+    if (!session) {
+      return sendJson(res, 401, {
+        error: "Login required.",
+      });
+    }
+
+    const users = await readUsers();
+
+    const user = users.find((u) => u.id === session.sub);
+
+    if (!user) {
+      return sendJson(res, 404, {
+        error: "User not found.",
+      });
+    }
+
+    user.isDeactivated = true;
+    user.deactivatedAt = new Date().toISOString();
+
+    await writeUsers(users);
+
+    return sendJson(
+      res,
+      200,
+      {
+        success: true,
+      },
+      {
+        "Set-Cookie": clearSessionCookie(),
+      },
+    );
+  }
+
   if (pathname === "/api/logout" && req.method === "POST") {
-    return sendJson(res, 200, { ok: true }, { "Set-Cookie": clearSessionCookie() });
+    return sendJson(
+      res,
+      200,
+      { ok: true },
+      { "Set-Cookie": clearSessionCookie() },
+    );
   }
 
   if (pathname === "/api/feedback" && req.method === "POST") {
@@ -568,20 +776,31 @@ async function handleApi(req, res, pathname) {
 
     const { feedbackType, subject, message } = payload;
     if (!feedbackType || !subject || !message) {
-      return sendJson(res, 400, { error: "Feedback type, subject, and message are required." });
+      return sendJson(res, 400, {
+        error: "Feedback type, subject, and message are required.",
+      });
     }
 
-    const allowedTypes = ["Suggestion", "Bug Report", "Feature Request", "General Feedback"];
+    const allowedTypes = [
+      "Suggestion",
+      "Bug Report",
+      "Feature Request",
+      "General Feedback",
+    ];
     if (!allowedTypes.includes(feedbackType)) {
       return sendJson(res, 400, { error: "Invalid feedback type." });
     }
 
     if (subject.trim().length < 3) {
-      return sendJson(res, 400, { error: "Subject must be at least 3 characters long." });
+      return sendJson(res, 400, {
+        error: "Subject must be at least 3 characters long.",
+      });
     }
 
     if (message.trim().length < 10) {
-      return sendJson(res, 400, { error: "Message must be at least 10 characters long." });
+      return sendJson(res, 400, {
+        error: "Message must be at least 10 characters long.",
+      });
     }
 
     const feedbackData = {
@@ -611,7 +830,10 @@ async function handleApi(req, res, pathname) {
         }
         feedbackData.id = crypto.randomUUID();
         feedbackList.push(feedbackData);
-        await fs.writeFile(feedbackFile, JSON.stringify(feedbackList, null, 2) + "\n");
+        await fs.writeFile(
+          feedbackFile,
+          JSON.stringify(feedbackList, null, 2) + "\n",
+        );
       }
 
       return sendJson(res, 201, { success: true, feedback: feedbackData });
@@ -630,9 +852,22 @@ async function handleApi(req, res, pathname) {
       return sendJson(res, 400, { error: "Invalid JSON body." });
     }
 
-    const { company, role, difficulty, rating, title, content, topics, rounds, offerStatus } = payload;
+    const {
+      company,
+      role,
+      difficulty,
+      rating,
+      title,
+      content,
+      topics,
+      rounds,
+      offerStatus,
+    } = payload;
     if (!company || !role || !difficulty || !rating || !title || !content) {
-      return sendJson(res, 400, { error: "Company, role, difficulty, rating, title, and content are required." });
+      return sendJson(res, 400, {
+        error:
+          "Company, role, difficulty, rating, title, and content are required.",
+      });
     }
 
     const experienceData = {
@@ -654,7 +889,9 @@ async function handleApi(req, res, pathname) {
 
     try {
       if (useFirestore) {
-        const docRef = await db.collection("interviewExperiences").add(experienceData);
+        const docRef = await db
+          .collection("interviewExperiences")
+          .add(experienceData);
         experienceData.id = docRef.id;
       } else {
         const filePath = path.join(DATA_DIR, "interview-experiences.json");
@@ -672,7 +909,9 @@ async function handleApi(req, res, pathname) {
       return sendJson(res, 201, { success: true, experience: experienceData });
     } catch (err) {
       console.error("Error saving interview experience:", err);
-      return sendJson(res, 500, { error: "Failed to save interview experience." });
+      return sendJson(res, 500, {
+        error: "Failed to save interview experience.",
+      });
     }
   }
 
@@ -691,8 +930,15 @@ async function handleApi(req, res, pathname) {
     if (!topic || typeof topic !== "string" || topic.trim().length < 1) {
       return sendJson(res, 400, { error: "Topic is required." });
     }
-    if (quality === undefined || isNaN(Number(quality)) || Number(quality) < 0 || Number(quality) > 5) {
-      return sendJson(res, 400, { error: "Quality must be a number between 0 and 5." });
+    if (
+      quality === undefined ||
+      isNaN(Number(quality)) ||
+      Number(quality) < 0 ||
+      Number(quality) > 5
+    ) {
+      return sendJson(res, 400, {
+        error: "Quality must be a number between 0 and 5.",
+      });
     }
 
     const trimmedTopic = topic.trim();
@@ -716,7 +962,7 @@ async function handleApi(req, res, pathname) {
     const userCards = store[session.sub] || {};
     const now = new Date();
     const due = Object.values(userCards).filter(
-      (card) => new Date(card.nextReviewDate) <= now
+      (card) => new Date(card.nextReviewDate) <= now,
     );
 
     return sendJson(res, 200, { success: true, due });
@@ -729,7 +975,10 @@ async function handleApi(req, res, pathname) {
     const store = await readMemoryStore();
     const userCards = store[session.sub] || {};
 
-    return sendJson(res, 200, { success: true, cards: Object.values(userCards) });
+    return sendJson(res, 200, {
+      success: true,
+      cards: Object.values(userCards),
+    });
   }
 
   return sendJson(res, 404, { error: "Not found." });
@@ -811,7 +1060,9 @@ async function serveStatic(req, res, pathname) {
 
   try {
     const stat = await fs.stat(filePath);
-    const target = stat.isDirectory() ? path.join(filePath, "index.html") : filePath;
+    const target = stat.isDirectory()
+      ? path.join(filePath, "index.html")
+      : filePath;
     const ext = path.extname(target);
     const content = await fs.readFile(target);
     res.writeHead(200, {
@@ -828,9 +1079,7 @@ async function serveStatic(req, res, pathname) {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
-    const pathname = normalizePathname(
-      decodeURIComponent(url.pathname)
-    );
+    const pathname = normalizePathname(decodeURIComponent(url.pathname));
 
     const requestValidation = validateRequest(req);
 
@@ -848,7 +1097,7 @@ const server = http.createServer(async (req, res) => {
       return redirect(res, "/login", { "Set-Cookie": clearSessionCookie() });
     }
 
-    const authorization = authorizeRequest(req, pathname);
+    const authorization = await authorizeRequest(req, pathname);
 
     if (!authorization.authorized) {
       return redirect(res, authorization.redirectTo);
@@ -874,12 +1123,44 @@ if (process.env.VERCEL !== "1") {
       useFirestore = !!db;
       const port = Number(process.env.PORT || 3000);
       const host = process.env.HOST || "127.0.0.1";
+       
+      // ===== CODING PERSONALITY =====
+     app.get('/api/user/personality', (req, res) => {
+     try {
+     const userId = req.user?.id || req.query.userId;
+    
+      if (!userId) {
+       return res.status(401).json({ error: 'User not authenticated' });
+      }
+    
+     // Get user data - replace with actual DB fetch
+     const userData = {
+      problems: [], 
+      submissions: [], 
+      topics: [], 
+      streak: 0 
+    };
+    
+     const analyzer = new CodingPersonalityAnalyzer(userData);
+     const personality = analyzer.analyze();
+    
+      res.json({
+       success: true,
+       data: personality
+      });
+    } catch (error) {
+     console.error('Personality analysis error:', error);
+     res.status(500).json({ error: 'Failed to analyze personality' });
+   }
+  });
 
       server.listen(port, host, () => {
         const url = `http://${host}:${port}`;
         console.log(`Server running at ${url}`);
         if (!process.env.SESSION_SECRET) {
-          console.warn("Using a development SESSION_SECRET. Set SESSION_SECRET before deploying.");
+          console.warn(
+            "Using a development SESSION_SECRET. Set SESSION_SECRET before deploying.",
+          );
         }
       });
     })

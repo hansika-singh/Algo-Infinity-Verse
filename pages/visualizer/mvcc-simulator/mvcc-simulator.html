@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVCC & Isolation Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Database Engine Simulator for Multi-Version Concurrency Control (MVCC) and Transaction Isolation Levels." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="mvcc-simulator.css" />
+</head>
+<body class="mvcc-body">
+
+    <nav class="navbar mvcc-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-database"></i> PostgreSQL-Style MVCC Engine
+        </div>
+    </nav>
+
+    <main class="mvcc-workspace">
+        
+        <!-- Header / Instructions -->
+        <header class="workspace-header">
+            <div class="header-info">
+                <h2>Multi-Version Concurrency Control (MVCC)</h2>
+                <p>
+                    Databases like PostgreSQL don't overwrite data on an <code>UPDATE</code>. They create a new row version and set the <code>xmax</code> (deleted by) of the old row. 
+                    Test <strong>Read Committed</strong> vs <strong>Repeatable Read</strong> isolation levels by running concurrent transactions below.
+                </p>
+            </div>
+            <div class="global-controls">
+                <button class="btn btn-warning" id="btnVacuum">
+                    <i class="fas fa-broom"></i> Run VACUUM (Garbage Collect)
+                </button>
+                <button class="btn btn-danger" id="btnResetDB">
+                    <i class="fas fa-redo"></i> Reset DB
+                </button>
+            </div>
+        </header>
+
+        <!-- Two Concurrent Terminals -->
+        <div class="terminals-container">
+            
+            <!-- Terminal A -->
+            <div class="terminal-panel" id="panelA">
+                <div class="terminal-header">
+                    <div class="term-title"><i class="fas fa-terminal"></i> Connection A</div>
+                    <div class="term-status" id="statusA">IDLE</div>
+                </div>
+                
+                <div class="term-controls">
+                    <div class="input-group">
+                        <label>Isolation Level</label>
+                        <select id="isoA">
+                            <option value="READ_COMMITTED">Read Committed</option>
+                            <option value="REPEATABLE_READ">Repeatable Read (Snapshot)</option>
+                        </select>
+                    </div>
+                    <div class="macro-grid">
+                        <button class="btn-macro begin" data-tx="A" data-cmd="BEGIN">BEGIN</button>
+                        <button class="btn-macro commit" data-tx="A" data-cmd="COMMIT" disabled>COMMIT</button>
+                        <button class="btn-macro select" data-tx="A" data-cmd="SELECT" disabled>SELECT *</button>
+                        <button class="btn-macro update" data-tx="A" data-cmd="UPDATE" disabled>UPDATE ID=1</button>
+                        <button class="btn-macro rollback" data-tx="A" data-cmd="ROLLBACK" disabled>ROLLBACK</button>
+                    </div>
+                </div>
+
+                <div class="term-output" id="outputA">
+                    <div class="log-line sys">> Client A connected. Ready for transactions.</div>
+                </div>
+            </div>
+
+            <!-- Terminal B -->
+            <div class="terminal-panel" id="panelB">
+                <div class="terminal-header">
+                    <div class="term-title"><i class="fas fa-terminal"></i> Connection B</div>
+                    <div class="term-status" id="statusB">IDLE</div>
+                </div>
+                
+                <div class="term-controls">
+                    <div class="input-group">
+                        <label>Isolation Level</label>
+                        <select id="isoB">
+                            <option value="READ_COMMITTED">Read Committed</option>
+                            <option value="REPEATABLE_READ">Repeatable Read (Snapshot)</option>
+                        </select>
+                    </div>
+                    <div class="macro-grid">
+                        <button class="btn-macro begin" data-tx="B" data-cmd="BEGIN">BEGIN</button>
+                        <button class="btn-macro commit" data-tx="B" data-cmd="COMMIT" disabled>COMMIT</button>
+                        <button class="btn-macro select" data-tx="B" data-cmd="SELECT" disabled>SELECT *</button>
+                        <button class="btn-macro update" data-tx="B" data-cmd="UPDATE" disabled>UPDATE ID=1</button>
+                        <button class="btn-macro rollback" data-tx="B" data-cmd="ROLLBACK" disabled>ROLLBACK</button>
+                    </div>
+                </div>
+
+                <div class="term-output" id="outputB">
+                    <div class="log-line sys">> Client B connected. Ready for transactions.</div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Global Physical Database State -->
+        <div class="db-state-panel">
+            <div class="db-header">
+                <h3><i class="fas fa-hdd"></i> Physical Memory (All Row Versions)</h3>
+                <div class="tx-counter-display">
+                    Global Transaction Counter (TxID): <strong id="globalTxCounter" class="text-primary">1</strong>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="db-table" id="dbTable">
+                    <thead>
+                        <tr>
+                            <th>Row ID</th>
+                            <th>Value</th>
+                            <th title="Transaction ID that created this tuple">xmin (Created)</th>
+                            <th title="Transaction ID that deleted/updated this tuple">xmax (Deleted)</th>
+                            <th>Physical Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="db-legend">
+                <span class="legend-item"><span class="swatch live"></span> Live Tuple (Visible to newest snapshots)</span>
+                <span class="legend-item"><span class="swatch dead"></span> Dead Tuple (Garbage/Overwritten)</span>
+                <span class="legend-item"><span class="swatch uncommitted"></span> Uncommitted (Dirty Data)</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="mvcc-simulator.js"></script>
+</body>
+</html>

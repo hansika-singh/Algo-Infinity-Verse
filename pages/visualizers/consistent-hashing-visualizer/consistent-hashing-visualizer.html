@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consistent Hashing & DHT Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Hash Ring visualizer to learn Distributed Systems, Data Partitioning, and Virtual Nodes." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for Distribution Statistics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="consistent-hashing-visualizer.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="dht-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-network-wired"></i> DHT Engine Online
+        </div>
+    </nav>
+
+    <main class="dht-workspace">
+        
+        <!-- Left Panel: Controls and Dashboard -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-server"></i> Cluster Topology</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    <strong>Consistent Hashing</strong> distributes data across a ring. Keys move clockwise to find the nearest server. Toggle <strong>Virtual Nodes</strong> to fix uneven distribution (hotspots).
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnAddServer">
+                        <i class="fas fa-plus"></i> Add Server
+                    </button>
+                    <button class="btn btn-danger" id="btnKillServer">
+                        <i class="fas fa-skull"></i> Kill Random
+                    </button>
+                    <button class="btn btn-outline" id="btnGenerateKeys">
+                        <i class="fas fa-key"></i> Gen 1000 Keys
+                    </button>
+                    <button class="btn btn-outline" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Cluster
+                    </button>
+                </div>
+
+                <!-- Specific Server Failure Deactivation -->
+                <div class="dht-select-group" style="margin-bottom: 1.25rem;">
+                    <label class="st-label" for="selKillServer" style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em;">Kill Specific Server Node</label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+                        <select id="selKillServer" class="dht-select" style="flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-primary); padding: 0.45rem 0.6rem; font-family: 'Poppins', sans-serif; font-size: 0.85rem; outline: none;"></select>
+                        <button class="btn btn-danger" id="btnKillSpecificServer" style="padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
+                            <i class="fas fa-skull"></i> Kill
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Key Input & Routing -->
+                <div class="dht-select-group" style="margin-bottom: 1.25rem;">
+                    <label class="st-label" for="txtKeyInput" style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em;">Route Custom Data Key</label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+                        <input type="text" id="txtKeyInput" class="dht-input" placeholder="e.g. session_99" style="flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-primary); padding: 0.45rem 0.6rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; outline: none;" />
+                        <button class="btn btn-primary" id="btnRouteKey" style="padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px;">
+                            <i class="fas fa-route"></i> Route
+                        </button>
+                    </div>
+                </div>
+
+                <div class="vnode-toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="vNodeToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <div class="toggle-label">
+                        <strong>Enable Virtual Nodes (vNodes)</strong>
+                        <span>Distributes 5 virtual hashes per server to balance the load.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telemetry & Distribution Chart -->
+            <div class="telemetry-section">
+                <div class="stats-header">
+                    <h4><i class="fas fa-chart-bar"></i> Data Load Distribution</h4>
+                    <div class="std-dev-badge" id="stdDevBadge" title="Lower is better. High deviation means a server is a hotspot.">
+                        Std Dev: <span id="stdDevValue">0.00</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Event Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> DHT Ring Initialized with 3 Servers.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-circle-notch"></i> SHA-256 Hash Ring (0 to 2²⁵⁶-1)</span>
+                <span class="key-count">Total Keys: <span id="keyCountDisplay">0</span></span>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="dhtCanvas"></canvas>
+                <div class="canvas-tooltip hidden" id="canvasTooltip">Server A</div>
+            </div>
+            
+            <div class="canvas-legend">
+                <span class="legend-item"><span class="legend-dot server-dot"></span> Physical Server</span>
+                <span class="legend-item"><span class="legend-dot vnode-dot"></span> Virtual Node</span>
+                <span class="legend-item"><span class="legend-dot key-dot"></span> Data Key</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="consistent-hashing-visualizer.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+/* markov-chain-visualizer.css */
+
+.visualization-panels {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+.text-panel {
+    flex: 0 0 100px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+.output-container {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    white-space: pre-wrap;
+    min-height: 40px;
+}
+
+.output-container .placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    margin: 0;
+}
+
+.output-container .active-word {
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.split-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.graph-matrix-split {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+    min-height: 0;
+}
+
+.graph-panel {
+    flex: 2;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+#graphContainer {
+    width: 100%;
+    height: calc(100% - 30px);
+}
+
+.matrix-panel {
+    flex: 1;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    overflow: auto;
+    flex: 1;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    font-family: 'Fira Code', monospace;
+}
+
+th, td {
+    padding: 6px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    color: var(--text-color);
+}
+
+th {
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+td.active-cell {
+    background: var(--accent-color);
+    color: #fff;
+    font-weight: bold;
+}
+
+/* D3 SVG Styles */
+.node circle {
+    fill: var(--bg-secondary, #2c3e50);
+    stroke: var(--border-color, #4a5568);
+    stroke-width: 2.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.node.active circle {
+    fill: var(--accent-color);
+    stroke: #ffffff;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 12px var(--accent-color));
+}
+
+.node text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    fill: #ffffff;
+    stroke: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.link {
+    fill: none;
+    stroke: var(--text-muted, #718096);
+    stroke-width: 2px;
+    marker-end: url(#arrowhead);
+    transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.link.active {
+    stroke: var(--accent-color, #3182ce);
+    stroke-width: 4px;
+}
+
+.link-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    fill: var(--text-color, #ecf0f1);
+    paint-order: stroke;
+    stroke: var(--bg-primary, #1a202c);
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    font-weight: 500;
+}
+
+.link-label.active {
+    fill: var(--accent-color);
+    font-weight: bold;
+}
+
+.playback-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-secondary);
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-control {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-control:hover:not(:disabled) {
+    color: var(--accent-color);
+    background: rgba(255,255,255,0.1);
+}
+
+.btn-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.play-btn {
+    background: var(--accent-color);
+    color: #fff;
+}
+
+.play-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+    border-left: 1px solid var(--border-color);
+    padding-left: 15px;
+}
+
+.highlight-text {
+    font-weight: bold;
+    color: var(--accent-color);
+}

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Call Stack Flame Graph Profiler | Algo Infinity Verse</title>
+    <meta name="description" content="Profile your recursive algorithms and visualize execution bottlenecks in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <!-- D3.js Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="flame-graph-profiler.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="profiler-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-badge" id="profilerStatus">
+            <i class="fas fa-stopwatch"></i> D3 Profiler: Ready
+        </div>
+    </nav>
+
+    <main class="profiler-workspace">
+        
+        <!-- Left Panel: Code Editor -->
+        <div class="editor-panel">
+            <div class="panel-header">
+                <div class="header-title">
+                    <i class="fas fa-file-code"></i> recursive_target.js
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" id="btnProfileCode">
+                        <i class="fas fa-fire"></i> Run & Profile
+                    </button>
+                </div>
+            </div>
+            
+            <div class="instructions-banner">
+                <strong><i class="fas fa-info-circle"></i> How to Profile:</strong>
+                Use <code>Tracer.enter('name')</code> at the start of your function and <code>Tracer.exit()</code> before returning to trace the execution time.
+            </div>
+
+            <!-- CodeMirror Inject -->
+            <div class="editor-wrapper" id="editorContainer"></div>
+        </div>
+
+        <!-- Right Panel: D3 Flame Graph -->
+        <div class="visualizer-panel">
+            <div class="panel-header">
+                <div class="header-title">
+                    <i class="fas fa-chart-line"></i> Execution Flame Graph
+                </div>
+            </div>
+            
+            <!-- Statistics HUD -->
+            <div class="stats-hud">
+                <div class="stat-item">
+                    <span class="stat-label">Total Execution Time</span>
+                    <span class="stat-value" id="statTotalTime">0.00 ms</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Max Call Stack Depth</span>
+                    <span class="stat-value" id="statMaxDepth">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Function Calls</span>
+                    <span class="stat-value" id="statNodeCount">0</span>
+                </div>
+            </div>
+
+            <!-- D3 Canvas Container -->
+            <div class="d3-container" id="flameGraphContainer">
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-fire-alt"></i>
+                    <p>Click "Run & Profile" to generate the flame graph.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Interactive D3 Tooltip -->
+    <div class="d3-tooltip hidden" id="d3Tooltip">
+        <div class="tt-header" id="ttName">function()</div>
+        <div class="tt-body">
+            <div class="tt-row">
+                <span>Total Time:</span>
+                <strong id="ttTotal">0.00ms</strong>
+            </div>
+            <div class="tt-row">
+                <span>Exclusive Time:</span>
+                <strong id="ttExclusive">0.00ms</strong>
+            </div>
+            <div class="tt-row">
+                <span>Percentage:</span>
+                <strong id="ttPercentage">0%</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="flame-graph-profiler.js"></script>
+</body>
+</html>

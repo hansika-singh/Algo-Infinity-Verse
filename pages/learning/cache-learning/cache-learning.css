@@ -1,0 +1,273 @@
+/* =============================================================
+   cache-learning.css
+   Full custom stylesheet for LRU & LFU Cache interactive learning
+   ============================================================= */
+
+/* ── Hero typing text ─────────────────────────────────────── */
+.typing-text_cache {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+/* ── Interactive Workspace Elements ───────────────────────── */
+.cache-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-top: 15px;
+}
+@media (min-width: 768px) {
+  .cache-panel-grid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+/* ── DLL Visualizer Styles ────────────────────────────────── */
+.dll-visualizer {
+  background: #0d1117;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow-x: auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  margin-bottom: 15px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+}
+
+.dll-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.dll-node {
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  text-align: center;
+  font-family: Orbitron, sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  min-width: 80px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.dll-node.sentinel {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+.dll-node.highlight {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+}
+
+.dll-node.evicted {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  transform: scale(0.9) translateY(10px);
+  opacity: 0;
+}
+
+.dll-arrow {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+/* ── Hash Map Lookup Styles ───────────────────────────────── */
+.hashmap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hashmap-table th, .hashmap-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+.hashmap-table th {
+  background: rgba(124, 58, 237, 0.1);
+  color: var(--primary-light);
+}
+.hashmap-key {
+  font-weight: bold;
+  color: var(--accent);
+}
+.hashmap-val {
+  font-family: monospace;
+  color: var(--text-secondary);
+}
+
+/* ── LFU Frequency List Grid ──────────────────────────────── */
+.lfu-frequency-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #0d1117;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  margin-bottom: 15px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.lfu-freq-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px dashed rgba(255,255,255,0.06);
+  padding-bottom: 10px;
+}
+
+.lfu-freq-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.lfu-freq-badge {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: Orbitron, sans-serif;
+  font-size: 0.75rem;
+  font-weight: bold;
+  width: 90px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.lfu-dll-wrapper {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lfu-dll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Console Terminals ────────────────────────────────────── */
+.cache-console {
+  background: #06090f;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: #8b949e;
+  height: 120px;
+  overflow-y: auto;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+  margin-top: 10px;
+}
+
+.console-line {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.console-line.info { color: #58a6ff; }
+.console-line.success { color: #56d364; }
+.console-line.warn { color: #d29922; }
+.console-line.danger { color: #f85149; }
+
+/* ── Interactive controls ─────────────────────────────────── */
+.cache-ctrl-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cache-ctrl-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+/* LFU Node custom attribute */
+.freq-indicator {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #06b6d4;
+  color: white;
+  font-size: 0.65rem;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Matching Puzzle Classes */
+.match-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.match-item-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 12px 15px;
+}
+
+.match-question {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.match-select-wrapper {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.match-select-wrapper select {
+  margin-bottom: 0;
+}
+
+.completed-nav-item::after {
+  content: " ✓";
+  color: #10b981;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-left: auto;
+}
+

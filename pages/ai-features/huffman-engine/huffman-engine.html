@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Huffman Compression Engine | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize Huffman Coding, build prefix trees, and compress data in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js for Tree Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="huffman-engine.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge">
+            <i class="fas fa-compress-arrows-alt"></i> Compression Engine Active
+        </div>
+    </nav>
+
+    <main class="huff-workspace">
+        
+        <!-- Left Panel: Input -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-keyboard"></i> Data Input</h3>
+            </div>
+            
+            <div class="input-section">
+                <span class="input-label">Raw Text String</span>
+                <textarea class="text-input" id="textInput" placeholder="Enter text to compress...">BEEP BOOP BEER!</textarea>
+                <button class="btn btn-primary w-100" id="btnCompress">
+                    <i class="fas fa-cogs"></i> Generate Huffman Tree
+                </button>
+            </div>
+
+            <div class="freq-section">
+                <span class="input-label">Frequency & Prefix Dictionary</span>
+                <table class="freq-table">
+                    <thead>
+                        <tr>
+                            <th>Char</th>
+                            <th>Freq</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody id="freqTableBody">
+                        <tr><td colspan="3" style="text-align: center;">Waiting for input...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Center Panel: D3 Visualizer -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> Abstract Syntax Tree (Min-Heap Construction)</span>
+                <span>Left Edge: 0 | Right Edge: 1</span>
+            </div>
+            
+            <div class="tree-container" id="treeContainer">
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-tree"></i>
+                    <p>Click Generate to build the Huffman Tree.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Output & Stats -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-hdd"></i> Memory Telemetry</h3>
+            </div>
+            
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Original Size (ASCII)</span>
+                        <span class="stat-value"><span id="statOriginal">0</span> Bits</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Compressed Size</span>
+                        <span class="stat-value" style="color: var(--huff-primary);"><span id="statCompressed">0</span> Bits</span>
+                    </div>
+                    <div class="stat-card ratio-card">
+                        <span class="stat-label">Compression Ratio</span>
+                        <span class="stat-value ratio-value" id="statRatio">0.00%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="binary-box">
+                    <div class="binary-header">
+                        <span>Original Binary (8-bit)</span>
+                    </div>
+                    <div class="binary-content" id="outputOriginal">...</div>
+                </div>
+                
+                <div class="binary-box">
+                    <div class="binary-header">
+                        <span style="color: var(--huff-primary);">Huffman Compressed Binary</span>
+                    </div>
+                    <div class="binary-content compressed" id="outputCompressed">...</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- External Scripts -->
+    <script src="/script.js"></script>
+    <script src="huffman-engine.js"></script>
+</body>
+</html>

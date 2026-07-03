@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Min-Cost Max-Flow Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive step-by-step visualization of the Successive Shortest Path algorithm for the Min-Cost Max-Flow (MCMF) problem. Configure capacities, costs, and inspect residual updates."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="min-cost-max-flow-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="min-cost-max-flow-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Network Flow</span>
+          <span class="main-title gradient-text">Min-Cost Max-Flow</span>
+          <span class="subtitle">Animate Successive Shortest Augmenting Paths in Residual Networks</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextFlow"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          
+          <!-- LEFT SIDEBAR: Controls & Inputs -->
+          <div class="visualizer-sidebar">
+            
+            <!-- Canvas Editor -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-edit" style="color: var(--accent); margin-right: 0.5rem"></i>Canvas Editor
+              </h3>
+              <p class="sidebar-help-text">Click nodes to position. Connect links to set capacity/unit cost (c, $u).</p>
+              
+              <div class="editor-modes-grid">
+                <button class="btn mode-btn active" data-mode="node">
+                  <i class="fas fa-plus-circle"></i> Add Node
+                </button>
+                <button class="btn mode-btn" data-mode="edge">
+                  <i class="fas fa-arrow-right"></i> Add Edge
+                </button>
+                <button class="btn mode-btn" data-mode="delete">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <button class="btn mode-btn" data-mode="source">
+                  <i class="fas fa-sign-in-alt"></i> Set Src (S)
+                </button>
+                <button class="btn mode-btn" data-mode="sink" style="grid-column: span 2;">
+                  <i class="fas fa-sign-out-alt"></i> Set Sink (T)
+                </button>
+              </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-sliders-h" style="color: var(--accent); margin-right: 0.5rem"></i>Configuration
+              </h3>
+
+              <!-- Preset Dropdown -->
+              <div class="control-group">
+                <label for="presetSelect">Load Preset Network</label>
+                <select id="presetSelect" class="control-input">
+                  <option value="diamond">Diamond Network</option>
+                  <option value="cheap-expensive">Cheap vs Expensive Path</option>
+                  <option value="disjoint">Disjoint Augmentation</option>
+                  <option value="empty">Clear Workspace</option>
+                </select>
+              </div>
+
+              <!-- Residual Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem;">
+                  <label for="residualToggle" style="margin-bottom: 0;">Show Residual Graph</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="residualToggle">
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Step Delay -->
+              <div class="control-group">
+                <label for="speedRange">Step Delay <span class="val-display" id="speedDisplay">800ms</span></label>
+                <input type="range" id="speedRange" min="200" max="2500" step="50" value="800" class="slider-custom" />
+              </div>
+
+              <!-- Audio -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="soundToggle" style="margin-bottom: 0;">Audio Synthesis</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Playback controls -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-play" style="color: var(--accent); margin-right: 0.5rem"></i>Execution
+              </h3>
+              <div class="btn-control-row">
+                <button id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Run MCMF
+                </button>
+                <button id="pauseBtn" class="btn btn-secondary btn-control" style="display: none;">
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+              </div>
+              <div class="btn-control-row" style="margin-top: 0.5rem;">
+                <button id="stepBackBtn" class="btn btn-secondary btn-control-icon" title="Step Back" disabled>
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="stepForwardBtn" class="btn btn-secondary btn-control-icon" title="Step Forward" disabled>
+                  <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="resetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset Animation">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- MAIN CANVAS & WORKSPACE -->
+          <div class="visualizer-main-panel">
+            
+            <!-- SVG Viewport Card -->
+            <div class="visualizer-card canvas-card" style="padding: 0; position: relative;">
+              
+              <!-- HUD stats and indices -->
+              <div class="canvas-hud">
+                <span id="canvasModeBadge" class="hud-badge mode-badge">Mode: Add Node</span>
+                <span id="flowInfoBadge" class="hud-badge success-badge">Flow: 0, Cost: 0</span>
+              </div>
+              
+              <div class="svg-container-wrapper">
+                <svg id="visualizerSvg" width="100%" height="450">
+                  <defs>
+                    <marker id="arrowhead" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--text-secondary)" />
+                    </marker>
+                    <marker id="arrowhead-active" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--active-blue)" />
+                    </marker>
+                    <marker id="arrowhead-residual" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--warning-orange)" />
+                    </marker>
+                    <marker id="arrowhead-back" markerWidth="9" markerHeight="6" refX="21" refY="3" orient="auto">
+                      <polygon points="0 0, 9 3, 0 6" fill="var(--collision-red)" />
+                    </marker>
+                    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.02)" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  
+                  <rect width="100%" height="100%" fill="url(#gridPattern)" id="canvasBg"/>
+                  
+                  <!-- Layers -->
+                  <g id="svgEdges"></g>
+                  <g id="svgNodes"></g>
+                </svg>
+
+                <div class="canvas-placeholder-text" id="canvasPlaceholder" style="display: none;">
+                  Click anywhere to place Source Node 'S'.
+                </div>
+              </div>
+            </div>
+
+            <!-- Flow & Cost Scoreboard -->
+            <div class="scoreboard-grid">
+              <div class="visualizer-card score-box">
+                <div class="score-label"><i class="fas fa-tint"></i> Max Flow Value</div>
+                <div class="score-value green-text" id="totalFlowVal">0</div>
+              </div>
+              <div class="visualizer-card score-box">
+                <div class="score-label"><i class="fas fa-dollar-sign"></i> Min Cost Accumulation</div>
+                <div class="score-value orange-text" id="totalCostVal">0</div>
+              </div>
+            </div>
+
+            <!-- Algorithm SPFA queue tracers -->
+            <div class="visualizer-card data-structures-dashboard">
+              <h4 class="card-section-title"><i class="fas fa-map-marker-alt"></i> SPFA Search Tracing</h4>
+              <div class="spfa-row">
+                <div class="spfa-stat">
+                  <span class="label">SPFA Queue:</span>
+                  <span class="value" id="spfaQueueDisplay">[Empty]</span>
+                </div>
+                <div class="spfa-stat">
+                  <span class="label">Shortest Distances:</span>
+                  <span class="value" id="spfaDistDisplay">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- History Augmentation Table -->
+            <div class="visualizer-card table-card">
+              <h3>
+                <i class="fas fa-history" style="color: var(--accent); margin-right: 0.5rem"></i>Augmentation Path History
+              </h3>
+              <div class="table-scroll-container">
+                <table class="history-table" id="historyTable">
+                  <thead>
+                    <tr>
+                      <th>Step</th>
+                      <th>Augmenting Path</th>
+                      <th>Bottleneck Flow (df)</th>
+                      <th>Path Unit Cost</th>
+                      <th>Augmentation Cost</th>
+                      <th>Cumulative Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody">
+                    <tr>
+                      <td colspan="6" class="empty-table-message">No augmentations recorded. Click Run to begin.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Console logs -->
+            <div class="visualizer-card logs-card-wrapper">
+              <div class="logs-card-header">
+                <h3><i class="fas fa-terminal" style="color: var(--accent); margin-right: 0.5rem"></i>Algorithm Process Trace</h3>
+                <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" id="clearLogsBtn">Clear</button>
+              </div>
+              <div class="console-logs-container" id="logPanel">
+                <div class="log-entry sys">Flow workspace ready. Position nodes S and T.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Min-Cost Max-Flow Theory -->
+    <section class="section" id="theory-section" style="padding-top: 0;">
+      <div class="container">
+        <div class="visualizer-card theory-panel">
+          <h2 class="theory-title"><i class="fas fa-book-open"></i> Min-Cost Max-Flow Concepts</h2>
+          
+          <div class="theory-grid">
+            <div class="theory-column">
+              <h4><i class="fas fa-road"></i> Successive Shortest Path Algorithm</h4>
+              <p>
+                The **Successive Shortest Path** algorithm is a classic method to solve the Min-Cost Max-Flow problem. It repeatedly finds the shortest path in the **residual graph** from source $S$ to sink $T$ and augments flow along it.
+              </p>
+              <p>
+                In this context, the "length" or "distance" of an edge is its **unit cost** ($u$). Since residual back-edges have negative costs (to allow canceling flow), we must use a shortest path algorithm that can handle negative edge weights, such as **Bellman-Ford** or **SPFA**.
+              </p>
+            </div>
+            
+            <div class="theory-column">
+              <h4><i class="fas fa-exchange-alt"></i> Residual Network & Cost Canceling</h4>
+              <p>
+                For each directed edge with flow $f$, capacity $c$, and unit cost $u$, the residual graph contains:
+                - A **forward edge** with capacity $c - f$ and cost $u$.
+                - A **backward edge** with capacity $f$ and cost $-u$.
+              </p>
+              <p>
+                When flow is pushed along a backward edge, it effectively reduces the flow on the original edge. Because the backward edge has a cost of $-u$, this cancellation actually **reduces** the total cost, showing how the algorithm balances cost and flow.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you master residual networks and Min-Cost Max-Flow algorithms today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="Explain successive shortest path algorithm for Min-Cost Max-Flow."
+          >
+            MCMF Algorithm
+          </button>
+          <button
+            class="quick-q"
+            data-question="Why do residual backward edges have negative costs?"
+          >
+            Negative Cost Edges
+          </button>
+          <button class="quick-q" data-question="What happens if SPFA finds a negative cycle?">
+            Negative Cycles
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="min-cost-max-flow-visualizer.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

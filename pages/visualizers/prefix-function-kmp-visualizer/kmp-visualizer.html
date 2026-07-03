@@ -1,0 +1,151 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KMP Prefix Function Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive prefix function and KMP string matching visualizer with step-by-step playback, LPS construction, and detailed explanations." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="kmp-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="kmp-prefix-function-visualizer">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+    <div id="navbar-placeholder"></div>
+    <section class="hero kmp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Prefix Function. LPS. Match Fallback.</span>
+          <span class="main-title kmp-gradient">KMP Prefix Function Visualizer</span>
+          <span class="subtitle">Compute LPS, then run KMP matching step by step.</span>
+        </h1>
+        <p class="section-subtitle">See exactly how the prefix function is built and how KMP reuses it during matching. Every step explains what happened, why the pointers moved, and what the algorithm learned.</p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary kmp-btn-primary"><i class="fas fa-play"></i> Open Visualizer</a>
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> How It Works</a>
+        </div>
+      </div>
+    </section>
+    <section id="visualizer" class="section">
+      <div class="container">
+        <div class="kmp-card">
+          <div class="kmp-input-grid">
+            <label class="kmp-field">
+              <span>Pattern input</span>
+              <input id="kmpPatternInput" type="text" value="ABABACA" maxlength="40" />
+            </label>
+            <label class="kmp-field">
+              <span>Text input</span>
+              <input id="kmpTextInput" type="text" value="ABABABACABABACA" maxlength="120" />
+            </label>
+          </div>
+          <div class="kmp-actions">
+            <button class="btn btn-primary kmp-btn-primary" id="kmpComputeBtn"><i class="fas fa-calculator"></i> Compute LPS</button>
+            <button class="btn btn-primary kmp-btn-primary" id="kmpRunBtn"><i class="fas fa-search"></i> Run Match</button>
+            <button class="btn btn-secondary kmp-pb-btn" id="kmpPrevBtn" disabled><i class="fas fa-step-backward"></i> Previous</button>
+            <button class="btn btn-secondary kmp-pb-btn" id="kmpNextBtn" disabled><i class="fas fa-step-forward"></i> Next</button>
+            <button class="btn btn-secondary kmp-pb-btn" id="kmpPlayBtn" disabled><i class="fas fa-play"></i> Play</button>
+            <button class="btn btn-secondary kmp-pb-btn" id="kmpPauseBtn" disabled><i class="fas fa-pause"></i> Pause</button>
+            <button class="btn btn-secondary kmp-pb-btn" id="kmpResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <div class="kmp-step-counter">Step <span id="kmpStepNum">0</span> / <span id="kmpStepTotal">0</span></div>
+          </div>
+        </div>
+        <div class="kmp-status-panel" aria-live="polite">
+          <div class="kmp-status-badge" id="kmpStatusBadge">Idle</div>
+          <div class="kmp-status-text" id="kmpStatusText">Enter a pattern, then compute the LPS array or run the full KMP match.</div>
+        </div>
+        <div class="kmp-viz-card">
+          <div class="kmp-phase-row">
+            <span class="kmp-phase-label">Mode</span>
+            <span class="kmp-phase-pill" id="kmpModePill">Ready</span>
+          </div>
+          <div class="kmp-block">
+            <div class="kmp-block-title">Pattern</div>
+            <div class="kmp-row" id="kmpPatternRow"></div>
+            <div class="kmp-pointers" id="kmpPatternPointers"></div>
+          </div>
+          <div class="kmp-block kmp-text-block" id="kmpTextBlock">
+            <div class="kmp-block-title">TEXT</div>
+            <div class="kmp-row" id="kmpTextRow"></div>
+            <div class="kmp-pointers" id="kmpTextPointers"></div>
+          </div>
+          <div class="kmp-block">
+            <div class="kmp-block-title">LPS</div>
+            <div class="kmp-row kmp-lps-row" id="kmpLpsRow"></div>
+          </div>
+          <div class="kmp-legend">
+            <span><i></i> current i</span>
+            <span><i></i> current len(j)</span>
+            <span><i></i> matched chars</span>
+            <span><i></i> mismatch</span>
+          </div>
+        </div>
+        <div class="kmp-explanation-card">
+          <div class="kmp-block-title">Explanation Panel</div>
+          <div class="kmp-explanation" id="kmpExplanation" aria-live="polite">Every step will explain exactly what happened.</div>
+        </div>
+        <div class="kmp-status-grid">
+          <div class="kmp-mini-card">
+            <div class="kmp-mini-label">Status Panel</div>
+            <div class="kmp-mini-value" id="kmpStatusPanelValue">Building LPS...</div>
+          </div>
+          <div class="kmp-mini-card">
+            <div class="kmp-mini-label">Render</div>
+            <div class="kmp-mini-value">Pattern row, text row, LPS row, pointers, arrows</div>
+          </div>
+          <div class="kmp-mini-card">
+            <div class="kmp-mini-label">Result</div>
+            <div class="kmp-mini-value" id="kmpResultValue">Pattern Not Found</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How KMP Uses the Prefix Function</h2>
+        <div class="kmp-learn-grid">
+          <div class="kmp-learn-card">
+            <div class="kmp-learn-num">01</div>
+            <h3>Compute LPS</h3>
+            <p>For each pattern position, the prefix function stores the longest proper prefix that is also a suffix. That value is the jump target after a mismatch.</p>
+          </div>
+          <div class="kmp-learn-card">
+            <div class="kmp-learn-num">02</div>
+            <h3>Match Without Backtracking</h3>
+            <p>When text and pattern mismatch, KMP does not rewind the text pointer. It falls back inside the pattern using the LPS array.</p>
+          </div>
+          <div class="kmp-learn-card">
+            <div class="kmp-learn-num">03</div>
+            <h3>Why It Is Fast</h3>
+            <p>The algorithm never rechecks text characters unnecessarily. The total runtime stays linear in the text plus pattern length.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div id="footer-placeholder"></div>
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="kmp-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

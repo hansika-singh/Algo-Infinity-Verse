@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Java Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="java-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="java-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero je-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Java.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #f89820 0%, #ed1c24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser Java Editor</span>
+        </h1>
+      </div>
+    </section>
+
+    <main class="editor-container">
+      <div class="editor-wrapper">
+        <div class="editor-header">
+          <div class="editor-info">
+            <i class="fab fa-java"></i>
+            <span>Main.java</span>
+            <span id="jeStatusBadge" class="je-status-badge ce-status-ready">Ready</span>
+          </div>
+          <div class="editor-actions">
+            <select id="jeExampleSelect" class="je-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="collections">ArrayList Example</option>
+              <option value="function">Methods</option>
+              <option value="class">Classes & Objects</option>
+            </select>
+            <button id="jeCopyBtn" class="je-icon-btn" title="Copy Code" aria-label="Copy Code"><i class="fas fa-copy"></i></button>
+            <button id="jeSaveBtn" class="je-icon-btn" title="Save Draft" aria-label="Save Draft"><i class="fas fa-save"></i></button>
+            <button id="jeResetBtn" class="je-icon-btn je-reset-btn" title="Reset Editor" aria-label="Reset Editor"><i class="fas fa-undo"></i></button>
+            <button id="jeRunBtn" class="je-run-btn"><i class="fas fa-play"></i> Run Code</button>
+          </div>
+        </div>
+
+        <div class="editor-main">
+          <div id="jeLineNumbers" class="je-line-numbers">1</div>
+          <textarea id="jeEditor" spellcheck="false" placeholder="Write your Java code here..." aria-label="Java code editor"></textarea>
+        </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <i class="fas fa-terminal"></i>
+            <span>Standard Output</span>
+          </div>
+          <div id="jeOutputBody" class="panel-body">
+            <span class="je-output-placeholder">Output will appear here after running...</span>
+          </div>
+        </div>
+
+        <div class="panel console-panel">
+          <div class="panel-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Console / Errors</span>
+            <button id="jeConsoleClear" class="console-clear-btn" title="Clear Console" aria-label="Clear Console"><i class="fas fa-trash-alt"></i></button>
+          </div>
+          <div id="jeConsoleBody" class="panel-body">
+            <span class="je-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="java-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+<script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  </body>
+</html>

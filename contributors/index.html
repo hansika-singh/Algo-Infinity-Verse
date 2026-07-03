@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contributors - Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .contributors-container { max-width: 1200px; margin: 0 auto; padding: 6rem 1.5rem 2rem; }
+    .contributors-header { text-align: center; padding: 2rem 0 3rem; }
+    .contributors-header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    .contributors-header p { color: #9ca3af; font-size: 1.1rem; margin-top: 0.5rem; }
+    .leaderboard-section { margin: 2rem 0; }
+    .leaderboard { display: flex; flex-direction: column; gap: 0.5rem; background: #1f2937; border-radius: 12px; padding: 1rem; }
+    .leaderboard-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: #374151; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: transform 0.2s; cursor: pointer; }
+    .leaderboard-item:hover { transform: translateX(5px); }
+    .leaderboard-rank { font-size: 1.5rem; font-weight: 700; min-width: 50px; color: #9ca3af; }
+    .leaderboard-avatar { width: 48px; height: 48px; border-radius: 50%; background: #4b5563; overflow: hidden; }
+    .leaderboard-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .leaderboard-info { flex: 1; }
+    .leaderboard-name { font-weight: 600; font-size: 1rem; color: #f3f4f6; }
+    .leaderboard-stats { display: flex; gap: 1rem; font-size: 0.85rem; color: #9ca3af; }
+    .leaderboard-stats span { display: flex; align-items: center; gap: 0.25rem; }
+    .contributors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+    .contributor-card { background: #1f2937; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); transition: all 0.3s; text-align: center; cursor: pointer; }
+    .contributor-card:hover { transform: translateY(-5px); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+    .contributor-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; background: #4b5563; overflow: hidden; }
+    .contributor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .contributor-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: #f3f4f6; }
+    .contributor-username { color: #9ca3af; font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .contributor-badges { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin-bottom: 1rem; min-height: 28px; }
+    .badge { display: inline-flex; align-items: center; justify-content: center; width: auto !important; height: auto !important; gap: 5px; font-size: 12px; font-weight: 500; letter-spacing: 0.01em; padding: 4px 10px; border-radius: 6px; border: 0.5px solid; transition: opacity 0.15s; white-space: nowrap; }
+    .badge i { font-size: 13px; }
+
+    /* Dark mode defaults (your site's default) */
+    .badge-gold   { background: #412402; color: #FAC775; border-color: #854F0B; }
+    .badge-silver { background: #2C2C2A; color: #D3D1C7; border-color: #5F5E5A; }
+    .badge-bronze { background: #4A1B0C; color: #F0997B; border-color: #993C1D; }
+    .badge-purple { background: #26215C; color: #CECBF6; border-color: #534AB7; }
+    .badge-green  { background: #04342C; color: #9FE1CB; border-color: #0F6E56; }
+    .badge-blue   { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
+
+    /* Light mode overrides */
+    .light-mode .badge-gold   { background: #FAEEDA; color: #633806; border-color: #FAC775; }
+    .light-mode .badge-silver { background: #F1EFE8; color: #444441; border-color: #B4B2A9; }
+    .light-mode .badge-bronze { background: #FAECE7; color: #71230B; border-color: #F0997B; }
+    .light-mode .badge-purple { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
+    .light-mode .badge-green  { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
+    .light-mode .badge-blue   { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
+    .contributor-stats { display: flex; justify-content: space-around; padding-top: 0.75rem; border-top: 1px solid #374151; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 1.25rem; font-weight: 700; display: block; color: #f3f4f6; }
+    .stat-label { font-size: 0.75rem; color: #9ca3af; }
+    .error-text { color: #f87171; text-align: center; font-size: 1.1rem; }
+    .loading-spinner { text-align: center; padding: 3rem; font-size: 1.2rem; color: #667eea; }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding-top: 4rem; box-sizing: border-box; }
+    .modal-overlay.active { display: flex; }
+    .modal-card { background: #1f2937; border-radius: 16px; padding: 2rem; max-width: 520px; width: 92%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); -ms-overflow-style: none; scrollbar-width: none; }
+    .modal-card::-webkit-scrollbar { display: none; }
+    .modal-close { position: absolute; top: 0.9rem; right: 1.1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #9ca3af; }
+    .modal-close:hover { color: #f3f4f6; }
+    .modal-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 1rem; background: #4b5563; overflow: hidden; }
+    .modal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-name { font-size: 1.45rem; font-weight: 700; text-align: center; color: #f3f4f6; }
+    .modal-username { color: #9ca3af; text-align: center; margin-bottom: 1.4rem; }
+    .modal-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
+    .modal-stat { background: #374151; border-radius: 12px; padding: 0.9rem; text-align: center; }
+    .modal-stat-value { font-size: 1.35rem; font-weight: 700; color: #60a5fa; }
+    .modal-stat-label { font-size: 0.82rem; color: #9ca3af; }
+    .modal-section { margin-top: 1.1rem; }
+    .modal-section h4 { font-size: 1rem; margin-bottom: 0.6rem; color: #e5e7eb; }
+    .modal-list { list-style: none; padding: 0; margin: 0; }
+    .modal-list li { padding: 0.55rem 0.7rem; background: #374151; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; color: #f3f4f6; line-height: 1.4; }
+    .modal-list li i { color: #60a5fa; flex-shrink: 0; }
+    .modal-list a { color: #60a5fa; text-decoration: none; word-break: break-word; }
+    .modal-list a:hover { text-decoration: underline; }
+    .meta-open { color: #f59e0b; font-size: 0.8rem; }
+    .meta-closed { color: #9ca3af; font-size: 0.8rem; }
+    .meta-merged { color: #6ee7b7; font-size: 0.8rem; white-space: nowrap; }
+
+    .light-mode .leaderboard { background: #f3f4f6; }
+    .light-mode .leaderboard-item { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .light-mode .leaderboard-rank { color: #374151; }
+    .light-mode .leaderboard-avatar { background: #e5e7eb; }
+    .light-mode .leaderboard-name { color: #111827; }
+    .light-mode .leaderboard-stats { color: #6b7280; }
+    .light-mode .contributor-card { background: #ffffff; color: #111827; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .light-mode .contributor-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    .light-mode .contributor-avatar { background: #e5e7eb; }
+    .light-mode .contributor-name { color: #111827; }
+    .light-mode .contributor-username { color: #6b7280; }
+    .light-mode .contributor-stats { border-top-color: #e5e7eb; }
+    .light-mode .stat-value { color: #111827; }
+    .light-mode .stat-label { color: #6b7280; }
+    .light-mode .modal-card { background: #ffffff; color: #111827; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+    .light-mode .modal-close { color: #6b7280; }
+    .light-mode .modal-close:hover { color: #111827; }
+    .light-mode .modal-avatar { background: #e5e7eb; }
+    .light-mode .modal-name { color: #111827; }
+    .light-mode .modal-username { color: #6b7280; }
+    .light-mode .modal-stat { background: #f3f4f6; }
+    .light-mode .modal-stat-label { color: #6b7280; }
+    .light-mode .modal-section h4 { color: #374151; }
+    .light-mode .modal-list li { background: #f9fafb; color: #111827; }
+    @media (max-width: 768px) {
+      .contributors-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+      .leaderboard-item { flex-wrap: wrap; gap: 0.5rem; }
+      .leaderboard-stats { flex-wrap: wrap; }
+      .modal-stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="contributors">
+  <div id="navbar-placeholder"></div>
+  <main class="contributors-container">
+    <section class="contributors-header">
+      <h1>🌟 Our Contributors</h1>
+      <p>Meet the amazing people building Algo-Infinity-Verse</p>
+    </section>
+    <section class="leaderboard-section">
+      <h2>🏆 Top Contributors</h2>
+      <div class="leaderboard" id="leaderboard">
+        <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+      </div>
+    </section>
+    <section class="all-contributors">
+      <h2>👥 All Contributors</h2>
+      <div class="contributors-grid" id="contributorsGrid">
+        <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+      </div>
+    </section>
+  </main>
+  <div class="modal-overlay" id="contributorModal">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div id="modalContent"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading details...</div></div>
+    </div>
+  </div>
+  <div id="footer-placeholder"></div>
+
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", async () => {
+    await loadPartial("navbar-placeholder", "/partials/navbar.html");
+    await loadPartial("footer-placeholder", "/partials/footer.html");
+
+    loadContributors();
+});
+  </script>
+  <script>
+    const REPO_OWNER = 'Eshajha19';
+    const REPO_NAME = 'Algo-Infinity-Verse';
+    const CACHE_KEY = 'algo_contributors_cache';
+    const CACHE_TTL = 1000 * 60 * 30;
+
+    function getCachedData() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.timestamp > CACHE_TTL) return null;
+        return parsed.data;
+      } catch { return null; }
+    }
+
+    function setCachedData(data) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+      } catch {}
+    }
+
+    async function gh(url) {
+      const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+      if (!res.ok) {
+        if (res.status === 403 || res.status === 429) throw new Error('RATE_LIMIT');
+        throw new Error('GitHub API error: ' + res.status);
+      }
+      return res;
+    }
+
+    async function ghJSON(url) {
+      const res = await gh(url);
+      return res.json();
+    }
+
+    async function fetchCommitCount(username) {
+      const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/commits?author=' + encodeURIComponent(username) + '&per_page=1';
+      const res = await gh(url).catch(() => null);
+      if (!res || !res.ok) return 0;
+      const link = res.headers.get('Link') || '';
+      const last = link.split(',').find(s => s.includes('rel="last"'));
+      if (last) {
+        const m = last.match(/page=(\d+)/);
+        if (m) return parseInt(m[1], 10);
+      }
+      const data = await res.json().catch(() => []);
+      return Array.isArray(data) ? data.length : 0;
+    }
+
+    async function fetchContributorDetails(username) {
+      return { rateLimited: false };
+    }
+
+    function getBadges(contributions, rank) {
+      const badges = [];
+      if (rank === 1)
+        badges.push({ label: '<i class="fas fa-trophy"></i> 1st place', cls: 'gold' });
+      else if (rank === 2)
+        badges.push({ label: '<i class="fas fa-medal"></i> 2nd place', cls: 'silver' });
+      else if (rank === 3)
+        badges.push({ label: '<i class="fas fa-award"></i> 3rd place', cls: 'bronze' });
+      else if (rank <= 10)
+        badges.push({ label: '<i class="fas fa-star"></i> Top 10', cls: 'purple' });
+
+      if (contributions >= 50)
+        badges.push({ label: '<i class="fas fa-fire"></i> 50+ commits', cls: 'green' });
+      else if (contributions >= 20)
+        badges.push({ label: '<i class="fas fa-rocket"></i> 20+ commits', cls: 'blue' });
+      else if (contributions >= 10)
+        badges.push({ label: '<i class="fas fa-code"></i> 10+ commits', cls: 'blue' });
+      return badges;
+    }
+
+    async function renderContributors(contributors) {
+      const leaderboard = document.getElementById('leaderboard');
+      const grid = document.getElementById('contributorsGrid');
+      leaderboard.innerHTML = '';
+      grid.innerHTML = '';
+
+      const sorted = [...contributors].sort((a, b) => (b.contributions || 0) - (a.contributions || 0));
+
+      sorted.slice(0, 5).forEach((c, i) => {
+        const badges = getBadges(c.contributions || 0, i + 1);
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        item.innerHTML = `
+          <span class="leaderboard-rank">${i + 1}</span>
+          <div class="leaderboard-avatar"><img src="${c.avatar_url}" alt="${c.login}" loading="lazy"></div>
+          <div class="leaderboard-info">
+            <div class="leaderboard-name">${c.login}</div>
+            <div class="leaderboard-stats">
+              <span><i class="fas fa-code-commit"></i> ${c.contributions || 0} commits</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;flex-shrink:0;">${badges.map(b => '<span class="badge badge-' + b.cls + '">' + b.label + '</span>').join('')}</div>
+        `;
+        item.addEventListener('click', () => openModal(c, badges));
+        leaderboard.appendChild(item);
+      });
+
+      contributors.forEach((c, i) => {
+        const badges = getBadges(c.contributions || 0, sorted.findIndex(s => s.login === c.login) + 1);
+        const card = document.createElement('div');
+        card.className = 'contributor-card';
+        card.innerHTML = `
+          <div class="contributor-avatar"><img src="${c.avatar_url}" alt="${c.login}" loading="lazy"></div>
+          <div class="contributor-name">${c.login}</div>
+          <div class="contributor-username">@${c.login}</div>
+          <div class="contributor-badges">${badges.map(b => '<span class="badge badge-' + b.cls + '">' + b.label + '</span>').join(' ')}</div>
+          <div class="contributor-stats">
+            <div class="stat"><span class="stat-value">${c.contributions || 0}</span><span class="stat-label">Commits</span></div>
+          </div>
+        `;
+        card.addEventListener('click', () => openModal(c, badges));
+        grid.appendChild(card);
+      });
+    }
+
+    async function openModal(contributor, badges) {
+      const modal = document.getElementById('contributorModal');
+      const content = document.getElementById('modalContent');
+      modal.classList.add('active');
+      content.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+      const allCards = Array.from(document.querySelectorAll('.contributor-card'));
+      const leaderboardItems = Array.from(document.querySelectorAll('.leaderboard-item'));
+      const allContributors = [];
+      allCards.forEach(card => { const login = card.querySelector('.contributor-name')?.textContent?.trim(); if (login) allContributors.push(login); });
+      leaderboardItems.forEach(item => { const login = item.querySelector('.leaderboard-name')?.textContent?.trim(); if (login) allContributors.push(login); });
+      const uniqueList = [...new Set(allContributors)];
+      const rankIdx = uniqueList.indexOf(contributor.login);
+      const rank = rankIdx >= 0 ? rankIdx + 1 : '?';
+
+      content.innerHTML = `
+        <div class="modal-avatar"><img loading="lazy" src="${contributor.avatar_url}" alt="${contributor.login}"></div>
+        <div class="modal-name">${contributor.login}</div>
+        <div class="modal-username">@${contributor.login} · <a href="${contributor.html_url}" target="_blank" rel="noopener" style="color:#60a5fa;">GitHub Profile</a></div>
+        <div class="modal-stats-grid">
+          <div class="modal-stat"><div class="modal-stat-value">#${rank}</div><div class="modal-stat-label">Rank</div></div>
+          <div class="modal-stat"><div class="modal-stat-value">${contributor.contributions || 0}</div><div class="modal-stat-label">Total Commits</div></div>
+        </div>
+        <div class="modal-section">
+          <h4>🏅 Achievements</h4>
+          <div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-items:center;margin-top:0.5rem;">${badges.map(b => '<span class="badge badge-' + b.cls + '">' + b.label + '</span>').join('')}</div>
+        </div>
+        <div class="modal-section" id="modalCommits">
+          <h4>🔄 Latest Commits</h4>
+          <div class="loading-spinner" style="padding: 1rem; font-size: 0.9rem;"><i class="fas fa-spinner fa-spin"></i> Fetching commits...</div>
+        </div>
+      `;
+
+      try {
+        const commitsData = await ghJSON('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/commits?author=' + encodeURIComponent(contributor.login) + '&per_page=5');
+        const commitsContainer = document.getElementById('modalCommits');
+        if (commitsData && commitsData.length > 0) {
+          const commitsList = commitsData.map(c => {
+            const msg = c.commit.message.split('\n')[0];
+            const url = c.html_url;
+            const date = new Date(c.commit.author.date).toLocaleDateString('en-GB'); // formats as dd/mm/yyyy
+            return `<li><i class="fas fa-code-commit"></i> <a href="${url}" target="_blank" rel="noopener" style="flex: 1;">${msg}</a> <span class="meta-closed" style="margin-left: auto; white-space: nowrap; flex-shrink: 0;">(${date})</span></li>`;
+          }).join('');
+          commitsContainer.innerHTML = `<h4>🔄 Latest Commits</h4><ul class="modal-list">${commitsList}</ul>`;
+        } else {
+          commitsContainer.innerHTML = `<h4>🔄 Latest Commits</h4><p style="color:#9ca3af; font-size: 0.9rem;">No recent commits found.</p>`;
+        }
+      } catch (err) {
+        const commitsContainer = document.getElementById('modalCommits');
+        if (commitsContainer) {
+          commitsContainer.innerHTML = `<h4>🔄 Latest Commits</h4><p style="color:#f87171; font-size: 0.9rem;">Could not load commits.</p>`;
+        }
+      }
+    }
+
+    document.getElementById('modalClose').addEventListener('click', () => document.getElementById('contributorModal').classList.remove('active'));
+    document.getElementById('contributorModal').addEventListener('click', (e) => { if (e.target.id === 'contributorModal') document.getElementById('contributorModal').classList.remove('active'); });
+
+    async function loadContributors() {
+      const cached = getCachedData();
+      if (cached) { await renderContributors(cached); return; }
+      try {
+        const data = await ghJSON('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contributors?per_page=100');
+        const filtered = data.filter(c => c.type === 'User');
+        setCachedData(filtered);
+        await renderContributors(filtered);
+      } catch (err) {
+        try {
+          const fallbackRes = await fetch('/contributors/contributors.json');
+          if (!fallbackRes.ok) throw new Error('Fallback JSON not found');
+          const fallback = await fallbackRes.json();
+          const filtered = fallback.filter(c => c.type === 'User' || !c.type);
+          setCachedData(filtered);
+          await renderContributors(filtered);
+        } catch (e) {
+          const leaderboard = document.getElementById('leaderboard');
+          const grid = document.getElementById('contributorsGrid');
+          let msg = 'Failed to load contributors.';
+          if (err.message === 'RATE_LIMIT') msg = 'GitHub API rate limit reached. Please try again later.';
+          if (cached) {
+            // we already rendered cached above, but just in case
+            return;
+          }
+          leaderboard.innerHTML = '<p class="error-text">' + msg + '</p>';
+          grid.innerHTML = '<p class="error-text">' + msg + '</p>';
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadContributors);
+  </script>
+</body>
+</html>

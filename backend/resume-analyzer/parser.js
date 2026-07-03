@@ -4,7 +4,7 @@ import mammoth from "mammoth";
 
 export async function extractResumeText(file){
 
-    if(file.mimetype === "application/pdf"){
+    if(file.mimetype.includes("pdf")){
 
         const data = await pdf(file.buffer);
         return data.text;

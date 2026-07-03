@@ -1,0 +1,557 @@
+/* AST Refactoring Engine Stylesheet */
+:root {
+    --glass-bg: rgba(15, 23, 42, 0.65);
+    --glass-border: rgba(30, 41, 59, 0.7);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* AST Category Colors */
+    --ast-decl: #10b981; /* Green */
+    --ast-loop: #f97316; /* Orange */
+    --ast-cond: #3b82f6; /* Blue */
+    --ast-expr: #a855f7; /* Purple */
+    --ast-ret: #ef4444;  /* Red */
+    --ast-warn: #eab308; /* Yellow */
+}
+
+body.ast-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Three-Panel Workspace Layout */
+.ast-workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background: #020617;
+}
+
+.panel-column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Left Panel: Inputs and Presets */
+.panel-left {
+    width: 380px;
+    min-width: 380px;
+    background: rgba(15, 23, 42, 0.85);
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    z-index: 10;
+}
+
+.panel-header {
+    padding: 1rem 1.5rem;
+    background: rgba(2, 6, 23, 0.9);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.panel-section {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-select {
+    background: #0f172a;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 0.6rem;
+    color: #fff;
+    outline: none;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    border-color: var(--ast-cond);
+}
+
+/* Language Toggles */
+.lang-toggle-group {
+    display: flex;
+    background: #0f172a;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.btn-lang {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    font-size: 0.78rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-lang.active {
+    background: var(--ast-cond);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+}
+
+/* Editors Structure */
+.editor-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 1.2rem;
+}
+
+.section-tag {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.4rem;
+}
+
+.editor-wrapper {
+    flex: 1;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0b0f19;
+}
+
+.editor-wrapper .CodeMirror {
+    height: 100%;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+}
+
+.bottom-actions {
+    padding: 1.2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.speed-slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.speed-slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--ast-cond);
+}
+
+#speedValText {
+    font-family: 'Fira Code', monospace;
+    color: var(--ast-cond);
+    font-weight: bold;
+    min-width: 30px;
+    text-align: right;
+}
+
+/* Center Viewport: AST drawing */
+.panel-center {
+    flex: 1;
+    background-image: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    border-right: 1px solid var(--glass-border);
+    position: relative;
+}
+
+.formula-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--ast-cond);
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.ast-viewport-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow: hidden;
+}
+
+.ast-svg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.ast-svg-line {
+    stroke: #1e293b;
+    stroke-width: 2.5;
+    fill: none;
+    transition: all 0.4s ease;
+}
+
+.ast-svg-line.optimized-connector {
+    stroke: var(--ast-decl);
+    stroke-dasharray: 4 2;
+    animation: flowConnector 0.6s linear infinite;
+}
+
+@keyframes flowConnector {
+    to { stroke-dashoffset: -10; }
+}
+
+.ast-nodes-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* AST Node Cards */
+.ast-node-card {
+    position: absolute;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #334155;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    min-width: 100px;
+    max-width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    user-select: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ast-node-card:hover {
+    border-color: #475569;
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.ast-node-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.ast-node-value {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* Category borders */
+.ast-node-card.decl { border-color: var(--ast-decl); box-shadow: 0 0 10px rgba(16, 185, 129, 0.15); }
+.ast-node-card.loop { border-color: var(--ast-loop); box-shadow: 0 0 10px rgba(249, 115, 22, 0.15); }
+.ast-node-card.cond { border-color: var(--ast-cond); box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); }
+.ast-node-card.expr { border-color: var(--ast-expr); box-shadow: 0 0 10px rgba(168, 85, 247, 0.15); }
+.ast-node-card.ret  { border-color: var(--ast-ret);  box-shadow: 0 0 10px rgba(239, 68, 68, 0.15); }
+
+/* Inefficient Highlight */
+.ast-node-card.warning-glow {
+    border-color: var(--ast-warn);
+    animation: warningPulse 1.2s infinite alternate;
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+}
+
+.ast-node-card.error-glow {
+    border-color: var(--ast-ret);
+    animation: errorPulse 1.2s infinite alternate;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes warningPulse {
+    0% { box-shadow: 0 0 5px rgba(234, 179, 8, 0.2); }
+    100% { box-shadow: 0 0 18px rgba(234, 179, 8, 0.6); }
+}
+
+@keyframes errorPulse {
+    0% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); }
+    100% { box-shadow: 0 0 18px rgba(239, 68, 68, 0.6); }
+}
+
+/* Animations for Morphing */
+.ast-node-card.fade-out {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+    pointer-events: none;
+}
+
+/* Legend Overlay */
+.ast-legend {
+    position: absolute;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    z-index: 10;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.legend-dot.decl { background: var(--ast-decl); }
+.legend-dot.loop { background: var(--ast-loop); }
+.legend-dot.cond { background: var(--ast-cond); }
+.legend-dot.expr { background: var(--ast-expr); }
+
+/* Node Hover HUD card */
+.node-hover-hud {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 0.8rem;
+    min-width: 200px;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s;
+    pointer-events: none;
+}
+
+.node-hover-hud.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hud-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.4rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 2px;
+}
+
+.hud-row {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.2rem;
+}
+
+.hud-label {
+    color: #475569;
+}
+
+.prop-detail {
+    font-family: 'Fira Code', monospace;
+    color: var(--ast-cond);
+}
+
+/* Right Panel: Refactored Code & Complexity */
+.panel-right {
+    width: 400px;
+    min-width: 400px;
+    background: rgba(15, 23, 42, 0.85);
+    border-left: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    z-index: 10;
+}
+
+.complexity-compare-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 0.8rem;
+}
+
+.comp-card {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.comp-card.arrow-between {
+    flex: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+.comp-title {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.comp-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.comp-label {
+    font-size: 0.6rem;
+    color: #475569;
+}
+
+.flex-editor {
+    flex: 1.2; /* Larger space for optimized output */
+}
+
+/* Compiler Logs */
+.logs-section {
+    height: 180px;
+    min-height: 180px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.logs-container {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 0.8rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.log-line {
+    line-height: 1.4;
+    color: #94a3b8;
+    word-wrap: break-word;
+}
+
+.log-line.sys { color: #64748b; }
+.log-line.opt { color: var(--ast-decl); }
+.log-line.warn { color: var(--ast-warn); }
+
+/* Global Utilities */
+.btn {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background: var(--ast-cond);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.w-100 { width: 100%; }
+
+@media (max-width: 1200px) {
+    .ast-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left, .panel-right { width: 100%; min-width: 100%; height: auto; }
+    .panel-center { height: 500px; min-height: 500px; }
+}

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Playground</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/monokai.min.css" />
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #7c3aed; }
+        .controls { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; align-items: center; }
+        .controls label { font-weight: 500; }
+        .controls select, .controls button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; }
+        .controls select:focus, .controls button:focus { outline: 2px solid #7c3aed; outline-offset: 2px; }
+        .controls button { background: #7c3aed; color: white; border: none; cursor: pointer; }
+        .controls button:hover { background: #6d28d9; }
+        .controls button:focus-visible { outline: 3px solid #7c3aed; outline-offset: 2px; }
+        .CodeMirror { height: 300px; border-radius: 8px; overflow: hidden; }
+        .output { background: #1a1a2e; color: #e4e4e4; padding: 15px; border-radius: 8px; margin-top: 10px; min-height: 60px; font-family: monospace; white-space: pre-wrap; }
+        .error { color: #ef4444; }
+        .success { color: #22c55e; }
+        .info { color: #60a5fa; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+        #output[aria-live="polite"] { transition: background 0.2s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💻 Code Playground</h1>
+        <div class="controls">
+            <label for="lang">Language:</label>
+            <select id="lang" aria-label="Select programming language">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+            </select>
+            <button id="runBtn" aria-label="Run code">▶ Run</button>
+            <button id="templateBtn" aria-label="Load template code">📄 Load Template</button>
+            <button id="clearBtn" aria-label="Clear editor">🗑️ Clear</button>
+        </div>
+        <textarea id="editor" aria-label="Code editor"></textarea>
+        <div class="output" id="output" role="status" aria-live="polite" aria-atomic="true">Run your code to see output here...</div>
+        <button id="predictBtn" class="btn btn-primary" type="button" aria-label="Predict acceptance">
+            <i class="fas fa-chart-line"></i> Predict Acceptance
+        </button>
+        <div id="predictionModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📊 Acceptance Prediction</h3>
+                    <button id="closePredictionBtn" class="modal-close" type="button">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="predictionResults">
+                        <!-- Results will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <script>
+        const templates = {
+            javascript: `function solve(input) {\n  console.log(input);\n  return input;\n}`,
+            python: `def solve(input):\n    print(input)\n    return input`,
+            java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello");\n    }\n}`,
+            cpp: `#include <iostream>\nusing namespace std;\nint main() {\n    cout << "Hello" << endl;\n    return 0;\n}`
+        };
+
+        const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+            mode: 'javascript',
+            theme: 'monokai',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            tabSize: 2,
+        });
+
+        document.getElementById('lang').addEventListener('change', function() {
+            const modeMap = { javascript: 'javascript', python: 'python', java: 'text/x-java', cpp: 'text/x-c++src' };
+            editor.setOption('mode', modeMap[this.value]);
+        });
+
+        document.getElementById('templateBtn').addEventListener('click', () => {
+            editor.setValue(templates[document.getElementById('lang').value]);
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            editor.setValue('');
+            const output = document.getElementById('output');
+            output.textContent = 'Cleared. Write your code and run.';
+            output.className = 'output';
+        });
+
+        // Safe output function (textContent + class-based styling)
+        function setOutput(text, type) {
+            const output = document.getElementById('output');
+            output.textContent = text;
+            output.className = 'output ' + (type || '');
+        }
+
+        function appendOutput(text) {
+            const output = document.getElementById('output');
+            output.textContent += '\n' + text;
+        }
+
+        document.getElementById('runBtn').addEventListener('click', async function() {
+            const output = document.getElementById('output');
+            const start = performance.now();
+            const code = editor.getValue();
+            const lang = document.getElementById('lang').value;
+
+            if (!code.trim()) {
+                setOutput('❌ Please write some code first.', 'error');
+                return;
+            }
+
+            this.disabled = true;
+            setOutput('⏳ Running...', '');
+
+            try {
+                if (lang === 'javascript') {
+                    // Run in isolated sandbox (simplified)
+                    const logs = [];
+                    const origLog = console.log;
+                    console.log = (...args) => logs.push(args.join(' '));
+                    
+                    try {
+                        const result = new Function(`"use strict";\n${code}\nreturn solve();`)();
+                        console.log = origLog;
+                        const time = (performance.now() - start).toFixed(2);
+                        let complexityStr = '';
+                        try {
+                            if (typeof window.analyzeComplexity !== 'function') {
+                                await new Promise((resolve) => {
+                                    const script = document.createElement('script');
+                                    script.src = 'modules/complexity-client.js';
+                                    script.onload = resolve;
+                                    script.onerror = resolve;
+                                    document.head.appendChild(script);
+                                });
+                            }
+                            if (typeof window.analyzeComplexity === 'function') {
+                                const complexity = await window.analyzeComplexity(code);
+                                if (complexity) {
+                                    complexityStr = `\n\n📊 Time Complexity: ${complexity}`;
+                                }
+                            }
+                        } catch (err) {
+                            console.error("Complexity analysis failed", err);
+                        }
+                        const outputText = `📤 Output:\n${logs.join('\n') || '(no output)'}\n\n✅ Result: ${result !== undefined ? result : 'Done'}\n\n⏱️ ${time}ms${complexityStr}`;
+                        setOutput(outputText, 'success');
+                    } catch(e) {
+                        console.log = origLog;
+                        setOutput(`❌ Error: ${e.message}`, 'error');
+                    }
+                } else {
+                    // Piston API with proper error handling
+                    try {
+                        const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ language: lang, version: '*', files: [{ content: code }] })
+                        });
+
+                        if (!res.ok) {
+                            setOutput(`❌ API Error: ${res.status} ${res.statusText}`, 'error');
+                            return;
+                        }
+
+                        const data = await res.json();
+
+                        // Check for compilation errors
+                        if (data.compile && data.compile.stderr) {
+                            setOutput(`❌ Compilation Error:\n${data.compile.stderr}`, 'error');
+                            return;
+                        }
+
+                        // Check for runtime errors
+                        if (data.run && data.run.stderr) {
+                            setOutput(`❌ Runtime Error:\n${data.run.stderr}`, 'error');
+                            return;
+                        }
+
+                        // Check exit code
+                        if (data.run && data.run.code !== undefined && data.run.code !== 0) {
+                            setOutput(`❌ Process exited with code ${data.run.code}\n${data.run.stderr || 'Unknown error'}`, 'error');
+                            return;
+                        }
+
+                        const time = (performance.now() - start).toFixed(2);
+                        const out = data.run?.stdout || data.run?.output || 'Done';
+                        setOutput(`📤 Output:\n${out}\n\n⏱️ ${time}ms`, 'success');
+                    } catch (fetchError) {
+                        setOutput(`❌ Network Error: ${fetchError.message}`, 'error');
+                    }
+                }
+            } catch(e) {
+                setOutput(`❌ ${e.message}`, 'error');
+            } finally {
+                this.disabled = false;
+            }
+        });
+
+        // Keyboard shortcut
+        // Keyboard shortcut: Ctrl+Enter to run
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('runBtn').click();
+            }
+        });
+
+        document.getElementById('predictBtn').addEventListener('click', () => {
+            document.getElementById('predictionModal').style.display = 'block';
+        });
+
+        document
+            .getElementById('closePredictionBtn')
+            .addEventListener('click', closePredictionModal);
+
+        function closePredictionModal() {
+            document.getElementById('predictionModal').style.display = 'none';
+        }
+
+        // Load initial template
+        editor.setValue(templates.javascript);
+    </script>
+</body>
+</html>
+    

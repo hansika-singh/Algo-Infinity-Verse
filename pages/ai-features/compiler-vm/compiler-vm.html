@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compiler & Virtual Machine | Algo Infinity Verse</title>
+    <meta name="description" content="Custom compiler and stack-based virtual machine visualizer." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="compiler-vm.css" />
+</head>
+<body class="vm-body">
+
+    <nav class="navbar vm-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> VM Engine: Idle
+        </div>
+    </nav>
+
+    <main class="vm-workspace">
+        
+        <!-- Left Panel: Code Editor -->
+        <div class="panel-editor">
+            <div class="panel-header">
+                <h3><i class="fas fa-code"></i> AlgoLang Source Code</h3>
+                <button class="btn btn-primary btn-sm" id="btnCompile">
+                    <i class="fas fa-cogs"></i> Compile
+                </button>
+            </div>
+            
+            <div class="editor-wrapper" id="editorContainer"></div>
+            
+            <div class="syntax-guide">
+                <strong><i class="fas fa-book"></i> Syntax Guide:</strong> Supports <code>let</code>, <code>while</code>, <code>print</code>, and basic math (<code>+ - * < ></code>).
+            </div>
+        </div>
+
+        <!-- Center Panel: Compiler Output (AST & Bytecode) -->
+        <div class="panel-compiler">
+            <div class="compiler-tabs">
+                <button class="tab-btn active" data-target="bytecodeView"><i class="fas fa-list-ol"></i> Bytecode</button>
+                <button class="tab-btn" data-target="astView"><i class="fas fa-sitemap"></i> AST</button>
+            </div>
+            
+            <!-- Bytecode Viewer -->
+            <div class="compiler-content active" id="bytecodeView">
+                <div class="empty-state" id="bcEmpty">Click 'Compile' to generate bytecode.</div>
+                <div class="bytecode-list" id="bytecodeList"></div>
+            </div>
+            
+            <!-- AST Viewer -->
+            <div class="compiler-content" id="astView">
+                <div class="empty-state" id="astEmpty">Click 'Compile' to generate AST.</div>
+                <pre class="ast-tree" id="astTree"></pre>
+            </div>
+        </div>
+
+        <!-- Right Panel: Virtual Machine State -->
+        <div class="panel-vm">
+            <div class="panel-header vm-header">
+                <h3><i class="fas fa-server"></i> Stack-Based VM</h3>
+                <div class="vm-controls">
+                    <button class="btn-icon" id="btnStep" title="Step Forward" disabled><i class="fas fa-step-forward"></i></button>
+                    <button class="btn-icon" id="btnPlay" title="Auto Run" disabled><i class="fas fa-play"></i></button>
+                    <button class="btn-icon" id="btnStop" title="Halt" disabled><i class="fas fa-stop"></i></button>
+                </div>
+            </div>
+            
+            <div class="vm-internals">
+                <!-- Stack Visualizer -->
+                <div class="vm-module stack-module">
+                    <h4><i class="fas fa-layer-group"></i> Call Stack</h4>
+                    <div class="stack-container" id="stackContainer">
+                        <!-- Pushed items appear here -->
+                    </div>
+                </div>
+
+                <!-- Memory / Heap Visualizer -->
+                <div class="vm-module memory-module">
+                    <h4><i class="fas fa-memory"></i> Memory (Heap)</h4>
+                    <div class="memory-grid" id="memoryGrid">
+                        <!-- Variables appear here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Standard Output (Terminal) -->
+            <div class="terminal-module">
+                <div class="term-header">
+                    <span><i class="fas fa-terminal"></i> Standard Output</span>
+                    <span class="ip-indicator">IP: <span id="ipDisplay">0</span></span>
+                </div>
+                <div class="term-content" id="termOutput">
+                    > VM Ready...
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="compiler-vm.js"></script>
+</body>
+</html>

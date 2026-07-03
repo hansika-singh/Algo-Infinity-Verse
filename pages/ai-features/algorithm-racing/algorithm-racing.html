@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Racing | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Compete head-to-head in real-time algorithm races."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- CodeMirror -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/nord.min.css"
+    />
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="algorithm-racing.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem("theme");
+          var prefersLight = window.matchMedia(
+            "(prefers-color-scheme: light)",
+          ).matches;
+          var theme = storedTheme || (prefersLight ? "light" : "dark");
+          if (theme === "light") {
+            document.documentElement.classList.add("light-mode");
+          } else {
+            document.documentElement.classList.remove("light-mode");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="race-body">
+    <nav class="navbar race-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="race-status" id="raceStatusBadge">
+        <i class="fas fa-flag"></i> In Lobby
+      </div>
+    </nav>
+
+    <!-- Race Header -->
+    <header class="race-header">
+      <div class="problem-info">
+        <h2>Two Sum (Optimized)</h2>
+        <p>
+          Find two numbers that add up to target. Target time complexity: O(N).
+        </p>
+      </div>
+      <button class="btn btn-primary" id="btnShowLobby">
+        <i class="fas fa-satellite-dish"></i> Connect Opponent
+      </button>
+    </header>
+
+    <!-- Main Racing Workspace -->
+    <main class="race-workspace">
+      <!-- Player 1 (You) -->
+      <div class="player-panel my-panel">
+        <div class="panel-header my-header">
+          <div class="player-identity">
+            <div class="avatar my-avatar"><i class="fas fa-user"></i></div>
+            <span class="player-name">You</span>
+          </div>
+          <div class="test-progress-container">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill my-fill" id="myProgress"></div>
+            </div>
+            <span class="progress-text" id="myProgressText">0 / 5 Tests</span>
+          </div>
+        </div>
+
+        <div class="editor-wrapper" id="myEditorContainer">
+          <!-- CodeMirror injects here -->
+        </div>
+
+        <div class="panel-footer">
+          <button class="btn btn-success w-100" id="btnRunMyCode" disabled>
+            <i class="fas fa-play"></i> Run Tests
+          </button>
+        </div>
+        <div class="console-output" id="myConsole">
+          System ready. Waiting for race to start...
+        </div>
+      </div>
+
+      <!-- Player 2 (Opponent) -->
+      <div class="player-panel opp-panel">
+        <div class="panel-header opp-header">
+          <div class="player-identity">
+            <div class="avatar opp-avatar">
+              <i class="fas fa-user-ninja"></i>
+            </div>
+            <span class="player-name">Opponent</span>
+          </div>
+          <div class="test-progress-container">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill opp-fill" id="oppProgress"></div>
+            </div>
+            <span class="progress-text" id="oppProgressText">0 / 5 Tests</span>
+          </div>
+        </div>
+
+        <div class="editor-wrapper opp-editor-wrapper" id="oppEditorContainer">
+          <!-- Opponent CodeMirror injects here (Read Only) -->
+        </div>
+
+        <div class="panel-footer opp-footer">
+          <div class="live-status">
+            <div class="pulse-dot" id="oppPulse"></div>
+          </div>
+        </div>
+        <div class="console-output opp-console">
+          <i
+            >Opponent's console is hidden during the race. Watch their progress
+            bar!</i
+          >
+        </div>
+      </div>
+    </main>
+
+    <!-- WebRTC Lobby Modal -->
+    <div class="modal-overlay" id="lobbyModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-gamepad"></i> Race Lobby (P2P)</h2>
+          <button class="btn-icon" id="btnCloseLobby">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <p class="modal-desc">
+          Connect directly to your opponent using a WebRTC Data Channel.
+        </p>
+        <div class="connection-status" id="connectionStatus">
+          <i class="fas fa-circle"></i>
+          Status: Waiting for opponent...
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="host">
+            🏁 Host a New Race
+          </button>
+          <button class="tab-btn" data-tab="join">🤝 Join Existing Race</button>
+        </div>
+
+        <!-- Host Flow -->
+        <div class="tab-content active" id="tab-host">
+          <div class="step-card">
+            <h4>
+              <i class="fas fa-key"></i>
+              Step 1 • Generate Invite Token
+            </h4>
+
+            <p class="step-description">
+              Generate a secure invite token and share it with your opponent.
+            </p>
+
+            <button class="btn btn-primary w-100" id="btnGenerateOffer">
+              ✨ Generate Invite Token
+            </button>
+            <label for="hostOfferToken"> Invite Token </label>
+            <textarea
+              class="token-box"
+              id="hostOfferToken"
+              readonly
+              placeholder="Token will appear here..."
+            ></textarea>
+          </div>
+          <div class="step-card">
+            <h4>
+              <i class="fas fa-reply"></i> Step 2 • Paste Opponent's Reply
+            </h4>
+            <p class="step-description">
+              Paste the reply token received from your opponent, then connect to start the race.
+            </p>
+            <label for="hostAnswerToken"> Reply Token </label>
+            <textarea
+              class="token-box"
+              id="hostAnswerToken"
+              placeholder="Paste reply token..."
+            ></textarea>
+            <button class="btn btn-success w-100" id="btnConnectHost">
+              🚀 Connect & Start Match
+            </button>
+          </div>
+        </div>
+
+        <!-- Join Flow -->
+        <div class="tab-content hidden" id="tab-join">
+          <div class="step-card">
+            <h4>
+              <i class="fas fa-key"></i>
+              Step 1 • Paste Invite Token
+            </h4>
+            <p class="step-description">
+              Paste the invite token received from the host.
+            </p>
+            <label for="guestOfferToken"> Invite Token </label>
+            <textarea
+              class="token-box"
+              id="guestOfferToken"
+              placeholder="Paste host token..."
+            ></textarea>
+            <button class="btn btn-primary w-100" id="btnAcceptOffer">
+              🔗 Accept & Generate Reply
+            </button>
+          </div>
+          <div class="step-card hidden" id="guestReplySection">
+            <h4>
+              <i class="fas fa-paper-plane"></i>
+              Step 2 • Send Reply to Host
+            </h4>
+            <p class="step-description">
+              Copy this reply token and send it back to the host.
+            </p>
+            <label for="guestAnswerToken"> Reply Token </label>
+            <textarea
+              class="token-box"
+              id="guestAnswerToken"
+              readonly
+            ></textarea>
+            <div class="wait-state">
+              <i class="fas fa-spinner fa-spin"></i> Waiting for Host to start the match...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown & Winner Overlay -->
+    <div class="fullscreen-overlay hidden" id="raceOverlay">
+      <div class="countdown-text" id="countdownText">3</div>
+      <div class="winner-panel hidden" id="winnerPanel">
+        <h1 id="winnerText">YOU WIN!</h1>
+        <p id="winnerSubtext">Algorithm executed flawlessly.</p>
+        <button class="btn btn-primary" id="btnRematch">Request Rematch</button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="algorithm-racing.js"></script>
+  </body>
+</html>

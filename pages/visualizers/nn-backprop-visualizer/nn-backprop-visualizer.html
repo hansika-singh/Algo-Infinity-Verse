@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Visualizer | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="nn-backprop-visualizer.css" />
+</head>
+<body class="nn-body">
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="workspace">
+        <!-- Left Panel: Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-network-wired"></i> Neural Network Engine</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Watch exactly how a Neural Network learns. Red connections are negative weights, blue are positive. Line thickness represents magnitude.
+                </p>
+
+                <!-- Dataset -->
+                <div class="input-group">
+                    <label for="datasetSelect">Dataset (Truth Table)</label>
+                    <select id="datasetSelect" class="styled-select">
+                        <option value="xor">XOR Problem (Non-linear)</option>
+                        <option value="or">OR Problem</option>
+                        <option value="and">AND Problem</option>
+                    </select>
+                </div>
+
+                <!-- Architecture -->
+                <div class="input-group">
+                    <label for="archInput">Hidden Layers (Comma separated)</label>
+                    <input type="text" id="archInput" class="styled-input" value="4" placeholder="e.g. 4,3">
+                    <small class="hint">Input is always 2. Output is 1.</small>
+                </div>
+
+                <!-- Activation Functions -->
+                <div class="input-group">
+                    <label for="activationSelect">Activation Function</label>
+                    <select id="activationSelect" class="styled-select">
+                        <option value="sigmoid">Sigmoid</option>
+                        <option value="relu">ReLU</option>
+                        <option value="tanh">Tanh</option>
+                    </select>
+                </div>
+
+                <!-- Hyperparameters -->
+                <div class="sliders-container">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <label for="lrSlider">Learning Rate (α)</label>
+                            <span id="lrVal" class="val-badge">0.1</span>
+                        </div>
+                        <input type="range" id="lrSlider" min="0.01" max="1" step="0.01" value="0.1">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="action-buttons-col">
+                    <button id="resetBtn" class="btn btn-secondary"><i class="fas fa-undo"></i> Reset Network</button>
+                    <div class="row-btns">
+                        <button id="stepForwardBtn" class="btn btn-accent"><i class="fas fa-step-forward"></i> Forward Pass</button>
+                        <button id="stepBackwardBtn" class="btn btn-accent"><i class="fas fa-step-backward"></i> Backprop</button>
+                    </div>
+                    <button id="trainEpochBtn" class="btn btn-primary"><i class="fas fa-dumbbell"></i> Train 1 Epoch</button>
+                    <button id="autoTrainBtn" class="btn btn-success"><i class="fas fa-play"></i> Auto Train</button>
+                </div>
+
+                <!-- Live Status -->
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span>Epoch:</span>
+                        <strong id="epochStat">0</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>MSE Loss:</span>
+                        <strong id="lossStat">1.0000</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Network & Chart -->
+        <div class="panel-right">
+            <!-- Top: Network Visualization -->
+            <div class="network-container" id="networkContainer">
+                <canvas id="networkCanvas"></canvas>
+            </div>
+            
+            <!-- Bottom: Loss Chart -->
+            <div class="chart-container" id="chartContainer">
+                <canvas id="chartCanvas"></canvas>
+                <div class="chart-label">Mean Squared Error (Loss)</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="nn-backprop-visualizer.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

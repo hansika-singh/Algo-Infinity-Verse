@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Sparse Table – Algorithm Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Master Sparse Tables for efficient static range queries. Learn construction, logarithm preprocessing, and Range Minimum Query (RMQ) in O(1) time." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sparse-table-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="sparse-table-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the</span>
+          <span class="main-title gradient-text">Sparse Table</span>
+          <span class="subtitle">O(1) Static Range Minimum Queries</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_sparse_table" id="typingTextSparseTable"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#sparse-table-learning" class="btn btn-primary">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#sparse-table-learning" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats" style="gap: 1rem;">
+          <a href="#sparse-table-learning" class="stat-box" style="padding: 2rem 1rem; text-decoration: none; color: inherit; display: block; cursor: pointer;">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Topics</span>
+          </a>
+          <a href="#sparse-table-learning" class="stat-box" style="padding: 2rem 1rem; text-decoration: none; color: inherit; display: block; cursor: pointer;">
+            <span class="stat-number">O(1)</span>
+            <span class="stat-label">Query Time</span>
+          </a>
+          <a href="#sparse-table-learning" class="stat-box" style="padding: 2rem 1rem; text-decoration: none; color: inherit; display: block; cursor: pointer;">
+            <span class="stat-number" style="font-size: 1.25rem; white-space: nowrap;">O(N log N)</span>
+            <span class="stat-label">Build Time</span>
+          </a>
+        </div>
+      </div>
+      <a
+        href="#sparse-table-learning"
+        class="scroll-indicator"
+        aria-label="Scroll to Sparse Table learning section"
+        style="text-decoration: none; color: inherit;"
+      >
+        <i class="fas fa-chevron-down"></i>
+      </a>
+    </section>
+
+    <!-- Learning Section -->
+    <section id="sparse-table-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">📊</span>
+          Learn Sparse Table
+        </h2>
+        <p class="section-subtitle">
+          Master static range queries with constant-time retrieval.
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="sparse-table-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="sparse-table-progress-text"><span id="progressCount">0</span> / 5 topics completed</span>
+          <div class="sparse-table-progress-track">
+            <div class="sparse-table-progress-fill" id="progressFill"></div>
+          </div>
+          <span class="sparse-table-progress-percent" id="progressPercent" style="font-weight: 600; font-size: 0.9rem; color: var(--primary-light);">0%</span>
+        </div>
+
+        <div class="sparse-table-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="sparse-table-sidebar" aria-label="Topic navigation">
+            <div class="sparse-table-sidebar-title">Topics</div>
+            <ul class="sparse-table-sidebar-nav" id="topicNav">
+              <li><a href="#" class="sparse-table-nav-link active" data-topic-id="hub"><span class="nav-icon">🏠</span> Hub Dashboard</a></li>
+              <li><a href="#" class="sparse-table-nav-link" data-topic-id="1"><span class="nav-icon">📖</span> Fundamentals</a></li>
+              <li><a href="#" class="sparse-table-nav-link" data-topic-id="2"><span class="nav-icon">⚡</span> Log Preprocessing</a></li>
+              <li><a href="#" class="sparse-table-nav-link" data-topic-id="3"><span class="nav-icon">🏗️</span> Construction Process</a></li>
+              <li><a href="#" class="sparse-table-nav-link" data-topic-id="4"><span class="nav-icon">🎯</span> Range Minimum Query</a></li>
+              <li><a href="#" class="sparse-table-nav-link" data-topic-id="5"><span class="nav-icon">⏳</span> Complexity Analysis</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="sparse-table-main-content" id="mainContent">
+            <!-- JS will inject Hub or Topic content here -->
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="sparse-table-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

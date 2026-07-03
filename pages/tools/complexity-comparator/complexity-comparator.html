@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complexity Comparator | Algo Infinity Verse</title>
+    <meta name="description" content="Feel the difference between O(1), O(log n), O(n), O(n log n), O(n²), O(n³) and O(2^n) — interactive chart, live operation counts, and real algorithm examples." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="complexity-comparator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="complexity-comparator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero cc-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Don't Just Know It. Feel It.</span>
+          <span class="main-title cc-gradient">Complexity Comparator</span>
+          <span class="subtitle">Drag the slider. Watch O(n²) explode.</span>
+        </h1>
+        <p class="section-subtitle">You know Big O notation theoretically. Now see how O(1), O(log n), O(n), O(n log n), O(n²), O(n³), and O(2ⁿ) actually behave at different input sizes — with live operation counts and real algorithm examples.</p>
+        <div class="hero-buttons">
+          <a href="#comparator" class="btn btn-primary cc-btn-primary"><i class="fas fa-chart-line"></i> Open Comparator</a>
+          <a href="#examples" class="btn btn-secondary"><i class="fas fa-code"></i> See Algorithms</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparator -->
+    <section id="comparator" class="section">
+      <div class="container">
+
+        <!-- Top controls -->
+        <div class="cc-control-card">
+
+          <!-- N slider -->
+          <div class="cc-slider-section">
+            <div class="cc-slider-header">
+              <label class="cc-slider-label" for="ccNSlider">Input size <span class="cc-n-highlight">n</span></label>
+              <div class="cc-n-display" id="ccNDisplay">n = 100</div>
+            </div>
+            <input type="range" id="ccNSlider" class="cc-n-slider" min="1" max="10000" value="100" aria-label="Input size n" />
+            <div class="cc-slider-ticks">
+              <span>1</span><span>1K</span><span>2K</span><span>3K</span><span>4K</span><span>5K</span><span>6K</span><span>7K</span><span>8K</span><span>9K</span><span>10K</span>
+            </div>
+          </div>
+
+          <!-- Toggle complexities -->
+          <div class="cc-toggles-section">
+            <div class="cc-toggles-label">Show / Hide:</div>
+            <div class="cc-toggles" id="ccToggles"></div>
+          </div>
+
+          <!-- Scale toggle -->
+          <div class="cc-scale-section">
+            <span class="cc-scale-label">Y-axis scale:</span>
+            <div class="cc-scale-btns" role="group" aria-label="Y-axis scale">
+              <button type="button" class="cc-scale-btn active" id="ccLinearBtn" aria-pressed="true">Linear</button>
+              <button type="button" class="cc-scale-btn" id="ccLogBtn" aria-pressed="false">Logarithmic</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Chart -->
+        <div class="cc-chart-wrap">
+          <canvas id="ccCanvas" class="cc-canvas" aria-label="Complexity comparison chart"></canvas>
+          <div class="cc-danger-badge" id="ccDangerBadge">
+            <i class="fas fa-exclamation-triangle"></i> Danger Zone: O(2ⁿ) exceeded 10¹⁵ operations
+          </div>
+        </div>
+
+        <!-- Live values table -->
+        <div class="cc-table-card">
+          <div class="cc-table-header">
+            <div class="cc-table-title"><i class="fas fa-table"></i> Operation Counts at <span id="ccTableN">n = 100</span></div>
+            <div class="cc-feasibility-key">
+              <span class="cc-fkey cc-fkey-fast">⚡ &lt; 10⁶</span>
+              <span class="cc-fkey cc-fkey-ok">✅ &lt; 10⁸</span>
+              <span class="cc-fkey cc-fkey-slow">⚠️ &lt; 10¹²</span>
+              <span class="cc-fkey cc-fkey-dead">💀 &gt; 10¹²</span>
+            </div>
+          </div>
+          <div class="cc-table-scroll">
+            <table class="cc-table" id="ccTable">
+              <thead>
+                <tr>
+                  <th>Complexity</th>
+                  <th>Operations at n</th>
+                  <th>Feasibility</th>
+                  <th>@1GHz ≈</th>
+                  <th>Example Algorithms</th>
+                </tr>
+              </thead>
+              <tbody id="ccTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Annotation card -->
+        <div class="cc-annotation-card" id="ccAnnotation">
+          <div class="cc-annotation-icon">💡</div>
+          <div id="ccAnnotationText">Move the slider to see how each complexity class scales.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Algorithm Examples -->
+    <section id="examples" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔬</span> Real Algorithms by Complexity</h2>
+        <p class="section-subtitle">Every complexity class maps to real algorithms you've studied.</p>
+        <div class="cc-examples-grid" id="ccExamplesGrid"></div>
+      </div>
+    </section>
+
+    <!-- Key Thresholds -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📏</span> Interview Thresholds to Memorize</h2>
+        <div class="cc-thresholds-grid">
+          <div class="cc-threshold-card cc-thresh-green">
+            <div class="cc-thresh-n">n ≤ 10⁸</div>
+            <div class="cc-thresh-label">O(n) or O(n log n) OK</div>
+            <div class="cc-thresh-note">Linear or linearithmic — fast enough for most problems</div>
+          </div>
+          <div class="cc-threshold-card cc-thresh-yellow">
+            <div class="cc-thresh-n">n ≤ 10⁴</div>
+            <div class="cc-thresh-label">O(n²) acceptable</div>
+            <div class="cc-thresh-note">Quadratic — fine for small inputs (n ≤ 10,000)</div>
+          </div>
+          <div class="cc-threshold-card cc-thresh-orange">
+            <div class="cc-thresh-n">n ≤ 500</div>
+            <div class="cc-thresh-label">O(n³) borderline</div>
+            <div class="cc-thresh-note">Cubic — only for very small n (Floyd-Warshall, matrix mult)</div>
+          </div>
+          <div class="cc-threshold-card cc-thresh-red">
+            <div class="cc-thresh-n">n ≤ 25</div>
+            <div class="cc-thresh-label">O(2ⁿ) maximum</div>
+            <div class="cc-thresh-note">Exponential — only for n ≤ 20–25 (bitmask DP, subsets)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="complexity-comparator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

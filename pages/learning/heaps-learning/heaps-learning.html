@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Heaps & Priority Queues | Algo Infinity Verse</title>
+    <meta name="description" content="Master heaps and priority queues — heap operations, top-K problems, merge K sorted lists, and median of data stream with interactive exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="heaps-learning.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="heaps-learning">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the Most Underrated Structure</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Heaps & Priority Queues</span>
+          <span class="subtitle">Top-K Problems. Streaming Data. O(log n) Power.</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_heaps" id="typingTextHeaps"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-heap-ops" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box"><span class="stat-number" data-target="8">0</span><span class="stat-label">Topics</span></div>
+          <div class="stat-box"><span class="stat-number" data-target="20">0</span><span class="stat-label">Examples</span></div>
+          <div class="stat-box"><span class="stat-number" data-target="8">0</span><span class="stat-label">Exercises</span></div>
+        </div>
+      </div>
+      <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <!-- Main Content -->
+    <section id="heaps-learning" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔥</span> Learn Heaps & Priority Queues</h2>
+        <p class="section-subtitle">Master the data structure behind top-K, streaming, and scheduling problems</p>
+
+        <!-- Progress Bar -->
+        <div class="js-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="js-progress-text"><span id="progressCount">0</span> / 8 topics completed</span>
+          <div class="js-progress-track"><div class="js-progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="js-layout">
+          <!-- Sidebar -->
+          <aside class="js-sidebar" aria-label="Topic navigation">
+            <div class="js-sidebar-title">Topics</div>
+            <ul class="js-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">🔥</span> Introduction</a></li>
+              <li><a href="#heap-types"><span class="nav-icon">📊</span> Min vs Max Heap</a></li>
+              <li><a href="#operations"><span class="nav-icon">⚙️</span> Heap Operations</a></li>
+              <li><a href="#priority-queue"><span class="nav-icon">🎯</span> Priority Queue</a></li>
+              <li><a href="#top-k"><span class="nav-icon">🏆</span> Top-K Problems</a></li>
+              <li><a href="#merge-k"><span class="nav-icon">🔗</span> Merge K Sorted</a></li>
+              <li><a href="#median-stream"><span class="nav-icon">📈</span> Median of Stream</a></li>
+              <li><a href="#heap-vs-sort"><span class="nav-icon">⚖️</span> Heap vs Sorting</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main -->
+          <main class="js-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="js-lesson" id="introduction" data-topic="1">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">01</span>
+                <h3>Introduction to Heaps</h3>
+              </div>
+              <p>A <strong>heap</strong> is a complete binary tree that satisfies the <em>heap property</em>: in a max-heap, every parent is ≥ its children; in a min-heap, every parent is ≤ its children. Heaps are stored as arrays — no pointers needed.</p>
+              <div class="hl-concept-card">
+                <h4>Why Heaps?</h4>
+                <ul>
+                  <li><strong>O(log n) insert and extract</strong> — faster than sorting for streaming data</li>
+                  <li><strong>O(1) peek at min/max</strong> — always at index 0</li>
+                  <li><strong>Top-K in O(n log k)</strong> — process n elements with a heap of size k</li>
+                  <li><strong>Foundation of Dijkstra's, Prim's, Huffman coding</strong></li>
+                </ul>
+              </div>
+              <p>The array representation of a heap uses index math: for a node at index <code>i</code>:</p>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="parent = Math.floor((i - 1) / 2)\nleftChild = 2 * i + 1\nrightChild = 2 * i + 2">Copy</button></div>
+                <pre><code><span class="tok-cmt">// Index relationships in heap array</span>
+parent     = Math.floor((i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>)
+leftChild  = <span class="tok-num">2</span> * i + <span class="tok-num">1</span>
+rightChild = <span class="tok-num">2</span> * i + <span class="tok-num">2</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Example: Min-Heap Array</div>
+                <pre>[1, 3, 6, 5, 9, 8]  →  Tree root is 1 (minimum)</pre>
+              </div>
+              <div class="js-exercise" id="exercise-intro">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Identify Heap Type</div>
+                <p>Given array <code>[4, 8, 6, 10, 12, 9]</code>, is this a min-heap or max-heap? What is the parent of index 3?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-intro">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Answer</span><button class="hl-code-copy" data-code="Min-heap: 4 < 8 and 4 < 6. Parent of index 3 = Math.floor((3-1)/2) = 1">Copy</button></div>
+                    <pre><code><span class="tok-cmt">// Min-heap: every parent ≤ children</span>
+<span class="tok-cmt">// 4 &lt; 8 ✓, 4 &lt; 6 ✓, 8 &lt; 10 ✓, 8 &lt; 12 ✓, 6 &lt; 9 ✓</span>
+parent(<span class="tok-num">3</span>) = Math.floor((<span class="tok-num">3</span> - <span class="tok-num">1</span>) / <span class="tok-num">2</span>) = <span class="tok-num">1</span>  <span class="tok-cmt">// value = 8</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Min vs Max Heap -->
+            <article class="js-lesson" id="heap-types" data-topic="2">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">02</span>
+                <h3>Min Heap vs Max Heap</h3>
+              </div>
+              <p>The only difference is the ordering property. The same array can be a min-heap or max-heap depending on the comparator used.</p>
+              <div class="hl-table-wrap">
+                <table class="hl-table">
+                  <thead><tr><th>Property</th><th>Min Heap</th><th>Max Heap</th></tr></thead>
+                  <tbody>
+                    <tr><td>Root</td><td>Minimum element</td><td>Maximum element</td></tr>
+                    <tr><td>Parent rule</td><td>parent ≤ children</td><td>parent ≥ children</td></tr>
+                    <tr><td>extractMin/Max</td><td>O(log n)</td><td>O(log n)</td></tr>
+                    <tr><td>Use case</td><td>Dijkstra's, Top-K largest, scheduling</td><td>Heap sort, Top-K smallest</td></tr>
+                    <tr><td>JS built-in</td><td>Not natively — simulate with negation</td><td>Not natively</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="hl-callout">
+                <span class="hl-callout-icon">💡</span>
+                <p><strong>JavaScript trick:</strong> JS has no built-in heap. To simulate a max-heap using min-heap logic, negate all values on insert and negate back on extract.</p>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="// Simulate max-heap by negating\nminHeap.push(-value);     // insert\nconst max = -minHeap.pop(); // extract max">Copy</button></div>
+                <pre><code><span class="tok-cmt">// Simulate max-heap by negating values</span>
+minHeap.push(-value);           <span class="tok-cmt">// insert negative</span>
+<span class="tok-kw">const</span> max = -minHeap.pop();     <span class="tok-cmt">// negate back = max</span></code></pre>
+              </div>
+              <div class="js-exercise" id="exercise-types">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: When to Use Which</div>
+                <p>You need the K largest elements from a stream of numbers. Should you use a min-heap or max-heap of size K? Why?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-types">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-types">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Answer</span><button class="hl-code-copy" data-code="Use a MIN-heap of size K.\nPush each element. If heap size > K, pop the minimum.\nAt the end, the heap contains the K largest elements.\nThe root (minimum of heap) is the K-th largest.">Copy</button></div>
+                    <pre><code><span class="tok-cmt">// Use a MIN-heap of size K</span>
+<span class="tok-cmt">// Keep the K largest seen so far</span>
+<span class="tok-cmt">// If new element > heap root, pop root and push new</span>
+<span class="tok-cmt">// The root is always the K-th largest = threshold</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Operations -->
+            <article class="js-lesson" id="operations" data-topic="3">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">03</span>
+                <h3>Heap Operations</h3>
+              </div>
+              <p>All heap operations maintain the heap property through <strong>sift-up</strong> (after insert) and <strong>sift-down</strong> (after extract).</p>
+              <div class="hl-concept-card">
+                <h4>Operation Complexity</h4>
+                <ul>
+                  <li><strong>insert (push):</strong> O(log n) — sift up from last position</li>
+                  <li><strong>extractMin/Max (pop):</strong> O(log n) — replace root with last, sift down</li>
+                  <li><strong>peek:</strong> O(1) — root is always min/max</li>
+                  <li><strong>heapify (build from array):</strong> O(n) — not O(n log n)!</li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="class MinHeap {\n  constructor() { this.heap = []; }\n  peek() { return this.heap[0]; }\n  size() { return this.heap.length; }\n  push(val) {\n    this.heap.push(val);\n    this._siftUp(this.heap.length - 1);\n  }\n  pop() {\n    const min = this.heap[0];\n    const last = this.heap.pop();\n    if (this.heap.length > 0) {\n      this.heap[0] = last;\n      this._siftDown(0);\n    }\n    return min;\n  }\n  _siftUp(i) {\n    while (i > 0) {\n      const parent = Math.floor((i - 1) / 2);\n      if (this.heap[parent] > this.heap[i]) {\n        [this.heap[parent], this.heap[i]] = [this.heap[i], this.heap[parent]];\n        i = parent;\n      } else break;\n    }\n  }\n  _siftDown(i) {\n    const n = this.heap.length;\n    while (true) {\n      let smallest = i;\n      const l = 2*i+1, r = 2*i+2;\n      if (l < n && this.heap[l] < this.heap[smallest]) smallest = l;\n      if (r < n && this.heap[r] < this.heap[smallest]) smallest = r;\n      if (smallest === i) break;\n      [this.heap[smallest], this.heap[i]] = [this.heap[i], this.heap[smallest]];\n      i = smallest;\n    }\n  }\n}">Copy</button></div>
+                <pre><code><span class="tok-kw">class</span> <span class="tok-bi">MinHeap</span> {
+  <span class="tok-fn">constructor</span>() { <span class="tok-kw">this</span>.heap = []; }
+  <span class="tok-fn">peek</span>()  { <span class="tok-kw">return this</span>.heap[<span class="tok-num">0</span>]; }
+  <span class="tok-fn">size</span>()  { <span class="tok-kw">return this</span>.heap.length; }
+
+  <span class="tok-fn">push</span>(val) {
+    <span class="tok-kw">this</span>.heap.push(val);
+    <span class="tok-kw">this</span>._siftUp(<span class="tok-kw">this</span>.heap.length - <span class="tok-num">1</span>);
+  }
+
+  <span class="tok-fn">pop</span>() {
+    <span class="tok-kw">const</span> min = <span class="tok-kw">this</span>.heap[<span class="tok-num">0</span>];
+    <span class="tok-kw">const</span> last = <span class="tok-kw">this</span>.heap.pop();
+    <span class="tok-kw">if</span> (<span class="tok-kw">this</span>.heap.length > <span class="tok-num">0</span>) {
+      <span class="tok-kw">this</span>.heap[<span class="tok-num">0</span>] = last;
+      <span class="tok-kw">this</span>._siftDown(<span class="tok-num">0</span>);
+    }
+    <span class="tok-kw">return</span> min;
+  }
+
+  <span class="tok-fn">_siftUp</span>(i) {
+    <span class="tok-kw">while</span> (i > <span class="tok-num">0</span>) {
+      <span class="tok-kw">const</span> p = Math.floor((i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>);
+      <span class="tok-kw">if</span> (<span class="tok-kw">this</span>.heap[p] > <span class="tok-kw">this</span>.heap[i]) {
+        [<span class="tok-kw">this</span>.heap[p], <span class="tok-kw">this</span>.heap[i]] = [<span class="tok-kw">this</span>.heap[i], <span class="tok-kw">this</span>.heap[p]];
+        i = p;
+      } <span class="tok-kw">else break</span>;
+    }
+  }
+
+  <span class="tok-fn">_siftDown</span>(i) {
+    <span class="tok-kw">const</span> n = <span class="tok-kw">this</span>.heap.length;
+    <span class="tok-kw">while</span> (<span class="tok-kw">true</span>) {
+      <span class="tok-kw">let</span> s = i;
+      <span class="tok-kw">const</span> l = <span class="tok-num">2</span>*i+<span class="tok-num">1</span>, r = <span class="tok-num">2</span>*i+<span class="tok-num">2</span>;
+      <span class="tok-kw">if</span> (l &lt; n && <span class="tok-kw">this</span>.heap[l] &lt; <span class="tok-kw">this</span>.heap[s]) s = l;
+      <span class="tok-kw">if</span> (r &lt; n && <span class="tok-kw">this</span>.heap[r] &lt; <span class="tok-kw">this</span>.heap[s]) s = r;
+      <span class="tok-kw">if</span> (s === i) <span class="tok-kw">break</span>;
+      [<span class="tok-kw">this</span>.heap[s], <span class="tok-kw">this</span>.heap[i]] = [<span class="tok-kw">this</span>.heap[i], <span class="tok-kw">this</span>.heap[s]];
+      i = s;
+    }
+  }
+}</code></pre>
+              </div>
+              <div class="js-exercise" id="exercise-heap-ops">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Heapify</div>
+                <p>Insert <code>[5, 3, 8, 1, 4]</code> one by one into a min-heap. What does the array look like after all insertions?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-heap-ops">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-heap-ops">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Trace</span><button class="hl-code-copy" data-code="Insert 5: [5]\nInsert 3: [3, 5]  → sift up: 3 < 5, swap\nInsert 8: [3, 5, 8]  → 8 > 3, no swap\nInsert 1: [1, 3, 8, 5] → sift up: 1 < 5 swap, 1 < 3 swap\nInsert 4: [1, 3, 8, 5, 4] → 4 > 3, no swap\nFinal: [1, 3, 8, 5, 4]">Copy</button></div>
+                    <pre><code>Insert <span class="tok-num">5</span>:  [<span class="tok-num">5</span>]
+Insert <span class="tok-num">3</span>:  [<span class="tok-num">3</span>, <span class="tok-num">5</span>]        <span class="tok-cmt">// 3 &lt; 5, sift up</span>
+Insert <span class="tok-num">8</span>:  [<span class="tok-num">3</span>, <span class="tok-num">5</span>, <span class="tok-num">8</span>]     <span class="tok-cmt">// 8 > 3, no swap</span>
+Insert <span class="tok-num">1</span>:  [<span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">5</span>]  <span class="tok-cmt">// 1 &lt; 5, swap; 1 &lt; 3, swap</span>
+Insert <span class="tok-num">4</span>:  [<span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">5</span>, <span class="tok-num">4</span>] <span class="tok-cmt">// 4 > 3, no swap</span>
+Final:   [<span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">5</span>, <span class="tok-num">4</span>] ✅</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Priority Queue -->
+            <article class="js-lesson" id="priority-queue" data-topic="4">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">04</span>
+                <h3>Priority Queue</h3>
+              </div>
+              <p>A <strong>priority queue</strong> is an abstract data type where each element has a priority. Elements are dequeued in priority order, not insertion order. Heaps are the most efficient implementation.</p>
+              <div class="hl-concept-card">
+                <h4>Priority Queue vs Regular Queue</h4>
+                <ul>
+                  <li><strong>Queue:</strong> FIFO — first in, first out</li>
+                  <li><strong>Priority Queue:</strong> highest priority element out first</li>
+                  <li><strong>Implementation:</strong> Min-heap for lowest-priority-first, max-heap for highest-priority-first</li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="// Priority queue for task scheduling\n// Each task: [priority, name]\nconst pq = new MinHeap(); // lower number = higher priority\npq.push([1, 'Critical bug fix']);\npq.push([3, 'Feature request']);\npq.push([2, 'Code review']);\nwhile (pq.size()) {\n  const [pri, task] = pq.pop();\n  console.log(`Processing: ${task} (priority ${pri})`);\n}\n// Critical bug fix → Code review → Feature request">Copy</button></div>
+                <pre><code><span class="tok-cmt">// Task scheduler — lower number = higher priority</span>
+<span class="tok-kw">const</span> pq = <span class="tok-kw">new</span> <span class="tok-bi">MinHeap</span>();
+pq.push([<span class="tok-num">1</span>, <span class="tok-str">'Critical bug fix'</span>]);
+pq.push([<span class="tok-num">3</span>, <span class="tok-str">'Feature request'</span>]);
+pq.push([<span class="tok-num">2</span>, <span class="tok-str">'Code review'</span>]);
+<span class="tok-kw">while</span> (pq.size()) {
+  <span class="tok-kw">const</span> [pri, task] = pq.pop();
+  console.log(`Processing: ${task}`);
+}
+<span class="tok-cmt">// Critical bug fix → Code review → Feature request</span></code></pre>
+              </div>
+              <div class="js-exercise" id="exercise-pq">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Dijkstra Setup</div>
+                <p>In Dijkstra's algorithm, what is stored in the priority queue and what determines priority?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-pq">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-pq">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Answer</span><button class="hl-code-copy" data-code="Store [distance, node] pairs.\nPriority = distance (min-heap).\nAlways expand the node with the smallest known distance.\n// pq.push([0, startNode]);\n// const [dist, node] = pq.pop();">Copy</button></div>
+                    <pre><code><span class="tok-cmt">// Store [distance, node] in min-heap</span>
+<span class="tok-cmt">// Priority = accumulated distance from source</span>
+pq.push([<span class="tok-num">0</span>, startNode]);
+<span class="tok-kw">const</span> [dist, node] = pq.pop();
+<span class="tok-cmt">// Always expand node with smallest distance first</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Top-K -->
+            <article class="js-lesson" id="top-k" data-topic="5">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">05</span>
+                <h3>Top-K Frequent Elements</h3>
+              </div>
+              <p>One of the most common heap interview problems. Given an array, find the K most frequent elements. Sorting is O(n log n) — heaps let us do O(n log k).</p>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="function topKFrequent(nums, k) {\n  const freq = new Map();\n  for (const n of nums) freq.set(n, (freq.get(n) || 0) + 1);\n  const minHeap = new MinHeap(); // stores [frequency, value]\n  for (const [val, count] of freq) {\n    minHeap.push([count, val]);\n    if (minHeap.size() > k) minHeap.pop();\n  }\n  return minHeap.heap.map(([, val]) => val);\n}">Copy</button></div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">topKFrequent</span>(nums, k) {
+  <span class="tok-kw">const</span> freq = <span class="tok-kw">new</span> Map();
+  <span class="tok-kw">for</span> (<span class="tok-kw">const</span> n <span class="tok-kw">of</span> nums)
+    freq.set(n, (freq.get(n) || <span class="tok-num">0</span>) + <span class="tok-num">1</span>);
+
+  <span class="tok-kw">const</span> minHeap = <span class="tok-kw">new</span> <span class="tok-bi">MinHeap</span>(); <span class="tok-cmt">// [frequency, value]</span>
+  <span class="tok-kw">for</span> (<span class="tok-kw">const</span> [val, count] <span class="tok-kw">of</span> freq) {
+    minHeap.push([count, val]);
+    <span class="tok-kw">if</span> (minHeap.size() > k) minHeap.pop(); <span class="tok-cmt">// evict least frequent</span>
+  }
+  <span class="tok-kw">return</span> minHeap.heap.map(([, val]) => val);
+}
+
+<span class="tok-cmt">// Time: O(n log k)  Space: O(n + k)</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Example</div>
+                <pre>topKFrequent([1,1,1,2,2,3], 2)  →  [1, 2]</pre>
+              </div>
+              <div class="js-exercise" id="exercise-topk">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: K Closest Points</div>
+                <p>Find K closest points to the origin from an array of points. Write the approach using a max-heap.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-topk">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-topk">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="function kClosest(points, k) {\n  // Max-heap by distance (keep K smallest = use max-heap)\n  const maxHeap = []; // [dist, point]\n  const dist = ([x, y]) => x*x + y*y;\n  for (const p of points) {\n    maxHeap.push([dist(p), p]);\n    maxHeap.sort((a, b) => b[0] - a[0]); // simulate max-heap\n    if (maxHeap.length > k) maxHeap.shift();\n  }\n  return maxHeap.map(([, p]) => p);\n}">Copy</button></div>
+                    <pre><code><span class="tok-kw">function</span> <span class="tok-fn">kClosest</span>(points, k) {
+  <span class="tok-kw">const</span> dist = ([x, y]) => x*x + y*y;
+  <span class="tok-cmt">// Max-heap of size K — evict farthest</span>
+  <span class="tok-kw">const</span> maxHeap = [];
+  <span class="tok-kw">for</span> (<span class="tok-kw">const</span> p <span class="tok-kw">of</span> points) {
+    maxHeap.push([dist(p), p]);
+    maxHeap.sort((a, b) => b[<span class="tok-num">0</span>] - a[<span class="tok-num">0</span>]);
+    <span class="tok-kw">if</span> (maxHeap.length > k) maxHeap.shift();
+  }
+  <span class="tok-kw">return</span> maxHeap.map(([, p]) => p);
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Merge K Sorted -->
+            <article class="js-lesson" id="merge-k" data-topic="6">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">06</span>
+                <h3>Merge K Sorted Lists</h3>
+              </div>
+              <p>Given K sorted arrays (or linked lists), merge them into one sorted output. Naive approach: merge one by one in O(nK). Heap approach: O(n log K).</p>
+              <div class="hl-concept-card">
+                <h4>Algorithm</h4>
+                <ul>
+                  <li>Push the first element of each list into a min-heap with its list index and position</li>
+                  <li>Extract the min — add to result</li>
+                  <li>Push the next element from the same list into the heap</li>
+                  <li>Repeat until heap is empty</li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="function mergeKSorted(lists) {\n  const result = [];\n  const heap = new MinHeap(); // [value, listIndex, elementIndex]\n  for (let i = 0; i < lists.length; i++) {\n    if (lists[i].length > 0)\n      heap.push([lists[i][0], i, 0]);\n  }\n  while (heap.size()) {\n    const [val, li, ei] = heap.pop();\n    result.push(val);\n    if (ei + 1 < lists[li].length)\n      heap.push([lists[li][ei + 1], li, ei + 1]);\n  }\n  return result;\n}">Copy</button></div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">mergeKSorted</span>(lists) {
+  <span class="tok-kw">const</span> result = [];
+  <span class="tok-kw">const</span> heap = <span class="tok-kw">new</span> <span class="tok-bi">MinHeap</span>(); <span class="tok-cmt">// [value, listIdx, elemIdx]</span>
+  <span class="tok-kw">for</span> (<span class="tok-kw">let</span> i = <span class="tok-num">0</span>; i &lt; lists.length; i++)
+    <span class="tok-kw">if</span> (lists[i].length > <span class="tok-num">0</span>)
+      heap.push([lists[i][<span class="tok-num">0</span>], i, <span class="tok-num">0</span>]);
+
+  <span class="tok-kw">while</span> (heap.size()) {
+    <span class="tok-kw">const</span> [val, li, ei] = heap.pop();
+    result.push(val);
+    <span class="tok-kw">if</span> (ei + <span class="tok-num">1</span> &lt; lists[li].length)
+      heap.push([lists[li][ei + <span class="tok-num">1</span>], li, ei + <span class="tok-num">1</span>]);
+  }
+  <span class="tok-kw">return</span> result;
+}
+<span class="tok-cmt">// Time: O(n log K)  Space: O(K)</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Example</div>
+                <pre>mergeKSorted([[1,4,7],[2,5,8],[3,6,9]])  →  [1,2,3,4,5,6,7,8,9]</pre>
+              </div>
+              <div class="js-exercise" id="exercise-mergek">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Why O(n log K)?</div>
+                <p>Explain why merging K sorted arrays with a heap is O(n log K) where n is the total number of elements.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-mergek">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-mergek">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Answer</span><button class="hl-code-copy" data-code="n = total elements across all lists.\nEach element is pushed and popped from the heap exactly once.\nHeap size is always ≤ K (one element per list).\nPush/pop = O(log K) each.\nTotal: n pushes × O(log K) = O(n log K)">Copy</button></div>
+                    <pre><code><span class="tok-cmt">// n = total elements, K = number of lists</span>
+<span class="tok-cmt">// Heap size ≤ K at all times (one entry per list)</span>
+<span class="tok-cmt">// Each element: 1 push + 1 pop = 2 × O(log K)</span>
+<span class="tok-cmt">// Total n elements → O(n log K) ✅</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Median of Stream -->
+            <article class="js-lesson" id="median-stream" data-topic="7">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">07</span>
+                <h3>Median of Data Stream</h3>
+              </div>
+              <p>Find the median of a growing stream of numbers in O(log n) per insertion. Maintain two heaps: a max-heap for the lower half and a min-heap for the upper half.</p>
+              <div class="hl-concept-card">
+                <h4>Two-Heap Strategy</h4>
+                <ul>
+                  <li><strong>maxHeap</strong> (left half) — stores the smaller half of numbers</li>
+                  <li><strong>minHeap</strong> (right half) — stores the larger half of numbers</li>
+                  <li><strong>Invariant:</strong> |maxHeap.size - minHeap.size| ≤ 1</li>
+                  <li><strong>Median:</strong> If equal sizes → average of both tops. Else → top of larger heap</li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header"><span class="hl-code-lang">JavaScript</span><button class="hl-code-copy" data-code="class MedianFinder {\n  constructor() {\n    this.lo = new MaxHeap(); // lower half\n    this.hi = new MinHeap(); // upper half\n  }\n  addNum(num) {\n    this.lo.push(num);\n    this.hi.push(this.lo.pop()); // balance\n    if (this.lo.size() < this.hi.size())\n      this.lo.push(this.hi.pop());\n  }\n  findMedian() {\n    if (this.lo.size() > this.hi.size()) return this.lo.peek();\n    return (this.lo.peek() + this.hi.peek()) / 2;\n  }\n}">Copy</button></div>
+                <pre><code><span class="tok-kw">class</span> <span class="tok-bi">MedianFinder</span> {
+  <span class="tok-fn">constructor</span>() {
+    <span class="tok-kw">this</span>.lo = <span class="tok-kw">new</span> <span class="tok-bi">MaxHeap</span>(); <span class="tok-cmt">// lower half</span>
+    <span class="tok-kw">this</span>.hi = <span class="tok-kw">new</span> <span class="tok-bi">MinHeap</span>(); <span class="tok-cmt">// upper half</span>
+  }
+
+  <span class="tok-fn">addNum</span>(num) {
+    <span class="tok-kw">this</span>.lo.push(num);
+    <span class="tok-kw">this</span>.hi.push(<span class="tok-kw">this</span>.lo.pop()); <span class="tok-cmt">// push lo's max to hi</span>
+    <span class="tok-kw">if</span> (<span class="tok-kw">this</span>.lo.size() &lt; <span class="tok-kw">this</span>.hi.size())
+      <span class="tok-kw">this</span>.lo.push(<span class="tok-kw">this</span>.hi.pop()); <span class="tok-cmt">// rebalance</span>
+  }
+
+  <span class="tok-fn">findMedian</span>() {
+    <span class="tok-kw">if</span> (<span class="tok-kw">this</span>.lo.size() > <span class="tok-kw">this</span>.hi.size())
+      <span class="tok-kw">return this</span>.lo.peek();
+    <span class="tok-kw">return</span> (<span class="tok-kw">this</span>.lo.peek() + <span class="tok-kw">this</span>.hi.peek()) / <span class="tok-num">2</span>;
+  }
+}
+<span class="tok-cmt">// addNum: O(log n)  findMedian: O(1)</span></code></pre>
+              </div>
+              <div class="js-exercise" id="exercise-median">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Trace</div>
+                <p>Add <code>[5, 15, 1, 3]</code> one by one using MedianFinder. What is the median after each insertion?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-median">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-median">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Trace</span><button class="hl-code-copy" data-code="Add 5:  lo=[5], hi=[]      median=5\nAdd 15: lo=[5], hi=[15]   median=(5+15)/2=10\nAdd 1:  lo=[5,1], hi=[15] median=5\nAdd 3:  lo=[5,3,1], hi=[15] → rebalance: lo=[3,1], hi=[5,15] median=(3+5)/2=4">Copy</button></div>
+                    <pre><code>Add <span class="tok-num">5</span>:  lo=[<span class="tok-num">5</span>],    hi=[]      median = <span class="tok-num">5</span>
+Add <span class="tok-num">15</span>: lo=[<span class="tok-num">5</span>],    hi=[<span class="tok-num">15</span>]   median = (<span class="tok-num">5</span>+<span class="tok-num">15</span>)/<span class="tok-num">2</span> = <span class="tok-num">10</span>
+Add <span class="tok-num">1</span>:  lo=[<span class="tok-num">5</span>,<span class="tok-num">1</span>],  hi=[<span class="tok-num">15</span>]   median = <span class="tok-num">5</span>
+Add <span class="tok-num">3</span>:  lo=[<span class="tok-num">3</span>,<span class="tok-num">1</span>],  hi=[<span class="tok-num">5</span>,<span class="tok-num">15</span>] median = (<span class="tok-num">3</span>+<span class="tok-num">5</span>)/<span class="tok-num">2</span> = <span class="tok-num">4</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. Heap vs Sorting -->
+            <article class="js-lesson" id="heap-vs-sort" data-topic="8">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">08</span>
+                <h3>Heap vs Sorting — When to Use Which</h3>
+              </div>
+              <p>Both heaps and sorting can solve many of the same problems. Knowing when to choose each is what interviewers test.</p>
+              <div class="hl-table-wrap">
+                <table class="hl-table">
+                  <thead><tr><th>Scenario</th><th>Sorting</th><th>Heap</th><th>Winner</th></tr></thead>
+                  <tbody>
+                    <tr><td>Top-K from static array</td><td>O(n log n)</td><td>O(n log k)</td><td>🏆 Heap (if k ≪ n)</td></tr>
+                    <tr><td>Top-K from data stream</td><td>Re-sort each time</td><td>O(log k) per insert</td><td>🏆 Heap</td></tr>
+                    <tr><td>Fully sorted output needed</td><td>O(n log n)</td><td>O(n log n)</td><td>🏆 Sort (simpler)</td></tr>
+                    <tr><td>K-th largest element</td><td>O(n log n)</td><td>O(n log k)</td><td>🏆 Heap</td></tr>
+                    <tr><td>Merge K sorted lists</td><td>O(n log n)</td><td>O(n log k)</td><td>🏆 Heap</td></tr>
+                    <tr><td>Median of stream</td><td>Not applicable</td><td>O(log n) per insert</td><td>🏆 Heap</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="hl-callout">
+                <span class="hl-callout-icon">🎯</span>
+                <p><strong>Interview rule of thumb:</strong> If the problem involves <em>K</em> or <em>streaming data</em>, reach for a heap first. If you need the full sorted output, sort is simpler.</p>
+              </div>
+              <div class="js-exercise" id="exercise-vs">
+                <div class="js-exercise-title"><i class="fas fa-dumbbell"></i> Practice: Decision</div>
+                <p>Given 1 billion numbers on disk and you need the top 100 — sort or heap? Why?</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-vs">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-vs">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header"><span class="hl-code-lang">Answer</span><button class="hl-code-copy" data-code="Heap. Use a min-heap of size 100.\nStream each number from disk — O(1) memory per read.\nPush to heap. If size > 100, pop the minimum.\nFinal heap contains top 100.\nSorting 1B numbers = impractical memory + time.\nHeap = O(n log 100) = O(n) effectively, with O(100) = O(1) memory.">Copy</button></div>
+                    <pre><code><span class="tok-cmt">// Min-heap of size 100 — O(n log 100) ≈ O(n)</span>
+<span class="tok-cmt">// Memory: O(100) = O(1) — never load all 1B into RAM</span>
+<span class="tok-cmt">// Sorting 1B elements requires O(n) memory → impractical</span>
+<span class="tok-cmt">// Heap streams data → processes without loading all at once ✅</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./heaps-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

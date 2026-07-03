@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Analytics Dashboard - Algo Infinity Verse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="personal-analytics-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="personal-analytics-dashboard">
+  <div id="navbar-placeholder"></div>
+
+  <main class="analytics-shell">
+    <section class="analytics-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Personal Analytics</p>
+        <h1>See where you are strong, where you stall, and what to do next.</h1>
+        <p class="hero-text">
+          Your local progress data is summarized into strengths, weak spots, XP momentum, and next-step recommendations.
+        </p>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </section>
+
+    <section class="analytics-grid">
+      <article class="analytics-card spotlight-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Topic snapshot</p>
+            <h2>Strongest and weakest topics</h2>
+          </div>
+          <span class="card-pill" id="accuracyBadge">0% accuracy</span>
+        </div>
+        <div class="topic-split">
+          <div>
+            <span class="split-label">Strongest</span>
+            <strong id="strongestTopic">No data yet</strong>
+          </div>
+          <div>
+            <span class="split-label">Weakest</span>
+            <strong id="weakestTopic">No data yet</strong>
+          </div>
+        </div>
+        <div class="topic-bars" id="topicBars"></div>
+      </article>
+
+      <article class="analytics-card chart-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Trend graph</p>
+            <h2>XP momentum</h2>
+          </div>
+          <span class="card-pill" id="xpDelta">+0 today</span>
+        </div>
+        <div class="chart-frame">
+          <svg id="xpChart" viewBox="0 0 720 260" preserveAspectRatio="none" aria-label="XP trend chart"></svg>
+        </div>
+      </article>
+
+      <article class="analytics-card chart-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Radar chart</p>
+            <h2>Topic balance</h2>
+          </div>
+          <span class="card-pill">0-100 scale</span>
+        </div>
+        <div class="chart-frame radar-frame">
+          <svg id="topicRadar" viewBox="0 0 360 360" preserveAspectRatio="none" aria-label="Topic radar chart"></svg>
+        </div>
+      </article>
+
+      <article class="analytics-card chart-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Practice frequency</p>
+            <h2>Recent activity</h2>
+          </div>
+          <span class="card-pill" id="practiceStreak">0 active days</span>
+        </div>
+        <div class="chart-frame frequency-frame">
+          <div id="practiceFrequency" class="frequency-grid"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="analytics-grid secondary-grid">
+      <article class="analytics-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Recommendations</p>
+            <h2>Suggested next topics</h2>
+          </div>
+        </div>
+        <div id="recommendationsList" class="recommendation-list"></div>
+      </article>
+
+      <article class="analytics-card">
+        <div class="card-header">
+          <div>
+            <p class="card-kicker">Topic drilldown</p>
+            <h2>Accuracy and attempts</h2>
+          </div>
+        </div>
+        <div id="topicDrilldown" class="drilldown-list"></div>
+      </article>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/theme.js" defer></script>
+  <script src="/auth.js" defer></script>
+  <script src="personal-analytics-dashboard.js" defer></script>
+</body>
+</html>

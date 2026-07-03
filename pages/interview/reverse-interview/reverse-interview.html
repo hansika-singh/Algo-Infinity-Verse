@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverse Interview Mode | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Write your solution first — our AI generates FAANG-style interview questions, edge case probes, and optimization challenges based on your actual code."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="reverse-interview.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="reverse-interview">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="ri-hero">
+      <div class="ri-hero-badge">
+        <i class="fas fa-user-tie"></i> FAANG Interview Simulator
+      </div>
+      <h1>
+        <span>Reverse Interview Mode</span><br />
+        <span class="gold-text">Code-to-Question Generator</span>
+      </h1>
+      <p>
+        Write your solution <strong>first</strong>. Our engine reverse-engineers your code to generate
+        code-specific interview questions, edge case probes, and optimization challenges — exactly how a
+        senior FAANG engineer would grill you in a real review session.
+      </p>
+      <div class="ri-hero-stats">
+        <div class="ri-stat">
+          <span class="ri-stat-val" id="heroTotalQuestions">0</span>
+          <span class="ri-stat-label">Questions Generated</span>
+        </div>
+        <div class="ri-stat">
+          <span class="ri-stat-val">3</span>
+          <span class="ri-stat-label">Question Types</span>
+        </div>
+        <div class="ri-stat">
+          <span class="ri-stat-val">4</span>
+          <span class="ri-stat-label">Languages</span>
+        </div>
+        <div class="ri-stat">
+          <span class="ri-stat-val">FAANG</span>
+          <span class="ri-stat-label">Style Review</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace -->
+    <section class="section" id="workspace-section">
+      <div class="container">
+        <div class="ri-workspace">
+
+          <!-- LEFT: Code Input Panel -->
+          <div class="ri-panel-card">
+            <div class="ri-panel-header">
+              <div class="ri-panel-title">
+                <i class="fas fa-code ri-panel-icon"></i>
+                <h3>Your Solution</h3>
+              </div>
+              <div class="ri-selectors">
+                <select id="riProblemSelect" class="ri-select" aria-label="Select problem type">
+                  <option value="twosum">Two Sum</option>
+                  <option value="reverselist">Reverse Linked List</option>
+                  <option value="fibonacci">Fibonacci Recursion</option>
+                  <option value="binarysearch">Binary Search</option>
+                  <option value="maxsubarray">Max Subarray (Kadane)</option>
+                  <option value="mergesort">Merge Sort</option>
+                  <option value="custom">Custom Problem</option>
+                </select>
+                <select id="riLanguageSelect" class="ri-select" aria-label="Select language">
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Problem context banner -->
+            <div class="ri-problem-banner" id="riProblemBanner">
+              <!-- Loaded dynamically -->
+            </div>
+
+            <!-- Code editor -->
+            <div class="ri-editor-wrapper">
+              <div class="ri-pane-label">
+                <span><i class="fas fa-terminal"></i> &nbsp;Write or paste your full solution below</span>
+                <span id="riLineCount" style="font-size:0.75rem;">1 line</span>
+              </div>
+              <div class="ri-editor-frame">
+                <div class="ri-line-numbers" id="riLineNumbers">1</div>
+                <textarea
+                  id="riCodeEditor"
+                  class="ri-code-textarea"
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  placeholder="# Write your complete solution here...&#10;# The engine will analyze your approach,&#10;# variable choices, data structures, and patterns&#10;# to generate targeted interview questions."
+                  aria-label="Solution code editor"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Terminal -->
+            <div class="ri-terminal-wrapper">
+              <div class="ri-terminal-header">
+                <span><i class="fas fa-terminal"></i> &nbsp;Execution Output</span>
+                <span id="riRunStatus" class="ri-status-badge ri-status-ready">Ready</span>
+              </div>
+              <div class="ri-terminal-body" id="riTerminalOutput">
+                <span class="ri-terminal-placeholder">Click "Run &amp; Generate" to execute your code, then auto-generate interview questions.</span>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="ri-action-row">
+              <button id="riRunBtn" class="ri-btn-run">
+                <i class="fas fa-play"></i> Run Code
+              </button>
+              <button id="riGenerateBtn" class="ri-btn-generate">
+                <i class="fas fa-user-tie"></i> &nbsp;Generate Interview Questions
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT: Questions Panel -->
+          <div class="ri-panel-card">
+            <div class="ri-panel-header">
+              <div class="ri-panel-title">
+                <i class="fas fa-comments ri-panel-icon"></i>
+                <h3>FAANG Interview Panel</h3>
+              </div>
+              <div class="ri-session-controls">
+                <span class="ri-timer" id="riSessionTimer">00:00</span>
+                <button class="ri-btn-share" id="riCopyBtn" title="Copy questions to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary chips -->
+            <div class="ri-summary-bar" id="riSummaryBar" style="display:none;">
+              <div class="ri-summary-chip chip-code">
+                <span class="chip-num" id="chipCodeCount">0</span>
+                <span>Code-Specific</span>
+              </div>
+              <div class="ri-summary-chip chip-edge">
+                <span class="chip-num" id="chipEdgeCount">0</span>
+                <span>Edge Cases</span>
+              </div>
+              <div class="ri-summary-chip chip-opt">
+                <span class="chip-num" id="chipOptCount">0</span>
+                <span>Optimizations</span>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="ri-tabs" id="riTabs">
+              <button class="ri-tab-btn tab-code active" data-tab="code" id="tabBtnCode">
+                <i class="fas fa-code"></i> Code-Specific
+                <span class="ri-tab-count" id="tabCountCode">0</span>
+              </button>
+              <button class="ri-tab-btn tab-edge" data-tab="edge" id="tabBtnEdge">
+                <i class="fas fa-exclamation-circle"></i> Edge Cases
+                <span class="ri-tab-count" id="tabCountEdge">0</span>
+              </button>
+              <button class="ri-tab-btn tab-opt" data-tab="opt" id="tabBtnOpt">
+                <i class="fas fa-bolt"></i> Optimization
+                <span class="ri-tab-count" id="tabCountOpt">0</span>
+              </button>
+            </div>
+
+            <!-- Generating spinner -->
+            <div class="ri-generating-overlay" id="riGeneratingOverlay">
+              <div class="ri-spinner"></div>
+              <p>Analyzing your solution...<br/><strong>Generating FAANG interview questions</strong></p>
+            </div>
+
+            <!-- Tab panels -->
+            <div id="tabPanelCode" class="ri-tab-panel active">
+              <div class="ri-empty-state" id="emptyCode">
+                <div class="ri-empty-icon">🧠</div>
+                <p>Write your solution and click <strong>"Generate Interview Questions"</strong> to see code-specific review questions.</p>
+              </div>
+            </div>
+
+            <div id="tabPanelEdge" class="ri-tab-panel">
+              <div class="ri-empty-state" id="emptyEdge">
+                <div class="ri-empty-icon">⚠️</div>
+                <p>Edge case questions based on your code's boundaries and input assumptions will appear here.</p>
+              </div>
+            </div>
+
+            <div id="tabPanelOpt" class="ri-tab-panel">
+              <div class="ri-empty-state" id="emptyOpt">
+                <div class="ri-empty-icon">⚡</div>
+                <p>Optimization challenges targeting your time/space complexity tradeoffs will appear here.</p>
+              </div>
+            </div>
+
+            <!-- FAANG company tags -->
+            <div class="ri-faang-row" id="riFaangRow" style="display:none;">
+              <span class="ri-faang-label">Common at:</span>
+              <span class="ri-faang-badge">Google</span>
+              <span class="ri-faang-badge">Meta</span>
+              <span class="ri-faang-badge">Amazon</span>
+              <span class="ri-faang-badge">Apple</span>
+              <span class="ri-faang-badge">Microsoft</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button class="chatbot-toggle" id="chatbotToggle" aria-label="Toggle chat">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input type="text" id="chatbotInput" placeholder="Type your question..." />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button class="quick-q" data-question="What is the time complexity of this problem?">Time Complexity</button>
+          <button class="quick-q" data-question="Can you give me a hint for this problem?">Hint</button>
+          <button class="quick-q" data-question="What approach should I use?">Approach</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="reverse-interview.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+/* LLM Inference Visualizer Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* LLM Theme (Neon Purple & Cyan) */
+    --llm-primary: #a855f7; /* Purple */
+    --llm-primary-hover: #9333ea;
+    --llm-accent: #2dd4bf; /* Teal/Cyan */
+    --llm-danger: #ef4444; /* Red */
+    --llm-success: #10b981; /* Emerald */
+    --panel-bg: #0b1121;
+}
+
+body.llm-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.llm-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--llm-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.engine-badge.active { color: var(--llm-primary); background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+.engine-badge.active i { animation: pulse 1s infinite; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Buttons & Inputs */
+.btn { padding: 0.8rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--llm-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--llm-primary-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--llm-danger); border: 1px solid var(--llm-danger); }
+.btn-danger:hover { background: var(--llm-danger); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.w-100 { width: 100%; }
+.hidden { display: none !important; }
+.mt-3 { margin-top: 1rem; }
+
+/* Workspace Layout */
+.llm-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel */
+.panel-left { width: 420px; display: flex; flex-direction: column; background: var(--panel-bg); border-right: 1px solid var(--glass-border); z-index: 10; overflow-y: auto; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.control-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 1rem; }
+.desc-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group select, .input-group input[type="text"] { background: #020617; border: 1px solid #334155; color: #fff; padding: 0.6rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.input-group select:focus, .input-group input[type="text"]:focus { border-color: var(--llm-primary); }
+
+.slider-with-val { display: flex; align-items: center; gap: 0.8rem; }
+.slider-with-val input[type="range"] { flex: 1; accent-color: var(--llm-primary); cursor: pointer; height: 6px; background: #334155; border-radius: 3px; outline: none; }
+.slider-with-val input[type="range"]:disabled { opacity: 0.3; cursor: not-allowed; }
+.slider-val { font-family: 'Fira Code', monospace; font-size: 0.9rem; font-weight: 700; color: var(--llm-accent); width: 30px; text-align: right; }
+
+.action-row { display: flex; gap: 0.8rem; margin-top: 0.5rem; }
+
+/* Telemetry & Chart */
+.telemetry-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); background: #020617; }
+.telemetry-section h4 { margin: 0 0 0.5rem; font-size: 0.9rem; color: #fff; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 0.5rem;}
+.chart-container { width: 100%; height: 180px; position: relative; margin-top: 1rem; }
+
+/* Generated Text Output */
+.logs-section { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; background: #000; }
+.logs-section h4 { margin: 0 0 1rem; font-size: 0.85rem; color: #fff; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; }
+.output-container { flex: 1; background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; font-family: 'Poppins', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #e2e8f0; overflow-y: auto; }
+.prompt-text { color: #64748b; }
+.gen-text { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.2); transition: color 0.3s; }
+.cursor.blink { display: inline-block; width: 8px; height: 1.2rem; background: var(--llm-primary); vertical-align: middle; margin-left: 2px; animation: blinker 1s step-end infinite; }
+@keyframes blinker { 50% { opacity: 0; } }
+
+/* Right Panel (D3 Canvas Area) */
+.panel-right { flex: 1; display: flex; flex-direction: column; background: #020617; position: relative; overflow: hidden; }
+.canvas-header { height: 50px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: #cbd5e1; z-index: 2; }
+
+.legend { display: flex; gap: 1rem; }
+.legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.node-swatch { width: 12px; height: 12px; border-radius: 50%; }
+.node-swatch.active-node { background: var(--llm-primary); box-shadow: 0 0 8px var(--llm-primary); }
+.node-swatch.pruned-node { background: #334155; }
+.node-swatch.final-node { background: var(--llm-success); box-shadow: 0 0 8px var(--llm-success); }
+
+.canvas-wrapper { flex: 1; position: relative; overflow: hidden; background-image: radial-gradient(circle at center, #0f172a 0%, #020617 100%); cursor: grab; }
+.canvas-wrapper:active { cursor: grabbing; }
+#d3Container { width: 100%; height: 100%; }
+
+.empty-state { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #475569; pointer-events: none; transition: opacity 0.3s; z-index: 1;}
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; color: var(--llm-primary); }
+
+/* D3 SVG Styles */
+.link { fill: none; stroke: #334155; transition: stroke-width 0.4s, stroke 0.4s; }
+.link.active { stroke: rgba(168, 85, 247, 0.6); }
+.link.final { stroke: var(--llm-success); stroke-width: 3px !important; }
+
+.node circle { stroke-width: 2px; transition: all 0.4s ease; }
+.node text { font-family: 'Fira Code', monospace; font-size: 11px; fill: #fff; pointer-events: none; }
+.node-prob { font-size: 9px; fill: #94a3b8; }
+
+.node.active circle { fill: rgba(168, 85, 247, 0.2); stroke: var(--llm-primary); filter: drop-shadow(0 0 5px var(--llm-primary)); }
+.node.pruned circle { fill: #0f172a; stroke: #334155; }
+.node.pruned text { fill: #475569; }
+.node.pruned .node-prob { fill: #334155; }
+.node.final circle { fill: rgba(16, 185, 129, 0.2); stroke: var(--llm-success); filter: drop-shadow(0 0 8px var(--llm-success)); }
+
+@media (max-width: 900px) {
+    .llm-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .panel-right { min-height: 500px; flex: none; }
+}

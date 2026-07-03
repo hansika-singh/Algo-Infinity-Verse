@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HFT Matching Engine | Algo Infinity Verse</title>
+    <meta name="description" content="High-Frequency Trading L2 Order Book Matching Engine Simulator." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="hft-engine.css" />
+</head>
+<body class="hft-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-server"></i> Exchange Offline
+        </div>
+    </nav>
+
+    <!-- SAB Warning Overlay -->
+    <div class="sab-warning hidden" id="sabWarning">
+        <div class="warning-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>SharedArrayBuffer Unavailable</h2>
+            <p>Your browser environment is missing Cross-Origin Isolation headers required for true lock-free shared memory. The engine will gracefully fall back to <code>postMessage</code> to simulate the architecture.</p>
+            <button class="btn btn-primary" id="btnAcceptFallback">Continue in Fallback Mode</button>
+        </div>
+    </div>
+
+    <main class="hft-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> HFT Controller</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Web Workers act as algorithmic traders, injecting orders into a <strong>Lock-Free Ring Buffer</strong>. The Main Thread processes the buffer and matches crossing Limit Orders.
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary w-100" id="btnStartTrading">
+                        <i class="fas fa-play"></i> Start Trading Bots
+                    </button>
+                    <button class="btn btn-danger w-100 hidden" id="btnStopTrading">
+                        <i class="fas fa-stop"></i> Halt Market
+                    </button>
+                </div>
+
+                <div class="input-group mt-3">
+                    <label>Active Trading Bots (Web Workers)</label>
+                    <div class="slider-with-val">
+                        <input type="range" id="botCountSlider" min="1" max="8" value="4">
+                        <span class="slider-val" id="botCountVal">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telemetry -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-tachometer-alt"></i> Exchange Telemetry</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Orders Processed</span>
+                        <span class="tel-value text-primary" id="statOrdersTotal">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Trades Executed</span>
+                        <span class="tel-value text-success" id="statTradesTotal">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Throughput</span>
+                        <span class="tel-value" id="statOpsPerSec">0 / sec</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Spread</span>
+                        <span class="tel-value text-warning" id="statSpread">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-info">
+                <h4><i class="fas fa-network-wired"></i> Architecture</h4>
+                <ul>
+                    <li><span class="text-primary">Data Structure:</span> MPSC Lock-Free Ring Buffer</li>
+                    <li><span class="text-primary">Concurrency:</span> Atomics.compareExchange</li>
+                    <li><span class="text-primary">Matching:</span> Price-Time Priority (FIFO)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Center Panel: Market Depth Chart -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-chart-area"></i> L2 Market Depth</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="box box-bid"></span> Bids (Buy)</span>
+                    <span class="legend-item"><span class="box box-ask"></span> Asks (Sell)</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="depthCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Right Panel: Order Book & Tape -->
+        <div class="panel-right">
+            
+            <!-- Order Book -->
+            <div class="orderbook-section">
+                <div class="panel-header">
+                    <h3><i class="fas fa-list-ol"></i> Live Order Book</h3>
+                </div>
+                <div class="book-table">
+                    <div class="book-header">
+                        <span>Size</span>
+                        <span>Price</span>
+                    </div>
+                    <!-- Asks (Red, top half) -->
+                    <div class="book-asks" id="bookAsks">
+                        <!-- Populated by JS -->
+                    </div>
+                    <!-- Spread Indicator -->
+                    <div class="book-spread" id="bookSpreadDisplay">
+                        Spread: --
+                    </div>
+                    <!-- Bids (Green, bottom half) -->
+                    <div class="book-bids" id="bookBids">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time and Sales (Tape) -->
+            <div class="tape-section">
+                <div class="panel-header">
+                    <h3><i class="fas fa-bolt"></i> Time & Sales</h3>
+                </div>
+                <div class="tape-list" id="tradeTape">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="hft-engine.js"></script>
+</body>
+</html>

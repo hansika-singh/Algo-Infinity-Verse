@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>String Pattern Matching Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive KMP, Z-Algorithm, and Rabin-Karp string pattern matching visualizer with step-by-step animations." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="string-matching-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="string-matching-visualizer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero sm-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Find Patterns. Understand the Algorithm.</span>
+          <span class="main-title sm-gradient">String Matching Visualizer</span>
+          <span class="subtitle">KMP · Z-Algorithm · Rabin-Karp — animated step by step.</span>
+        </h1>
+        <p class="section-subtitle">Watch KMP build the failure function, Z-Algorithm construct its Z-array, and Rabin-Karp roll its hash — character by character, match by match.</p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary sm-btn-primary"><i class="fas fa-play"></i> Open Visualizer</a>
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> How They Work</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+
+        <!-- Control Card -->
+        <div class="sm-control-card">
+
+          <!-- Inputs -->
+          <div class="sm-input-row">
+            <div class="sm-input-group">
+              <label class="sm-label" for="smText">Text (haystack)</label>
+              <input type="text" id="smText" class="sm-input" value="ABABDABACDABABCABAB" aria-label="Text to search in" maxlength="60" />
+            </div>
+            <div class="sm-input-group">
+              <label class="sm-label" for="smPattern">Pattern (needle)</label>
+              <input type="text" id="smPattern" class="sm-input" value="ABABCABAB" aria-label="Pattern to search for" maxlength="20" />
+            </div>
+          </div>
+
+          <!-- Algorithm selector -->
+          <div class="sm-algo-row">
+            <span class="sm-algo-label">Algorithm:</span>
+            <div class="sm-algo-btns">
+              <button class="sm-algo-btn active" data-algo="kmp">KMP</button>
+              <button class="sm-algo-btn" data-algo="z">Z-Algorithm</button>
+              <button class="sm-algo-btn" data-algo="rk">Rabin-Karp</button>
+            </div>
+          </div>
+
+          <!-- Presets -->
+          <div class="sm-preset-row">
+            <span class="sm-preset-label">Presets:</span>
+            <button class="sm-preset-btn" data-text="AABAACAADAABAABA" data-pat="AABA">AABA in AABAAC...</button>
+            <button class="sm-preset-btn" data-text="GEEKSFORGEEKS" data-pat="GEEK">GEEK in GEEKSFORGEEKS</button>
+            <button class="sm-preset-btn" data-text="AAAAABAAABA" data-pat="AAAA">AAAA (partial match)</button>
+            <button class="sm-preset-btn" data-text="ABCXABCDABXABCDABCDABCY" data-pat="ABCDABCY">Long pattern</button>
+            <button class="sm-preset-btn" data-text="HELLO WORLD" data-pat="WORLD">Simple search</button>
+          </div>
+
+          <!-- Playback -->
+          <div class="sm-playback-row">
+            <button class="btn sm-btn-primary sm-pb-btn" id="smRunBtn"><i class="fas fa-play"></i> Run</button>
+            <button class="btn btn-secondary sm-pb-btn" id="smStepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button class="btn btn-secondary sm-pb-btn" id="smPauseBtn" disabled><i class="fas fa-pause"></i> Pause</button>
+            <button class="btn btn-secondary sm-pb-btn" id="smResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <div class="sm-speed-wrap">
+              <span class="sm-speed-label">Speed:</span>
+              <input type="range" id="smSpeed" class="sm-range" min="1" max="5" value="3" aria-label="Speed" />
+              <span class="sm-speed-val" id="smSpeedVal">Normal</span>
+            </div>
+            <div class="sm-step-ctr">Step <span id="smStepNum">0</span>/<span id="smStepTotal">0</span></div>
+          </div>
+
+        </div>
+
+        <!-- Status -->
+        <div class="sm-status" id="smStatus">Select an algorithm and press Run to begin.</div>
+
+        <!-- Main visualization area -->
+        <div class="sm-viz-card">
+
+          <!-- Text display -->
+          <div class="sm-viz-section">
+            <div class="sm-viz-title">Text</div>
+            <div class="sm-char-row" id="smTextRow"></div>
+            <div class="sm-index-row" id="smTextIndexRow"></div>
+          </div>
+
+          <!-- Pattern display -->
+          <div class="sm-viz-section" id="smPatternSection">
+            <div class="sm-viz-title">Pattern <span class="sm-offset-label" id="smOffsetLabel"></span></div>
+            <div class="sm-char-row" id="smPatternRow"></div>
+            <div class="sm-index-row" id="smPatternIndexRow"></div>
+          </div>
+
+          <!-- Aux table (failure fn / Z-array / hash) -->
+          <div class="sm-viz-section" id="smAuxSection">
+            <div class="sm-viz-title" id="smAuxTitle">Failure Function</div>
+            <div class="sm-aux-wrap" id="smAuxWrap"></div>
+          </div>
+
+          <!-- Hash display (Rabin-Karp only) -->
+          <div class="sm-hash-section hidden" id="smHashSection">
+            <div class="sm-hash-item">
+              <span class="sm-hash-label">Pattern hash</span>
+              <span class="sm-hash-val" id="smPatHash">—</span>
+            </div>
+            <div class="sm-hash-item">
+              <span class="sm-hash-label">Window hash</span>
+              <span class="sm-hash-val" id="smWinHash">—</span>
+            </div>
+            <div class="sm-hash-item">
+              <span class="sm-hash-label">Match?</span>
+              <span class="sm-hash-val" id="smHashMatch">—</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div class="sm-legend">
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-active"></span>Currently comparing</span>
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-match"></span>Character match</span>
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-mismatch"></span>Mismatch</span>
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-found"></span>Full match found</span>
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-window"></span>Current window</span>
+          <span class="sm-legend-item"><span class="sm-ldot sm-ldot-computed"></span>Computed</span>
+        </div>
+
+        <!-- Matches -->
+        <div class="sm-matches-card" id="smMatchesCard">
+          <div class="sm-matches-title"><i class="fas fa-check-circle"></i> Matches Found</div>
+          <div class="sm-matches-list" id="smMatchesList">None yet.</div>
+        </div>
+
+        <!-- Complexity comparison -->
+        <div class="sm-complexity-card">
+          <div class="sm-complexity-title"><i class="fas fa-table"></i> Complexity Comparison</div>
+          <div class="sm-table-scroll">
+            <table class="sm-table">
+              <thead>
+                <tr><th>Algorithm</th><th>Preprocessing</th><th>Search</th><th>Space</th><th>Key Idea</th></tr>
+              </thead>
+              <tbody>
+                <tr class="sm-row-kmp"><td>KMP</td><td class="tc-log">O(m)</td><td class="tc-log">O(n)</td><td class="tc-log">O(m)</td><td>Failure function avoids re-comparison</td></tr>
+                <tr class="sm-row-z"><td>Z-Algorithm</td><td class="tc-log">O(n+m)</td><td class="tc-log">O(n+m)</td><td class="tc-log">O(n+m)</td><td>Z-array on concatenated string</td></tr>
+                <tr class="sm-row-rk"><td>Rabin-Karp</td><td class="tc-log">O(m)</td><td class="tc-log">O(n) avg</td><td class="tc-good">O(1)</td><td>Rolling hash, O(nm) worst case</td></tr>
+                <tr><td>Naive</td><td class="tc-good">O(1)</td><td class="tc-bad">O(nm)</td><td class="tc-good">O(1)</td><td>Try every position</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How Each Algorithm Works</h2>
+        <div class="sm-learn-grid">
+
+          <div class="sm-learn-card sm-learn-kmp">
+            <div class="sm-learn-num">KMP</div>
+            <h3>Knuth-Morris-Pratt</h3>
+            <p>Builds a <strong>failure function</strong> (prefix table) for the pattern. When a mismatch occurs, instead of restarting from the beginning, KMP jumps back only as far as the failure function says — never re-examines text characters.</p>
+            <div class="sm-chips">
+              <span class="sm-chip">O(n+m) total</span>
+              <span class="sm-chip">No backtracking on text</span>
+              <span class="sm-chip">Failure fn = O(m)</span>
+            </div>
+          </div>
+
+          <div class="sm-learn-card sm-learn-z">
+            <div class="sm-learn-num">Z</div>
+            <h3>Z-Algorithm</h3>
+            <p>Constructs a <strong>Z-array</strong> where Z[i] = length of the longest substring starting at position i that matches a prefix of the string. Run on <code>pattern + '$' + text</code> — any Z[i] ≥ m is a match.</p>
+            <div class="sm-chips">
+              <span class="sm-chip">O(n+m) total</span>
+              <span class="sm-chip">Single pass</span>
+              <span class="sm-chip">Z-box window</span>
+            </div>
+          </div>
+
+          <div class="sm-learn-card sm-learn-rk">
+            <div class="sm-learn-num">RK</div>
+            <h3>Rabin-Karp</h3>
+            <p>Computes a <strong>rolling hash</strong> of each text window. Only does full character comparison when hashes match — making it O(n) average. Worst case O(nm) if all hashes collide (spurious hits).</p>
+            <div class="sm-chips">
+              <span class="sm-chip">O(n) average</span>
+              <span class="sm-chip">Rolling hash</span>
+              <span class="sm-chip">Good for multi-pattern</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="string-matching-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

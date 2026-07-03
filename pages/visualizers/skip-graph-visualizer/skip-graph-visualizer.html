@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skip Graph Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Skip Graph visualizer — decentralized P2P search, membership vectors, fault tolerance, comparison with Skip List." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="skip-graph-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="skip-graph-visualizer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="sg-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="sg-hero-inner">
+        <div class="sg-hero-eyebrow">🌐 Distributed Data Structures</div>
+        <h1 class="sg-hero-title">Skip Graph Visualizer</h1>
+        <p class="sg-hero-sub">No head. No root. Every node is equal. Search starts anywhere.</p>
+        <p class="sg-hero-desc">Skip Lists need a single head node — kill it and the whole structure is gone. Skip Graphs distribute the same multilevel structure across every node using <strong>membership vectors</strong>. Any node can start a search, and the failure of any node only affects paths that use it. The P2P DHT structure that BitTorrent and distributed databases actually rely on.</p>
+        <a href="#lab" class="btn btn-primary sg-btn-primary"><i class="fas fa-diagram-project"></i> Open Lab</a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section sg-section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="sg-control-card">
+          <div class="sg-row">
+            <span class="sg-row-label">Nodes</span>
+            <input type="number" id="sgNodeCount" class="sg-num-input" value="10" min="4" max="16" aria-label="Node count" />
+            <button class="sg-ctrl-btn" id="sgGenerateBtn"><i class="fas fa-shuffle"></i> Generate</button>
+            <span class="sg-row-label" style="margin-left:0.5rem">MV bits</span>
+            <select id="sgMvBits" class="sg-select" aria-label="Membership vector bits">
+              <option value="3">3 bits (8 groups max)</option>
+              <option value="4" selected>4 bits (16 groups max)</option>
+            </select>
+          </div>
+
+          <div class="sg-row">
+            <span class="sg-row-label">Tool</span>
+            <div class="sg-tool-btns">
+              <button class="sg-tool-btn active" data-tool="search"><i class="fas fa-magnifying-glass"></i> Search from node</button>
+              <button class="sg-tool-btn" data-tool="kill"><i class="fas fa-skull"></i> Kill node</button>
+              <button class="sg-tool-btn" data-tool="revive"><i class="fas fa-heart-pulse"></i> Revive node</button>
+            </div>
+          </div>
+
+          <div class="sg-row" id="sgSearchRow">
+            <span class="sg-row-label">Search target</span>
+            <input type="number" id="sgSearchTarget" class="sg-num-input" value="" aria-label="Search target key" placeholder="key" />
+            <span class="sg-row-label" style="margin-left:0.5rem">Click any node to start search from it</span>
+          </div>
+
+          <div class="sg-row">
+            <button class="btn sg-btn-primary sg-reset-btn" id="sgResetSearchBtn"><i class="fas fa-undo"></i> Reset Highlights</button>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="sg-status" id="sgStatus">Generate a skip graph, then click any node to search from it.</div>
+
+        <!-- Main layout -->
+        <div class="sg-main-layout">
+
+          <!-- Canvas -->
+          <div class="sg-canvas-section">
+            <div class="sg-canvas-header">
+              <span class="sg-canvas-title"><i class="fas fa-circle-nodes"></i> Skip Graph — Concentric Rings</span>
+              <div class="sg-canvas-legend">
+                <span class="sg-leg"><span class="sg-leg-dot" style="background:#06b6d4"></span>Level 0 (all nodes)</span>
+                <span class="sg-leg"><span class="sg-leg-dot" style="background:#a855f7"></span>Level 1</span>
+                <span class="sg-leg"><span class="sg-leg-dot" style="background:#22c55e"></span>Level 2+</span>
+                <span class="sg-leg"><span class="sg-leg-dot" style="background:#f59e0b"></span>Search path</span>
+                <span class="sg-leg"><span class="sg-leg-dot" style="background:#ef4444"></span>Dead node</span>
+              </div>
+            </div>
+            <div class="sg-canvas-wrap" id="sgCanvasWrap">
+              <canvas id="sgCanvas" class="sg-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Right panel -->
+          <div class="sg-right-panel">
+
+            <!-- MV table -->
+            <div class="sg-panel-card">
+              <div class="sg-panel-title"><i class="fas fa-table"></i> Membership Vectors</div>
+              <div class="sg-mv-table-wrap">
+                <table class="sg-mv-table">
+                  <thead><tr><th>Key</th><th>MV</th><th>Levels</th><th>Status</th></tr></thead>
+                  <tbody id="sgMvBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Search trace -->
+            <div class="sg-panel-card">
+              <div class="sg-panel-title"><i class="fas fa-route"></i> Search Trace</div>
+              <div class="sg-trace-log" id="sgTraceLog">
+                <div class="sg-trace-empty">No search yet. Click a node to start.</div>
+              </div>
+            </div>
+
+            <!-- Fault tolerance -->
+            <div class="sg-panel-card">
+              <div class="sg-panel-title"><i class="fas fa-shield-halved"></i> Fault Tolerance</div>
+              <div class="sg-fault-stats">
+                <div class="sg-fs-row"><span>Total nodes</span><span id="sgTotal">—</span></div>
+                <div class="sg-fs-row"><span>Dead nodes</span><span id="sgDead" style="color:#ef4444">0</span></div>
+                <div class="sg-fs-row"><span>Still reachable</span><span id="sgReachable" style="color:#22c55e">—</span></div>
+                <div class="sg-fs-row"><span>Skip List fails if head dies</span><span style="color:#ef4444">Always</span></div>
+                <div class="sg-fs-row"><span>Skip Graph fails if any node dies</span><span style="color:#22c55e">Never entirely</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Skip List vs Skip Graph comparison -->
+        <div class="sg-compare-card">
+          <div class="sg-compare-title"><i class="fas fa-arrows-left-right"></i> Skip List vs Skip Graph — Key Differences</div>
+          <div class="sg-compare-grid">
+            <div class="sg-compare-col sg-sl-col">
+              <div class="sg-compare-header">Skip List</div>
+              <div class="sg-compare-item sg-ci-bad"><i class="fas fa-xmark"></i> Single head node — required entry point</div>
+              <div class="sg-compare-item sg-ci-bad"><i class="fas fa-xmark"></i> Kill the head → entire structure unreachable</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> Simple to implement, excellent for single-machine</div>
+              <div class="sg-compare-item sg-ci-bad"><i class="fas fa-xmark"></i> Centralized — not suitable for distributed systems</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> O(log n) search, insert, delete</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> No coordination between nodes needed</div>
+            </div>
+            <div class="sg-compare-col sg-sg-col">
+              <div class="sg-compare-header">Skip Graph</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> Every node is an equal entry point</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> Node failures only affect paths using that node</div>
+              <div class="sg-compare-item sg-ci-bad"><i class="fas fa-xmark"></i> More complex — each node stores multiple neighbor lists</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> Fully decentralized — ideal for P2P DHT</div>
+              <div class="sg-compare-item sg-ci-good"><i class="fas fa-check"></i> O(log n) search with high probability</div>
+              <div class="sg-compare-item sg-ci-bad"><i class="fas fa-xmark"></i> Membership vector coordination needed on join</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="skip-graph-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

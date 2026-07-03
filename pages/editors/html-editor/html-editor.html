@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Editor – Live Preview Playground | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/lib/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/theme/material-darker.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="html-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="html-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero he-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write HTML.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">See It Live Instantly.</span>
+          <span class="subtitle">In-Browser HTML Playground</span>
+        </h1>
+        <p class="he-hero-desc">Write HTML and watch it render in real time — no server, no setup. Perfect for learning tags, forms, tables, and layout.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn HTML</a>
+        </div>
+        <div class="he-note">
+          <i class="fas fa-info-circle"></i>
+          Preview runs entirely in your browser via a sandboxed <code>iframe</code>. No data is sent to any server. Toggle live preview or click Run to refresh.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section he-section">
+      <div class="he-container">
+        <div class="he-toolbar">
+          <div class="he-toolbar-left">
+            <span class="he-label"><i class="fab fa-html5 he-html-icon"></i> HTML Editor</span>
+            <select id="heExampleSelect" class="he-select" aria-label="Load example">
+              <option value="basic">Basic Webpage</option>
+              <option value="headings">Headings & Text</option>
+              <option value="lists">Lists</option>
+              <option value="table">Table</option>
+              <option value="form">Form</option>
+              <option value="flexbox">Flexbox Layout</option>
+            </select>
+          </div>
+          <div class="he-toolbar-right">
+            <label class="he-live-toggle" title="Toggle live preview">
+              <input type="checkbox" id="heLiveToggle" checked aria-label="Enable live preview" />
+              <span class="he-toggle-track">
+                <span class="he-toggle-thumb"></span>
+              </span>
+              <span class="he-toggle-label">Live</span>
+            </label>
+            <button id="heRunBtn" class="btn btn-primary he-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="heResetBtn" class="he-icon-btn" title="Reset to example" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="heCopyBtn" class="he-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="heSaveBtn" class="he-icon-btn" title="Save to browser storage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="he-split">
+          <div class="he-editor-pane">
+            <div class="he-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="he-lang-badge">HTML</span>
+            </div>
+            <div class="he-editor-wrap">
+              
+              <textarea id="heEditor" class="he-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="HTML code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="he-preview-pane">
+            <div class="he-pane-header">
+              <span><i class="fas fa-eye"></i> Live Preview</span>
+              <span id="heStatusBadge" class="he-status-badge he-status-ready">Ready</span>
+            </div>
+            <div class="he-preview-body">
+              <iframe
+                id="hePreviewFrame"
+                class="he-iframe"
+                sandbox="allow-scripts allow-forms"
+                title="HTML preview"
+                aria-label="Live HTML preview"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="he-console">
+          <div class="he-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Console / Notes</span>
+            <button class="he-console-clear" id="heConsoleClear" aria-label="Clear console"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="he-console-body" id="heConsoleBody">
+            <span class="he-console-placeholder">No issues detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/lib/codemirror.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/mode/xml/xml.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/mode/htmlmixed/htmlmixed.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/mode/javascript/javascript.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.20/mode/css/css.min.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./html-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

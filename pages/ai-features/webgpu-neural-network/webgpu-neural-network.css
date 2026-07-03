@@ -1,0 +1,124 @@
+/* WebGPU NN Builder Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* WebGPU Theme (Purple/Teal/Neon) */
+    --gpu-primary: #a855f7; /* Purple */
+    --gpu-primary-hover: #9333ea;
+    --gpu-accent: #2dd4bf; /* Teal */
+    --gpu-success: #10b981;
+    --gpu-danger: #ef4444;
+}
+
+body.gpu-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.gpu-nav { height: 60px; padding: 0 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--gpu-primary); }
+
+.gpu-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.gpu-badge.ready { color: var(--gpu-accent); background: rgba(45, 212, 191, 0.1); border-color: rgba(45, 212, 191, 0.3); box-shadow: 0 0 10px rgba(45, 212, 191, 0.2); }
+.gpu-badge.error { color: var(--gpu-danger); background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
+
+/* Buttons */
+.btn { padding: 0.6rem 1.2rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; }
+.btn-primary { background: var(--gpu-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--gpu-primary-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); }
+.btn-success { background: var(--gpu-accent); color: #020617; }
+.btn-success:hover:not(:disabled) { background: #14b8a6; box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3); }
+.btn-danger { background: transparent; border: 1px solid var(--gpu-danger); color: var(--gpu-danger); }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.w-100 { width: 100%; }
+.hidden { display: none !important; }
+
+/* Workspace Layout */
+.gpu-workspace { flex: 1; display: flex; overflow: hidden; }
+
+/* Left Panel (Palette) */
+.panel-sidebar { width: 280px; display: flex; flex-direction: column; background: #0b1121; border-right: 1px solid var(--glass-border); z-index: 10; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.palette-container { padding: 1.5rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+.palette-instruction { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 1rem; line-height: 1.5; }
+
+.layer-node { background: #1e293b; border: 2px solid #334155; border-radius: 8px; padding: 1rem; cursor: grab; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; user-select: none; }
+.layer-node:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.layer-node.input-layer { border-color: #3b82f6; }
+.layer-node.hidden-layer { border-color: var(--gpu-primary); }
+.layer-node.output-layer { border-color: var(--gpu-success); }
+
+.layer-icon { font-size: 1.5rem; color: #cbd5e1; }
+.layer-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.layer-info strong { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: #fff; }
+.layer-info span { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--text-secondary); }
+.sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--glass-border); }
+
+/* Center Panel (Graph Workspace) */
+.panel-center { flex: 1; display: flex; flex-direction: column; background: #0f172a; position: relative; }
+.workspace-header { padding: 1rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+.header-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.graph-workspace { flex: 1; position: relative; overflow: hidden; background-image: radial-gradient(circle at center, rgba(168, 85, 247, 0.05) 0%, transparent 70%); }
+.empty-state { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #475569; pointer-events: none; }
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; color: var(--gpu-primary); }
+
+.connections-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.connection-path { fill: none; stroke: var(--gpu-accent); stroke-width: 3px; cursor: pointer; pointer-events: stroke; transition: stroke 0.3s, stroke-width 0.3s; }
+.connection-path:hover { stroke: var(--gpu-danger); stroke-width: 5px; }
+.connection-path.flowing { stroke-dasharray: 8; animation: dataFlow 1s linear infinite; stroke: #fbbf24; }
+.temp-connection { fill: none; stroke: #94a3b8; stroke-width: 2px; stroke-dasharray: 4; }
+
+@keyframes dataFlow { from { stroke-dashoffset: 16; } to { stroke-dashoffset: 0; } }
+
+/* Draggable Nodes on Canvas */
+.canvas-node { position: absolute; background: #020617; border: 2px solid; border-radius: 8px; padding: 1rem; min-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: grab; user-select: none; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transform: translate(-50%, -50%); transition: box-shadow 0.2s; }
+.canvas-node:active { cursor: grabbing; z-index: 3; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
+.canvas-node.input-layer { border-color: #3b82f6; }
+.canvas-node.hidden-layer { border-color: var(--gpu-primary); }
+.canvas-node.output-layer { border-color: var(--gpu-success); }
+.canvas-node strong { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: #fff; pointer-events: none; }
+.canvas-node span { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--text-secondary); pointer-events: none; }
+
+.node-port { position: absolute; width: 14px; height: 14px; background: #020617; border: 2px solid var(--text-secondary); border-radius: 50%; cursor: crosshair; z-index: 4; transition: all 0.2s; }
+.node-port:hover { transform: scale(1.5); background: var(--gpu-accent); border-color: #020617; }
+.port-in { left: -8px; top: 50%; transform: translateY(-50%); }
+.port-out { right: -8px; top: 50%; transform: translateY(-50%); }
+
+/* Right Panel (Training Dashboard) */
+.panel-right { width: 350px; display: flex; flex-direction: column; background: #0b1121; border-left: 1px solid var(--glass-border); }
+.training-dashboard { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 1.5rem; }
+
+.dashboard-stats { display: flex; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid #1e293b; }
+.stat-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
+.stat-value { font-family: 'Fira Code', monospace; font-size: 1.2rem; font-weight: 700; color: var(--gpu-accent); }
+
+.chart-container { width: 100%; height: 180px; background: #020617; border-radius: 8px; padding: 0.5rem; border: 1px solid #1e293b; }
+
+.wgsl-console { flex: 1; display: flex; flex-direction: column; background: #020617; overflow: hidden; }
+.console-header { padding: 0.8rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #a78bfa; background: #0f172a; border-bottom: 1px solid #1e293b; }
+.console-body { flex: 1; padding: 1rem 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #94a3b8; overflow-y: auto; white-space: pre-wrap; line-height: 1.6; }
+.wgsl-keyword { color: #f472b6; font-weight: bold; }
+.wgsl-type { color: #38bdf8; }
+.wgsl-function { color: #fbbf24; }
+
+@media (max-width: 1100px) {
+    .gpu-workspace { flex-direction: column; }
+    .panel-sidebar, .panel-right { width: 100%; max-height: 30vh; border: none; border-bottom: 1px solid var(--glass-border); }
+}

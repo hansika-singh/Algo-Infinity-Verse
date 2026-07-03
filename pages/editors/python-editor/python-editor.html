@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="python-editor.css" />
+    <link rel="stylesheet" href="/pages/ai-features/intent-detector.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="python-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero py-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Python.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser Python Editor</span>
+        </h1>
+        <p class="py-hero-desc">Write Python code and see real-time execution output. Supports standard libraries, data structures, and algorithms.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/python-learning/python-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn Python</a>
+        </div>
+        <div class="py-note">
+          <i class="fas fa-info-circle"></i>
+          Execution is powered by the Piston API in a secure backend sandbox. Standard input (input) is currently not supported in this interactive demo.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section py-section">
+      <div class="py-container">
+        <div id="intentHintBanner" class="intent-hint-banner hidden" role="status" aria-live="polite">
+                  <span class="intent-hint-text"></span>
+                 <button class="intent-hint-dismiss" aria-label="Dismiss hint">
+                 <i class="fas fa-times"></i>
+                 </button>
+                </div>
+                <div class="py-toolbar">
+          <div class="py-toolbar-left">
+            <span class="py-label"><i class="fab fa-python py-python-icon"></i> Python Editor</span>
+            <select id="pyExampleSelect" class="py-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="loops">Loops & Iteration</option>
+              <option value="functions">Functions</option>
+              <option value="lists">Lists & Dictionaries</option>
+            </select>
+          </div>
+          <div class="py-toolbar-right">
+            <button id="pyRunBtn" class="btn btn-primary py-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="pyResetBtn" class="py-icon-btn" title="Reset to example" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="pyCopyBtn" class="py-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="pySaveBtn" class="py-icon-btn" title="Save to browser storage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="py-split">
+          <div class="py-editor-pane">
+            <div class="py-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="py-lang-badge">Python</span>
+            </div>
+            <div class="py-editor-wrap">
+              <div class="py-line-numbers" id="pyLineNumbers">1</div>
+              <textarea id="pyEditor" class="py-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Python code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="py-output-pane">
+            <div class="py-pane-header">
+              <span><i class="fas fa-terminal"></i> Output</span>
+              <span id="pyStatusBadge" class="py-status-badge py-status-ready">Ready</span>
+            </div>
+            <div class="py-output-body" id="pyOutputBody">
+              <span class="py-output-placeholder">Run your code to see output here...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="py-console">
+          <div class="py-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Errors / Warnings</span>
+            <button class="py-console-clear" id="pyConsoleClear" aria-label="Clear error console"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="py-console-body" id="pyConsoleBody">
+            <span class="py-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+        <script src="/script.js"></script>
+       <script src="/pages/ai-features/intent-detector.js"></script>
+       <script src="./python-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Python.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser Python Editor</span>
+        </h1>
+        <p class="py-hero-desc">Write Python code and see real-time execution output. Supports standard libraries, data structures, and algorithms.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/python-learning/python-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn Python</a>
+        </div>
+        <div class="py-note">
+          <i class="fas fa-info-circle"></i>
+          Execution is powered by the Piston API in a secure backend sandbox. Standard input (input) is currently not supported in this interactive demo.
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section py-section">
+      <div class="py-container">
+        <div id="intentHintBanner" class="intent-hint-banner hidden" role="status" aria-live="polite">
+                  <span class="intent-hint-text"></span>
+                 <button class="intent-hint-dismiss" aria-label="Dismiss hint">
+                 <i class="fas fa-times"></i>
+                 </button>
+                </div>
+                <div class="py-toolbar">
+          <div class="py-toolbar-left">
+            <span class="py-label"><i class="fab fa-python py-python-icon"></i> Python Editor</span>
+            <select id="pyExampleSelect" class="py-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="loops">Loops & Iteration</option>
+              <option value="functions">Functions</option>
+              <option value="lists">Lists & Dictionaries</option>
+            </select>
+          </div>
+          <div class="py-toolbar-right">
+            <button id="pyRunBtn" class="btn btn-primary py-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="pyResetBtn" class="py-icon-btn" title="Reset to example" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="pyCopyBtn" class="py-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="pySaveBtn" class="py-icon-btn" title="Save to browser storage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="py-split">
+          <div class="py-editor-pane">
+            <div class="py-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="py-lang-badge">Python</span>
+            </div>
+            <div class="py-editor-wrap">
+              <div class="py-line-numbers" id="pyLineNumbers">1</div>
+              <textarea id="pyEditor" class="py-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Python code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="py-output-pane">
+            <div class="py-pane-header">
+              <span><i class="fas fa-terminal"></i> Output</span>
+              <span id="pyStatusBadge" class="py-status-badge py-status-ready">Ready</span>
+            </div>
+            <div class="py-output-body" id="pyOutputBody">
+              <span class="py-output-placeholder">Run your code to see output here...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="py-console">
+          <div class="py-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Errors / Warnings</span>
+            <button class="py-console-clear" id="pyConsoleClear" aria-label="Clear error console"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="py-console-body" id="pyConsoleBody">
+            <span class="py-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>∞ Algo Infinity Verse</h3>
+            <p>Your ultimate destination for mastering DSA and acing technical interviews.</p>
+            <div class="social-links">
+              <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+              <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/index.html#topics">DSA Topics</a></li>
+              <li><a href="/pages/learning/python-learning/python-learning.html">Learn Python</a></li>
+              <li><a href="/pages/editors/python-editor/python-editor.html">Python Editor</a></li>
+              <li><a href="/pages/editors/cpp-editor/cpp-editor.html">C++ Editor</a></li>
+              <li><a href="/pages/editors/c-editor/c-editor.html">C Editor</a></li>
+              <li><a href="/pages/editors/java-editor/java-editor.html">Java Editor</a></li>
+              <li><a href="/pages/editors/kotlin-editor/kotlin-editor.html">Kotlin Editor</a></li>
+              <li><a href="/pages/editors/haskell-editor/haskell-editor.html">Haskell Editor</a></li>
+              <li><a href="/pages/editors/react-playground/react-playground.html">React Playground</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Algo Infinity Verse. Crafted with 💜 for learners worldwide.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/auth.js"></script>
+        <script src="/script.js"></script>
+        <script src="/theme.js"></script>
+       <script src="/pages/ai-features/intent-detector.js"></script>
+       <script src="./python-editor.js"></script>
+       <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      </script>
+  </body>
+</html>

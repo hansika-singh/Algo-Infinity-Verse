@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Interactive Sorting Algorithm Visualizer | Algo Infinity Verse
+    </title>
+    <meta
+      name="description"
+      content="Visualize sorting algorithms like Bubble, Selection, and Insertion Sort step-by-step with adjustable array sizes and animation speeds."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sorting-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="sorting-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Sorting Visualizer</span>
+          <span class="subtitle"
+            >Animate and study sorting algorithms step-by-step</span
+          >
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          <!-- LEFT / MAIN CONTENT: Visualizer canvas -->
+          <div class="visualizer-main-panel">
+            <!-- Visualizer Card (Bars chart) -->
+            <div class="visualizer-card" style="position: relative">
+              <div class="canvas-wrapper" id="canvasWrapper">
+                <!-- Bars will be inserted dynamically by JS -->
+                <div class="canvas-placeholder-text" id="canvasPlaceholder">
+                  Initializing Sorter Canvas...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT / SIDEBAR CONTENT: Controls, Complexity -->
+          <div class="visualizer-sidebar">
+            <!-- Controls Card -->
+            <div class="visualizer-card" style="position: relative">
+              <h3 style="margin-bottom: 1rem">
+                <i
+                  class="fas fa-sliders-h"
+                  style="color: var(--accent); margin-right: 0.5rem"
+                ></i
+                >Controls
+              </h3>
+
+              <!-- Algorithm Select -->
+              <div class="control-group">
+                <label for="algoSelect">Algorithm</label>
+                <select id="algoSelect" class="control-input">
+                  <option value="bubble">Bubble Sort</option>
+                  <option value="selection">Selection Sort</option>
+                  <option value="insertion">Insertion Sort</option>
+                </select>
+              </div>
+
+              <!-- Array Size -->
+              <div class="control-group">
+                <label for="arraySizeRange"
+                  >Array Size
+                  <span class="val-display" id="sizeDisplay">30</span></label
+                >
+                <input
+                  type="range"
+                  id="arraySizeRange"
+                  min="5"
+                  max="80"
+                  value="30"
+                  class="slider-custom"
+                />
+              </div>
+
+              <!-- Speed/Delay -->
+              <div class="control-group">
+                <label for="speedRange"
+                  >Step Delay
+                  <span class="val-display" id="speedDisplay">50ms</span></label
+                >
+                <input
+                  type="range"
+                  id="speedRange"
+                  min="5"
+                  max="1000"
+                  value="50"
+                  class="slider-custom"
+                />
+              </div>
+
+              <!-- Sound Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="soundToggle" style="margin-bottom: 0;">Sound Effects</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Volume Control -->
+              <div class="control-group" id="volumeControlGroup">
+                <label for="volumeRange"
+                  >Volume
+                  <span class="val-display" id="volumeDisplay">50%</span></label
+                >
+                <input
+                  type="range"
+                  id="volumeRange"
+                  min="0"
+                  max="100"
+                  value="50"
+                  class="slider-custom"
+                />
+              </div>
+
+              <!-- Debugger Mode Toggle -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="dbgToggle" style="margin-bottom: 0;">Debugger Mode</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="dbgToggle">
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Control Buttons -->
+              <button
+                id="newArrayBtn"
+                class="btn btn-secondary"
+                style="
+                  width: 100%;
+                  margin-top: 0.5rem;
+                  justify-content: center;
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                "
+              >
+                <i class="fas fa-sync-alt"></i> Generate New Array
+              </button>
+
+              <div class="btn-control-row">
+                <button id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Play
+                </button>
+                <button
+                  id="pauseBtn"
+                  class="btn btn-secondary btn-control"
+                  disabled
+                >
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+                <button id="resetBtn" class="btn btn-secondary btn-control">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Debugger Panel -->
+            <div id="debuggerPanel" class="visualizer-card debugger-panel" style="display: none; position: relative;">
+              <div class="debugger-header">
+                <h3><i class="fas fa-bug" style="color: var(--accent);"></i> Step Debugger</h3>
+                <span id="dbgStepCounter" class="step-counter">Step 0 / 0</span>
+              </div>
+              <div class="debugger-controls">
+                <button id="dbgPrevBtn" class="btn btn-secondary btn-control-mini" disabled><i class="fas fa-step-backward"></i> Prev</button>
+                <button id="dbgPlayBtn" class="btn btn-primary btn-control-mini"><i class="fas fa-play"></i> Play</button>
+                <button id="dbgPauseBtn" class="btn btn-secondary btn-control-mini" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                <button id="dbgNextBtn" class="btn btn-secondary btn-control-mini"><i class="fas fa-step-forward"></i> Next</button>
+              </div>
+              <div class="debugger-slider-group">
+                <input type="range" id="dbgStepSlider" min="0" max="0" value="0" class="slider-custom">
+              </div>
+              <div class="debugger-explanation">
+                <h5>Why this step happens:</h5>
+                <p id="dbgExplanationText" class="debugger-explanation-text">Select an algorithm and click start to begin step debugging.</p>
+              </div>
+              <div class="pseudo-code-container" id="dbgPseudoCode">
+                <!-- Pseudo-code lines will be injected here -->
+              </div>
+            </div>
+
+            <!-- Algorithm Complexity Panel -->
+            <div class="visualizer-card" style="position: relative">
+              <h3 id="algoInfoTitle">Bubble Sort</h3>
+
+              <div class="complexity-grid">
+                <div class="complexity-card-mini">
+                  <h5>Best Time</h5>
+                  <p id="bestTimeComplexity">O(n)</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Average Time</h5>
+                  <p id="avgTimeComplexity">O(n²)</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Worst Time</h5>
+                  <p id="worstTimeComplexity">O(n²)</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Space Complexity</h5>
+                  <p id="spaceComplexity">O(1)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="What is the time complexity of this problem?"
+          >
+            Time Complexity
+          </button>
+          <button
+            class="quick-q"
+            data-question="Can you give me a hint for this problem?"
+          >
+            Hint
+          </button>
+          <button class="quick-q" data-question="What approach should I use?">
+            Approach
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="sorting-visualizer.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Panic Mode | Algo Infinity Verse</title>
+    <meta name="description" content="30-minute crash-revision dashboard — DSA formulas, complexity cheat sheet, common questions, and system design reminders. All in one page." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="interview-panic-mode.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="interview-panic-mode">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero / Panic Header -->
+    <section class="ipm-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ipm-hero-content">
+        <div class="ipm-hero-top">
+          <div class="ipm-panic-badge">🚨 PANIC MODE</div>
+          <h1 class="ipm-hero-title">Interview in <span class="ipm-gradient">30 Minutes?</span></h1>
+          <p class="ipm-hero-desc">Don't panic. This dashboard has everything you need — DSA formulas, complexity tables, common questions, and system design reminders. Start the timer and go.</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="ipm-timer-card" id="ipmTimerCard">
+          <div class="ipm-timer-display" id="ipmTimerDisplay">30:00</div>
+          <div class="ipm-timer-label" id="ipmTimerLabel">Ready when you are</div>
+          <div class="ipm-timer-progress-wrap">
+            <div class="ipm-timer-progress-bar" id="ipmTimerBar"></div>
+          </div>
+          <div class="ipm-timer-controls">
+            <button class="btn ipm-btn-start" id="ipmStartBtn"><i class="fas fa-play"></i> Start 30-Min Revision</button>
+            <button class="btn ipm-btn-pause hidden" id="ipmPauseBtn"><i class="fas fa-pause"></i> Pause</button>
+            <button class="btn ipm-btn-reset" id="ipmResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+        </div>
+
+        <!-- Quick nav -->
+        <div class="ipm-quick-nav">
+          <a href="#dsa-formulas"   class="ipm-nav-pill"><i class="fas fa-square-root-alt"></i> DSA Formulas</a>
+          <a href="#complexity"     class="ipm-nav-pill"><i class="fas fa-table"></i> Complexity</a>
+          <a href="#questions"      class="ipm-nav-pill"><i class="fas fa-question-circle"></i> Questions</a>
+          <a href="#system-design"  class="ipm-nav-pill"><i class="fas fa-sitemap"></i> System Design</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <div class="ipm-progress-bar-wrap" id="ipmProgressWrap">
+      <div class="ipm-progress-inner">
+        <span class="ipm-progress-label">Revision Progress</span>
+        <div class="ipm-progress-track">
+          <div class="ipm-progress-fill" id="ipmProgressFill"></div>
+        </div>
+        <span class="ipm-progress-count"><span id="ipmCheckedCount">0</span> / <span id="ipmTotalCount">0</span> topics</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ipm-dashboard">
+
+      <!-- ── Section 1: DSA Formulas ── -->
+      <section id="dsa-formulas" class="ipm-section">
+        <div class="container">
+          <div class="ipm-section-header">
+            <span class="ipm-section-icon">📐</span>
+            <h2 class="ipm-section-title">DSA Formulas</h2>
+            <span class="ipm-section-time">~8 min</span>
+          </div>
+
+          <div class="ipm-cards-grid">
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Arrays & Strings as reviewed" />
+                  <span class="ipm-check-title">Arrays & Strings</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">Two Sum</span><code>HashMap: O(n) time, O(n) space</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Sliding Window</span><code>expand right, shrink left on violation</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Two Pointers</span><code>sort first, lo=0, hi=n-1, move inward</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Prefix Sum</span><code>prefix[i] = prefix[i-1] + arr[i]</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Kadane's</span><code>cur = max(a[i], cur+a[i]); ans = max(ans, cur)</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Binary Search</span><code>lo=0, hi=n-1; mid=⌊(lo+hi)/2⌋</code></div>
+              </div>
+            </div>
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Trees as reviewed" />
+                  <span class="ipm-check-title">Trees</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">Height</span><code>1 + max(height(L), height(R))</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Inorder</span><code>L → Root → R  (sorted for BST)</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Level Order</span><code>BFS with queue, track level size</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">LCA (BST)</span><code>if both &lt; root → left; both &gt; root → right</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Validate BST</span><code>pass min/max bounds recursively</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Diameter</span><code>max(L_height + R_height) across all nodes</code></div>
+              </div>
+            </div>
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Graphs as reviewed" />
+                  <span class="ipm-check-title">Graphs</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">BFS</span><code>queue, visited set, level-by-level</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">DFS</span><code>stack/recursion + visited set</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Dijkstra</span><code>min-heap [dist, node]; relax neighbors</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Topo Sort</span><code>DFS + post-order reverse, or Kahn's (BFS)</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Union-Find</span><code>parent[x]=x; find(x) with path compression</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Cycle detect</span><code>DFS with in-stack array (directed graphs)</code></div>
+              </div>
+            </div>
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Dynamic Programming as reviewed" />
+                  <span class="ipm-check-title">Dynamic Programming</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">Fibonacci</span><code>dp[i] = dp[i-1] + dp[i-2]</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Coin Change</span><code>dp[i] = min(dp[i-coin]+1) for each coin</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Knapsack</span><code>dp[i][w] = max(dp[i-1][w], dp[i-1][w-wt]+val)</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">LCS</span><code>if match: dp[i][j]=dp[i-1][j-1]+1 else max(↑,←)</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Edit Distance</span><code>insert/delete/replace: 3-way min</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">House Robber</span><code>dp[i] = max(dp[i-1], dp[i-2]+nums[i])</code></div>
+              </div>
+            </div>
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Heaps & Priority Queue as reviewed" />
+                  <span class="ipm-check-title">Heaps & Priority Queue</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">Top-K Largest</span><code>min-heap of size K; pop when size&gt;K</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Top-K Smallest</span><code>max-heap of size K; pop when size&gt;K</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Merge K Lists</span><code>min-heap [val, listIdx, elemIdx]</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Median Stream</span><code>maxHeap(lower) + minHeap(upper); balance</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Parent index</span><code>⌊(i-1)/2⌋</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Children</span><code>2i+1 (left), 2i+2 (right)</code></div>
+              </div>
+            </div>
+
+            <div class="ipm-card">
+              <div class="ipm-card-header">
+                <label class="ipm-check-label">
+                  <input type="checkbox" class="ipm-check" aria-label="Mark Linked Lists as reviewed" />
+                  <span class="ipm-check-title">Linked Lists</span>
+                </label>
+              </div>
+              <div class="ipm-card-body">
+                <div class="ipm-formula-row"><span class="ipm-f-name">Reverse</span><code>prev=null; save next; curr.next=prev; move</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Cycle detect</span><code>Floyd's: slow+=1, fast+=2; meet = cycle</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Middle node</span><code>slow/fast pointers; slow at mid when fast ends</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Merge sorted</span><code>dummy node; compare heads; advance winner</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Remove Nth</span><code>fast advance n steps, then move both</code></div>
+                <div class="ipm-formula-row"><span class="ipm-f-name">Dummy node</span><code>handles head deletion without special case</code></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Section 2: Complexity Cheat Sheet ── -->
+      <section id="complexity" class="ipm-section">
+        <div class="container">
+          <div class="ipm-section-header">
+            <span class="ipm-section-icon">⚡</span>
+            <h2 class="ipm-section-title">Complexity Cheat Sheet</h2>
+            <span class="ipm-section-time">~5 min</span>
+          </div>
+
+          <div class="ipm-table-card">
+            <label class="ipm-check-label ipm-table-check">
+              <input type="checkbox" class="ipm-check" aria-label="Mark Complexity Cheat Sheet as reviewed" />
+              <span class="ipm-check-title">Mark as reviewed</span>
+            </label>
+            <div class="ipm-table-scroll">
+              <table class="ipm-table">
+                <thead>
+                  <tr>
+                    <th>Data Structure</th>
+                    <th>Access</th>
+                    <th>Search</th>
+                    <th>Insert</th>
+                    <th>Delete</th>
+                    <th>Space</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Array</td><td class="tc-best">O(1)</td><td class="tc-ok">O(n)</td><td class="tc-ok">O(n)</td><td class="tc-ok">O(n)</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>Linked List</td><td class="tc-ok">O(n)</td><td class="tc-ok">O(n)</td><td class="tc-best">O(1)</td><td class="tc-best">O(1)</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>HashMap</td><td class="tc-best">O(1)*</td><td class="tc-best">O(1)*</td><td class="tc-best">O(1)*</td><td class="tc-best">O(1)*</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>BST (balanced)</td><td class="tc-log">O(log n)</td><td class="tc-log">O(log n)</td><td class="tc-log">O(log n)</td><td class="tc-log">O(log n)</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>Heap</td><td class="tc-best">O(1) peek</td><td class="tc-ok">O(n)</td><td class="tc-log">O(log n)</td><td class="tc-log">O(log n)</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>Stack / Queue</td><td class="tc-ok">O(n)</td><td class="tc-ok">O(n)</td><td class="tc-best">O(1)</td><td class="tc-best">O(1)</td><td class="tc-ok">O(n)</td></tr>
+                  <tr><td>Trie</td><td class="tc-ok">O(L)</td><td class="tc-ok">O(L)</td><td class="tc-ok">O(L)</td><td class="tc-ok">O(L)</td><td class="tc-worst">O(N·L)</td></tr>
+                  <tr><td>Graph (adj list)</td><td>—</td><td class="tc-ok">O(V+E)</td><td class="tc-best">O(1)</td><td class="tc-ok">O(E)</td><td class="tc-ok">O(V+E)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ipm-table-scroll" style="margin-top:1rem">
+              <table class="ipm-table">
+                <thead>
+                  <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable?</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Bubble Sort</td><td class="tc-best">O(n)</td><td class="tc-worst">O(n²)</td><td class="tc-worst">O(n²)</td><td class="tc-best">O(1)</td><td>✅</td></tr>
+                  <tr><td>Selection Sort</td><td class="tc-worst">O(n²)</td><td class="tc-worst">O(n²)</td><td class="tc-worst">O(n²)</td><td class="tc-best">O(1)</td><td>❌</td></tr>
+                  <tr><td>Insertion Sort</td><td class="tc-best">O(n)</td><td class="tc-worst">O(n²)</td><td class="tc-worst">O(n²)</td><td class="tc-best">O(1)</td><td>✅</td></tr>
+                  <tr><td>Merge Sort</td><td class="tc-log">O(n log n)</td><td class="tc-log">O(n log n)</td><td class="tc-log">O(n log n)</td><td class="tc-ok">O(n)</td><td>✅</td></tr>
+                  <tr><td>Quick Sort</td><td class="tc-log">O(n log n)</td><td class="tc-log">O(n log n)</td><td class="tc-worst">O(n²)</td><td class="tc-log">O(log n)</td><td>❌</td></tr>
+                  <tr><td>Heap Sort</td><td class="tc-log">O(n log n)</td><td class="tc-log">O(n log n)</td><td class="tc-log">O(n log n)</td><td class="tc-best">O(1)</td><td>❌</td></tr>
+                  <tr><td>Binary Search</td><td class="tc-best">O(1)</td><td class="tc-log">O(log n)</td><td class="tc-log">O(log n)</td><td class="tc-best">O(1)</td><td>—</td></tr>
+                  <tr><td>BFS / DFS</td><td class="tc-ok">O(V+E)</td><td class="tc-ok">O(V+E)</td><td class="tc-ok">O(V+E)</td><td class="tc-ok">O(V)</td><td>—</td></tr>
+                  <tr><td>Dijkstra's</td><td class="tc-log">O((V+E) log V)</td><td class="tc-log">O((V+E) log V)</td><td class="tc-log">O((V+E) log V)</td><td class="tc-ok">O(V)</td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ipm-table-note">* Average case. Worst case O(n) on hash collision. L = string length. V = vertices, E = edges.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Section 3: Common Interview Questions ── -->
+      <section id="questions" class="ipm-section">
+        <div class="container">
+          <div class="ipm-section-header">
+            <span class="ipm-section-icon">🎯</span>
+            <h2 class="ipm-section-title">Common Interview Questions</h2>
+            <span class="ipm-section-time">~10 min</span>
+          </div>
+
+          <div class="ipm-q-grid" id="ipmQGrid"></div>
+
+        </div>
+      </section>
+
+      <!-- ── Section 4: System Design Reminders ── -->
+      <section id="system-design" class="ipm-section">
+        <div class="container">
+          <div class="ipm-section-header">
+            <span class="ipm-section-icon">🏗️</span>
+            <h2 class="ipm-section-title">System Design Reminders</h2>
+            <span class="ipm-section-time">~7 min</span>
+          </div>
+
+          <div class="ipm-sd-grid">
+
+            <div class="ipm-sd-card">
+              <label class="ipm-check-label">
+                <input type="checkbox" class="ipm-check" aria-label="Mark System Design Checklist as reviewed" />
+                <span class="ipm-check-title">Interview Checklist</span>
+              </label>
+              <div class="ipm-sd-steps">
+                <div class="ipm-sd-step"><span class="ipm-sd-num">1</span><div><strong>Clarify</strong> — users, scale, features in scope, latency SLA, consistency vs availability</div></div>
+                <div class="ipm-sd-step"><span class="ipm-sd-num">2</span><div><strong>Estimate</strong> — QPS (read/write), storage per day, bandwidth, cache size needed</div></div>
+                <div class="ipm-sd-step"><span class="ipm-sd-num">3</span><div><strong>High-level design</strong> — clients, load balancer, services, database, cache, CDN</div></div>
+                <div class="ipm-sd-step"><span class="ipm-sd-num">4</span><div><strong>Deep dive</strong> — hardest component, bottleneck, sharding, replication, failure modes</div></div>
+                <div class="ipm-sd-step"><span class="ipm-sd-num">5</span><div><strong>Trade-offs</strong> — what you chose and why, what you'd do at 10x scale</div></div>
+              </div>
+            </div>
+
+            <div class="ipm-sd-card">
+              <label class="ipm-check-label">
+                <input type="checkbox" class="ipm-check" aria-label="Mark CAP Theorem as reviewed" />
+                <span class="ipm-check-title">CAP Theorem</span>
+              </label>
+              <div class="ipm-cap-grid">
+                <div class="ipm-cap-item ipm-cap-c"><strong>C</strong>onsistency<br/><span>All nodes return same data at same time</span></div>
+                <div class="ipm-cap-item ipm-cap-a"><strong>A</strong>vailability<br/><span>Every request gets a response (not error)</span></div>
+                <div class="ipm-cap-item ipm-cap-p"><strong>P</strong>artition Tolerance<br/><span>System works despite network partitions</span></div>
+              </div>
+              <div class="ipm-cap-note">Real systems must choose CP or AP — Partition Tolerance is non-negotiable in distributed systems.</div>
+              <div class="ipm-formula-row" style="margin-top:0.5rem"><span class="ipm-f-name">CP examples</span><code>HBase, ZooKeeper, MongoDB (strong)</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">AP examples</span><code>Cassandra, DynamoDB, CouchDB</code></div>
+            </div>
+
+            <div class="ipm-sd-card">
+              <label class="ipm-check-label">
+                <input type="checkbox" class="ipm-check" aria-label="Mark Scaling Patterns as reviewed" />
+                <span class="ipm-check-title">Scaling Patterns</span>
+              </label>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Horizontal scaling</span><code>Add more machines (stateless services)</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">DB sharding</span><code>hash(key) % N shards; avoid hotspots</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Replication</span><code>master-slave (read replicas) or multi-master</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Cache-aside</span><code>app checks cache → miss → DB → update cache</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Write-through</span><code>write to cache + DB simultaneously</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Message queue</span><code>decouple producers/consumers; async processing</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">Rate limiting</span><code>token bucket / sliding window; Redis INCR</code></div>
+              <div class="ipm-formula-row"><span class="ipm-f-name">CDN</span><code>cache static assets geographically close to user</code></div>
+            </div>
+
+            <div class="ipm-sd-card">
+              <label class="ipm-check-label">
+                <input type="checkbox" class="ipm-check" aria-label="Mark DB Choices as reviewed" />
+                <span class="ipm-check-title">Database Choices</span>
+              </label>
+              <div class="ipm-db-table">
+                <div class="ipm-db-row ipm-db-header"><span>Use Case</span><span>DB Type</span></div>
+                <div class="ipm-db-row"><span>Structured data, ACID, relations</span><span class="ipm-db-tag ipm-tag-sql">SQL</span></div>
+                <div class="ipm-db-row"><span>Unstructured / flexible schema</span><span class="ipm-db-tag ipm-tag-nosql">NoSQL (Document)</span></div>
+                <div class="ipm-db-row"><span>Huge scale, time-series</span><span class="ipm-db-tag ipm-tag-nosql">Cassandra</span></div>
+                <div class="ipm-db-row"><span>Caching, leaderboards, sessions</span><span class="ipm-db-tag ipm-tag-cache">Redis</span></div>
+                <div class="ipm-db-row"><span>Full-text search</span><span class="ipm-db-tag ipm-tag-search">Elasticsearch</span></div>
+                <div class="ipm-db-row"><span>Graph relationships</span><span class="ipm-db-tag ipm-tag-graph">Neo4j</span></div>
+                <div class="ipm-db-row"><span>Object / file storage</span><span class="ipm-db-tag ipm-tag-file">S3 / Blob</span></div>
+                <div class="ipm-db-row"><span>Stream processing</span><span class="ipm-db-tag ipm-tag-stream">Kafka</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Final motivator -->
+      <section class="ipm-final-section">
+        <div class="container">
+          <div class="ipm-final-card">
+            <div class="ipm-final-emoji">💪</div>
+            <h2 class="ipm-final-title">You've got this.</h2>
+            <p class="ipm-final-desc">You've covered the formulas. You know the complexities. You understand the patterns. Now go show them what you've built. Deep breath. Trust your preparation.</p>
+            <div class="ipm-final-stats">
+              <div class="ipm-final-stat"><span id="ipmFinalChecked">0</span><label>Topics Reviewed</label></div>
+              <div class="ipm-final-stat"><span id="ipmFinalTime">0:00</span><label>Time Spent</label></div>
+              <div class="ipm-final-stat"><span id="ipmFinalPct">0%</span><label>Coverage</label></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end dashboard -->
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="interview-panic-mode.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

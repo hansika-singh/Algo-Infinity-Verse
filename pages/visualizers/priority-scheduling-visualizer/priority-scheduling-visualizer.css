@@ -1,0 +1,915 @@
+/* ── CSS Variables (mirrors project design tokens) ────── */
+:root {
+  --ps-bg          : #020617;
+  --ps-panel       : #0f172a;
+  --ps-card        : #111827;
+  --ps-border      : #26364d;
+  --ps-primary     : #8b5cf6;
+  --ps-secondary   : #06b6d4;
+  --ps-text        : #f8fafc;
+  --ps-text-light  : #cbd5e1;
+  --ps-success     : #22c55e;
+  --ps-warning     : #f59e0b;
+  --ps-danger      : #f43f5e;
+  --ps-shadow      : 0 15px 35px rgba(0,0,0,.35);
+  --ps-idle-clr    : #374151;
+}
+
+/* ── Reset ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin    : 0;
+  padding   : 0;
+}
+
+body.ps-body {
+  background  : linear-gradient(180deg, #020617, #08111f, #020617);
+  color       : var(--ps-text);
+  font-family : 'Poppins', sans-serif;
+  min-height  : 100vh;
+  overflow-x  : hidden;
+}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.ps-navbar {
+  height          : 72px;
+  display         : flex;
+  justify-content : space-between;
+  align-items     : center;
+  padding         : 0 40px;
+  background      : rgba(2,6,23,.92);
+  backdrop-filter : blur(20px);
+  border-bottom   : 1px solid rgba(255,255,255,.05);
+  position        : sticky;
+  top             : 0;
+  z-index         : 999;
+}
+
+.ps-nav-logo {
+  display     : flex;
+  align-items : center;
+  gap         : 14px;
+}
+
+.ps-nav-infinity {
+  font-size : 32px;
+  color     : var(--ps-primary);
+}
+
+.ps-nav-logo h2 {
+  font-family   : 'Orbitron', sans-serif;
+  font-size     : 20px;
+  letter-spacing: 1px;
+  color         : var(--ps-text);
+}
+
+.ps-engine-badge {
+  display     : flex;
+  align-items : center;
+  gap         : 10px;
+  padding     : 10px 20px;
+  background  : rgba(139,92,246,.15);
+  border      : 1px solid rgba(139,92,246,.35);
+  border-radius: 999px;
+  color       : #c4b5fd;
+  font-weight : 600;
+  font-size   : 14px;
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+.ps-hero {
+  position   : relative;
+  padding    : 64px 40px 48px;
+  text-align : center;
+  overflow   : hidden;
+}
+
+.ps-hero-glow {
+  position       : absolute;
+  inset          : 0;
+  background     : radial-gradient(ellipse at 50% 0%,
+                   rgba(139,92,246,.20) 0%, transparent 65%);
+  pointer-events : none;
+}
+
+.ps-hero-content {
+  position : relative;
+  z-index  : 1;
+}
+
+.ps-os-badge {
+  display       : inline-block;
+  padding       : 6px 18px;
+  background    : rgba(6,182,212,.12);
+  border        : 1px solid rgba(6,182,212,.30);
+  border-radius : 999px;
+  color         : #67e8f9;
+  font-size     : 12px;
+  font-weight   : 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom : 20px;
+}
+
+.ps-hero-title {
+  font-family : 'Orbitron', sans-serif;
+  font-size   : clamp(28px, 4vw, 50px);
+  line-height : 1.25;
+  display     : flex;
+  flex-direction : column;
+  align-items : center;
+  gap         : 10px;
+  margin-bottom: 18px;
+}
+
+.ps-gradient-text {
+  background             : linear-gradient(90deg, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip        : text;
+}
+
+.ps-hero-sub {
+  color      : var(--ps-text-light);
+  font-size  : 16px;
+  line-height: 1.75;
+  max-width  : 580px;
+  margin     : 0 auto;
+}
+
+.ps-hero-sub strong {
+  color : #38bdf8;
+}
+
+/* ============================================================
+   WORKSPACE LAYOUT
+============================================================ */
+.ps-workspace {
+  display    : flex;
+  gap        : 28px;
+  padding    : 32px 40px 56px;
+  align-items: flex-start;
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+.ps-sidebar {
+  width       : 320px;
+  flex-shrink : 0;
+  display     : flex;
+  flex-direction: column;
+  gap         : 20px;
+  position    : sticky;
+  top         : 88px;
+}
+
+/* ── Main content ─────────────────────────────────────── */
+.ps-main {
+  flex       : 1;
+  display    : flex;
+  flex-direction: column;
+  gap        : 24px;
+  min-width  : 0;
+}
+
+/* ============================================================
+   CARDS
+============================================================ */
+.ps-card {
+  background  : linear-gradient(180deg, #111827, #0f172a);
+  border      : 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+  padding     : 24px;
+  box-shadow  : var(--ps-shadow);
+  transition  : border-color .3s, box-shadow .3s;
+  animation   : psFadeUp .45s ease both;
+}
+
+.ps-card:hover {
+  border-color: rgba(139,92,246,.28);
+  box-shadow  : 0 20px 48px rgba(139,92,246,.14);
+}
+
+@keyframes psFadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Card Header ──────────────────────────────────────── */
+.ps-card-hdr {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+  margin-bottom  : 18px;
+  flex-wrap      : wrap;
+  gap            : 10px;
+}
+
+.ps-card-hdr h3 {
+  display     : flex;
+  align-items : center;
+  gap         : 10px;
+  font-size   : 17px;
+  font-weight : 700;
+  color       : var(--ps-text);
+}
+
+.ps-card-hdr h3 i {
+  color : var(--ps-primary);
+}
+
+.ps-card-note {
+  font-size : 12px;
+  color     : var(--ps-text-light);
+  opacity   : .75;
+}
+
+/* ============================================================
+   INFO NOTE
+============================================================ */
+.ps-info-note {
+  display       : flex;
+  align-items   : center;
+  gap           : 8px;
+  padding       : 10px 14px;
+  background    : rgba(6,182,212,.08);
+  border        : 1px solid rgba(6,182,212,.22);
+  border-radius : 10px;
+  color         : #67e8f9;
+  font-size     : 12px;
+  font-weight   : 600;
+  margin-bottom : 16px;
+}
+
+/* ============================================================
+   PROCESS INPUT TABLE
+============================================================ */
+.ps-tbl-scroll {
+  overflow-x   : auto;
+  border-radius: 12px;
+}
+
+.ps-proc-table,
+.ps-metrics-tbl {
+  width           : 100%;
+  border-collapse : collapse;
+  font-size       : 13px;
+}
+
+.ps-proc-table th,
+.ps-metrics-tbl th {
+  background    : #182235;
+  color         : var(--ps-text-light);
+  font-size     : 11px;
+  font-weight   : 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding       : 10px 8px;
+  text-align    : center;
+  white-space   : nowrap;
+}
+
+.ps-proc-table td,
+.ps-metrics-tbl td {
+  padding      : 9px 8px;
+  text-align   : center;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color        : var(--ps-text-light);
+  font-weight  : 600;
+  transition   : background .4s, color .3s;
+}
+
+.ps-proc-table tr:last-child td,
+.ps-metrics-tbl tr:last-child td {
+  border-bottom: none;
+}
+
+/* PID pill in table */
+.ps-pid-cell {
+  display        : inline-flex;
+  align-items    : center;
+  justify-content: center;
+  padding        : 4px 10px;
+  border-radius  : 8px;
+  border         : 1.5px solid;
+  font-size      : 13px;
+  font-weight    : 800;
+  min-width      : 38px;
+}
+
+/* Number inputs */
+.ps-num-input {
+  width        : 56px;
+  background   : #182235;
+  border       : 1px solid rgba(255,255,255,.10);
+  border-radius: 8px;
+  color        : var(--ps-text);
+  font-family  : 'Poppins', sans-serif;
+  font-size    : 13px;
+  font-weight  : 700;
+  padding      : 6px 6px;
+  text-align   : center;
+  transition   : border-color .25s, box-shadow .25s;
+}
+.ps-num-input::-webkit-inner-spin-button,
+.ps-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.ps-num-input:focus {
+  outline     : none;
+  border-color: var(--ps-primary);
+  box-shadow  : 0 0 0 3px rgba(139,92,246,.18);
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.ps-btn-primary {
+  display        : inline-flex;
+  align-items    : center;
+  justify-content: center;
+  gap            : 9px;
+  padding        : 13px 22px;
+  background     : linear-gradient(90deg, #8b5cf6, #06b6d4);
+  border         : none;
+  border-radius  : 13px;
+  color          : white;
+  font-size      : 15px;
+  font-weight    : 700;
+  font-family    : 'Poppins', sans-serif;
+  cursor         : pointer;
+  box-shadow     : 0 8px 24px rgba(139,92,246,.35);
+  transition     : transform .3s, box-shadow .3s;
+  position       : relative;
+  overflow       : hidden;
+}
+
+.ps-btn-primary::before {
+  content    : "";
+  position   : absolute;
+  left       : -130%;
+  top        : 0;
+  width      : 100%;
+  height     : 100%;
+  background : linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  transition : left .6s;
+}
+.ps-btn-primary:hover::before { left: 130%; }
+
+.ps-btn-primary:hover {
+  transform  : translateY(-2px);
+  box-shadow : 0 14px 36px rgba(6,182,212,.42);
+}
+
+.ps-btn-primary:disabled {
+  opacity: .5;
+  cursor : not-allowed;
+  transform: none;
+}
+
+.ps-btn-sec {
+  display        : inline-flex;
+  align-items    : center;
+  justify-content: center;
+  gap            : 9px;
+  padding        : 13px 20px;
+  background     : #1e293b;
+  border         : 1px solid rgba(255,255,255,.08);
+  border-radius  : 13px;
+  color          : var(--ps-text);
+  font-size      : 15px;
+  font-weight    : 600;
+  font-family    : 'Poppins', sans-serif;
+  cursor         : pointer;
+  transition     : background .25s, border-color .25s, transform .25s;
+}
+
+.ps-btn-sec:hover {
+  background   : rgba(139,92,246,.12);
+  border-color : var(--ps-primary);
+  transform    : translateY(-2px);
+}
+
+.ps-btn-sm {
+  padding   : 8px 14px;
+  font-size : 13px;
+}
+
+.ps-icon-btn {
+  width        : 36px;
+  height       : 36px;
+  background   : rgba(139,92,246,.15);
+  border       : 1px solid rgba(139,92,246,.3);
+  border-radius: 10px;
+  color        : #c4b5fd;
+  font-size    : 15px;
+  cursor       : pointer;
+  display      : flex;
+  align-items  : center;
+  justify-content: center;
+  transition   : background .25s;
+  flex-shrink  : 0;
+}
+.ps-icon-btn:hover { background: rgba(139,92,246,.30); }
+
+.ps-del-btn {
+  width        : 30px;
+  height       : 30px;
+  background   : rgba(244,63,94,.10);
+  border       : 1px solid rgba(244,63,94,.20);
+  border-radius: 8px;
+  color        : #fb7185;
+  font-size    : 12px;
+  cursor       : pointer;
+  display      : flex;
+  align-items  : center;
+  justify-content: center;
+  transition   : background .25s;
+}
+.ps-del-btn:hover:not(:disabled) { background: rgba(244,63,94,.25); }
+.ps-del-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+.ps-controls {
+  display  : flex;
+  gap      : 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   SPEED RANGE
+============================================================ */
+.ps-range {
+  width       : 100%;
+  height      : 6px;
+  appearance  : none;
+  background  : #1e293b;
+  border-radius: 20px;
+  outline     : none;
+  cursor      : pointer;
+}
+.ps-range::-webkit-slider-thumb {
+  appearance : none;
+  width      : 20px;
+  height     : 20px;
+  background : linear-gradient(135deg, #8b5cf6, #06b6d4);
+  border-radius: 50%;
+  cursor     : pointer;
+  box-shadow : 0 0 8px rgba(139,92,246,.45);
+}
+.ps-range::-moz-range-thumb {
+  width      : 20px;
+  height     : 20px;
+  background : linear-gradient(135deg, #8b5cf6, #06b6d4);
+  border     : none;
+  border-radius: 50%;
+  cursor     : pointer;
+}
+
+.ps-speed-val {
+  font-size  : 14px;
+  font-weight: 700;
+  color      : #38bdf8;
+}
+
+.ps-speed-labels {
+  display        : flex;
+  justify-content: space-between;
+  font-size      : 11px;
+  color          : var(--ps-text-light);
+  opacity        : .6;
+  margin-top     : 6px;
+}
+
+/* ============================================================
+   STEP DESCRIPTION CARD
+============================================================ */
+.ps-step-card {
+  display    : flex;
+  align-items: center;
+  gap        : 20px;
+  padding    : 20px 24px;
+  flex-wrap  : wrap;
+}
+
+.ps-step-text {
+  flex       : 1;
+  font-size  : 14px;
+  line-height: 1.75;
+  color      : var(--ps-text-light);
+  min-width  : 200px;
+}
+
+.ps-step-text strong { color: #38bdf8; }
+.ps-step-text em     { color: #94a3b8; font-style: normal; }
+
+/* ── Status badge ─────────────────────────────────────── */
+.ps-status-badge {
+  padding      : 8px 16px;
+  border-radius: 30px;
+  font-size    : 13px;
+  font-weight  : 700;
+  white-space  : nowrap;
+  flex-shrink  : 0;
+  transition   : all .35s;
+}
+
+.ps-status-ready {
+  background : rgba(139,92,246,.15);
+  color      : #c4b5fd;
+  border     : 1px solid rgba(139,92,246,.25);
+}
+.ps-status-running {
+  background : rgba(6,182,212,.15);
+  color      : #67e8f9;
+  border     : 1px solid rgba(6,182,212,.25);
+}
+.ps-status-paused {
+  background : rgba(245,158,11,.15);
+  color      : #fcd34d;
+  border     : 1px solid rgba(245,158,11,.25);
+}
+.ps-status-done {
+  background : rgba(34,197,94,.15);
+  color      : #4ade80;
+  border     : 1px solid rgba(34,197,94,.25);
+}
+
+/* ── Inline highlights ────────────────────────────────── */
+.ps-idle-text  { color: #94a3b8; font-weight: 700; }
+.ps-error-text { color: #fb7185; font-weight: 700; }
+
+/* ============================================================
+   PRIORITY QUEUE VISUALIZATION
+============================================================ */
+.ps-queue-wrap {
+  min-height: 80px;
+}
+
+.ps-empty-msg {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  gap            : 10px;
+  padding        : 24px;
+  color          : var(--ps-text-light);
+  font-size      : 14px;
+  opacity        : .55;
+  text-align     : center;
+}
+
+.ps-queue-time-label {
+  display      : inline-block;
+  margin-bottom: 14px;
+  padding      : 5px 14px;
+  background   : rgba(56,189,248,.10);
+  border       : 1px solid rgba(56,189,248,.20);
+  border-radius: 8px;
+  color        : #38bdf8;
+  font-size    : 13px;
+  font-weight  : 700;
+}
+
+.ps-queue-row {
+  display  : flex;
+  gap      : 12px;
+  flex-wrap: wrap;
+}
+
+/* Single queue item card */
+.ps-q-item {
+  display      : flex;
+  align-items  : center;
+  gap          : 10px;
+  background   : #182235;
+  border       : 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  padding      : 12px 16px;
+  transition   : border-color .3s, box-shadow .3s, background .3s;
+  animation    : psItemSlide .35s ease both;
+}
+
+@keyframes psItemSlide {
+  from { opacity:0; transform:translateX(-12px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+
+/* Selected process in queue */
+.ps-q-item.ps-q-selected {
+  background  : rgba(34,197,94,.08);
+  border-color: var(--ps-success);
+  box-shadow  : 0 0 24px rgba(34,197,94,.22);
+}
+
+.ps-q-rank {
+  font-size  : 11px;
+  font-weight: 700;
+  color      : var(--ps-text-light);
+  opacity    : .7;
+  min-width  : 22px;
+  text-align : center;
+}
+
+.ps-q-pid {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  padding        : 5px 12px;
+  border-radius  : 9px;
+  border         : 1.5px solid;
+  font-weight    : 800;
+  font-size      : 15px;
+  min-width      : 46px;
+}
+
+.ps-q-details {
+  display       : flex;
+  flex-direction: column;
+  gap           : 3px;
+}
+
+.ps-q-info {
+  display    : flex;
+  align-items: center;
+  gap        : 6px;
+}
+
+.ps-q-lbl {
+  font-size     : 10px;
+  color         : var(--ps-text-light);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  min-width     : 42px;
+}
+
+.ps-q-val {
+  font-size  : 13px;
+  font-weight: 700;
+  color      : var(--ps-text);
+}
+
+.ps-q-val-winner {
+  color: #4ade80;
+}
+
+.ps-selected-crown {
+  display      : flex;
+  align-items  : center;
+  gap          : 5px;
+  padding      : 3px 9px;
+  background   : rgba(34,197,94,.14);
+  border       : 1px solid rgba(34,197,94,.28);
+  border-radius: 7px;
+  color        : #4ade80;
+  font-size    : 11px;
+  font-weight  : 700;
+  white-space  : nowrap;
+}
+
+/* ============================================================
+   GANTT CHART
+============================================================ */
+.ps-gantt-wrap {
+  position: relative;
+}
+
+.ps-gantt-chart {
+  display      : flex;
+  height       : 68px;
+  background   : #0a1220;
+  border-radius: 12px;
+  border       : 1px solid rgba(255,255,255,.06);
+  overflow     : hidden;
+  margin-bottom: 28px;
+  position     : relative;
+}
+
+/* Individual Gantt bar */
+.ps-g-bar {
+  height         : 100%;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  position       : relative;
+  flex-shrink    : 0;
+  overflow       : hidden;
+  transition     : width .75s cubic-bezier(.4,0,.2,1);
+}
+
+/* Subtle inner shine */
+.ps-g-bar::after {
+  content    : "";
+  position   : absolute;
+  inset      : 0;
+  background : linear-gradient(180deg, rgba(255,255,255,.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.ps-g-pid {
+  font-size  : 14px;
+  font-weight: 800;
+  color      : white;
+  text-shadow: 0 1px 4px rgba(0,0,0,.55);
+  z-index    : 2;
+  position   : relative;
+  white-space: nowrap;
+}
+
+/* Start-time label inside bar (bottom-left) */
+.ps-g-t-start {
+  position   : absolute;
+  left       : 4px;
+  bottom     : 3px;
+  font-size  : 10px;
+  color      : rgba(255,255,255,.7);
+  font-weight: 600;
+  z-index    : 2;
+}
+
+/* Timeline row beneath chart */
+.ps-gantt-timeline {
+  position  : relative;
+  height    : 20px;
+  margin-top: 4px;
+}
+
+.ps-t-marker {
+  position  : absolute;
+  top       : 0;
+  transform : translateX(-50%);
+  font-size : 11px;
+  font-weight: 700;
+  color     : var(--ps-text-light);
+  user-select: none;
+}
+
+/* "Time: X" label in card header */
+.ps-time-label {
+  font-size  : 13px;
+  font-weight: 700;
+  color      : #38bdf8;
+}
+
+/* Legend row */
+.ps-gantt-legend {
+  display  : flex;
+  flex-wrap: wrap;
+  gap      : 10px;
+  margin-top: 16px;
+}
+
+.ps-legend-item {
+  display    : flex;
+  align-items: center;
+  gap        : 7px;
+  font-size  : 12px;
+  font-weight: 600;
+  color      : var(--ps-text-light);
+}
+
+.ps-legend-dot {
+  width        : 14px;
+  height       : 14px;
+  border-radius: 4px;
+  flex-shrink  : 0;
+}
+
+/* ============================================================
+   METRICS TABLE
+============================================================ */
+.ps-pid-badge {
+  display        : inline-flex;
+  align-items    : center;
+  justify-content: center;
+  padding        : 3px 11px;
+  border-radius  : 7px;
+  border         : 1.5px solid;
+  font-size      : 12px;
+  font-weight    : 800;
+  min-width      : 40px;
+}
+
+.ps-pri-badge {
+  display      : inline-block;
+  padding      : 3px 10px;
+  background   : rgba(139,92,246,.14);
+  border       : 1px solid rgba(139,92,246,.28);
+  border-radius: 7px;
+  color        : #c4b5fd;
+  font-weight  : 700;
+  font-size    : 12px;
+}
+
+/* Default state for metric cells (CT, TAT, WT) before they're filled */
+.ps-metric-cell {
+  color      : var(--ps-text-light);
+  font-weight: 600;
+  transition : color .3s, background .4s;
+}
+
+/* Flash animation when a metric is filled in */
+.ps-metric-flash {
+  color    : var(--ps-text) !important;
+  animation: psMetricFlash .55s ease;
+}
+
+@keyframes psMetricFlash {
+  0%   { background: rgba(34,197,94,.22); }
+  100% { background: transparent; }
+}
+
+/* Row highlight for completed processes */
+.ps-row-done {
+  background: rgba(34,197,94,.04);
+}
+
+/* Averages strip */
+.ps-avg-wrap {
+  display  : flex;
+  flex-wrap: wrap;
+  gap      : 8px;
+  align-items: center;
+}
+
+.ps-avg-badge {
+  display      : inline-block;
+  padding      : 5px 12px;
+  background   : rgba(6,182,212,.10);
+  border       : 1px solid rgba(6,182,212,.22);
+  border-radius: 8px;
+  color        : #67e8f9;
+  font-size    : 12px;
+  font-weight  : 600;
+}
+
+.ps-avg-badge strong {
+  color      : #38bdf8;
+  margin-left: 4px;
+}
+
+/* ============================================================
+   CODE CARD
+============================================================ */
+.ps-code-card pre {
+  margin       : 0;
+  background   : #020617;
+  border       : 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  overflow     : auto;
+  max-height   : 440px;
+}
+
+.ps-code-card code {
+  display     : block;
+  padding     : 26px;
+  color       : #e2e8f0;
+  font-size   : 13.5px;
+  line-height : 1.85;
+  font-family : 'Fira Code', monospace;
+  white-space : pre;
+}
+
+.ps-code-card pre::-webkit-scrollbar        { width:8px; height:8px; }
+.ps-code-card pre::-webkit-scrollbar-thumb  { background:#475569; border-radius:20px; }
+.ps-code-card pre::-webkit-scrollbar-track  { background:#111827; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1100px) {
+  .ps-workspace {
+    flex-direction: column;
+    padding       : 24px 24px 48px;
+  }
+  .ps-sidebar {
+    width   : 100%;
+    position: static;
+  }
+  .ps-controls {
+    flex-direction: row;
+  }
+  .ps-gantt-chart {
+    height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ps-navbar  { padding: 0 20px; }
+  .ps-nav-logo h2 { font-size: 17px; }
+  .ps-engine-badge { display: none; }
+  .ps-hero    { padding: 36px 20px 28px; }
+  .ps-workspace { padding: 18px 16px 40px; }
+  .ps-step-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ps-controls { flex-direction: column; }
+  .ps-btn-primary, .ps-btn-sec { width: 100%; justify-content: center; }
+  .ps-queue-row { flex-direction: column; }
+  .ps-q-item    { width: 100%; }
+}
+
+@media (max-width: 500px) {
+  .ps-hero-title { font-size: 26px; }
+  .ps-card       { padding: 18px; }
+  .ps-g-pid      { font-size: 11px; }
+  .ps-g-t-start  { display: none; }
+}

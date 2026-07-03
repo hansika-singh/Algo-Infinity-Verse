@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Concurrency & Thread Pool Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="An interactive visual sandbox to learn multi-threading, task queues, mutex locks, and concurrency hazards like race conditions and deadlocks." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="concurrency-simulator.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="conc-body">
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="conc-workspace" id="mainWorkspace">
+        
+        <!-- Left Panel: Controls, Scenarios & Custom Task Creator -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Thread Controller</h3>
+            </div>
+            
+            <div class="control-section">
+                <!-- Speed & Controls -->
+                <div class="control-group">
+                    <label for="speedSlider"><i class="fas fa-tachometer-alt"></i> Simulation Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" />
+                        <span id="speedValue">1.0x</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons-row">
+                    <button class="btn btn-primary" id="btnPlayPause" title="Play or Pause the simulation">
+                        <i class="fas fa-play" id="playIcon"></i> <span id="playText">Play</span>
+                    </button>
+                    <button class="btn btn-outline" id="btnStep" title="Step simulation forward one tick">
+                        <i class="fas fa-step-forward"></i> Step
+                    </button>
+                    <button class="btn btn-outline" id="btnResetAll" title="Reset all thread and memory states">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+
+                <!-- Predefined Scenarios -->
+                <div class="scenarios-container">
+                    <h4>Predefined Scenarios</h4>
+                    
+                    <div class="scenario-card">
+                        <h5>1. Load Balancing (Thread Pool)</h5>
+                        <p>Enqueue 8 computational tasks. Watch the 4 active threads pull tasks from the queue dynamically.</p>
+                        <button class="btn btn-success w-100" id="btnScenarioPool">
+                            <i class="fas fa-cubes"></i> Run Thread Pool Demo
+                        </button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h5>2. Race Condition (No Locks)</h5>
+                        <p>Two threads read, modify, and write Resource A (Balance) concurrently. Context switching causes data corruption.</p>
+                        <button class="btn btn-warning w-100" id="btnScenarioRace">
+                            <i class="fas fa-running"></i> Run Race Condition
+                        </button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h5>3. Thread-Safe (Mutex Locks)</h5>
+                        <p>Same operations but protected by Mutex A. Threads wait for locks, ensuring sequential and safe execution.</p>
+                        <button class="btn btn-success w-100" id="btnScenarioSafe">
+                            <i class="fas fa-lock"></i> Run Safe Execution
+                        </button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h5>4. Mutual Deadlock</h5>
+                        <p>Thread 1 locks A, waits for B. Thread 2 locks B, waits for A. Visualizes circular dependency and locks up the threads.</p>
+                        <button class="btn btn-danger w-100" id="btnScenarioDeadlock">
+                            <i class="fas fa-skull-crossbones"></i> Induce Deadlock
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Task Creator -->
+                <div class="custom-creator-card">
+                    <h4><i class="fas fa-plus-circle"></i> Task Creator Sandbox</h4>
+                    <p class="desc-text">Create and enqueue custom tasks into the thread pool queue.</p>
+                    
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" placeholder="e.g., TransferTask" value="CustomTask-1" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stepSelector">Add Steps to Task</label>
+                        <div class="step-builder-row">
+                            <select id="stepSelector">
+                                <option value="compute">Perform Compute</option>
+                                <option value="lock_A">Lock Mutex A</option>
+                                <option value="lock_B">Lock Mutex B</option>
+                                <option value="unlock_A">Unlock Mutex A</option>
+                                <option value="unlock_B">Unlock Mutex B</option>
+                                <option value="read_A">Read Resource A (Balance)</option>
+                                <option value="write_A">Modify & Write Resource A</option>
+                                <option value="yield">Context Switch (Yield)</option>
+                            </select>
+                            <button class="btn btn-outline" id="btnAddStep" title="Add step to list">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="defined-steps-box">
+                        <h5>Task Steps Sequence:</h5>
+                        <div class="steps-list" id="stepsList">
+                            <!-- Dynamically added steps -->
+                            <div class="no-steps-placeholder">No steps added yet. Click '+' to build.</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100" id="btnEnqueueCustom" style="margin-top: 1rem;">
+                        <i class="fas fa-plus"></i> Enqueue Task
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Concurrency Arena -->
+        <div class="panel-center" id="panelCenter">
+            <!-- SVG Overlay for arrows & deadlock cycles -->
+            <svg id="svgOverlay" class="svg-overlay"></svg>
+
+            <div class="arena-header">
+                <div class="header-title">
+                    <i class="fas fa-microchip"></i> Concurrency Visualizer Arena
+                </div>
+                <div class="sim-status-badge" id="simStatusBadge">
+                    STATUS: READY
+                </div>
+            </div>
+
+            <div class="arena-content">
+                <!-- 1. Task Queue Visual -->
+                <div class="arena-section-title">
+                    <i class="fas fa-list-ol"></i> Task Queue
+                    <span class="section-subtitle">(Pending tasks waiting for thread availability)</span>
+                </div>
+                <div class="task-queue" id="taskQueueContainer">
+                    <div class="no-tasks-msg" id="noTasksMsg">Queue is empty. Trigger a scenario or add custom tasks!</div>
+                </div>
+
+                <!-- 2. Thread Pool Visual -->
+                <div class="arena-section-title" style="margin-top: 1.5rem;">
+                    <i class="fas fa-network-wired"></i> Thread Pool (Active Workers)
+                    <span class="section-subtitle">(Workers picking up and executing enqueued tasks)</span>
+                </div>
+                <div class="thread-pool" id="threadPoolContainer">
+                    <!-- Thread nodes created dynamically -->
+                </div>
+
+                <!-- 3. Shared Resource Cache & Locks -->
+                <div class="arena-section-title" style="margin-top: 1.5rem;">
+                    <i class="fas fa-database"></i> Shared Resources & Mutex Locks
+                    <span class="section-subtitle">(State protected by Mutual Exclusion locks)</span>
+                </div>
+                <div class="resources-cache" id="resourcesCacheContainer">
+                    <!-- Resource nodes created dynamically -->
+                </div>
+            </div>
+
+            <div class="expected-box" id="expectedBox">
+                Resource A (Shared Balance) expected final: <strong>$1000</strong> (if thread-safe).
+            </div>
+        </div>
+
+        <!-- Right Panel: Thread logs -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> Thread Output Logs</h3>
+                <button class="btn-clear" id="btnClearLogs" title="Clear Logs"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            <div class="logs-container" id="logContainer">
+                <div class="log-entry sys">> System booted. Simulated multi-threading ready.</div>
+                <div class="log-entry sys">> 4 worker threads initialized in thread pool.</div>
+                <div class="log-entry sys">> Resources A, B, C, and D allocated.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Core Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="concurrency-simulator.js"></script>
+
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

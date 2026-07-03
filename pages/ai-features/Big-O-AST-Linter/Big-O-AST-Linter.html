@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Big-O Linter | Algo Infinity Verse</title>
+    <meta name="description" content="Static analysis tool using AST to compute Big-O complexity in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css">
+    
+    <!-- Acorn.js for AST Parsing in Browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.10.0/acorn.min.js"></script>
+    
+    <link rel="stylesheet" href="Big-O-AST-Linter.css" />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="linter-body">
+
+    <nav class="linter-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-title"><i class="fas fa-microscope"></i> AST Static Analysis Engine</div>
+    </nav>
+
+    <main class="linter-workspace">
+        <!-- Left: Problem & Instructions -->
+        <div class="problem-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-book-open"></i> Problem: Two Sum</h3>
+            </div>
+            <div class="problem-content">
+                <h2>Optimize the Two Sum Algorithm</h2>
+                <p>
+                    Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.
+                </p>
+                <div class="instruction-box">
+                    <strong><i class="fas fa-cogs"></i> How the Linter Works:</strong>
+                    <p>As you type, the engine parses your JavaScript into an <em>Abstract Syntax Tree (AST)</em>. It traverses the nodes to detect nested loops, recursion branches, and memory allocations, mathematically deducing your Big-O limits.</p>
+                </div>
+                
+                <h3 class="engine-title">Engine Telemetry</h3>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">AST Nodes Parsed</span>
+                        <span class="tel-value" id="nodeCount">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Parse Time</span>
+                        <span class="tel-value" id="parseTime">0ms</span>
+                    </div>
+                </div>
+                
+                <div class="complexity-legend">
+                    <h4><i class="fas fa-palette"></i> Complexity Legend</h4>
+                    <div class="legend-items">
+                        <span class="legend-item"><span class="legend-dot constant"></span>O(1) Constant</span>
+                        <span class="legend-item"><span class="legend-dot linear"></span>O(N) Linear</span>
+                        <span class="legend-item"><span class="legend-dot quadratic"></span>O(N²) Quadratic</span>
+                        <span class="legend-item"><span class="legend-dot exponential"></span>O(2^N) Exponential</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Editor & Linter -->
+        <div class="editor-panel">
+            <!-- Complexity HUD -->
+            <div class="complexity-hud" id="complexityHud">
+                <div class="meter-box" id="timeMeterBox">
+                    <div class="meter-label"><i class="fas fa-stopwatch"></i> Time Complexity</div>
+                    <div class="meter-value" id="timeComplexity">O(1)</div>
+                </div>
+                <div class="meter-box" id="spaceMeterBox">
+                    <div class="meter-label"><i class="fas fa-memory"></i> Space Complexity</div>
+                    <div class="meter-value" id="spaceComplexity">O(1)</div>
+                </div>
+                <div class="status-indicator" id="parseStatus">
+                    <i class="fas fa-check-circle"></i> AST Valid
+                </div>
+            </div>
+
+            <!-- CodeMirror Container -->
+            <div class="editor-container" id="editorContainer"></div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="Big-O-AST-Linter.js"></script>
+</body>
+</html>

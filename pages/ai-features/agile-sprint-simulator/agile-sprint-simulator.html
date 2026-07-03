@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agile Sprint Simulator | Algo Infinity Verse</title>
+  <meta name="description" content="Simulate Agile sprint planning — drag backlog stories, assign story points, track velocity and visualize live burndown charts." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="agile-sprint-simulator.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('theme'),p=window.matchMedia('(prefers-color-scheme:light)').matches;document.documentElement.classList.toggle('light-mode',(t||(p?'light':'dark'))==='light');}catch(e){}}());
+  </script>
+</head>
+<body data-page="agile-sprint-simulator">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- ══════ HERO ══════ -->
+  <section class="hero sps-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content sps-hero-content">
+      <span class="sps-hero-eyebrow">
+        <i class="fas fa-award"></i>;
+        <i class="fas fa-tag"></i>
+      </span>
+      <h1 class="hero-title">
+        <span class="title-line">Plan Sprints Like a Pro</span>
+        <span class="main-title sps-gradient">Agile Sprint Simulator</span>
+        <span class="subtitle">Drag stories. Commit. Ship. Review.</span>
+      </h1>
+      <p class="sps-hero-desc">
+        Experience a full Scrum sprint end-to-end — build a backlog, drag stories into
+        the sprint, run the board day by day, and review your velocity.
+      </p>
+
+      <!-- Feature pills -->
+      <div class="sps-hero-pills">
+        <span class="sps-pill"><i class="fas fa-hand-pointer"></i> Drag &amp; Drop</span>
+        <span class="sps-pill"><i class="fas fa-chart-area"></i> Burndown Chart</span>
+        <span class="sps-pill"><i class="fas fa-bolt"></i> Velocity Tracking</span>
+        <span class="sps-pill"><i class="fas fa-flag-checkered"></i> Sprint Review</span>
+      </div>
+
+      <div class="hero-buttons sps-hero-btns">
+        <a href="#sprint-planner" class="btn btn-primary">
+          <i class="fas fa-rocket"></i> Open Simulator
+        </a>
+        <button class="btn sps-btn-outline-hero" data-action="reset-data">
+          <i class="fas fa-rotate-left"></i> Reset All Data
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SPRINT PLANNER ══════ -->
+  <section id="sprint-planner" class="section">
+    <div class="container sps-container">
+
+      <!-- Config Bar -->
+      <div class="sps-config-bar">
+        <div class="sps-config-left">
+          <div class="sps-config-field">
+            <label>Sprint Name</label>
+            <input type="text" id="spsSprintName" class="sps-config-input" value="Sprint 1" maxlength="30" />
+          </div>
+          <div class="sps-config-field">
+            <label>Duration</label>
+            <select id="spsSprintDuration" class="sps-config-select">
+              <option value="7">1 week (7 days)</option>
+              <option value="14" selected>2 weeks (14 days)</option>
+              <option value="21">3 weeks (21 days)</option>
+              <option value="28">4 weeks (28 days)</option>
+            </select>
+          </div>
+          <div class="sps-config-field">
+            <label>Team Capacity (pts)</label>
+            <input type="number" id="spsCapacity" class="sps-config-input sps-config-sm" value="30" min="1" max="300" />
+          </div>
+        </div>
+        <div class="sps-config-right">
+          <span class="sps-phase-badge planning" id="spsPhaseBadge">
+            <i class="fas fa-drafting-compass"></i> Planning
+          </span>
+          <span class="sps-day-counter" id="spsDayCounter">Day 0 / 14</span>
+        </div>
+      </div>
+
+      <!-- Workspace -->
+      <div class="sps-workspace">
+
+        <!-- ══ BACKLOG PANEL ══ -->
+        <aside class="sps-panel sps-backlog-panel">
+          <div class="sps-panel-hdr">
+            <h3><i class="fas fa-layer-group"></i> Product Backlog</h3>
+            <button class="sps-add-toggle-btn" id="spsAddToggleBtn">
+              <i class="fas fa-plus"></i> Story
+            </button>
+          </div>
+
+          <!-- ── Add Story Form (redesigned) ── -->
+          <div class="sps-add-form hidden" id="spsAddForm">
+
+            <input type="text" id="spsStoryTitle"
+              class="sps-form-input"
+              placeholder="e.g. User can reset password…"
+              maxlength="60" />
+
+            <!-- Story Points — visual pill picker -->
+            <div class="sps-form-group">
+              <span class="sps-form-label">
+                <i class="fas fa-dice"></i> Story Points
+                <span class="sps-form-label-hint">(Fibonacci)</span>
+              </span>
+              <div class="sps-pts-picker" id="spsPtsPicker">
+                <button class="sps-pt-btn"        data-pts="1"  type="button">1</button>
+                <button class="sps-pt-btn"        data-pts="2"  type="button">2</button>
+                <button class="sps-pt-btn"        data-pts="3"  type="button">3</button>
+                <button class="sps-pt-btn active" data-pts="5"  type="button">5</button>
+                <button class="sps-pt-btn"        data-pts="8"  type="button">8</button>
+                <button class="sps-pt-btn"        data-pts="13" type="button">13</button>
+                <button class="sps-pt-btn"        data-pts="21" type="button">21</button>
+              </div>
+            </div>
+
+            <!-- Priority — colour-coded picker -->
+            <div class="sps-form-group">
+              <span class="sps-form-label">
+                <i class="fas fa-flag"></i> Priority
+              </span>
+              <div class="sps-pri-picker" id="spsPriPicker">
+                <button class="sps-pri-btn critical" data-pri="critical" type="button">
+                  <span class="sps-pri-dot"></span> Critical
+                </button>
+                <button class="sps-pri-btn high" data-pri="high" type="button">
+                  <span class="sps-pri-dot"></span> High
+                </button>
+                <button class="sps-pri-btn medium active" data-pri="medium" type="button">
+                  <span class="sps-pri-dot"></span> Medium
+                </button>
+                <button class="sps-pri-btn low" data-pri="low" type="button">
+                  <span class="sps-pri-dot"></span> Low
+                </button>
+              </div>
+            </div>
+
+            <!-- Epic label -->
+            <div class="sps-form-group">
+              <span class="sps-form-label"><i class="fas fa-tag"></i> Epic / Label</span>
+              <input type="text" id="spsStoryEpic"
+                class="sps-form-input sps-epic-input"
+                placeholder="e.g. Auth, Catalog, UI/UX…"
+                maxlength="20" />
+            </div>
+
+            <!-- Hidden inputs — read by JS -->
+            <input type="hidden" id="spsStoryPoints"   value="5" />
+            <input type="hidden" id="spsStoryPriority" value="medium" />
+
+            <div class="sps-form-actions">
+              <button class="sps-btn sps-btn-green" id="spsAddStoryBtn" type="button">
+                <i class="fas fa-plus"></i> Add to Backlog
+              </button>
+              <button class="sps-btn sps-btn-ghost" id="spsCancelAddBtn" type="button">
+                Cancel
+              </button>
+            </div>
+          </div>
+
+          <div class="sps-backlog-meta" id="spsBacklogMeta"></div>
+          <div class="sps-story-list" id="spsBacklogList"></div>
+        </aside>
+
+        <!-- ══ SPRINT BOARD PANEL ══ -->
+        <main class="sps-panel sps-board-panel">
+          <div class="sps-panel-hdr">
+            <h3 id="spsBoardTitle"><i class="fas fa-bolt"></i> Sprint Board</h3>
+          </div>
+
+          <div class="sps-capacity-bar-wrap">
+            <div class="sps-capacity-labels">
+              <span id="spsCapacityInfo">0 / 30 pts</span>
+              <span id="spsCapacityPct">0% loaded</span>
+            </div>
+            <div class="sps-capacity-track">
+              <div class="sps-capacity-fill" id="spsCapacityFill"></div>
+            </div>
+          </div>
+
+          <div class="sps-planning-zone" id="spsPlanningZone">
+            <div class="sps-zone-empty" id="spsPlanningEmpty">
+              <i class="fas fa-arrow-left sps-bounce-arrow"></i>
+              <span>Drag stories from the backlog to add them to this sprint</span>
+            </div>
+            <div class="sps-sprint-stories" id="spsSprintStories"></div>
+          </div>
+
+          <div class="sps-kanban hidden" id="spsKanban">
+            <div class="sps-col">
+              <div class="sps-col-hdr sps-col-todo">
+                <span><i class="fas fa-circle"></i> To Do</span>
+                <span class="sps-col-badge" id="countTodo">0</span>
+              </div>
+              <div class="sps-col-body" id="bodyTodo" data-col="todo"></div>
+            </div>
+            <div class="sps-col">
+              <div class="sps-col-hdr sps-col-wip">
+                <span><i class="fas fa-spinner fa-spin"></i> In Progress</span>
+                <span class="sps-col-badge" id="countInProgress">0</span>
+              </div>
+              <div class="sps-col-body" id="bodyInProgress" data-col="inProgress"></div>
+            </div>
+            <div class="sps-col">
+              <div class="sps-col-hdr sps-col-done">
+                <span><i class="fas fa-check-circle"></i> Done</span>
+                <span class="sps-col-badge" id="countDone">0</span>
+              </div>
+              <div class="sps-col-body" id="bodyDone" data-col="done"></div>
+            </div>
+          </div>
+
+          <div class="sps-sprint-actions" id="spsActions"></div>
+        </main>
+
+        <!-- ══ METRICS PANEL ══ -->
+        <aside class="sps-panel sps-metrics-panel">
+          <div class="sps-panel-hdr">
+            <h3><i class="fas fa-chart-line"></i> Sprint Metrics</h3>
+          </div>
+          <div class="sps-stats-grid" id="spsStatsGrid"></div>
+
+          <div class="sps-burndown-card">
+            <div class="sps-chart-hdr">
+              <span><i class="fas fa-chart-area"></i> Burndown Chart</span>
+              <span class="sps-chart-legend">
+                <span class="sps-leg-ideal">— Ideal</span>
+                <span class="sps-leg-actual">— Actual</span>
+              </span>
+            </div>
+            <canvas id="spsBurndownCanvas" class="sps-canvas"></canvas>
+          </div>
+
+          <div class="sps-velocity-card" id="spsVelocityCard"></div>
+          <div class="sps-review-card"   id="spsReviewCard"></div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./agile-sprint-simulator.js"></script>
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Algorithm Race | Algo Infinity Verse</title>
+    <meta name="description" content="Watch BFS, DFS, Dijkstra and A* race on the same graph simultaneously — synchronized step by step with live metrics." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="graph-algorithm-race.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="graph-algorithm-race">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero gar-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Same Graph. Same Goal. Who Wins?</span>
+          <span class="main-title gar-gradient">Graph Algorithm Race</span>
+          <span class="subtitle">BFS · DFS · Dijkstra · A* — racing simultaneously.</span>
+        </h1>
+        <p class="section-subtitle">Pick a graph, set source and target, select your algorithms — then watch them race step-by-step on the same canvas. See exactly why Dijkstra beats DFS on weighted graphs, and why A* beats Dijkstra with a heuristic.</p>
+        <div class="hero-buttons">
+          <a href="#race" class="btn btn-primary gar-btn-primary"><i class="fas fa-flag-checkered"></i> Start Race</a>
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Why They Differ</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Race Section -->
+    <section id="race" class="section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="gar-control-card">
+
+          <!-- Graph presets -->
+          <div class="gar-row">
+            <span class="gar-row-label">Graph:</span>
+            <div class="gar-preset-btns">
+              <button class="gar-preset-btn active" data-preset="grid">Grid</button>
+              <button class="gar-preset-btn" data-preset="weighted">Weighted</button>
+              <button class="gar-preset-btn" data-preset="dense">Dense</button>
+              <button class="gar-preset-btn" data-preset="sparse">Sparse</button>
+            </div>
+          </div>
+
+          <!-- Algorithm selector -->
+          <div class="gar-row">
+            <span class="gar-row-label">Algorithms:</span>
+            <div class="gar-algo-toggles">
+              <button class="gar-algo-toggle active" data-algo="bfs"
+                style="--ac:#22c55e;--ar:34 197 94">
+                <span class="gar-algo-dot"></span> BFS
+              </button>
+              <button class="gar-algo-toggle active" data-algo="dfs"
+                style="--ac:#a855f7;--ar:168 85 247">
+                <span class="gar-algo-dot"></span> DFS
+              </button>
+              <button class="gar-algo-toggle active" data-algo="dijkstra"
+                style="--ac:#f59e0b;--ar:245 158 11">
+                <span class="gar-algo-dot"></span> Dijkstra
+              </button>
+              <button class="gar-algo-toggle active" data-algo="astar"
+                style="--ac:#06b6d4;--ar:6 182 212">
+                <span class="gar-algo-dot"></span> A*
+              </button>
+            </div>
+          </div>
+
+          <!-- Source / Target -->
+          <div class="gar-row">
+            <span class="gar-row-label">Source → Target:</span>
+            <div class="gar-node-inputs">
+              <label class="gar-node-label">
+                Source
+                <input type="number" id="garSource" class="gar-node-input" value="0" min="0" aria-label="Source node" />
+              </label>
+              <span class="gar-arrow">→</span>
+              <label class="gar-node-label">
+                Target
+                <input type="number" id="garTarget" class="gar-node-input" value="15" min="0" aria-label="Target node" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Playback -->
+          <div class="gar-playback-row">
+            <button class="btn gar-btn-primary gar-pb-btn" id="garRunBtn">
+              <i class="fas fa-flag-checkered"></i> Start Race
+            </button>
+            <button class="btn btn-secondary gar-pb-btn" id="garStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step All
+            </button>
+            <button class="btn btn-secondary gar-pb-btn" id="garPauseBtn" disabled>
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="btn btn-secondary gar-pb-btn" id="garResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="gar-speed-wrap">
+              <span class="gar-speed-label">Speed:</span>
+              <input type="range" id="garSpeed" class="gar-range" min="1" max="5" value="3" aria-label="Speed" />
+              <span class="gar-speed-val" id="garSpeedVal">Normal</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Status -->
+        <div class="gar-status" id="garStatus">Select a graph preset, choose algorithms, then click Start Race.</div>
+
+        <!-- Winner banner -->
+        <div class="gar-winner-banner hidden" id="garWinnerBanner">
+          <span class="gar-winner-icon">🏆</span>
+          <span class="gar-winner-text" id="garWinnerText"></span>
+        </div>
+
+        <!-- Canvases grid -->
+        <div class="gar-canvases" id="garCanvases"></div>
+
+        <!-- Metrics table -->
+        <div class="gar-metrics-card">
+          <div class="gar-metrics-title"><i class="fas fa-chart-bar"></i> Live Metrics</div>
+          <div class="gar-table-scroll">
+            <table class="gar-table" id="garMetricsTable">
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Nodes Visited</th>
+                  <th>Steps Taken</th>
+                  <th>Path Cost</th>
+                  <th>Path Length</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="garMetricsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🎓</span> Why They Differ</h2>
+        <div class="gar-learn-grid">
+          <div class="gar-learn-card" style="--lc:#22c55e">
+            <div class="gar-learn-algo">BFS</div>
+            <h3>Breadth-First Search</h3>
+            <p>Explores level by level. <strong>Guarantees shortest path</strong> in unweighted graphs. Ignores edge weights — treats all edges as cost 1. Wide and shallow.</p>
+            <div class="gar-chips"><span class="gar-chip">O(V+E)</span><span class="gar-chip">Unweighted optimal</span></div>
+          </div>
+          <div class="gar-learn-card" style="--lc:#a855f7">
+            <div class="gar-learn-algo">DFS</div>
+            <h3>Depth-First Search</h3>
+            <p>Goes as deep as possible before backtracking. <strong>No path optimality guarantee.</strong> Memory efficient on tall graphs. Often finds a path fast but not the shortest.</p>
+            <div class="gar-chips"><span class="gar-chip">O(V+E)</span><span class="gar-chip">No optimality</span></div>
+          </div>
+          <div class="gar-learn-card" style="--lc:#f59e0b">
+            <div class="gar-learn-algo">Dijkstra</div>
+            <h3>Dijkstra's Algorithm</h3>
+            <p>Explores by minimum cumulative cost using a priority queue. <strong>Optimal for weighted graphs</strong> with non-negative edges. Explores more nodes than A* but finds optimal path.</p>
+            <div class="gar-chips"><span class="gar-chip">O((V+E) log V)</span><span class="gar-chip">Weighted optimal</span></div>
+          </div>
+          <div class="gar-learn-card" style="--lc:#06b6d4">
+            <div class="gar-learn-algo">A*</div>
+            <h3>A* Search</h3>
+            <p>Dijkstra + heuristic. Uses f(n) = g(n) + h(n) to guide search toward target. <strong>Visits fewer nodes than Dijkstra</strong> when heuristic is good. Optimal if heuristic is admissible.</p>
+            <div class="gar-chips"><span class="gar-chip">O((V+E) log V)</span><span class="gar-chip">Heuristic-guided</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="graph-algorithm-race.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

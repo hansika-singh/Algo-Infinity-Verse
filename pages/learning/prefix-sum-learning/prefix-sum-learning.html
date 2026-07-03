@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Prefix Sum – Algorithm Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Master Prefix Sum algorithms for efficient range queries. Learn cumulative sums, 2D prefix sums, difference arrays, and solve practice exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="prefix-sum-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="prefix-sum-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the</span>
+          <span class="main-title gradient-text">Prefix Sum Pattern</span>
+          <span class="subtitle">Efficient Range Queries in O(1) Time</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_prefix_sum" id="typingTextPrefixSum"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#practice" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="15">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- Prefix Sum Learning Section -->
+    <section id="prefix-sum-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">➕</span>
+          Learn Prefix Sum
+        </h2>
+        <p class="section-subtitle">
+          Master cumulative sum techniques to optimize array operations.
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="prefix-sum-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="prefix-sum-progress-text"><span id="progressCount">0</span> / 5 topics completed</span>
+          <div class="prefix-sum-progress-track">
+            <div class="prefix-sum-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="prefix-sum-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="prefix-sum-sidebar" aria-label="Topic navigation">
+            <div class="prefix-sum-sidebar-title">Topics</div>
+            <ul class="prefix-sum-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#construction"><span class="nav-icon">🏗️</span> Construction Process</a></li>
+              <li><a href="#range-queries"><span class="nav-icon">🎯</span> Range Query Examples</a></li>
+              <li><a href="#applications"><span class="nav-icon">🚀</span> Applications</a></li>
+              <li><a href="#practice"><span class="nav-icon">🏋️</span> Practice Exercises</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="prefix-sum-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="prefix-sum-lesson" id="introduction" data-topic="1">
+              <div class="prefix-sum-lesson-header">
+                <span class="prefix-sum-lesson-number">01</span>
+                <h3>Introduction to Prefix Sum</h3>
+              </div>
+
+              <p>
+                The <strong>Prefix Sum</strong> is a powerful algorithmic pattern used to perform fast range queries on an array. By precomputing cumulative sums, we can answer queries about the sum of elements in any continuous subarray in <strong>O(1)</strong> time instead of <strong>O(N)</strong>.
+              </p>
+
+              <div class="prefix-sum-concept-card">
+                <h4>What is a Prefix Sum Array?</h4>
+                <p>Given an array <code>A</code> of size <code>N</code>, its prefix sum array <code>P</code> is also of size <code>N</code> (or <code>N+1</code> for convenience). Each element at index <code>i</code> in the prefix sum array stores the sum of all elements in the original array from index <code>0</code> to <code>i</code>.</p>
+                <p><code>P[i] = A[0] + A[1] + ... + A[i]</code></p>
+              </div>
+
+              <div class="prefix-sum-table-wrap">
+                <table class="prefix-sum-table" aria-label="Prefix Sum Example Table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Index</th>
+                      <th scope="col">0</th>
+                      <th scope="col">1</th>
+                      <th scope="col">2</th>
+                      <th scope="col">3</th>
+                      <th scope="col">4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Original Array (A)</strong></td>
+                      <td>2</td>
+                      <td>4</td>
+                      <td>6</td>
+                      <td>8</td>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Prefix Sum (P)</strong></td>
+                      <td>2</td>
+                      <td>6</td>
+                      <td>12</td>
+                      <td>20</td>
+                      <td>30</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="prefix-sum-exercise">
+                <div class="prefix-sum-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Introduction
+                </div>
+                <p>If the original array is <code>[1, 3, 5, 7]</code>, what is the prefix sum array?</p>
+                <button class="prefix-sum-exercise-toggle" aria-expanded="false" aria-controls="solution-introduction">Show Solution</button>
+                <div class="prefix-sum-exercise-solution" id="solution-introduction">
+                  <p><strong>Answer: [1, 4, 9, 16]</strong></p>
+                  <p>Explanation: P[0] = 1. P[1] = 1 + 3 = 4. P[2] = 1 + 3 + 5 = 9. P[3] = 1 + 3 + 5 + 7 = 16.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Construction Process -->
+            <article class="prefix-sum-lesson" id="construction" data-topic="2">
+              <div class="prefix-sum-lesson-header">
+                <span class="prefix-sum-lesson-number">02</span>
+                <h3>Construction Process</h3>
+              </div>
+
+              <p>
+                Building a prefix sum array is straightforward and requires only a single pass through the array. This takes <strong>O(N)</strong> time and <strong>O(N)</strong> space.
+              </p>
+
+              <div class="prefix-sum-concept-card">
+                <h4>The Algorithm</h4>
+                <ul>
+                  <li>Initialize an array <code>P</code> of the same size as <code>A</code>.</li>
+                  <li>Set <code>P[0] = A[0]</code>.</li>
+                  <li>For each index <code>i</code> from <code>1</code> to <code>N-1</code>, set <code>P[i] = P[i-1] + A[i]</code>.</li>
+                </ul>
+              </div>
+
+              <div class="prefix-sum-code-block">
+                <div class="prefix-sum-code-header">
+                  <span class="prefix-sum-code-lang">Python</span>
+                  <button class="prefix-sum-code-copy" aria-label="Copy code" data-code="def build_prefix_sum(arr):
+    n = len(arr)
+    if n == 0: return []
+    
+    prefix = [0] * n
+    prefix[0] = arr[0]
+    
+    for i in range(1, n):
+        prefix[i] = prefix[i-1] + arr[i]
+        
+    return prefix
+
+# Example Usage
+A = [2, 4, 6, 8, 10]
+P = build_prefix_sum(A)
+print(P) # Output: [2, 6, 12, 20, 30]">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">build_prefix_sum</span>(<span class="tok-var">arr</span>):
+    <span class="tok-var">n</span> = <span class="tok-fn">len</span>(<span class="tok-var">arr</span>)
+    <span class="tok-kw">if</span> <span class="tok-var">n</span> == <span class="tok-num">0</span>: <span class="tok-kw">return</span> []
+    
+    <span class="tok-var">prefix</span> = [<span class="tok-num">0</span>] * <span class="tok-var">n</span>
+    <span class="tok-var">prefix</span>[<span class="tok-num">0</span>] = <span class="tok-var">arr</span>[<span class="tok-num">0</span>]
+    
+    <span class="tok-kw">for</span> <span class="tok-var">i</span> <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">1</span>, <span class="tok-var">n</span>):
+        <span class="tok-var">prefix</span>[<span class="tok-var">i</span>] = <span class="tok-var">prefix</span>[<span class="tok-var">i</span>-<span class="tok-num">1</span>] + <span class="tok-var">arr</span>[<span class="tok-var">i</span>]
+        
+    <span class="tok-kw">return</span> <span class="tok-var">prefix</span></code></pre>
+              </div>
+
+              <div class="prefix-sum-callout">
+                <span class="prefix-sum-callout-icon">💡</span>
+                <p>Often, it's convenient to make the prefix sum array size <code>N+1</code> and set <code>P[0] = 0</code>. This avoids out-of-bounds errors when querying sums that start from index 0.</p>
+              </div>
+            </article>
+
+            <!-- 3. Range Query Examples -->
+            <article class="prefix-sum-lesson" id="range-queries" data-topic="3">
+              <div class="prefix-sum-lesson-header">
+                <span class="prefix-sum-lesson-number">03</span>
+                <h3>Range Query Examples</h3>
+              </div>
+
+              <p>
+                Once the prefix sum array is built, finding the sum of elements between any two indices <code>L</code> and <code>R</code> (inclusive) is a simple subtraction operation.
+              </p>
+
+              <div class="prefix-sum-concept-card">
+                <h4>The Formula</h4>
+                <p>To find the sum of <code>A[L...R]</code>:</p>
+                <ul>
+                  <li>If <code>L == 0</code>, the sum is just <code>P[R]</code>.</li>
+                  <li>If <code>L &gt; 0</code>, the sum is <code>P[R] - P[L-1]</code>.</li>
+                </ul>
+              </div>
+
+              <div class="prefix-sum-code-block">
+                <div class="prefix-sum-code-header">
+                  <span class="prefix-sum-code-lang">JavaScript</span>
+                  <button class="prefix-sum-code-copy" aria-label="Copy code" data-code="function rangeQuery(prefix, L, R) {
+  if (L === 0) return prefix[R];
+  return prefix[R] - prefix[L - 1];
+}
+
+// Prefix for A = [2, 4, 6, 8, 10]
+const P = [2, 6, 12, 20, 30];
+
+console.log(rangeQuery(P, 1, 3)); // Sum of A[1...3] (4+6+8) -> P[3] - P[0] = 20 - 2 = 18">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">rangeQuery</span>(<span class="tok-var">prefix</span>, <span class="tok-var">L</span>, <span class="tok-var">R</span>) {
+  <span class="tok-kw">if</span> (<span class="tok-var">L</span> === <span class="tok-num">0</span>) <span class="tok-kw">return</span> <span class="tok-var">prefix</span>[<span class="tok-var">R</span>];
+  <span class="tok-kw">return</span> <span class="tok-var">prefix</span>[<span class="tok-var">R</span>] - <span class="tok-var">prefix</span>[<span class="tok-var">L</span> - <span class="tok-num">1</span>];
+}</code></pre>
+              </div>
+              
+              <div class="prefix-sum-exercise">
+                <div class="prefix-sum-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Range Query
+                </div>
+                <p>Given <code>P = [1, 4, 9, 16]</code>, what is the sum of elements from index 1 to 2 inclusive?</p>
+                <button class="prefix-sum-exercise-toggle" aria-expanded="false" aria-controls="solution-range">Show Solution</button>
+                <div class="prefix-sum-exercise-solution" id="solution-range">
+                  <p><strong>Answer: 8</strong></p>
+                  <p>Explanation: Sum from L=1 to R=2 is P[2] - P[0] = 9 - 1 = 8. (The original array is [1, 3, 5, 7], and A[1]+A[2] = 3+5 = 8).</p>
+                </div>
+              </div>
+
+            </article>
+
+            <!-- 4. Applications -->
+            <article class="prefix-sum-lesson" id="applications" data-topic="4">
+              <div class="prefix-sum-lesson-header">
+                <span class="prefix-sum-lesson-number">04</span>
+                <h3>Applications</h3>
+              </div>
+
+              <p>
+                Prefix sums are foundational and appear in numerous optimization problems.
+              </p>
+
+              <div class="prefix-sum-concept-card">
+                <h4>1. Equilibrium Index</h4>
+                <p>An equilibrium index is an index where the sum of elements to its left equals the sum to its right. We can find this efficiently using prefix sums.</p>
+              </div>
+
+              <div class="prefix-sum-concept-card">
+                <h4>2. Difference Arrays</h4>
+                <p>If you need to perform many range additions (e.g., "Add 5 to all elements from L to R"), a difference array is the inverse of a prefix sum array and can perform this update in O(1) time.</p>
+              </div>
+
+              <div class="prefix-sum-concept-card">
+                <h4>3. 2D Prefix Sums</h4>
+                <p>For a 2D matrix, a 2D prefix sum array allows finding the sum of elements within any rectangular sub-grid in O(1) time. The formula becomes: <code>S = P[r2][c2] - P[r1-1][c2] - P[r2][c1-1] + P[r1-1][c1-1]</code></p>
+              </div>
+
+            </article>
+
+            <!-- 5. Practice Exercises -->
+            <article class="prefix-sum-lesson" id="practice" data-topic="5">
+              <div class="prefix-sum-lesson-header">
+                <span class="prefix-sum-lesson-number">05</span>
+                <h3>Practice Exercises</h3>
+              </div>
+
+              <p>
+                Test your understanding of the prefix sum technique.
+              </p>
+
+              <div class="prefix-sum-exercise">
+                <div class="prefix-sum-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 1: Finding Equilibrium
+                </div>
+                <p>Given the array <code>[-7, 1, 5, 2, -4, 3, 0]</code>, what is the equilibrium index? (Use the prefix sum approach).</p>
+                <button class="prefix-sum-exercise-toggle" aria-expanded="false" aria-controls="solution-ex1">Show Solution</button>
+                <div class="prefix-sum-exercise-solution" id="solution-ex1">
+                  <p><strong>Answer: Index 3</strong></p>
+                  <p>Explanation: At index 3 (value is 2), the sum of elements to the left is <code>-7 + 1 + 5 = -1</code>. The sum to the right is <code>-4 + 3 + 0 = -1</code>. Since both sides equal -1, index 3 is an equilibrium index.</p>
+                </div>
+              </div>
+              
+              <div class="prefix-sum-exercise">
+                <div class="prefix-sum-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 2: Time Complexity
+                </div>
+                <p>If you have an array of N elements and need to answer Q range queries, what is the time complexity of using the prefix sum method versus calculating the sum directly each time?</p>
+                <button class="prefix-sum-exercise-toggle" aria-expanded="false" aria-controls="solution-ex2">Show Solution</button>
+                <div class="prefix-sum-exercise-solution" id="solution-ex2">
+                  <p><strong>Answer: O(N + Q) vs O(Q * N)</strong></p>
+                  <p>Explanation: Prefix sum takes O(N) to build and O(1) per query, leading to O(N + Q). Direct calculation takes O(N) per query, leading to O(Q * N).</p>
+                </div>
+              </div>
+
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="prefix-sum-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

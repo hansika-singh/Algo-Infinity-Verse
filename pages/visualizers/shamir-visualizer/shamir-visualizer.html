@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shamir's Secret Sharing Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive cryptography: Visualize polynomial interpolation and Shamir's Secret Sharing." />
+    
+    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap)" rel="stylesheet" />
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)" />
+    
+    <!-- D3.js for Mathematical Graphing -->
+    <script src="[https://d3js.org/d3.v7.min.js](https://d3js.org/d3.v7.min.js)"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="shamir-visualizer.css" />
+</head>
+<body class="sss-body">
+
+    <nav class="navbar sss-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-key"></i> Crypto Engine: Ready
+        </div>
+    </nav>
+
+    <main class="sss-workspace">
+        
+        <!-- Left Panel: Cryptographic Setup & Shares -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-shield-alt"></i> Secret Dealer</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Divide a secret into <strong>N</strong> shares. It requires exactly <strong>K</strong> shares to reconstruct the polynomial and reveal the secret. Anything less than K gives absolutely zero information.
+                </p>
+
+                <div class="input-group">
+                    <label>The Secret (Y-Intercept)</label>
+                    <input type="number" id="secretInput" value="42" min="0" max="100" />
+                </div>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Total Shares (N)</label>
+                        <input type="number" id="paramN" value="5" min="2" max="10" />
+                    </div>
+                    <div class="input-group">
+                        <label>Threshold (K)</label>
+                        <input type="number" id="paramK" value="3" min="2" max="10" />
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-2" id="btnGenerate">
+                    <i class="fas fa-share-alt"></i> Generate Shares
+                </button>
+            </div>
+
+            <!-- Share Vault -->
+            <div class="vault-section">
+                <div class="vault-header">
+                    <h4><i class="fas fa-lock"></i> Share Vault</h4>
+                    <span class="vault-counter" id="selectedCounter">0 / 3 Selected</span>
+                </div>
+                <p class="desc-text" style="font-size: 0.75rem; margin-top: 0.5rem;">Click on the generated shares below to provide them to the reconstructor.</p>
+                
+                <div class="share-list" id="shareList">
+                    <div class="empty-state-text" id="shareEmptyState">Generate shares to populate vault.</div>
+                    <!-- Shares injected here by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: D3.js Graph Visualizer -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-chart-line"></i> Polynomial Space</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="swatch s-secret"></span> The Secret (x=0)</span>
+                    <span class="legend-item"><span class="swatch s-unselected"></span> Available Share</span>
+                    <span class="legend-item"><span class="swatch s-selected"></span> Provided Share</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div id="d3Container"></div>
+                <div class="empty-state" id="graphEmptyState">
+                    <i class="fas fa-draw-polygon"></i>
+                    <p>Mathematical space initialized. Waiting for polynomial generation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Math & Interpolation -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-square-root-alt"></i> Lagrange Interpolation</h3>
+            </div>
+            
+            <div class="math-section">
+                <div class="formula-box">
+                    <span class="formula-title">Reconstruction Formula</span>
+                    <div class="math-tex">
+                        S = &Sigma; y<sub>i</sub> &Pi; (x<sub>j</sub> / (x<sub>j</sub> - x<sub>i</sub>))
+                    </div>
+                </div>
+
+                <div class="interpolation-status">
+                    <h4>Current Knowledge State</h4>
+                    
+                    <div class="degree-tracker">
+                        <span>Interpolated Polynomial Degree:</span>
+                        <strong class="text-accent" id="degreeDisplay">0</strong>
+                    </div>
+
+                    <div class="knowledge-bar-bg">
+                        <div class="knowledge-bar-fill" id="knowledgeBar" style="width: 0%;"></div>
+                    </div>
+
+                    <p class="math-explanation" id="mathExplanation">
+                        A polynomial of degree <code>K-1</code> requires exactly <code>K</code> points to be uniquely defined. Currently, infinitely many curves pass through your selected points.
+                    </p>
+                </div>
+
+                <div class="secret-reveal-box" id="secretRevealBox">
+                    <div class="reveal-header">Decrypted Secret (y-intercept)</div>
+                    <div class="reveal-value" id="decryptedValue">?</div>
+                    <div class="reveal-status" id="revealStatus">
+                        <i class="fas fa-times-circle"></i> Threshold Not Met
+                    </div>
+                </div>
+                
+                <div class="educator-note">
+                    <i class="fas fa-info-circle"></i> <strong>Note:</strong> Real Shamir's Secret Sharing operates over a finite prime field to prevent geometric value approximation. For visual intuition, this engine plots the continuous equivalent.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="shamir-visualizer.js"></script>
+</body>
+</html>

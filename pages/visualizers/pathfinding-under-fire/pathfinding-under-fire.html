@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pathfinding Under Fire | Algo Infinity Verse</title>
+    <meta name="description" content="Watch pathfinding algorithms replan in real time as obstacles appear mid-execution. Draw walls, fire obstacles on active paths, compare replanning strategies." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="pathfinding-under-fire.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="pathfinding-under-fire">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero banner -->
+    <div class="puf-hero-banner">
+      <div class="puf-hero-left">
+        <div class="puf-hero-eyebrow">💥 Dynamic Pathfinding</div>
+        <h1 class="puf-hero-title">Pathfinding Under Fire</h1>
+        <p class="puf-hero-desc">Obstacles appear mid-execution. Algorithms replan in real time. Watch the path shatter and rebuild.</p>
+      </div>
+      <div class="puf-hero-stats">
+        <div class="puf-hero-stat">
+          <span id="pufTotalReplans">0</span>
+          <label>Replans</label>
+        </div>
+        <div class="puf-hero-stat">
+          <span id="pufTotalSteps">0</span>
+          <label>Total Steps</label>
+        </div>
+        <div class="puf-hero-stat">
+          <span id="pufObstaclesFired">0</span>
+          <label>Obstacles Fired</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div class="puf-main">
+
+      <!-- Toolbar -->
+      <div class="puf-toolbar">
+
+        <!-- Algorithm -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Algorithm</span>
+          <div class="puf-algo-btns">
+            <button class="puf-algo-btn active" data-algo="astar"    style="--ac:#00d4ff">A*</button>
+            <button class="puf-algo-btn"        data-algo="bfs"      style="--ac:#22c55e">BFS</button>
+            <button class="puf-algo-btn"        data-algo="dijkstra" style="--ac:#f59e0b">Dijkstra</button>
+            <button class="puf-algo-btn"        data-algo="dfs"      style="--ac:#a855f7">DFS</button>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Draw Mode</span>
+          <div class="puf-mode-btns">
+            <button class="puf-mode-btn active" data-mode="wall"   aria-label="Draw walls" title="Draw Walls">
+              <i class="fas fa-square"></i> Wall
+            </button>
+            <button class="puf-mode-btn" data-mode="erase"  aria-label="Erase" title="Erase">
+              <i class="fas fa-eraser"></i> Erase
+            </button>
+            <button class="puf-mode-btn" data-mode="source" aria-label="Move source" title="Move Source">
+              <i class="fas fa-play"></i> Source
+            </button>
+            <button class="puf-mode-btn" data-mode="target" aria-label="Move target" title="Move Target">
+              <i class="fas fa-flag"></i> Target
+            </button>
+            <button class="puf-mode-btn puf-fire-btn" data-mode="fire" aria-label="Fire obstacle on path" title="Fire Obstacle on Path">
+              <i class="fas fa-fire"></i> Fire!
+            </button>
+          </div>
+        </div>
+
+        <!-- Playback -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Playback</span>
+          <div class="puf-pb-btns">
+            <button class="puf-pb-btn puf-run-btn" id="pufRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button class="puf-pb-btn" id="pufStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button class="puf-pb-btn" id="pufPauseBtn" disabled>
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="puf-pb-btn" id="pufResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Speed + options -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Speed</span>
+          <div class="puf-speed-row">
+            <input type="range" id="pufSpeed" class="puf-range" min="1" max="5" value="3" aria-label="Speed" />
+            <span class="puf-speed-val" id="pufSpeedVal">Normal</span>
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Options</span>
+          <div class="puf-opts">
+            <label class="puf-opt-label">
+              <input type="checkbox" id="pufHeatmap" class="puf-check" />
+              <i class="fas fa-fire-flame-curved"></i> Heatmap
+            </label>
+            <label class="puf-opt-label">
+              <input type="checkbox" id="pufDiagonal" class="puf-check" />
+              <i class="fas fa-arrows-alt"></i> Diagonal
+            </label>
+          </div>
+        </div>
+
+        <!-- Presets -->
+        <div class="puf-tool-group">
+          <span class="puf-tool-label">Presets</span>
+          <div class="puf-preset-btns">
+            <button class="puf-preset-btn" data-preset="clear">Clear</button>
+            <button class="puf-preset-btn" data-preset="maze">Maze</button>
+            <button class="puf-preset-btn" data-preset="spiral">Spiral</button>
+            <button class="puf-preset-btn" data-preset="rooms">Rooms</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Status bar -->
+      <div class="puf-status-bar">
+        <span
+          class="puf-status-icon"
+          id="pufStatusIcon">⏸</span>
+        <span
+          class="puf-status-msg"
+          id="pufStatusMsg"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >Select a mode, draw walls, then click Run. Use Fire! mode to place obstacles mid-path.</span>
+        <div class="puf-legend">
+          <span class="puf-leg"><span class="puf-leg-dot" style="background:#00d4ff"></span>A*</span>
+          <span class="puf-leg"><span class="puf-leg-dot" style="background:#22c55e"></span>BFS</span>
+          <span class="puf-leg"><span class="puf-leg-dot" style="background:#f59e0b"></span>Dijkstra</span>
+          <span class="puf-leg"><span class="puf-leg-dot" style="background:#a855f7"></span>DFS</span>
+        </div>
+      </div>
+
+      <!-- Grid + metrics side panel -->
+      <div class="puf-content">
+
+        <!-- Grid -->
+        <div class="puf-grid-section">
+          <div class="puf-grid-wrap" id="pufGridWrap">
+            <div
+              class="puf-grid"
+              id="pufGrid"
+              role="grid"
+              aria-label="Pathfinding grid"
+              aria-rowcount="25"
+              aria-colcount="25"
+            ></div>
+          </div>
+          <div class="puf-grid-footer">
+            <span class="puf-mode-indicator" id="pufModeIndicator">
+              <i class="fas fa-square"></i> Wall mode — click/drag to draw walls
+            </span>
+            <span class="puf-grid-size">25 × 25</span>
+          </div>
+        </div>
+
+        <!-- Metrics panel -->
+        <div class="puf-metrics-panel">
+
+          <div class="puf-metrics-title">
+            <i class="fas fa-chart-bar"></i> Live Metrics
+          </div>
+
+          <div class="puf-metric-card" id="pufMetricAstar">
+            <div class="puf-metric-header" style="color:#00d4ff">
+              <span class="puf-metric-algo">A*</span>
+              <span class="puf-metric-badge" id="pufBadgeAstar">Ready</span>
+            </div>
+            <div class="puf-metric-rows">
+              <div class="puf-metric-row"><span>Visited</span><span id="pufVisitedAstar">0</span></div>
+              <div class="puf-metric-row"><span>Path length</span><span id="pufPathAstar">—</span></div>
+              <div class="puf-metric-row"><span>Steps</span><span id="pufStepsAstar">0</span></div>
+              <div class="puf-metric-row puf-replan-row">
+                <span><i class="fas fa-rotate"></i> Replans</span>
+                <span class="puf-replan-val" id="pufReplanAstar">0</span>
+              </div>
+            </div>
+            <div class="puf-metric-bar-wrap">
+              <div class="puf-metric-bar" id="pufBarAstar" style="background:#00d4ff;width:0%"></div>
+            </div>
+          </div>
+
+          <div class="puf-metric-card" id="pufMetricBfs">
+            <div class="puf-metric-header" style="color:#22c55e">
+              <span class="puf-metric-algo">BFS</span>
+              <span class="puf-metric-badge" id="pufBadgeBfs">Ready</span>
+            </div>
+            <div class="puf-metric-rows">
+              <div class="puf-metric-row"><span>Visited</span><span id="pufVisitedBfs">0</span></div>
+              <div class="puf-metric-row"><span>Path length</span><span id="pufPathBfs">—</span></div>
+              <div class="puf-metric-row"><span>Steps</span><span id="pufStepsBfs">0</span></div>
+              <div class="puf-metric-row puf-replan-row">
+                <span><i class="fas fa-rotate"></i> Replans</span>
+                <span class="puf-replan-val" id="pufReplanBfs">0</span>
+              </div>
+            </div>
+            <div class="puf-metric-bar-wrap">
+              <div class="puf-metric-bar" id="pufBarBfs" style="background:#22c55e;width:0%"></div>
+            </div>
+          </div>
+
+          <div class="puf-metric-card" id="pufMetricDijkstra">
+            <div class="puf-metric-header" style="color:#f59e0b">
+              <span class="puf-metric-algo">Dijkstra</span>
+              <span class="puf-metric-badge" id="pufBadgeDijkstra">Ready</span>
+            </div>
+            <div class="puf-metric-rows">
+              <div class="puf-metric-row"><span>Visited</span><span id="pufVisitedDijkstra">0</span></div>
+              <div class="puf-metric-row"><span>Path length</span><span id="pufPathDijkstra">—</span></div>
+              <div class="puf-metric-row"><span>Steps</span><span id="pufStepsDijkstra">0</span></div>
+              <div class="puf-metric-row puf-replan-row">
+                <span><i class="fas fa-rotate"></i> Replans</span>
+                <span class="puf-replan-val" id="pufReplanDijkstra">0</span>
+              </div>
+            </div>
+            <div class="puf-metric-bar-wrap">
+              <div class="puf-metric-bar" id="pufBarDijkstra" style="background:#f59e0b;width:0%"></div>
+            </div>
+          </div>
+
+          <div class="puf-metric-card" id="pufMetricDfs">
+            <div class="puf-metric-header" style="color:#a855f7">
+              <span class="puf-metric-algo">DFS</span>
+              <span class="puf-metric-badge" id="pufBadgeDfs">Ready</span>
+            </div>
+            <div class="puf-metric-rows">
+              <div class="puf-metric-row"><span>Visited</span><span id="pufVisitedDfs">0</span></div>
+              <div class="puf-metric-row"><span>Path length</span><span id="pufPathDfs">—</span></div>
+              <div class="puf-metric-row"><span>Steps</span><span id="pufStepsDfs">0</span></div>
+              <div class="puf-metric-row puf-replan-row">
+                <span><i class="fas fa-rotate"></i> Replans</span>
+                <span class="puf-replan-val" id="pufReplanDfs">0</span>
+              </div>
+            </div>
+            <div class="puf-metric-bar-wrap">
+              <div class="puf-metric-bar" id="pufBarDfs" style="background:#a855f7;width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Heatmap info -->
+          <div class="puf-heatmap-info" id="pufHeatmapInfo">
+            <div class="puf-heatmap-bar"></div>
+            <div class="puf-heatmap-labels">
+              <span>0 visits</span><span>Max visits</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Learn strip -->
+    <section class="puf-learn-section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔥</span> Why Dynamic Replanning Matters</h2>
+        <div class="puf-learn-grid">
+          <div class="puf-learn-card">
+            <div class="puf-learn-icon">🤖</div>
+            <h3>Mars Rover Navigation</h3>
+            <p>NASA's Mars rovers use D*Lite — a dynamic replanning algorithm — because terrain data from sensors updates constantly. A rock that wasn't visible from orbit becomes an obstacle mid-path. The rover must replan without starting over from scratch.</p>
+          </div>
+          <div class="puf-learn-card">
+            <div class="puf-learn-icon">🎮</div>
+            <h3>Game AI Pathfinding</h3>
+            <p>In RTS games, thousands of units pathfind simultaneously. When a unit blocks a path, all affected units must replan. Full A* restarts are too expensive — games use hierarchical pathfinding and flow fields to handle dynamic obstacles efficiently.</p>
+          </div>
+          <div class="puf-learn-card">
+            <div class="puf-learn-icon">🗺️</div>
+            <h3>GPS Rerouting</h3>
+            <p>When Google Maps detects a traffic jam on your route, it triggers a replan. The key insight: only the portion of the path affected by the new obstacle needs to be recomputed — not the entire route from your current position.</p>
+          </div>
+          <div class="puf-learn-card">
+            <div class="puf-learn-icon">📊</div>
+            <h3>A* vs BFS Replanning</h3>
+            <p>A* replans more efficiently because its heuristic guides it toward the target — it explores fewer cells. BFS must explore all equidistant cells regardless of direction. After an obstacle fires, watch how A* finds a new path with far fewer visited cells than BFS.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="pathfinding-under-fire.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

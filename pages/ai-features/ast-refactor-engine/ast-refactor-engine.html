@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Driven AST Refactoring Engine | Algo Infinity Verse</title>
+    <meta name="description" content="Parse code into Abstract Syntax Trees, visualize compiler optimizations, and witness animated code refactoring." />
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror Editor Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css" />
+    
+    <!-- Core Platform Styles -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ast-refactor-engine.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="ast-body">
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="ast-workspace">
+        
+        <!-- Column 1: Source Code & Controls -->
+        <div class="panel-column panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-code"></i> Code Input</h3>
+            </div>
+            
+            <div class="panel-section">
+                <!-- Preset Controller -->
+                <div class="control-group">
+                    <label for="presetSelect"><i class="fas fa-magic"></i> Optimization Preset</label>
+                    <select id="presetSelect" class="form-select">
+                        <option value="js-fib">JS: Naive Fibonacci (Recursion)</option>
+                        <option value="py-fib">Python: Naive Fibonacci (Recursion)</option>
+                        <option value="js-loops">JS: Nested Loops (O(N^2))</option>
+                        <option value="py-loops">Python: Nested Loops (O(N^2))</option>
+                        <option value="js-dead">JS: Dead Code / Unused Var</option>
+                        <option value="py-dead">Python: Dead Code / Unused Var</option>
+                    </select>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="control-group">
+                    <label><i class="fas fa-language"></i> Language mode</label>
+                    <div class="lang-toggle-group">
+                        <button class="btn btn-lang active" id="btnLangJS" data-lang="javascript">JavaScript</button>
+                        <button class="btn btn-lang" id="btnLangPY" data-lang="python">Python</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CodeMirror Editor for raw input code -->
+            <div class="editor-section">
+                <label class="section-tag"><i class="fas fa-keyboard"></i> Raw Code Editor</label>
+                <div class="editor-wrapper" id="rawEditorContainer"></div>
+            </div>
+
+            <div class="panel-section bottom-actions">
+                <!-- Optimization triggers -->
+                <button class="btn btn-primary w-100" id="btnOptimize">
+                    <i class="fas fa-rocket"></i> Optimize AST &amp; Refactor
+                </button>
+                
+                <div class="speed-slider-row" style="margin-top: 1rem;">
+                    <span>Speed:</span>
+                    <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" />
+                    <span id="speedValText">1.0x</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 2: AST Viewport (Center) -->
+        <div class="panel-column panel-center">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> AST Dynamic Visualizer</h3>
+                <span class="formula-badge">ESTree Standard Representation</span>
+            </div>
+            
+            <!-- Dynamic AST SVG Canvas -->
+            <div class="ast-viewport-wrapper" id="astViewportWrapper">
+                <svg id="astSvgCanvas" class="ast-svg-canvas"></svg>
+                <div class="ast-nodes-layer" id="astNodesLayer"></div>
+                
+                <!-- Helper HUD Legend -->
+                <div class="ast-legend">
+                    <div class="legend-item"><span class="legend-dot decl"></span>Declaration</div>
+                    <div class="legend-item"><span class="legend-dot loop"></span>Loop</div>
+                    <div class="legend-item"><span class="legend-dot cond"></span>Condition</div>
+                    <div class="legend-item"><span class="legend-dot expr"></span>Expression</div>
+                </div>
+            </div>
+
+            <!-- Floating node inspection card -->
+            <div class="node-hover-hud" id="nodeHoverHud">
+                <div class="hud-title">Node details</div>
+                <div class="hud-row"><span class="hud-label">Type:</span> <span id="hudNodeType">-</span></div>
+                <div class="hud-row"><span class="hud-label">Location:</span> <span id="hudNodeLoc">-</span></div>
+                <div class="hud-row"><span class="hud-label">Key Property:</span> <span id="hudNodeProps" class="prop-detail">-</span></div>
+            </div>
+        </div>
+
+        <!-- Column 3: Refactored Code, Complexity & Logs -->
+        <div class="panel-column panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-wand-magic-sparkles"></i> Optimized Output</h3>
+            </div>
+            
+            <div class="panel-section complexity-compare-row">
+                <!-- Complexity hud before/after -->
+                <div class="comp-card before">
+                    <span class="comp-title">Initial Complexity</span>
+                    <span class="comp-val text-danger" id="complexityBefore">O(2^N)</span>
+                    <span class="comp-label">Time complexity</span>
+                </div>
+                <div class="comp-card arrow-between">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="comp-card after">
+                    <span class="comp-title">Refactored Complexity</span>
+                    <span class="comp-val text-success" id="complexityAfter">O(N)</span>
+                    <span class="comp-label">Time complexity</span>
+                </div>
+            </div>
+
+            <!-- CodeMirror Editor showing refactored output -->
+            <div class="editor-section flex-editor">
+                <label class="section-tag"><i class="fas fa-file-code"></i> Refactored Source Code</label>
+                <div class="editor-wrapper" id="refactoredEditorContainer"></div>
+            </div>
+
+            <!-- Optimization logs panel -->
+            <div class="logs-section">
+                <label class="section-tag"><i class="fas fa-terminal"></i> Compiler Transformation Logs</label>
+                <div class="logs-container" id="logsContainer">
+                    <div class="log-line sys">> AST engine compiled and loaded. Ready for parsing...</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- External Script Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.10.0/acorn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    
+    <!-- Platform scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    
+    <!-- Custom AST Refactoring JS logic -->
+    <script src="ast-refactor-engine.js"></script>
+    
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

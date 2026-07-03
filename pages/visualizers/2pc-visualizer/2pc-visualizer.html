@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2PC & Vector Clocks Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualization of Two-Phase Commit distributed transactions and Vector Clocks." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="2pc-visualizer.css" />
+</head>
+<body class="tpc-body">
+
+    <nav class="navbar tpc-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-network-wired"></i> Distributed Network: Idle
+        </div>
+    </nav>
+
+    <main class="tpc-workspace">
+        
+        <!-- Left Panel: Controls & Chaos -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Cluster Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Initiate a <strong>Two-Phase Commit (2PC)</strong> distributed transaction. Watch the Coordinator and Shards step through the <code>PREPARE</code> and <code>COMMIT/ABORT</code> phases.
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary w-100" id="btnStartTx" style="grid-column: span 2;">
+                        <i class="fas fa-bolt"></i> Start Transaction
+                    </button>
+                    <button class="btn btn-outline" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Network
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chaos Engineering Section -->
+            <div class="chaos-section">
+                <h4><i class="fas fa-skull-crossbones"></i> Chaos Engineering</h4>
+                <p class="desc-text" style="font-size: 0.8rem; margin-top: 0.5rem;">
+                    Inject failures to see how 2PC handles network anomalies and node crashes.
+                </p>
+                
+                <div class="chaos-grid">
+                    <label class="chaos-toggle">
+                        <input type="checkbox" id="failNodeA">
+                        <span class="toggle-box"></span>
+                        <div class="toggle-info">
+                            <strong>Node A Votes NO</strong>
+                            <span>Simulates a constraint violation or write failure.</span>
+                        </div>
+                    </label>
+
+                    <label class="chaos-toggle">
+                        <input type="checkbox" id="crashNodeC">
+                        <span class="toggle-box"></span>
+                        <div class="toggle-info">
+                            <strong>Crash Node C</strong>
+                            <span>Simulates a total node failure. Causes Coordinator Timeout.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Vector Clock Explanation -->
+            <div class="info-section">
+                <h4><i class="fas fa-clock"></i> Vector Clocks</h4>
+                <div class="vc-explanation">
+                    <p>Format: <code>[Coord, A, B, C]</code></p>
+                    <ul>
+                        <li><strong>Rule 1:</strong> A node increments its own index on every local event (Send/Receive).</li>
+                        <li><strong>Rule 2:</strong> On receive, a node updates its clock to the element-wise maximum of its local clock and the incoming clock.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Network Canvas -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> Network Topology</span>
+                <span class="status-display" id="txStatusDisplay">Status: IDLE</span>
+            </div>
+            
+            <div class="canvas-wrapper" id="networkCanvas">
+                <!-- SVG Layer for Links and Packets -->
+                <svg class="network-svg" id="svgLayer">
+                    <g id="connectionsGroup"></g>
+                    <g id="packetsGroup"></g>
+                </svg>
+                
+                <!-- DOM Nodes Layer -->
+                <div class="nodes-layer" id="nodesLayer"></div>
+            </div>
+            
+            <div class="canvas-legend">
+                <span class="legend-item"><span class="swatch s-idle"></span> Idle</span>
+                <span class="legend-item"><span class="swatch s-prep"></span> Prepared</span>
+                <span class="legend-item"><span class="swatch s-com"></span> Committed</span>
+                <span class="legend-item"><span class="swatch s-abt"></span> Aborted</span>
+                <span class="legend-item"><span class="swatch s-fail"></span> Failed</span>
+            </div>
+        </div>
+
+        <!-- Right Panel: Telemetry & Logs -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> Transaction Logs</h3>
+            </div>
+            
+            <div class="logs-container" id="logsContainer">
+                <div class="log-entry sys">>> Cluster initialized. All nodes online.</div>
+                <div class="log-entry sys">>> Vector Clocks set to [0, 0, 0, 0].</div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="2pc-visualizer.js"></script>
+</body>
+</html>

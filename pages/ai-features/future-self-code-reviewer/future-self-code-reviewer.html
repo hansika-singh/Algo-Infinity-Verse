@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future Self Code Reviewer AI | Algo Infinity Verse</title>
+  <meta name="description" content="Get code reviews from your future self at different career stages: 1-month developer, 1-year developer, and senior architect." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="future-self-code-reviewer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="future-self-code-reviewer">
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="hero fscr-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="fscr-badge"><i class="fas fa-brain animate-pulse"></i> Code Review Evolution</div>
+      <h1 class="hero-title">
+        <span class="title-line">Evolving Perspectives of Your Code</span>
+        <span class="main-title fscr-gradient">Future Self Reviewer AI</span>
+      </h1>
+      <p class="section-subtitle">
+        How will you judge your own work as you grow? Input your code to receive feedback from your future self at three different career stages: a 1-month beginner, a 1-year mid-level developer, and a seasoned senior architect.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Simulator Workspace -->
+  <section class="section" id="workspace-section">
+    <div class="container">
+      <div class="fscr-layout">
+        
+        <!-- Left Column: Input and Editor -->
+        <div class="fscr-panel editor-panel">
+          <div class="fscr-panel-header">
+            <h3><i class="fas fa-code"></i> Code Submission</h3>
+            <div class="preset-wrapper">
+              <label for="problemPreset" class="sr-only">Choose a problem template</label>
+              <select id="problemPreset" class="fscr-select-sm">
+                <option value="custom">-- Custom Code --</option>
+                <option value="twosum">Two Sum</option>
+                <option value="reverse-list">Reverse Linked List</option>
+                <option value="binary-search">Binary Search</option>
+                <option value="valid-parentheses">Valid Parentheses</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="fscr-panel-body">
+            <div class="editor-controls">
+              <div class="control-group">
+                <label for="languageSelect">Language:</label>
+                <select id="languageSelect" class="fscr-select">
+                  <option value="javascript">JavaScript</option>
+                  <option value="python">Python</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="code-editor-container">
+              <div class="line-numbers" id="editorLineNumbers"></div>
+              <label for="codeEditor" class="sr-only">Code editor input area</label>
+              <textarea id="codeEditor" class="code-textarea" placeholder="// Paste or write your solution here..." spellcheck="false"></textarea>
+            </div>
+
+            <button id="btnRunReview" class="btn btn-primary btn-block">
+              <i class="fas fa-glasses"></i> Generate Timeline Review
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive Timeline Reviews -->
+        <div class="fscr-panel timeline-panel">
+          <div class="fscr-panel-header">
+            <h3><i class="fas fa-route"></i> Developer Timeline Feedback</h3>
+            <div class="view-toggles">
+              <button class="view-toggle-btn active" data-view="timeline"><i class="fas fa-list-ol"></i> Timeline</button>
+              <button class="view-toggle-btn" data-view="comparison"><i class="fas fa-columns"></i> Compare</button>
+            </div>
+          </div>
+
+          <div class="fscr-panel-body">
+            <!-- Timeline View -->
+            <div id="timelineContainer" class="fscr-timeline active">
+              
+              <!-- Checkpoint 1: 1-Month Self -->
+              <div class="timeline-card junior-card" id="juniorCard">
+                <div class="card-header">
+                  <div class="level-badge"><i class="fas fa-baby"></i> 1-Month Developer Self</div>
+                  <span class="score-badge">Comprehension focus</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-intro">Your fresh-out-of-bootcamp self. Hyper-focused on code formatting, matching bracket styling, naming conventions, and verbose comment blocks.</p>
+                  <div class="review-bullets" id="juniorBullets">
+                    <p class="empty-placeholder">Click 'Generate Timeline Review' to see feedback.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Checkpoint 2: 1-Year Self -->
+              <div class="timeline-card mid-card" id="midCard">
+                <div class="card-header">
+                  <div class="level-badge"><i class="fas fa-user-graduate"></i> 1-Year Developer Self</div>
+                  <span class="score-badge">Clean & DRY focus</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-intro">Your associate engineer self. Obsesses over design patterns, deduplication (DRY), linter rules, standard library shortcuts, and simple Big-O optimization.</p>
+                  <div class="review-bullets" id="midBullets">
+                    <p class="empty-placeholder">Click 'Generate Timeline Review' to see feedback.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Checkpoint 3: Senior Critique -->
+              <div class="timeline-card senior-card" id="seniorCard">
+                <div class="card-header">
+                  <div class="level-badge"><i class="fas fa-crown"></i> Senior Architect Self</div>
+                  <span class="score-badge">Production & Scale focus</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-intro">Your current/future principal self. Focuses on hidden edge cases, scale limits, thread safety, real-world deployment challenges, and long-term readability.</p>
+                  <div class="review-bullets" id="seniorBullets">
+                    <p class="empty-placeholder">Click 'Generate Timeline Review' to see feedback.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Comparison View -->
+            <div id="comparisonContainer" class="fscr-comparison">
+              <div class="comparison-grid">
+                <div class="comparison-col junior-col">
+                  <h4><i class="fas fa-baby"></i> Junior (1-Month)</h4>
+                  <div class="comparison-content" id="juniorComp">
+                    <p class="empty-placeholder">No review generated.</p>
+                  </div>
+                </div>
+                <div class="comparison-col mid-col">
+                  <h4><i class="fas fa-user-graduate"></i> Mid (1-Year)</h4>
+                  <div class="comparison-content" id="midComp">
+                    <p class="empty-placeholder">No review generated.</p>
+                  </div>
+                </div>
+                <div class="comparison-col senior-col">
+                  <h4><i class="fas fa-crown"></i> Senior Architect</h4>
+                  <div class="comparison-content" id="seniorComp">
+                    <p class="empty-placeholder">No review generated.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Line Annotator Section -->
+  <section class="section annotator-section" id="annotatorSection" style="display: none;">
+    <div class="container">
+      <div class="card fscr-annotator-card">
+        <div class="fscr-annotator-header">
+          <h3><i class="fas fa-highlighter"></i> Interactive Line-by-Line Code Annotations</h3>
+          <p>Click on any highlighted code line to see overlapping critiques from different stages of your engineering career.</p>
+        </div>
+        <div class="annotator-body">
+          <div class="annotated-code-display" id="annotatedCodeDisplay">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="annotation-details-panel" id="annotationDetailsPanel">
+            <div class="empty-annotation-state" id="emptyAnnotationState">
+              <i class="far fa-hand-pointer"></i>
+              <p>Click a highlighted code line on the left to display critique details.</p>
+            </div>
+            <div class="annotation-details-content" id="annotationDetailsContent" style="display: none;">
+              <h4 id="annotationLineHeader">Line 1 Critique</h4>
+              <div class="critique-item junior-critique">
+                <h5><span class="critique-avatar junior-avatar">👶</span> 1-Month Self:</h5>
+                <p id="lineJuniorFeedback"></p>
+              </div>
+              <div class="critique-item mid-critique">
+                <h5><span class="critique-avatar mid-avatar">🧑‍💻</span> 1-Year Self:</h5>
+                <p id="lineMidFeedback"></p>
+              </div>
+              <div class="critique-item senior-critique">
+                <h5><span class="critique-avatar senior-avatar">🧙</span> Senior Architect:</h5>
+                <p id="lineSeniorFeedback"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="future-self-code-reviewer.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

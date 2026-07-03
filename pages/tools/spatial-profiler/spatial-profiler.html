@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spatial Complexity Profiler & Heatmap | Algo Infinity Verse</title>
+    <meta name="description" content="AI-Driven Spatial Complexity Profiler and Execution Heatmap. Visualise memory call stacks, heap allocations, and loop execution frequencies in real-time." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="spatial-profiler.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="spatial-profiler">
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">AI-Driven</span>
+          <span class="main-title gradient-text">Spatial Complexity Profiler</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="visualizer-section">
+      <div class="visualizer-container">
+        
+        <aside class="control-panel">
+          <h2 class="panel-title"><i class="fas fa-microchip"></i> Profiler Config</h2>
+          
+          <!-- Algorithm Selector -->
+          <div class="control-group">
+            <label>Select Algorithm</label>
+            <div class="algorithm-selector-list" id="algorithm-list">
+              <!-- Dynamically populated buttons -->
+            </div>
+          </div>
+
+          <!-- Input Parameters -->
+          <div class="control-group">
+            <label>Input Size (N)</label>
+            <div class="input-row">
+              <input type="number" id="input-size" min="1" max="15" value="5" />
+              <button class="btn-vis btn-insert" id="btn-apply-size"><i class="fas fa-check"></i> Apply</button>
+            </div>
+          </div>
+
+          <!-- Control Panel buttons -->
+          <div class="control-group">
+            <label>Execution Controls</label>
+            <div class="execution-controls">
+              <button class="btn-ctrl" id="btn-prev" title="Step Backward"><i class="fas fa-step-backward"></i></button>
+              <button class="btn-ctrl" id="btn-play" title="Auto Play"><i class="fas fa-play"></i></button>
+              <button class="btn-ctrl" id="btn-next" title="Step Forward"><i class="fas fa-step-forward"></i></button>
+            </div>
+          </div>
+
+          <!-- Animation speed slider -->
+          <div class="control-group">
+            <label>Step Speed</label>
+            <div class="speed-control">
+              <input type="range" id="speed-slider" min="200" max="2000" value="800" step="100" />
+              <span id="speed-val">800ms</span>
+            </div>
+          </div>
+
+          <!-- Memory Meters -->
+          <div class="control-group">
+            <label>Memory Footprint</label>
+            <div class="memory-metrics-card">
+              <div class="metric-row">
+                <span>Stack Frame Peak:</span>
+                <span id="metric-stack-peak" class="metric-value">0</span>
+              </div>
+              <div class="metric-row">
+                <span>Aux Heap Space Peak:</span>
+                <span id="metric-heap-peak" class="metric-value">0</span>
+              </div>
+              <div class="metric-row">
+                <span>Overall Space Complexity:</span>
+                <span id="metric-complexity" class="metric-value complexity-tag">O(1)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Profiler Insights Card -->
+          <div class="control-group">
+            <label>AI Insights</label>
+            <div class="ai-interaction-card">
+              <div class="ai-avatar-row">
+                <div class="ai-avatar">
+                  <svg viewBox="0 0 100 100" fill="none">
+                    <rect x="25" y="25" width="50" height="40" rx="10" fill="#8b5cf6" stroke="#a78bfa" stroke-width="3" />
+                    <!-- Neon visor -->
+                    <rect x="32" y="38" width="36" height="10" rx="4" fill="#06b6d4" />
+                    <!-- Visor glowing line -->
+                    <line x1="36" y1="43" x2="64" y2="43" stroke="white" stroke-width="2" />
+                    <rect x="38" y="65" width="24" height="12" fill="#1e1b4b" stroke="#a78bfa" stroke-width="2" />
+                    <!-- Antenna -->
+                    <line x1="50" y1="25" x2="50" y2="12" stroke="#a78bfa" stroke-width="3" />
+                    <polygon points="50,6 55,14 45,14" fill="#06b6d4" />
+                  </svg>
+                </div>
+                <div class="ai-meta">
+                  <span class="ai-name">Profiler-AI</span>
+                  <span class="ai-status glow-purple">Analyzing Space</span>
+                </div>
+              </div>
+              <div class="ai-dialogue" id="ai-speech">
+                Select an algorithm and N size to start trace execution. I will evaluate recursive stacks and auxiliary array heap usage.
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="editor-sandbox-area">
+          
+          <!-- Heatmap Code Card -->
+          <div class="glass-panel editor-card">
+            <div class="editor-header">
+              <div class="editor-title"><i class="fas fa-file-code"></i> execution_heatmap.js</div>
+              <div class="editor-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+            </div>
+            
+            <div class="code-container" id="editor-code-window">
+              <!-- Code lines will be populated here -->
+            </div>
+          </div>
+
+          <!-- Memory Visualizer Card -->
+          <div class="glass-panel memory-visualizer-card">
+            <div class="visualizer-header">
+              <h3><i class="fas fa-hdd"></i> Dynamic Memory Visualization</h3>
+            </div>
+            
+            <div class="memory-flex-container">
+              <!-- Call Stack visualizer -->
+              <div class="memory-column">
+                <div class="column-title"><i class="fas fa-list-ol"></i> Call Stack (Activation Records)</div>
+                <div class="stack-box-container" id="stack-frame-container">
+                  <!-- Stack blocks go here -->
+                  <div class="empty-state">Stack Empty</div>
+                </div>
+              </div>
+
+              <!-- Heap / Auxiliary Allocations -->
+              <div class="memory-column">
+                <div class="column-title"><i class="fas fa-th-large"></i> Heap Space (Auxiliary Memory)</div>
+                <div class="heap-box-container" id="heap-allocation-container">
+                  <!-- Heap element blocks go here -->
+                  <div class="empty-state">Heap Empty</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+    
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="spatial-profiler.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

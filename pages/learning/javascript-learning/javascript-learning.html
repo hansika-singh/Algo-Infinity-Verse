@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn JavaScript – Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly JavaScript tutorial covering variables, data types, operators, I/O, conditionals, loops, functions, arrays, objects, DOM, and event handling with interactive exercises." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="javascript-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="javascript-learning">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Start Your Journey With</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #f7df1e 0%, #f59820 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">JavaScript Programming</span>
+          <span class="subtitle">Beginner-Friendly Concepts, Code &amp; Practice</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_javascript" id="typingTextJavascript"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary" style="background: linear-gradient(135deg, #f7df1e 0%, #f59820 100%); border: none; color: #000; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-variables" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="40">0</span>
+            <span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="12">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- JavaScript Learning Section -->
+    <section id="javascript-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🟨</span>
+          Learn JavaScript
+        </h2>
+        <p class="section-subtitle">
+          Master the building blocks of the web with step-by-step interactive lessons
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="js-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="js-progress-text"><span id="progressCount">0</span> / 12 topics completed</span>
+          <div class="js-progress-track">
+            <div class="js-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="js-layout">
+          <!-- Sidebar Navigation -->
+          <aside class="js-sidebar" aria-label="Topic navigation">
+            <div class="js-sidebar-title">Topics</div>
+            <ul class="js-sidebar-nav" id="topicNav">
+              <li><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="#setup"><span class="nav-icon">⚙️</span> Setup &amp; Console</a></li>
+              <li><a href="#variables"><span class="nav-icon">📦</span> Variables</a></li>
+              <li><a href="#datatypes"><span class="nav-icon">🔢</span> Data Types</a></li>
+              <li><a href="#operators"><span class="nav-icon">➕</span> Operators</a></li>
+              <li><a href="#io"><span class="nav-icon">⌨️</span> Input &amp; Output</a></li>
+              <li><a href="#conditionals"><span class="nav-icon">🔀</span> Conditionals</a></li>
+              <li><a href="#loops"><span class="nav-icon">🔄</span> Loops</a></li>
+              <li><a href="#functions"><span class="nav-icon">⚡</span> Functions</a></li>
+              <li><a href="#arrays-objects"><span class="nav-icon">📋</span> Arrays &amp; Objects</a></li>
+              <li><a href="#dom"><span class="nav-icon">🎨</span> DOM Manipulation</a></li>
+              <li><a href="#events"><span class="nav-icon">🖱️</span> Event Handling</a></li>
+              <li><a href="#quiz-section"><span class="nav-icon">🧠</span> Knowledge Check</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="js-main-content" id="mainContent">
+
+            <!-- 1. Introduction -->
+            <article class="js-lesson" id="introduction" data-topic="1">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">01</span>
+                <h3>Introduction to JavaScript</h3>
+              </div>
+              <p>
+                JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programming language with first-class functions.
+                While it is most well-known as the scripting language for Web pages, many non-browser environments also use it, such as Node.js.
+              </p>
+              <div class="js-concept-card">
+                <h4>Why Learn JavaScript?</h4>
+                <ul>
+                  <li><strong>Programming for the Web</strong> – It is supported by all modern web browsers and forms the core of front-end web development.</li>
+                  <li><strong>Full-Stack Potential</strong> – Write JavaScript on both the frontend (browser) and backend (Node.js).</li>
+                  <li><strong>Rich Ecosystem</strong> – Power modern single-page applications with frameworks like React, Vue, and Angular.</li>
+                </ul>
+              </div>
+              <p>Your first JavaScript statement prints a greeting to the developers' console:</p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="console.log('Welcome to JavaScript!');">Copy</button>
+                </div>
+                <pre><code><span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Welcome to JavaScript!'</span>);</code></pre>
+              </div>
+              <div class="js-output">
+                <div class="js-output-label">Console Output</div>
+                <pre>Welcome to JavaScript!</pre>
+              </div>
+              <div class="js-callout">
+                <span class="js-callout-icon">💡</span>
+                <p>Unlike Python, JavaScript statements traditionally end with a semicolon (<code>;</code>). While optional in many cases due to Automatic Semicolon Insertion, it is considered a best practice to write them.</p>
+              </div>
+
+              <!-- Exercise 1 -->
+              <div class="js-exercise" id="exercise-intro">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Hello World
+                </div>
+                <p>Log a greeting message to the console using <code>console.log()</code>.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-intro">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-intro">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="console.log(&quot;Hello, JavaScript Learner!&quot;);">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">"Hello, JavaScript Learner!"</span>);</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Setup & Console -->
+            <article class="js-lesson" id="setup" data-topic="2">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">02</span>
+                <h3>Setup &amp; Browser Console</h3>
+              </div>
+              <p>
+                To start coding in JavaScript, you don't need any complex installation. Every web browser has a built-in JavaScript engine and a developer tool console.
+              </p>
+              <div class="js-concept-card">
+                <h4>Opening the Console</h4>
+                <ul>
+                  <li><strong>Chrome/Edge/Brave</strong>: Press <code>F12</code> or <code>Ctrl+Shift+I</code> (Windows/Linux) / <code>Cmd+Option+I</code> (macOS) and click on the "Console" tab.</li>
+                  <li><strong>Firefox</strong>: Press <code>Ctrl+Shift+K</code> (Windows/Linux) / <code>Cmd+Option+K</code> (macOS).</li>
+                  <li><strong>Safari</strong>: Enable "Develop" menu in settings, then press <code>Cmd+Option+C</code>.</li>
+                </ul>
+              </div>
+              <p>You can embed JavaScript directly inside an HTML file using the <code>&lt;script&gt;</code> tag:</p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">HTML</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="<!DOCTYPE html>
+<html>
+<head>
+  <title>My First JS Page</title>
+</head>
+<body>
+  <script>
+    console.log('Script is running!');
+  </script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">&lt;!-- Inside HTML body --&gt;</span>
+&lt;<span class="tok-kw">script</span>&gt;
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Script is running!'</span>);
+&lt;/<span class="tok-kw">script</span>&gt;</code></pre>
+              </div>
+
+              <!-- Exercise 2 -->
+              <div class="js-exercise" id="exercise-setup">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Logging Active Status
+                </div>
+                <p>Write a script statement that outputs <code>"Console is active!"</code> to verify your understanding of console logging.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-setup">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-setup">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="console.log(&quot;Console is active!&quot;);">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">"Console is active!"</span>);</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Variables -->
+            <article class="js-lesson" id="variables" data-topic="3">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">03</span>
+                <h3>Variables (let, const, var)</h3>
+              </div>
+              <p>
+                Variables are containers for storing data values. In modern JavaScript, we declare variables using three keywords: <code>let</code>, <code>const</code>, and <code>var</code>.
+              </p>
+              <div class="js-concept-card">
+                <h4>let vs const vs var</h4>
+                <ul>
+                  <li><strong>let</strong>: Block-scoped. Can be reassigned. Use when you expect the value to change.</li>
+                  <li><strong>const</strong>: Block-scoped. Blocked from reassignment. Use by default for stable values.</li>
+                  <li><strong>var</strong>: Function-scoped (legacy). Subject to hoisting anomalies. Generally avoided in modern JS.</li>
+                </ul>
+              </div>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="let score = 10;
+score = 15; // Reassignment is allowed
+
+const pi = 3.14159;
+// pi = 3.14; // Throws TypeError: Assignment to constant variable
+
+var legacyVar = 'Old Scope';">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">let</span> score = <span class="tok-num">10</span>;
+score = <span class="tok-num">15</span>; <span class="tok-cmt">// Allowed</span>
+
+<span class="tok-kw">const</span> pi = <span class="tok-num">3.14159</span>;
+<span class="tok-cmt">// pi = 3.14; // Throws Error!</span></code></pre>
+              </div>
+
+              <!-- Exercise 3 -->
+              <div class="js-exercise" id="exercise-variables">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Declaring Variables
+                </div>
+                <p>Create a mutable variable named <code>userAge</code> set to <code>20</code>, and an immutable variable named <code>countryOfBirth</code> set to <code>"India"</code>.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-variables">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-variables">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="let userAge = 20;
+const countryOfBirth = &quot;India&quot;;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">let</span> userAge = <span class="tok-num">20</span>;
+<span class="tok-kw">const</span> countryOfBirth = <span class="tok-str">"India"</span>;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Data Types -->
+            <article class="js-lesson" id="datatypes" data-topic="4">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">04</span>
+                <h3>Data Types</h3>
+              </div>
+              <p>
+                JavaScript is a dynamically typed language, meaning variables don't hold fixed types. Instead, types are associated with values.
+              </p>
+              <div class="js-table-wrap">
+                <table class="js-table" aria-label="JavaScript basic data types">
+                  <thead>
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Example</th>
+                      <th scope="col">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>String</code></td><td><code>"Alice"</code></td><td>Textual characters</td></tr>
+                    <tr><td><code>Number</code></td><td><code>42</code> or <code>3.14</code></td><td>Integers and double-precision floats</td></tr>
+                    <tr><td><code>Boolean</code></td><td><code>true</code> / <code>false</code></td><td>Logical truths</td></tr>
+                    <tr><td><code>Undefined</code></td><td><code>undefined</code></td><td>Assigned to variables without initialized value</td></tr>
+                    <tr><td><code>Null</code></td><td><code>null</code></td><td>Explicit empty or non-existent value</td></tr>
+                    <tr><td><code>BigInt</code></td><td><code>9007199254740991n</code></td><td>Arbitrary precision integers</td></tr>
+                    <tr><td><code>Object</code></td><td><code>{ id: 1 }</code></td><td>Non-primitive key-value collections</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="console.log(typeof 'Hello'); // 'string'
+console.log(typeof 42);      // 'number'
+console.log(typeof true);    // 'boolean'
+console.log(typeof null);    // 'object' (historic quirk)">Copy</button>
+                </div>
+                <pre><code><span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-kw">typeof</span> <span class="tok-str">'Hello'</span>); <span class="tok-cmt">// "string"</span>
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-kw">typeof</span> <span class="tok-num">42</span>);      <span class="tok-cmt">// "number"</span>
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-kw">typeof</span> <span class="tok-bool">true</span>);    <span class="tok-cmt">// "boolean"</span></code></pre>
+              </div>
+
+              <!-- Exercise 4 -->
+              <div class="js-exercise" id="exercise-types">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Type Checking
+                </div>
+                <p>Check the data type of the value <code>99.9</code> using the <code>typeof</code> operator.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-types">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-types">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="console.log(typeof 99.9);">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-kw">typeof</span> <span class="tok-num">99.9</span>); <span class="tok-cmt">// Outputs: "number"</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Operators -->
+            <article class="js-lesson" id="operators" data-topic="5">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">05</span>
+                <h3>Operators</h3>
+              </div>
+              <p>
+                Operators allow us to perform operations on variables and values. Essential operator types include arithmetic, assignment, comparison, and logical operators.
+              </p>
+              <div class="js-concept-card">
+                <h4>Strict Equality (===) vs Loose Equality (==)</h4>
+                <ul>
+                  <li><strong>Loose (<code>==</code>)</strong>: Performs type coercion before comparing (e.g. <code>5 == "5"</code> is <code>true</code>).</li>
+                  <li><strong>Strict (<code>===</code>)</strong>: Checks both value and type without coercion (e.g. <code>5 === "5"</code> is <code>false</code>). <strong>Always prefer strict equality.</strong></li>
+                </ul>
+              </div>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="let sum = 10 + 5; // Arithmetic
+let count = 0;
+count += 1;        // Assignment
+
+console.log(10 === '10'); // false (Strict)
+console.log(10 == '10');  // true (Loose)">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">let</span> sum = <span class="tok-num">10</span> + <span class="tok-num">5</span>;
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-num">10</span> === <span class="tok-str">'10'</span>); <span class="tok-cmt">// false</span>
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-num">10</span> == <span class="tok-str">'10'</span>);  <span class="tok-cmt">// true</span></code></pre>
+              </div>
+
+              <!-- Exercise 5 -->
+              <div class="js-exercise" id="exercise-operators">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Calculations
+                </div>
+                <p>Calculate the area of a rectangle with a width of <code>8</code> and length of <code>12</code>, storing it in a variable named <code>area</code>.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-operators">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-operators">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="const width = 8;
+const length = 12;
+const area = width * length;
+console.log(area); // 96">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">const</span> width = <span class="tok-num">8</span>;
+<span class="tok-kw">const</span> length = <span class="tok-num">12</span>;
+<span class="tok-kw">const</span> area = width * length;
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(area); <span class="tok-cmt">// 96</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Input & Output -->
+            <article class="js-lesson" id="io" data-topic="6">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">06</span>
+                <h3>Input and Output</h3>
+              </div>
+              <p>
+                While <code>console.log()</code> is perfect for developers, browsers support other built-in dialog functions for interacting with standard users: <code>alert()</code> and <code>prompt()</code>.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="// Display an alert modal
+alert('Welcome to Algo Infinity!');
+
+// Ask for user input (returns a string or null)
+let userName = prompt('What is your name?');
+if (userName) {
+  console.log('Hello, ' + userName);
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-fn">alert</span>(<span class="tok-str">'Welcome to Algo Infinity!'</span>);
+
+<span class="tok-kw">let</span> userName = <span class="tok-fn">prompt</span>(<span class="tok-str">'What is your name?'</span>);
+<span class="tok-kw">if</span> (userName) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Hello, '</span> + userName);
+}</code></pre>
+              </div>
+              <div class="js-callout">
+                <span class="js-callout-icon">⚠️</span>
+                <p>Both <code>alert()</code> and <code>prompt()</code> block the main thread and pause browser interaction. Use them sparingly or design custom HTML dialog forms for modern UI layouts.</p>
+              </div>
+
+              <!-- Exercise 6 -->
+              <div class="js-exercise" id="exercise-io">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: User Prompt
+                </div>
+                <p>Prompt the user for their favorite programming language and alert it back to them.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-io">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-io">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="let favLang = prompt(&quot;What is your favorite language?&quot;);
+if (favLang) {
+  alert(&quot;You like &quot; + favLang + &quot;!&quot;);
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">let</span> favLang = <span class="tok-fn">prompt</span>(<span class="tok-str">"What is your favorite language?"</span>);
+<span class="tok-kw">if</span> (favLang) {
+  <span class="tok-fn">alert</span>(<span class="tok-str">"You like "</span> + favLang + <span class="tok-str">"!"</span>);
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Conditional Statements -->
+            <article class="js-lesson" id="conditionals" data-topic="7">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">07</span>
+                <h3>Conditional Statements</h3>
+              </div>
+              <p>
+                Conditionals direct execution flow by testing logic states. JavaScript supports <code>if</code>, <code>else if</code>, <code>else</code>, and <code>switch</code> blocks.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="let score = 85;
+
+if (score >= 90) {
+  console.log('Grade: A');
+} else if (score >= 80) {
+  console.log('Grade: B');
+} else {
+  console.log('Grade: F');
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">let</span> score = <span class="tok-num">85</span>;
+<span class="tok-kw">if</span> (score &gt;= <span class="tok-num">90</span>) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Grade: A'</span>);
+} <span class="tok-kw">else</span> <span class="tok-kw">if</span> (score &gt;= <span class="tok-num">80</span>) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Grade: B'</span>);
+} <span class="tok-kw">else</span> {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Grade: F'</span>);
+}</code></pre>
+              </div>
+
+              <!-- Exercise 7 -->
+              <div class="js-exercise" id="exercise-conditionals">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Even or Odd
+                </div>
+                <p>Write an <code>if/else</code> condition that logs <code>"Even"</code> if a variable <code>num</code> is even, or <code>"Odd"</code> otherwise.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-conditionals">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-conditionals">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="let num = 17;
+if (num % 2 === 0) {
+  console.log(&quot;Even&quot;);
+} else {
+  console.log(&quot;Odd&quot;);
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">let</span> num = <span class="tok-num">17</span>;
+<span class="tok-kw">if</span> (num % <span class="tok-num">2</span> === <span class="tok-num">0</span>) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">"Even"</span>);
+} <span class="tok-kw">else</span> {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">"Odd"</span>);
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. Loops -->
+            <article class="js-lesson" id="loops" data-topic="8">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">08</span>
+                <h3>Loops (for, while, for...of)</h3>
+              </div>
+              <p>
+                Loops repeat execution. JavaScript features standard <code>for</code> index loops, conditional <code>while</code> loops, and collection-centric <code>for...of</code> loops.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="// Classic for loop
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// for...of loop for arrays
+const colors = ['red', 'green', 'blue'];
+for (const color of colors) {
+  console.log(color);
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// Classic loop</span>
+<span class="tok-kw">for</span> (<span class="tok-kw">let</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">5</span>; i++) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(i);
+}
+
+<span class="tok-cmt">// for...of loop</span>
+<span class="tok-kw">const</span> colors = [<span class="tok-str">'red'</span>, <span class="tok-str">'green'</span>, <span class="tok-str">'blue'</span>];
+<span class="tok-kw">for</span> (<span class="tok-kw">const</span> color <span class="tok-kw">of</span> colors) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(color);
+}</code></pre>
+              </div>
+
+              <!-- Exercise 8 -->
+              <div class="js-exercise" id="exercise-loops">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Count to Ten
+                </div>
+                <p>Write a loop that logs numbers from <code>1</code> to <code>10</code> to the console.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-loops">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-loops">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="for (let i = 1; i <= 10; i++) {
+  console.log(i);
+}">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">for</span> (<span class="tok-kw">let</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">10</span>; i++) {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(i);
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 9. Functions -->
+            <article class="js-lesson" id="functions" data-topic="9">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">09</span>
+                <h3>Functions and Arrow Functions</h3>
+              </div>
+              <p>
+                Functions package modular blocks of code. JavaScript supports standard declarations as well as ES6 concise arrow functions (<code>() => {}</code>).
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="// Traditional function declaration
+function add(a, b) {
+  return a + b;
+}
+
+// Arrow function expression
+const multiply = (a, b) => a * b;
+
+console.log(add(5, 3));      // 8
+console.log(multiply(4, 5)); // 20">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// Traditional function</span>
+<span class="tok-kw">function</span> <span class="tok-fn">add</span>(a, b) {
+  <span class="tok-kw">return</span> a + b;
+}
+
+<span class="tok-cmt">// ES6 Arrow function</span>
+<span class="tok-kw">const</span> <span class="tok-fn">multiply</span> = (a, b) =&gt; a * b;</code></pre>
+              </div>
+
+              <!-- Exercise 9 -->
+              <div class="js-exercise" id="exercise-functions">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Square Function
+                </div>
+                <p>Create an arrow function named <code>square</code> that accepts a single number and returns its squared value.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-functions">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-functions">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="const square = (n) => n * n;
+console.log(square(5)); // 25">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">const</span> <span class="tok-fn">square</span> = (n) =&gt; n * n;
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-fn">square</span>(<span class="tok-num">5</span>)); <span class="tok-cmt">// 25</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 10. Arrays & Objects -->
+            <article class="js-lesson" id="arrays-objects" data-topic="10">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">10</span>
+                <h3>Arrays and Objects</h3>
+              </div>
+              <p>
+                Arrays represent ordered indexed lists, and Objects represent keyed collection dictionaries. They are the key structures for managing complex application data states.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="// Array
+const fruits = ['apple', 'banana'];
+fruits.push('orange'); // Append
+console.log(fruits[0]); // 'apple'
+
+// Object
+const user = {
+  name: 'Alice',
+  age: 25,
+  greet() {
+    return 'Hi ' + this.name;
+  }
+};
+console.log(user.name); // Dot notation
+console.log(user['age']); // Bracket notation">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// Array setup</span>
+<span class="tok-kw">const</span> fruits = [<span class="tok-str">'apple'</span>, <span class="tok-str">'banana'</span>];
+fruits.<span class="tok-fn">push</span>(<span class="tok-str">'orange'</span>);
+
+<span class="tok-cmt">// Object setup</span>
+<span class="tok-kw">const</span> user = {
+  name: <span class="tok-str">'Alice'</span>,
+  age: <span class="tok-num">25</span>
+};
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(user.name);</code></pre>
+              </div>
+
+              <!-- Exercise 10 -->
+              <div class="js-exercise" id="exercise-collections">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Object Attributes
+                </div>
+                <p>Create an object representing a <code>car</code> with properties <code>brand</code>, <code>model</code>, and <code>year</code>. Log the <code>model</code> value.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-collections">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-collections">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="const car = {
+  brand: &quot;Tesla&quot;,
+  model: &quot;Model 3&quot;,
+  year: 2023
+};
+console.log(car.model); // &quot;Model 3&quot;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-kw">const</span> car = {
+  brand: <span class="tok-str">"Tesla"</span>,
+  model: <span class="tok-str">"Model 3"</span>,
+  year: <span class="tok-num">2023</span>
+};
+<span class="tok-bi">console</span>.<span class="tok-fn">log</span>(car.model);</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 11. DOM Manipulation -->
+            <article class="js-lesson" id="dom" data-topic="11">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">11</span>
+                <h3>DOM Manipulation Basics</h3>
+              </div>
+              <p>
+                The Document Object Model (DOM) is the programming interface for web documents. It represents the page structure so that programs can change document structure, style, and content.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="// Select element by ID
+const element = document.getElementById('my-heading');
+
+// Change text content
+element.textContent = 'Updated Title!';
+
+// Change CSS styles
+element.style.color = '#7c3aed';
+
+// Select first match using CSS selector syntax
+const button = document.querySelector('.btn-primary');">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// DOM Selection &amp; Update</span>
+<span class="tok-kw">const</span> title = <span class="tok-bi">document</span>.<span class="tok-fn">getElementById</span>(<span class="tok-str">'my-title'</span>);
+title.textContent = <span class="tok-str">'Hello, Interactive DOM!'</span>;
+title.style.color = <span class="tok-str">'#7c3aed'</span>;</code></pre>
+              </div>
+
+              <!-- Exercise 11 -->
+              <div class="js-exercise" id="exercise-dom">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Modifying Content
+                </div>
+                <p>Write a JS statement to select an element with the ID <code>main-heading</code> and change its text content to <code>"Welcome to JavaScript!"</code>.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-dom">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-dom">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="document.getElementById(&quot;main-heading&quot;).textContent = &quot;Welcome to JavaScript!&quot;;">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-bi">document</span>.<span class="tok-fn">getElementById</span>(<span class="tok-str">"main-heading"</span>).textContent = <span class="tok-str">"Welcome to JavaScript!"</span>;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 12. Event Handling -->
+            <article class="js-lesson" id="events" data-topic="12">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">12</span>
+                <h3>Event Handling Basics</h3>
+              </div>
+              <p>
+                JavaScript reacts to user interactions via events. By registering event listeners using <code>addEventListener()</code>, elements trigger functions on click, input, submit, and more.
+              </p>
+              <div class="js-code-block">
+                <div class="js-code-header">
+                  <span class="js-code-lang">JavaScript</span>
+                  <button class="js-code-copy" aria-label="Copy code" data-code="const btn = document.querySelector('#action-btn');
+
+btn.addEventListener('click', (event) => {
+  console.log('Button was clicked!');
+  // event.preventDefault(); // Prevents default browser behaviors (e.g. form submission)
+});">Copy</button>
+                </div>
+                <pre><code><span class="tok-cmt">// Event registration</span>
+<span class="tok-kw">const</span> btn = <span class="tok-bi">document</span>.<span class="tok-fn">querySelector</span>(<span class="tok-str">'#action-btn'</span>);
+btn.<span class="tok-fn">addEventListener</span>(<span class="tok-str">'click'</span>, (event) =&gt; {
+  <span class="tok-bi">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">'Button clicked!'</span>);
+});</code></pre>
+              </div>
+
+              <!-- Exercise 12 -->
+              <div class="js-exercise" id="exercise-events">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Click Listener
+                </div>
+                <p>Register a click event listener on a button with ID <code>"submit-btn"</code> that alerts <code>"Form Submitted!"</code>.</p>
+                <button class="js-exercise-toggle" aria-expanded="false" aria-controls="solution-events">Show Solution</button>
+                <div class="js-exercise-solution" id="solution-events">
+                  <div class="js-code-block">
+                    <div class="js-code-header">
+                      <span class="js-code-lang">JavaScript</span>
+                      <button class="js-code-copy" aria-label="Copy code" data-code="document.getElementById(&quot;submit-btn&quot;).addEventListener(&quot;click&quot;, () => {
+  alert(&quot;Form Submitted!&quot;);
+});">Copy</button>
+                    </div>
+                    <pre><code><span class="tok-bi">document</span>.<span class="tok-fn">getElementById</span>(<span class="tok-str">"submit-btn"</span>).<span class="tok-fn">addEventListener</span>(<span class="tok-str">"click"</span>, () =&gt; {
+  <span class="tok-fn">alert</span>(<span class="tok-str">"Form Submitted!"</span>);
+});</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 13. Knowledge Check Quiz -->
+            <article class="js-lesson" id="quiz-section" data-topic="13">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">13</span>
+                <h3>Knowledge Check</h3>
+              </div>
+              <p>
+                Test your understanding of the concepts covered in this JavaScript tutorial. Good luck!
+              </p>
+              
+              <div id="js-quiz-container"></div>
+            </article>
+
+          </main>
+        </div><!-- /.js-layout -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script type="module" src="./javascript-learning.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

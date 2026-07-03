@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suffix Automaton Explorer | Algo Infinity Verse</title>
+    <meta name="description" content="Watch a suffix automaton build online, state by state, with clone-state visualization, suffix links, substring queries, and linear-time LCS." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="suffix-automaton-explorer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="suffix-automaton-explorer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="sae-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="sae-hero-inner">
+        <div class="sae-hero-eyebrow">🧬 The String Structure Nobody Teaches</div>
+        <h1 class="sae-hero-title">Suffix Automaton Explorer</h1>
+        <p class="sae-hero-sub">O(n) states. ALL substrings. The most underrated structure in string algorithms.</p>
+        <p class="sae-hero-desc">Suffix Trees get all the textbook coverage, but Suffix Automatons are smaller, simpler to build online, and implicitly represent every single substring of a string in just O(n) states. Watch Blumer's algorithm build one character by character — including the tricky "clone state" case that trips up every implementation.</p>
+        <a href="#lab" class="btn btn-primary sae-btn-primary">
+          <i class="fas fa-diagram-project"></i> Build One
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section sae-section">
+      <div class="container">
+
+        <!-- Mode tabs -->
+        <div class="sae-mode-tabs">
+          <button class="sae-mode-tab active" data-mode="build">
+            <i class="fas fa-hammer"></i> Build & Explore
+          </button>
+          <button class="sae-mode-tab" data-mode="query">
+            <i class="fas fa-magnifying-glass"></i> Substring Query
+          </button>
+          <button class="sae-mode-tab" data-mode="lcs">
+            <i class="fas fa-link"></i> LCS Mode
+          </button>
+        </div>
+
+        <!-- Build & Explore panel -->
+        <div class="sae-panel active" id="saePanelBuild">
+
+          <div class="sae-control-card">
+            <div class="sae-row">
+              <span class="sae-row-label">String</span>
+              <input type="text" id="saeInputString" class="sae-text-input" value="abcbc" maxlength="14" aria-label="Input string" />
+              <div class="sae-preset-btns">
+                <button class="sae-preset-btn" data-str="abcbc">abcbc</button>
+                <button class="sae-preset-btn" data-str="banana">banana</button>
+                <button class="sae-preset-btn" data-str="aabaa">aabaa</button>
+                <button class="sae-preset-btn" data-str="abcabcabc">abcabcabc</button>
+              </div>
+            </div>
+            <div class="sae-row">
+              <button class="btn sae-btn-primary sae-build-btn" id="saeBuildBtn">
+                <i class="fas fa-play"></i> Build Online
+              </button>
+              <button class="btn btn-secondary sae-step-btn" id="saeStepBtn" disabled>
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+              <button class="btn btn-secondary sae-reset-btn" id="saeResetBtn">
+                <i class="fas fa-undo"></i> Reset
+              </button>
+              <label class="sae-toggle-label">
+                <input type="checkbox" id="saeShowLinks" class="sae-check" checked />
+                Show suffix links
+              </label>
+              <div class="sae-char-ctr">Char <span id="saeCharNum">0</span>/<span id="saeCharTotal">0</span></div>
+            </div>
+          </div>
+
+          <div class="sae-status" id="saeStatus">Type a string and click Build Online to watch the automaton construct itself character by character.</div>
+
+          <!-- Graph + stats layout -->
+          <div class="sae-build-layout">
+
+            <div class="sae-graph-section">
+              <div class="sae-graph-header">
+                <span class="sae-graph-title"><i class="fas fa-diagram-project"></i> Automaton State Diagram</span>
+              </div>
+              <div class="sae-graph-wrap" id="saeGraphWrap">
+                <svg id="saeSvg" class="sae-svg"></svg>
+              </div>
+              <div class="sae-graph-legend">
+                <span class="sae-leg"><span class="sae-leg-dot sae-leg-normal"></span>Normal state</span>
+                <span class="sae-leg"><span class="sae-leg-dot sae-leg-clone"></span>Clone state</span>
+                <span class="sae-leg"><span class="sae-leg-dot sae-leg-active"></span>Just created/updated</span>
+                <span class="sae-leg"><span class="sae-leg-line sae-leg-trans"></span>Transition (solid)</span>
+                <span class="sae-leg"><span class="sae-leg-line sae-leg-link"></span>Suffix link (dashed)</span>
+              </div>
+            </div>
+
+            <div class="sae-stats-panel">
+              <div class="sae-stat-card">
+                <div class="sae-stat-title"><i class="fas fa-chart-simple"></i> Live Stats</div>
+                <div class="sae-stat-row"><span>States created</span><span id="saeStateCount">1</span></div>
+                <div class="sae-stat-row"><span>Clone states</span><span id="saeCloneCount">0</span></div>
+                <div class="sae-stat-row"><span>Distinct substrings</span><span id="saeDistinctCount">0</span></div>
+                <div class="sae-stat-row sae-compare-row"><span>Naive substring count (n²)</span><span id="saeNaiveCount">0</span></div>
+              </div>
+
+              <div class="sae-stat-card">
+                <div class="sae-stat-title"><i class="fas fa-info-circle"></i> Wow Fact</div>
+                <p class="sae-wow-text">A suffix automaton built on a string of length n has <strong>at most 2n−1 states</strong>, yet represents <strong>all O(n²) possible substrings</strong> implicitly through path traversal. This automaton currently has <span id="saeWowStateCount">1</span> state(s) representing <span id="saeWowDistinctCount">0</span> distinct substring(s).</p>
+              </div>
+
+              <div class="sae-stat-card">
+                <div class="sae-stat-title"><i class="fas fa-list-ol"></i> Construction Log</div>
+                <div class="sae-log" id="saeLog">
+                  <div class="sae-log-empty">No construction yet.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Query panel -->
+        <div class="sae-panel" id="saePanelQuery">
+          <div class="sae-control-card">
+            <div class="sae-row">
+              <span class="sae-row-label">Built on string</span>
+              <span class="sae-built-on" id="saeQueryBuiltOn">— (build a string first in Build &amp; Explore tab)</span>
+            </div>
+            <div class="sae-row">
+              <span class="sae-row-label">Query substring</span>
+              <input type="text" id="saeQueryInput" class="sae-text-input" placeholder="type a substring to test" maxlength="14" aria-label="Query substring" />
+              <button class="btn sae-btn-primary sae-query-run-btn" id="saeQueryRunBtn">
+                <i class="fas fa-search"></i> Check Membership
+              </button>
+            </div>
+          </div>
+
+          <div class="sae-status" id="saeQueryStatus">Build a string in the "Build & Explore" tab first, then test any substring here.</div>
+
+          <div class="sae-graph-section">
+            <div class="sae-graph-header">
+              <span class="sae-graph-title"><i class="fas fa-route"></i> Query Traversal</span>
+            </div>
+            <div class="sae-graph-wrap" id="saeQueryGraphWrap">
+              <svg id="saeQuerySvg" class="sae-svg"></svg>
+            </div>
+          </div>
+
+          <div class="sae-query-result hidden" id="saeQueryResult"></div>
+        </div>
+
+        <!-- LCS panel -->
+        <div class="sae-panel" id="saePanelLcs">
+          <div class="sae-control-card">
+            <div class="sae-row">
+              <span class="sae-row-label">String A (builds automaton)</span>
+              <input type="text" id="saeLcsA" class="sae-text-input" value="abcbcdef" maxlength="16" aria-label="String A" />
+            </div>
+            <div class="sae-row">
+              <span class="sae-row-label">String B (streamed through)</span>
+              <input type="text" id="saeLcsB" class="sae-text-input" value="xyzbcdq" maxlength="16" aria-label="String B" />
+            </div>
+            <div class="sae-row">
+              <button class="btn sae-btn-primary sae-lcs-run-btn" id="saeLcsRunBtn">
+                <i class="fas fa-bolt"></i> Find LCS in O(n+m)
+              </button>
+            </div>
+          </div>
+
+          <div class="sae-status" id="saeLcsStatus">Build automaton on String A, then stream String B through it character by character to find the Longest Common Substring in linear time.</div>
+
+          <div class="sae-lcs-result hidden" id="saeLcsResult">
+            <div class="sae-lcs-strings">
+              <div class="sae-lcs-string-row" id="saeLcsARow"></div>
+              <div class="sae-lcs-string-row" id="saeLcsBRow"></div>
+            </div>
+            <div class="sae-lcs-answer" id="saeLcsAnswer"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How It Works</h2>
+        <div class="sae-learn-grid">
+          <div class="sae-learn-card">
+            <div class="sae-learn-num">01</div>
+            <h3>Online Construction</h3>
+            <p>Unlike suffix trees (often built via complex offline algorithms like Ukkonen's), the suffix automaton extends naturally one character at a time. Each new character either extends existing states or triggers a <strong>clone</strong> when a transition's length doesn't match exactly.</p>
+          </div>
+          <div class="sae-learn-card">
+            <div class="sae-learn-num">02</div>
+            <h3>The Clone State</h3>
+            <p>When following suffix links during extension, if we hit a state whose length doesn't fit (len[p]+1 ≠ len[q]), we <strong>clone</strong> that state — splitting it into a shorter version. This is the single trickiest part of the algorithm, and this tool animates it explicitly.</p>
+          </div>
+          <div class="sae-learn-card">
+            <div class="sae-learn-num">03</div>
+            <h3>Counting All Substrings</h3>
+            <p>Every state represents a range of substring lengths [len[link]+1, len[state]] that all end at the same set of positions. Summing (len[state] − len[link[state]]) over all states gives the exact count of distinct substrings — in O(n) states, not O(n²) substrings.</p>
+          </div>
+          <div class="sae-learn-card">
+            <div class="sae-learn-num">04</div>
+            <h3>Linear-Time LCS</h3>
+            <p>Build the automaton once on string A. Stream string B through it: follow transitions when possible, fall back via suffix links on mismatch. Track the longest match length at any point — that's the LCS, found in O(|A|+|B|) total.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="suffix-automaton-explorer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>
