@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplayer Architecture | Algo Infinity Verse</title>
+    <meta name="description" content="Real-time collaborative System Design whiteboard using CRDTs and WebRTC." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="CRDT-Whiteboard.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="crdt-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="network-status" id="networkStatus" aria-live="polite">
+            <div class="status-dot"></div>
+            Connecting to Swarm...
+        </div>
+    </nav>
+
+    <!-- Toolbar -->
+    <div class="workspace-toolbar">
+        <div class="toolbar-left">
+            <div class="room-link-container">
+                <span class="room-label">Live Session ID:</span>
+                <code id="roomIdDisplay">...</code>
+                <button id="btnCopyLink" class="btn-icon" type="button" title="Copy Invite Link"><i class="fas fa-link"></i> Invite</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <div class="participants-group">
+                <span class="participants-label"><i class="fas fa-users"></i> Online:</span>
+                <div class="participants-list" id="participantsList">
+                    <!-- Avatars injected by Yjs Awareness -->
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm" id="btnClearBoard" type="button"><i class="fas fa-trash-alt"></i> Clear Board</button>
+        </div>
+    </div>
+
+    <div class="crdt-app-container">
+        <!-- Sidebar Palette -->
+        <aside class="crdt-sidebar" aria-label="Component palette">
+            <div class="sidebar-header">
+                <i class="fas fa-server"></i> Components
+            </div>
+            <div class="palette-container" id="palette">
+                <div class="palette-item" draggable="true" data-type="client" data-color="#3b82f6" data-icon="fa-laptop" style="--item-color: #3b82f6;">
+                    <i class="fas fa-laptop"></i> Client
+                </div>
+                <div class="palette-item" draggable="true" data-type="server" data-color="#10b981" data-icon="fa-server" style="--item-color: #10b981;">
+                    <i class="fas fa-server"></i> Web Server
+                </div>
+                <div class="palette-item" draggable="true" data-type="database" data-color="#f59e0b" data-icon="fa-database" style="--item-color: #f59e0b;">
+                    <i class="fas fa-database"></i> Database
+                </div>
+                <div class="palette-item" draggable="true" data-type="cache" data-color="#ec4899" data-icon="fa-bolt" style="--item-color: #ec4899;">
+                    <i class="fas fa-bolt"></i> Cache
+                </div>
+                <div class="palette-item" draggable="true" data-type="lb" data-color="#8b5cf6" data-icon="fa-network-wired" style="--item-color: #8b5cf6;">
+                    <i class="fas fa-network-wired"></i> Load Balancer
+                </div>
+                <div class="palette-item" draggable="true" data-type="queue" data-color="#14b8a6" data-icon="fa-layer-group" style="--item-color: #14b8a6;">
+                    <i class="fas fa-layer-group"></i> Message Queue
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Drafting Board -->
+        <main class="crdt-workspace" id="workspace" aria-label="Collaborative whiteboard canvas">
+            
+            <!-- Connection Lines Layer -->
+            <svg class="connections-layer" id="connectionLayer" aria-hidden="true">
+                <path class="temp-connection hidden" id="tempLine" d="M0,0 L0,0"></path>
+                <!-- Permanent CRDT lines injected here -->
+            </svg>
+            
+            <!-- Nodes Layer -->
+            <div class="nodes-layer" id="nodesLayer" aria-label="Whiteboard components"></div>
+
+            <!-- Remote Cursors Layer (Awareness) -->
+            <div class="cursors-layer" id="cursorsLayer" aria-hidden="true">
+                <!-- Remote cursors injected here -->
+            </div>
+
+            <div class="workspace-hint" aria-hidden="true">
+                <span><i class="fas fa-hand-pointer"></i> Drag components</span>
+                <span><i class="fas fa-bezier-curve"></i> Connect ports</span>
+                <span><i class="fas fa-mouse-pointer"></i> Click line to delete</span>
+                <span><i class="fas fa-trash-alt"></i> Double-click node to delete</span>
+            </div>
+
+            <div class="workspace-placeholder" id="workspacePlaceholder">
+                <i class="fas fa-project-diagram"></i>
+                <h2>Multiplayer System Design</h2>
+                <p>Drag components here. Anyone with the link can edit simultaneously.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Main Logic as an ES Module (Required for Yjs) -->
+    <script type="module" src="crdt-whiteboard.js"></script>
+</body>
+</html>

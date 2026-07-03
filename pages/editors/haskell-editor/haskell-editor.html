@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haskell Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="haskell-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="haskell-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero hs-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write Haskell.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #5e5086 0%, #ab9dcf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser Haskell Editor</span>
+        </h1>
+      </div>
+    </section>
+
+    <main class="editor-container">
+      <div class="editor-wrapper">
+        <div class="editor-header">
+          <div class="editor-info">
+            <i class="fas fa-lambda" style="color: #ab9dcf;"></i>
+            <span id="hsActiveFileName">Main.hs</span>
+            <span id="hsStatusBadge" class="hs-status-badge hs-status-ready">Ready</span>
+          </div>
+          <div class="editor-actions">
+            <select id="hsExampleSelect" class="hs-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Functions</option>
+              <option value="recursion">Recursion & Lists</option>
+              <option value="modules">Modules & Imports</option>
+              <option value="datatypes">Algebraic Data Types</option>
+            </select>
+            <button id="hsCopyBtn" class="hs-icon-btn" title="Copy Code" aria-label="Copy Code"><i class="fas fa-copy"></i></button>
+            <button id="hsSaveBtn" class="hs-icon-btn" title="Save Project" aria-label="Save Project"><i class="fas fa-save"></i></button>
+            <button id="hsResetBtn" class="hs-icon-btn hs-reset-btn" title="Reset Editor" aria-label="Reset Editor"><i class="fas fa-undo"></i></button>
+            <button id="hsRunBtn" class="hs-run-btn"><i class="fas fa-play"></i> Run Code</button>
+          </div>
+        </div>
+
+        <div class="editor-main">
+          <!-- File Explorer Sidebar -->
+          <aside class="file-explorer">
+            <div class="explorer-header">
+              <span><i class="fas fa-folder-open"></i> FILES</span>
+              <button id="hsNewFileBtn" class="explorer-action-btn" title="New File" aria-label="New File">
+                <i class="fas fa-file-circle-plus"></i>
+              </button>
+            </div>
+            <div id="hsFileList" class="file-list">
+              <!-- Dynamically populated -->
+            </div>
+          </aside>
+
+          <!-- Code Editor Workspace -->
+          <div class="code-editor-workspace">
+            <div class="code-editor">
+              <div class="line-numbers" id="hsLineNumbers">1</div>
+              <textarea id="hsEditor" class="code-textarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Haskell code editor" placeholder="-- Write your Haskell code here..."></textarea>
+              <div class="syntax-highlight" id="hsHighlight"></div>
+            </div>
+            <div class="editor-shortcuts">
+              <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run Code</span>
+              <span><kbd>Ctrl</kbd>+<kbd>S</kbd> Save Project</span>
+              <span><kbd>Tab</kbd> Indent (4 Spaces)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <i class="fas fa-terminal" style="color: #ab9dcf;"></i>
+            <span>Standard Output</span>
+          </div>
+          <div id="hsOutputBody" class="panel-body">
+            <span class="hs-output-placeholder">Output will appear here after running...</span>
+          </div>
+        </div>
+
+        <div class="panel console-panel">
+          <div class="panel-header">
+            <i class="fas fa-exclamation-triangle" style="color: #ea580c;"></i>
+            <span>GHC Compiler / Type Errors</span>
+            <button id="hsConsoleClear" class="console-clear-btn" title="Clear Console" aria-label="Clear Console"><i class="fas fa-trash-alt"></i></button>
+          </div>
+          <div id="hsConsoleBody" class="panel-body">
+            <span class="hs-console-placeholder">No compilation errors.</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="haskell-editor.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+  </body>
+</html>

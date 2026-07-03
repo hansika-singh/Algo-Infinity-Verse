@@ -1,0 +1,136 @@
+/* Containerization & OS Virtualization Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Docker Theme */
+    --dk-primary: #2496ed; /* Docker Blue */
+    --dk-primary-hover: #1b7bc6;
+    --dk-host: #8b5cf6; /* Violet */
+    --dk-success: #10b981;
+    --dk-warning: #f59e0b;
+    --dk-danger: #ef4444; /* OOM Red */
+    
+    --panel-bg: #0b1121;
+}
+
+body.docker-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.docker-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--dk-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--dk-primary); background: rgba(36, 150, 237, 0.1); border: 1px solid rgba(36, 150, 237, 0.3); padding: 0.4rem 1rem; border-radius: 99px; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Buttons & Inputs */
+.btn { padding: 0.8rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--dk-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--dk-primary-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(36, 150, 237, 0.3); }
+.btn-warning { background: rgba(245, 158, 11, 0.1); color: var(--dk-warning); border: 1px solid var(--dk-warning); }
+.btn-warning:hover:not(:disabled) { background: var(--dk-warning); color: #000; }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--dk-danger); border: 1px solid var(--dk-danger); }
+.btn-danger:hover:not(:disabled) { background: var(--dk-danger); color: #fff; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+.btn-outline { background: #1e293b; border: 1px solid #334155; color: #fff; }
+.btn-outline:hover:not(:disabled) { background: #334155; border-color: #475569; }
+.btn-outline-danger { background: transparent; border: 1px solid var(--dk-danger); color: var(--dk-danger); }
+.btn-outline-danger:hover:not(:disabled) { background: rgba(239, 68, 68, 0.1); }
+.w-100 { width: 100%; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.hidden { display: none !important; }
+.text-accent { color: var(--dk-primary); font-family: 'Fira Code', monospace; }
+
+code { background: rgba(0,0,0,0.3); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+
+/* Workspace Layout */
+.docker-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Panel Basics */
+.panel-host { width: 35%; display: flex; flex-direction: column; background: #080b14; border-right: 1px solid var(--glass-border); z-index: 10; overflow-y: auto;}
+.panel-control { width: 25%; display: flex; flex-direction: column; background: var(--panel-bg); border-right: 1px solid var(--glass-border); z-index: 10; }
+.panel-container { width: 40%; display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(36, 150, 237, 0.05) 0%, #020617 80%); position: relative; overflow-y: auto;}
+
+.panel-header { padding: 1rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;}
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Host Panel Specifics */
+.host-badge { background: rgba(139, 92, 246, 0.1); color: var(--dk-host); border: 1px solid rgba(139, 92, 246, 0.3); padding: 0.2rem 0.6rem; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: bold; }
+.host-telemetry { padding: 1.5rem; background: rgba(139, 92, 246, 0.02); border-bottom: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 0.8rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #cbd5e1; }
+.hw-spec i { width: 20px; color: var(--text-secondary); text-align: center; }
+.veth-list { margin-top: 0.5rem; padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; color: #94a3b8; }
+.veth-item { display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease; }
+.veth-item i { color: var(--dk-primary); font-size: 0.7rem; }
+
+/* Process Tables */
+.process-table-container { padding: 1.5rem; flex: 1; overflow-y: auto; }
+.process-table-container h4 { margin: 0 0 1rem; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; }
+.os-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.8rem; text-align: left; }
+.os-table th { background: #1e293b; color: #f8fafc; padding: 0.6rem 0.8rem; position: sticky; top: 0; border-bottom: 1px solid #334155; }
+.os-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+.os-table tr.container-proc td { background: rgba(36, 150, 237, 0.05); }
+.os-table tr.oom-killed td { background: rgba(239, 68, 68, 0.2); color: #fca5a5; text-decoration: line-through; animation: flashOOM 0.5s ease; }
+.pid-tag { color: var(--dk-host); font-weight: bold; }
+.container-proc .pid-tag { color: var(--dk-primary); }
+
+@keyframes flashOOM { 0% { background: rgba(239, 68, 68, 0.8); } 100% { background: rgba(239, 68, 68, 0.2); } }
+@keyframes slideIn { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* Kernel Logs */
+.kernel-logs { height: 180px; background: #000; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; }
+.kernel-logs h4 { margin: 0; padding: 0.8rem 1.5rem; font-size: 0.8rem; color: #64748b; background: #0f172a; border-bottom: 1px solid #1e293b; font-family: 'Fira Code', monospace; }
+.log-container { flex: 1; padding: 1rem; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.75rem; display: flex; flex-direction: column; gap: 0.3rem; }
+.log-line { color: #94a3b8; }
+.log-line.sys { color: #475569; }
+.log-line.info { color: var(--dk-primary); }
+.log-line.warn { color: var(--dk-warning); }
+.log-line.oom { color: var(--dk-danger); font-weight: bold; }
+
+/* Center Panel (CLI) */
+.control-section { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.desc-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+.cli-card { background: rgba(255,255,255,0.02); border: 1px solid #1e293b; padding: 1.5rem; border-radius: 8px; transition: opacity 0.3s; }
+.cli-card h4 { margin: 0 0 1rem; font-size: 0.95rem; color: #fff; font-family: 'Orbitron', sans-serif; }
+.input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group input[type="range"] { accent-color: var(--dk-primary); cursor: pointer; background: #334155; height: 6px; border-radius: 3px; outline: none; margin-top: 0.5rem; }
+.range-val { font-family: 'Fira Code', monospace; font-size: 1rem; color: var(--dk-primary); font-weight: bold; text-align: right; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+/* Right Panel (Container) */
+.container-select { background: #1e293b; border: 1px solid var(--dk-primary); color: #fff; padding: 0.4rem 1rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85rem; outline: none; cursor: pointer; }
+.empty-state { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #475569; pointer-events: none; }
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; color: var(--dk-primary); }
+
+#containerWorkspace { padding: 1.5rem; display: flex; flex-direction: column; height: 100%; animation: slideIn 0.3s ease; }
+.namespace-info { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.ns-badge { background: rgba(36, 150, 237, 0.1); border: 1px dashed rgba(36, 150, 237, 0.4); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8rem; color: #cbd5e1; display: flex; align-items: center; gap: 0.5rem; font-family: 'Fira Code', monospace; }
+.ns-badge i { color: var(--dk-primary); }
+
+.cgroup-dashboard { background: #020617; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 12px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+.cgroup-dashboard h4 { margin: 0 0 1rem; font-size: 0.9rem; color: #fff; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 0.5rem; }
+.cgroup-stats { display: flex; justify-content: space-between; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.cgroup-stats strong { color: #fff; font-size: 1rem; }
+.cgroup-bar-bg { width: 100%; height: 10px; background: #1e293b; border-radius: 99px; overflow: hidden; border: 1px solid #334155; }
+.cgroup-bar-fill { height: 100%; width: 0%; background: var(--dk-success); transition: width 0.3s ease, background-color 0.3s ease; }
+.cgroup-bar-fill.warning { background: var(--dk-warning); }
+.cgroup-bar-fill.danger { background: var(--dk-danger); box-shadow: 0 0 10px var(--dk-danger); }
+.oom-warning { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--dk-danger); margin-top: 0.5rem; text-align: right; animation: pulse 1s infinite; }
+
+@media (max-width: 1200px) {
+    .docker-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-host, .panel-control, .panel-container { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); flex: none; }
+    .panel-container { min-height: 500px; }
+}

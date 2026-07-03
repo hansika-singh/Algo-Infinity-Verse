@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autograd Engine & Computational Graph | Algo Infinity Verse</title>
+    <meta name="description" content="Build dynamic computational graphs and visualize reverse-mode automatic differentiation (Backpropagation) in real-time." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <!-- Cytoscape.js and Dagre for DAG Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="autograd-engine.css" />
+</head>
+<body class="autograd-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-brain"></i> Tensor Autograd: Idle
+        </div>
+    </nav>
+
+    <main class="autograd-workspace">
+        
+        <!-- Left Panel: Engine Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-code"></i> Model Definition</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Define mathematical operations using the <code>Value</code> scalar engine. The engine will track operations, build a computational graph, and apply the <strong>Chain Rule</strong> to calculate gradients.
+                </p>
+
+                <!-- CodeMirror Container -->
+                <div class="editor-wrapper" id="editorContainer"></div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-primary w-100" id="btnForward">
+                        <i class="fas fa-arrow-right"></i> Forward Pass (Build DAG)
+                    </button>
+                    <button class="btn btn-accent w-100" id="btnBackward" disabled>
+                        <i class="fas fa-undo"></i> Backward Pass (Backprop)
+                    </button>
+                </div>
+
+                <div class="speed-control">
+                    <label>Animation Speed</label>
+                    <input type="range" id="animSpeed" min="100" max="2000" value="800" style="direction: rtl;">
+                </div>
+            </div>
+
+            <!-- Execution Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Autograd Telemetry</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Engine Initialized. Ready for forward pass.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Computational Graph Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="canvas-title">
+                    <i class="fas fa-project-diagram"></i> Computational Graph (DAG)
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch value-node"></span> Value (Data | Grad)</span>
+                    <span class="legend-item"><span class="node-swatch op-node"></span> Operation (+, *, tanh)</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div id="cy" class="cy-container"></div>
+                <div class="empty-state" id="graphEmptyState">
+                    <i class="fas fa-sitemap"></i>
+                    <p>Run a Forward Pass to build the computational graph.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="autograd-engine.js"></script>
+</body>
+</html>

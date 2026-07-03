@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>In-Memory Git Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Experiment freely. Commit, branch, and rollback your algorithmic solutions instantly." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="git-visualizer.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="git-body">
+
+    <nav class="navbar git-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="head-status" id="headStatusBadge">
+            <i class="fas fa-code-branch"></i> HEAD: <span id="headLabel">main</span>
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="git-workspace">
+        
+        <!-- Left Panel: Code Editor -->
+        <div class="panel-editor">
+            
+            <div class="panel-header">
+                <h3><i class="fab fa-js"></i> solution.js</h3>
+            </div>
+
+            <div class="editor-wrapper" id="editorContainer">
+                <!-- CodeMirror injects here -->
+            </div>
+
+            <!-- Git Commit Toolbar -->
+            <div class="commit-toolbar">
+                <div class="commit-input-group">
+                    <input type="text" id="commitMessage" placeholder="Enter commit message (e.g., 'Optimized loop')" />
+                    <button class="btn btn-primary" id="btnCommit"><i class="fas fa-check"></i> Commit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Git Graph -->
+        <div class="panel-graph">
+            
+            <div class="graph-toolbar">
+                <div class="branch-input-group">
+                    <input type="text" id="branchName" placeholder="New branch name..." />
+                    <button class="btn btn-secondary" id="btnBranch"><i class="fas fa-plus"></i> Branch</button>
+                </div>
+                <button class="btn btn-outline" id="btnReset" title="Reset everything"><i class="fas fa-trash-alt"></i> Reset Repo</button>
+            </div>
+            
+            <!-- Graph Canvas -->
+            <div class="graph-container" id="graphContainer">
+                <svg class="git-lines" id="gitLines"></svg>
+                <div class="git-nodes" id="gitNodes">
+                    <!-- Nodes and Labels injected by JS -->
+                </div>
+                
+                <!-- Empty State -->
+                <div class="empty-state hidden" id="emptyState">
+                    <i class="fas fa-code-branch"></i>
+                    <p>No commits yet.</p>
+                </div>
+            </div>
+
+            <div class="graph-legend">
+                <span><i class="fas fa-mouse-pointer"></i> Click any node to instantly rollback.</span>
+            </div>
+        </div>
+
+    </main>
+    
+    <!-- Node Tooltip -->
+    <div class="git-tooltip hidden" id="gitTooltip">
+        <div class="tt-hash" id="ttHash">a1b2c3</div>
+        <div class="tt-msg" id="ttMsg">Commit message</div>
+        <div class="tt-date" id="ttDate">Just now</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="git-visualizer.js"></script>
+</body>
+</html>

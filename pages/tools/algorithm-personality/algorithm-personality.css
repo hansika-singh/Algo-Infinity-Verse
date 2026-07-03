@@ -1,0 +1,511 @@
+/* ─────────────────────────────────────────────
+   Algorithm Personality Assessment
+   ───────────────────────────────────────────── */
+
+.ap-gradient {
+  background: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.ap-btn-primary {
+  background: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ap-hero .section-subtitle { max-width: 640px; margin: 0.5rem auto 0; }
+
+/* ── Start Card ── */
+.ap-start-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ap-start-icons {
+  font-size: 1.8rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ap-start-title {
+  font-family: Orbitron, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.ap-start-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ap-personality-peek {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.ap-peek-item {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.2);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.ap-peek-item:hover { color: var(--text-primary); border-color: rgba(168,85,247,0.4); }
+
+.ap-start-main-btn { width: 100%; justify-content: center; font-size: 1rem; padding: 0.9rem; }
+
+/* ── Quiz Card ── */
+.ap-quiz-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 2rem;
+  max-width: 680px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+.ap-quiz-progress-wrap {
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.ap-quiz-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #a855f7, #06b6d4);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.ap-quiz-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.ap-quiz-counter {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.ap-quiz-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #a855f7;
+  font-family: Fira Code, monospace;
+}
+
+/* Question */
+.ap-question {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  min-height: 2.5rem;
+}
+
+/* Options */
+.ap-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.ap-option {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 12px;
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: Poppins, sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.ap-option:hover {
+  border-color: #a855f7;
+  background: rgba(168,85,247,0.08);
+  transform: translateX(4px);
+}
+
+.ap-option.selected {
+  border-color: #a855f7;
+  background: rgba(168,85,247,0.15);
+  color: var(--text-primary);
+}
+
+.ap-option-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.1);
+  border: 1px solid rgba(168,85,247,0.25);
+  color: #a855f7;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.ap-option.selected .ap-option-letter {
+  background: #a855f7;
+  color: #fff;
+  border-color: #a855f7;
+}
+
+/* Nav */
+.ap-quiz-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.ap-nav-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ap-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ap-quiz-dots {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 200px;
+}
+
+.ap-quiz-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--glass-border);
+  transition: all 0.2s ease;
+}
+
+.ap-quiz-dot.answered { background: #a855f7; }
+.ap-quiz-dot.current  { background: #06b6d4; transform: scale(1.3); }
+
+/* ── Result Card ── */
+.ap-result-card {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ap-result-top {
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ap-result-emoji {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  animation: apBounce 1s ease 0.3s both;
+}
+
+@keyframes apBounce {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.ap-result-you {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 0.25rem;
+}
+
+.ap-result-name {
+  font-family: Orbitron, sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+
+.ap-result-tagline {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Result body */
+.ap-result-body {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ap-result-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+/* Traits */
+.ap-result-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ap-trait {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+}
+
+.ap-trait.positive  { background: rgba(34,197,94,0.12);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.ap-trait.negative  { background: rgba(239,68,68,0.1);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.ap-trait.neutral   { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+
+/* Complexity */
+.ap-result-complexity {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ap-comp-chip {
+  font-family: Fira Code, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(6,182,212,0.1);
+  color: #06b6d4;
+  border: 1px solid rgba(6,182,212,0.25);
+}
+
+/* Famous */
+.ap-result-famous {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(168,85,247,0.06);
+  border-left: 3px solid #a855f7;
+  line-height: 1.6;
+}
+
+/* Advice */
+.ap-result-advice {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(245,158,11,0.06);
+  border-left: 3px solid #f59e0b;
+  line-height: 1.6;
+}
+
+/* Score breakdown */
+.ap-score-breakdown {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.ap-score-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+  margin-bottom: 0.9rem;
+}
+
+.ap-score-rows { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.ap-score-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ap-score-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.ap-score-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ap-score-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.ap-score-val {
+  font-family: Fira Code, monospace;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Result actions */
+.ap-result-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ap-share-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #22c55e;
+  padding: 0.5rem;
+  animation: apFadeIn 0.3s ease;
+}
+
+@keyframes apFadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* ── Personalities Grid ── */
+.ap-personalities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.ap-personality-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ap-personality-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+}
+
+.ap-personality-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow);
+}
+
+.ap-personality-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+
+.ap-personality-name {
+  font-family: Orbitron, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.ap-personality-tagline {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.ap-personality-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.ap-personality-trait {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 5px;
+  background: rgba(168,85,247,0.1);
+  color: #a855f7;
+  border: 1px solid rgba(168,85,247,0.2);
+}
+
+.hidden { display: none !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ap-start-card  { padding: 1.75rem 1.25rem; }
+  .ap-quiz-card   { padding: 1.25rem; }
+  .ap-result-name { font-size: 1.4rem; }
+  .ap-score-label { width: 100px; }
+  .ap-quiz-dots   { max-width: 160px; }
+}

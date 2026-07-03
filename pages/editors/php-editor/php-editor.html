@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PHP Editor – Live Code Editor | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="php-editor.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="php-editor">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero pe-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Write PHP.</span>
+          <span class="main-title" style="background: linear-gradient(135deg, #8993be 0%, #4f5b93 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Run It Instantly.</span>
+          <span class="subtitle">In-Browser PHP Editor</span>
+        </h1>
+        <p class="pe-hero-desc">Write PHP scripts, see simulated output instantly. Syntax highlighting, multiple examples, console output.</p>
+        <div class="hero-buttons">
+          <a href="#editor" class="btn btn-primary" style="background: linear-gradient(135deg, #8993be 0%, #4f5b93 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Open Editor
+          </a>
+          <a href="/pages/learning/php-learning/php-learning.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Learn PHP</a>
+        </div>
+        <div class="pe-note">
+          <i class="fas fa-info-circle"></i>
+          Execution is simulated in the browser. For real PHP execution, use a local server (XAMPP / WAMP).
+        </div>
+      </div>
+    </section>
+
+    <section id="editor" class="section pe-section">
+      <div class="pe-container">
+        <div class="pe-toolbar">
+          <div class="pe-toolbar-left">
+            <span class="pe-label"><i class="fab fa-php pe-php-icon"></i> PHP Editor</span>
+            <select id="peExampleSelect" class="pe-select" aria-label="Load example">
+              <option value="hello">Hello World</option>
+              <option value="variables">Variables & Types</option>
+              <option value="array">Arrays & Loops</option>
+              <option value="function">Functions</option>
+              <option value="class">Classes & OOP</option>
+            </select>
+          </div>
+          <div class="pe-toolbar-right">
+            <button id="peNewFileBtn" class="pe-icon-btn" title="New file" aria-label="Create new PHP file"><i class="fas fa-file"></i></button>
+            <button id="peLoadFileBtn" class="pe-icon-btn" title="Load .php file" aria-label="Load PHP file"><i class="fas fa-folder-open"></i></button>
+            <button id="peDownloadBtn" class="pe-icon-btn" title="Download .php file" aria-label="Download PHP file"><i class="fas fa-download"></i></button>
+            <input id="peFileInput" type="file" accept=".php" hidden />
+            <button id="peRunBtn" class="btn btn-primary pe-run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="peResetBtn" class="pe-icon-btn" title="Reset" aria-label="Reset to example"><i class="fas fa-undo"></i></button>
+            <button id="peCopyBtn" class="pe-icon-btn" title="Copy code" aria-label="Copy code to clipboard"><i class="fas fa-copy"></i></button>
+            <button id="peSaveBtn" class="pe-icon-btn" title="Save to localStorage" aria-label="Save code to browser storage"><i class="fas fa-save"></i></button>
+          </div>
+        </div>
+
+        <div class="pe-split">
+          <div class="pe-editor-pane">
+            <div class="pe-pane-header">
+              <span><i class="fas fa-code"></i> Editor</span>
+              <span class="pe-lang-badge">PHP</span>
+            </div>
+            <div class="pe-editor-wrap">
+              <div class="pe-line-numbers" id="peLineNumbers">1</div>
+              <textarea id="peEditor" class="pe-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="PHP code editor"></textarea>
+            </div>
+          </div>
+
+          <div class="pe-output-pane">
+            <div class="pe-pane-header">
+              <span><i class="fas fa-terminal"></i> Output</span>
+              <span id="peStatusBadge" class="pe-status-badge pe-status-ready">Ready</span>
+            </div>
+            <div class="pe-output-body" id="peOutputBody">
+              <span class="pe-output-placeholder">Run your code to see output here...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pe-console">
+          <div class="pe-console-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Errors / Warnings</span>
+            <button class="pe-console-clear" id="peConsoleClear"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="pe-console-body" id="peConsoleBody">
+            <span class="pe-console-placeholder">No errors detected.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./php-editor.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tree Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Tree Visualizer. Create, modify, and animate binary search tree traversals." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="tree-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="tree-visualizer">
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Tree Visualizer</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="visualizer-section">
+      <div class="visualizer-container">
+        
+        <aside class="control-panel">
+          <h2 class="panel-title"><i class="fas fa-sliders-h"></i> Operations</h2>
+          
+          <div class="control-group">
+            <label>Node Value</label>
+            <div class="input-row">
+              <input type="number" id="node-value" placeholder="e.g., 50" />
+            </div>
+            <div class="button-grid">
+              <button class="btn-vis btn-insert" id="btn-insert"><i class="fas fa-plus"></i> Insert</button>
+              <button class="btn-vis btn-delete" id="btn-delete"><i class="fas fa-trash"></i> Delete</button>
+              <button class="btn-vis btn-search" id="btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>Traversals & Animations</label>
+            <div class="button-grid">
+              <button class="btn-vis" id="btn-preorder">Pre-order</button>
+              <button class="btn-vis" id="btn-inorder">In-order</button>
+              <button class="btn-vis" id="btn-postorder">Post-order</button>
+              <button class="btn-vis" id="btn-levelorder">Level-order</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <button class="btn-vis btn-danger" id="btn-reset"><i class="fas fa-undo"></i> Reset Tree</button>
+          </div>
+
+          <div class="control-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Debugger Mode</span>
+              <label class="switch-custom" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                <input type="checkbox" id="dbgToggle">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="status-box" id="status-message">
+            Ready. Enter a value to insert.
+          </div>
+          <div class="traversal-output" id="traversal-output">
+            Output: []
+          </div>
+
+          <!-- Debugger Panel -->
+          <div id="debuggerPanel" class="debugger-panel" style="display: none; margin-top: 1.5rem;">
+            <div class="debugger-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-bug" style="color: var(--accent);"></i> Step Debugger</h3>
+              <span id="dbgStepCounter" class="step-counter">Step 0 / 0</span>
+            </div>
+            <div class="debugger-controls" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+              <button id="dbgPrevBtn" class="btn btn-secondary btn-control-mini" disabled style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-step-backward"></i> Prev</button>
+              <button id="dbgPlayBtn" class="btn btn-primary btn-control-mini" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-play"></i> Play</button>
+              <button id="dbgPauseBtn" class="btn btn-secondary btn-control-mini" style="display: none; padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-pause"></i> Pause</button>
+              <button id="dbgNextBtn" class="btn btn-secondary btn-control-mini" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-step-forward"></i> Next</button>
+            </div>
+            <div class="debugger-slider-group" style="margin-bottom: 1.25rem;">
+              <input type="range" id="dbgStepSlider" min="0" max="0" value="0" class="slider-custom" style="width: 100%;">
+            </div>
+            <div class="debugger-explanation" style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 10px; border: 1px solid var(--glass-border);">
+              <h5 style="margin-top: 0; color: var(--accent); margin-bottom: 0.5rem;">Why this step happens:</h5>
+              <p id="dbgExplanationText" class="debugger-explanation-text" style="font-size: 0.88rem; line-height: 1.5; margin: 0;">Select an algorithm and click start to begin step debugging.</p>
+            </div>
+            <div class="pseudo-code-container" id="dbgPseudoCode">
+              <!-- Pseudo-code lines will be injected here -->
+            </div>
+          </div>
+        </aside>
+
+        <main class="canvas-area">
+          <div id="tree-canvas" class="tree-canvas">
+            <svg id="edges-svg" width="100%" height="100%"></svg>
+            </div>
+        </main>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+    
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="tree-visualizer.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

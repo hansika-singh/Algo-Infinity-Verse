@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Code Execution Trace Visualizer</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Client-side PDF Generation Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body>
+
+  <!-- Continue Learning Resume Widget -->
+<div id="resume-learning-widget" class="dashboard-container" style="display: none; margin-bottom: 20px; border-left: 5px solid #667eea;">
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 15px;">
+    <div>
+      <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #667eea; letter-spacing: 0.5px;">RESUME YOUR PROGRESS</span>
+      <h3 id="resume-page-title" style="margin: 5px 0 2px 0; font-size: 1.25rem; color: #222;">--</h3>
+      <p style="margin: 0; font-size: 0.85rem; color: #666;">
+        Category: <span id="resume-page-category" style="font-weight: 600;">--</span> | Last Visited: <span id="resume-page-time">--</span>
+      </p>
+    </div>
+    <div>
+      <button id="resume-learning-btn" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        Continue Learning →
+      </button>
+    </div>
+  </div>
+</div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🚀 Algo-Infinity-Verse</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html" class="active">Code Visualizer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>🔍 Code Execution Trace Visualizer</h1>
+        <p class="subtitle">Watch your code execute line-by-line with variable tracking</p>
+
+        <div class="main-layout">
+            <!-- Left: Code Editor -->
+            <div class="panel editor-panel">
+                <div class="panel-header">
+                    <span>📝 Code Editor</span>
+                    <div class="panel-actions">
+                        <button id="runBtn" class="btn btn-run">▶ Run</button>
+                        <button id="prevBtn" class="btn btn-step" style="background: #4b5563;" disabled>⏮ Prev</button>
+                        <button id="stepBtn" class="btn btn-step">⏭ Step</button>
+                        <button id="playBtn" class="btn btn-step" style="background: #8b5cf6;">▶ Play</button>
+                        <button id="pauseBtn" class="btn btn-step" style="background: #ea580c; display: none;">⏸ Pause</button>
+                        <button id="resetBtn" class="btn btn-reset">🔄 Reset</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <div id="lineNumbers" class="line-numbers"></div>
+                    <textarea id="codeEditor" spellcheck="false"></textarea>
+                </div>
+                <div id="highlightLine" class="highlight-line"></div>
+            </div>
+
+            <!-- Right: Variable Watch -->
+            <div class="panel watch-panel">
+                <div class="panel-header">
+                    <span>📊 Variable Watch</span>
+                </div>
+                <div id="variablesContainer" class="variables-container">
+                    <div class="empty-state">No variables yet. Run some code!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom: Output Console, Execution Trace & Step Explanation -->
+        <div class="bottom-layout" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            <div class="panel console-panel">
+                <div class="panel-header">
+                    <span>🖥️ Output Console</span>
+                </div>
+                <div id="outputConsole" class="console-output">
+                    <div class="empty-state">Output will appear here...</div>
+                </div>
+            </div>
+
+            <div class="panel trace-panel">
+                <div class="panel-header">
+                    <span>📜 Execution Trace</span>
+                </div>
+                <div id="traceContainer" class="trace-container">
+                    <div class="empty-state">Trace will appear here...</div>
+                </div>
+            </div>
+
+            <div class="panel explanation-panel">
+                <div class="panel-header">
+                    <span>💡 Step Explanation</span>
+                </div>
+                <div id="explanationContainer" class="variables-container" style="font-family: inherit; font-size: 0.95rem;">
+                    <div class="empty-state">No active execution step. Run or step through code to see explanations here.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span id="statusText">⏹️ Ready</span>
+            <span id="lineStatus">Line: 0</span>
+        </div>
+    </div>
+
+    <!-- Topic Completion Certificates Dashboard -->
+<div id="certificates-dashboard" class="dashboard-container" style="margin-top: 30px;">
+  <div class="dashboard-header">
+    <div>
+      <h2>Your Learning Achievements</h2>
+      <p>Download verifiable completion certificates for finished roadmaps.</p>
+    </div>
+    <!-- Interview Readiness Dashboard Container -->
+<div id="readiness-dashboard" class="dashboard-container">
+  <div class="dashboard-header">
+    <div>
+      <h2>Interview Readiness Score</h2>
+      <p>Based on recent practice activity & consistency metrics</p>
+    </div>
+    <div class="score-circle-container">
+      <div id="overall-score-badge" class="score-badge">--%</div>
+    </div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card dsa">
+      <span class="card-title">DSA Readiness</span>
+      <div id="dsa-score" class="card-value">--%</div>
+    </div>
+    <div class="metric-card design">
+      <span class="card-title">System Design Readiness</span>
+      <div id="design-score" class="card-value">--%</div>
+    </div>
+    <div class="metric-card quiz">
+      <span class="card-title">Quiz & Core Interview</span>
+      <div id="quiz-score" class="card-value">--%</div>
+    </div>
+  </div>
+
+  <div class="feedback-layout">
+    <div class="shadow-box" style="grid-column: span 2;">
+      <h3>Completion History & Certificates</h3>
+      <ul id="certificates-list" style="list-style: none; padding: 0; margin-top: 15px;">
+        <!-- Dynamic rows will be injected here -->
+        <li style="color: #666; font-size: 14px;">Loading your learning tracks...</li>
+      </ul>
+    <div class="feedback-section shadow-box">
+      <h3>Improvement Suggestions</h3>
+      <ul id="suggestions-list"></ul>
+    </div>
+    <div class="feedback-section shadow-box">
+      <h3>Missing Topics</h3>
+      <div id="missing-topics-tags" class="tags-container"></div>
+    </div>
+  </div>
+</div>
+
+    <script src="editor.js"></script>
+    <script src="script.js"></script>
+    <script src="/theme.js"></script>
+</body>
+</html>

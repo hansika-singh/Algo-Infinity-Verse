@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Cheat Sheets - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="cheat-sheets.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" 
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="cheat-sheets">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="spacer" style="height: 80px;"></div>
+
+    <!-- Hero Background for starfield effect -->
+    <div class="hero-background" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+
+    <!-- Main Content Section -->
+    <section class="section cheat-sheets-section">
+      <div class="container">
+        <div class="cheat-sheets-header animate-in">
+          <h1 class="section-title">
+            <span class="title-icon">📝</span>
+            DSA Cheat Sheets
+          </h1>
+          <p class="section-subtitle">
+            Comprehensive quick reference guides for core data structures and algorithms.
+          </p>
+          <div class="header-actions">
+            <button id="exportPdfBtn" class="btn btn-primary">
+              <i class="fas fa-file-pdf"></i> Export to PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="cheat-sheets-grid">
+          <!-- ARRAYS CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-arrays">
+            <div class="card-header">
+              <span class="card-icon">📊</span>
+              <h2>Arrays</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Access</th>
+                        <th>Search</th>
+                        <th>Insertion</th>
+                        <th>Deletion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-on">O(n)</td>
+                        <td class="time-on">O(n)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Average/Worst): </span><strong class="space-on">O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Access:</strong> Retrieve element at index <code>i</code> via offset.</li>
+                    <li><strong>Search:</strong> Scan array element-by-element (Linear) or halves (Binary, if sorted).</li>
+                    <li><strong>Insertion/Deletion:</strong> Shift elements to adjust index placements.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Elements are stored contiguously in memory, enabling constant-time random access.</li>
+                    <li>Static arrays have a fixed size; dynamic arrays resize by doubling capacity ($O(1)$ amortized insertion).</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Always check for edge cases: empty array, single element, or index out of bounds.</li>
+                    <li>If the input array is sorted, consider using the <strong>Two Pointers</strong> or <strong>Binary Search</strong> techniques.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>Two Pointers:</strong> Opposite ends (Two Sum) or slow/fast runner.</li>
+                    <li><strong>Sliding Window:</strong> Subarray tracking for bounds/sums.</li>
+                    <li><strong>Kadane's Algorithm:</strong> Maximizing subarray sums in $O(n)$ time.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STRINGS CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-strings">
+            <div class="card-header">
+              <span class="card-icon">🔤</span>
+              <h2>Strings</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Access</th>
+                        <th>Search (KMP)</th>
+                        <th>Concatenate</th>
+                        <th>Comparison</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-on">O(n + m)</td>
+                        <td class="time-on">O(n + m)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Average/Worst): </span><strong class="space-on">O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Length check:</strong> Retrieve number of characters.</li>
+                    <li><strong>Substring extraction:</strong> Copy a slice of characters from index <code>i</code> to <code>j</code>.</li>
+                    <li><strong>Pattern matching:</strong> Locate sub-patterns (KMP, Rabin-Karp).</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>In many languages (JS, Python, Java), strings are immutable. Changes generate new strings.</li>
+                    <li>Substrings of length <code>k</code> take $O(k)$ time and space to copy or instantiate.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Use a character frequency hash map or fixed-size ASCII array ($128$ or $256$ elements) to count characters.</li>
+                    <li>Palindrome checks are best handled using a two-pointer convergence pattern.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>Sliding Window:</strong> Track unique characters (e.g., Longest Substring Without Repeating).</li>
+                    <li><strong>Two Pointers:</strong> Palindromes, reverse character arrays.</li>
+                    <li><strong>Hashing/Frequency Arrays:</strong> Anagram tracking, duplicate checks.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LINKED LISTS CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-linkedlists">
+            <div class="card-header">
+              <span class="card-icon">🔗</span>
+              <h2>Linked Lists</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Access</th>
+                        <th>Search</th>
+                        <th>Insert (Head/Tail)</th>
+                        <th>Delete (Node)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="time-on">O(n)</td>
+                        <td class="time-on">O(n)</td>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-o1">O(1)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Average/Worst): </span><strong class="space-on">O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Traversal:</strong> Step from node to node via pointers until pointer is null.</li>
+                    <li><strong>Reversal:</strong> Pivot pointers in-place to reverse directions.</li>
+                    <li><strong>Cycle Detection:</strong> Check if a traversal path loops back on itself.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Nodes are non-contiguous in memory. Insertion/deletion does not require shifting elements.</li>
+                    <li>Sentinel or dummy nodes simplify insertion/deletion logic at list edges.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Verify pointer references are updated in the correct order to prevent losing node connections.</li>
+                    <li>Test with empty lists, single node lists, and lists containing cyclic loops.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>Fast & Slow Pointers:</strong> Floyd's cycle finder, finding list midpoints.</li>
+                    <li><strong>Dummy Head:</strong> Simplifies merged list operations or node deletion.</li>
+                    <li><strong>In-place Pointer Swapping:</strong> Reversing lists or swapping node pairs.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TREES CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-trees">
+            <div class="card-header">
+              <span class="card-icon">🌳</span>
+              <h2>Trees</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table (BST)</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Operation</th>
+                        <th>Average (Balanced)</th>
+                        <th>Worst (Skewed)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Search</td>
+                        <td class="time-ologn">O(log n)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                      <tr>
+                        <td>Insertion</td>
+                        <td class="time-ologn">O(log n)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                      <tr>
+                        <td>Deletion</td>
+                        <td class="time-ologn">O(log n)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Balanced / Skewed): </span><strong class="space-on">O(log n) / O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>DFS (Traversals):</strong> Pre-order, In-order, Post-order paths recursively.</li>
+                    <li><strong>BFS (Level-order):</strong> Visit nodes level-by-level using a Queue.</li>
+                    <li><strong>BST Properties:</strong> Left subtree &lt; Node &lt; Right subtree.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>An In-order traversal on a Binary Search Tree (BST) visits elements in sorted order.</li>
+                    <li>Recursion depth space is determined by tree height: $O(\log n)$ balanced, $O(n)$ skewed.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Most tree problems are recursive. Define base cases (e.g. <code>if (root === null)</code>) clearly.</li>
+                    <li>Remember that BFS uses an iterative Queue, while DFS uses recursion or a Stack.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>DFS (Recursion):</strong> Tree depth, checking symmetric properties, path sums.</li>
+                    <li><strong>BFS (Queue):</strong> Minimum depth, level averages, right-side views.</li>
+                    <li><strong>Divide & Conquer:</strong> BST conversions, serializing structures.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRAPHS CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-graphs">
+            <div class="card-header">
+              <span class="card-icon">🕸️</span>
+              <h2>Graphs</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Algorithm</th>
+                        <th>Time Complexity</th>
+                        <th>Space Complexity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>DFS / BFS</td>
+                        <td class="time-on">O(V + E)</td>
+                        <td class="time-on">O(V)</td>
+                      </tr>
+                      <tr>
+                        <td>Dijkstra</td>
+                        <td class="time-ologn">O((V + E) log V)</td>
+                        <td class="time-on">O(V)</td>
+                      </tr>
+                      <tr>
+                        <td>Kruskal (MST)</td>
+                        <td class="time-ologn">O(E log E)</td>
+                        <td class="time-on">O(V)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Adjacency List / Matrix Space: </span><strong class="space-on">O(V + E) / O(V²)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>DFS:</strong> Explore nodes recursively as deep as possible before backtracking.</li>
+                    <li><strong>BFS:</strong> Explore nodes level-by-level using a Queue.</li>
+                    <li><strong>Topological Sort:</strong> Order DAG vertices linearly.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Adjacency Lists are space-efficient; Adjacency Matrices allow $O(1)$ edge query lookups.</li>
+                    <li>Cycles in directed graphs are detected using a recursion/visited stack state.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>BFS is the optimal choice for finding the shortest path in an unweighted graph.</li>
+                    <li>Ensure you keep a <code>visited</code> set to avoid entering infinite cycles in general graphs.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>DFS (Pathfinding):</strong> Island counting, connected components, cycle checks.</li>
+                    <li><strong>BFS (Shortest Path):</strong> Word transformations, matrix maze routing.</li>
+                    <li><strong>Union-Find:</strong> Dynamic connectivity, minimum spanning trees.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DYNAMIC PROGRAMMING CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-dp">
+            <div class="card-header">
+              <span class="card-icon">🎯</span>
+              <h2>Dynamic Programming</h2>
+            </div>
+            
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Problem Class</th>
+                        <th>Time Complexity</th>
+                        <th>Space Complexity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Climbing Stairs</td>
+                        <td class="time-on">O(n)</td>
+                        <td class="time-on">O(1) / O(n)</td>
+                      </tr>
+                      <tr>
+                        <td>0/1 Knapsack</td>
+                        <td class="time-on">O(n * W)</td>
+                        <td class="time-on">O(n * W) / O(W)</td>
+                      </tr>
+                      <tr>
+                        <td>LCS / LIS</td>
+                        <td class="time-on">O(n * m) / O(n²)</td>
+                        <td class="time-on">O(n * m) / O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>General Space: </span><strong class="space-on">O(n) / O(n²) optimized to O(1)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Subproblems:</strong> Break global problem into overlapping smaller pieces.</li>
+                    <li><strong>Memoization:</strong> Cache recursive states top-down.</li>
+                    <li><strong>Tabulation:</strong> Fill iteration tables bottom-up from base cases.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Applicable only if optimal substructure and overlapping subproblems are present.</li>
+                    <li>DP array space can often be optimized to $O(1)$ by retaining only the last few indices.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Think of DP if a problem asks for "min/max value", "number of ways", or "feasibility".</li>
+                    <li>Write a recursive brute-force solution first, then memoize it to speed up your coding.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>Fibonacci Sequence:</strong> climbing stairs, house robber.</li>
+                    <li><strong>0/1 Knapsack:</strong> coin change, partition equal subset sums.</li>
+                    <li><strong>LCS/LIS:</strong> edit distance, grid paths, longest common sequences.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STACK CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-stack">
+            <div class="card-header">
+              <span class="card-icon">📚</span>
+              <h2>Stack</h2>
+            </div>
+
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Push</th>
+                        <th>Pop</th>
+                        <th>Peek/Top</th>
+                        <th>Search</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Average/Worst): </span><strong class="space-on">O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Push:</strong> Add an element to the top of the stack.</li>
+                    <li><strong>Pop:</strong> Remove and return the top element.</li>
+                    <li><strong>Peek/Top:</strong> View the top element without removing it.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Follows LIFO (Last In, First Out) ordering.</li>
+                    <li>Can be implemented using arrays or linked lists; array-based stacks risk overflow if size is fixed.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Think Stack when a problem involves matching/nesting (parentheses, brackets, tags).</li>
+                    <li>Recursive call stacks can often be converted to iterative solutions using an explicit Stack.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>Monotonic Stack:</strong> Next Greater Element, Largest Rectangle in Histogram.</li>
+                    <li><strong>Balanced Parentheses:</strong> Valid Parentheses, Minimum Add to Make Valid.</li>
+                    <li><strong>DFS (Iterative):</strong> Tree/graph traversal without recursion.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUEUE CHEAT SHEET -->
+          <div class="cheat-sheet-card glass-card animate-in" id="cs-queue">
+            <div class="card-header">
+              <span class="card-icon">🚶</span>
+              <h2>Queue</h2>
+            </div>
+
+            <div class="card-body">
+              <div class="complexity-section">
+                <h3>Complexity Table</h3>
+                <div class="table-responsive">
+                  <table class="complexity-table">
+                    <thead>
+                      <tr>
+                        <th>Enqueue</th>
+                        <th>Dequeue</th>
+                        <th>Peek/Front</th>
+                        <th>Search</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-o1">O(1)</td>
+                        <td class="time-on">O(n)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="space-complexity">
+                  <span>Space Complexity (Average/Worst): </span><strong class="space-on">O(n)</strong>
+                </div>
+              </div>
+
+              <div class="details-section">
+                <div class="detail-block">
+                  <h4><i class="fas fa-cogs"></i> Common Operations</h4>
+                  <ul>
+                    <li><strong>Enqueue:</strong> Add an element to the rear of the queue.</li>
+                    <li><strong>Dequeue:</strong> Remove and return the front element.</li>
+                    <li><strong>Peek/Front:</strong> View the front element without removing it.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-exclamation-circle"></i> Important Notes</h4>
+                  <ul>
+                    <li>Follows FIFO (First In, First Out) ordering.</li>
+                    <li>Circular queues reuse freed space efficiently; naive array queues can suffer O(n) dequeue if not handled carefully.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-lightbulb"></i> Interview Tips</h4>
+                  <ul>
+                    <li>Think Queue when a problem requires level-by-level or order-preserving processing.</li>
+                    <li>A Deque (double-ended queue) generalizes Queue/Stack and is useful in sliding window problems.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-block">
+                  <h4><i class="fas fa-project-diagram"></i> Common Coding Patterns</h4>
+                  <ul>
+                    <li><strong>BFS (Queue):</strong> Shortest path, level-order traversal.</li>
+                    <li><strong>Monotonic Deque:</strong> Sliding Window Maximum.</li>
+                    <li><strong>Circular Queue:</strong> Task scheduling, buffering streams.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination Container -->
+        <div class="pagination-container" id="cheatSheetsPagination"></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script type="module" src="cheat-sheets.js"></script>
+  
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+  </body>
+</html>

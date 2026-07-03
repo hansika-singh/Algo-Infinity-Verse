@@ -151,7 +151,7 @@
       message: "Login to access Technical Interview practice.",
     },
     {
-      selector: ".dashboard-card a[href='resume.html']",
+      selector: ".dashboard-card a[href='/pages/career/resume/resume.html']",
       message: "Login to view your coding resume.",
     },
   ];

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property-Based Fuzz Tester | Algo Infinity Verse</title>
+    <meta name="description" content="Aggressively stress test your algorithms with randomized property-based fuzzing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="fuzz-engine.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="fuzz-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-shield-alt"></i> Fuzz Engine Idle
+        </div>
+    </nav>
+
+    <main class="fuzz-workspace">
+        
+        <!-- Left Panel: Fuzzing Configuration & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> Fuzzing Parameters</h3>
+            </div>
+            
+            <div class="config-section">
+                <p class="prob-desc">
+                    <strong>Problem: Maximum Subarray Sum</strong><br>
+                    Find the contiguous subarray with the largest sum. Your code must withstand arbitrary arrays.
+                </p>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Iterations (Test Cases)</label>
+                        <select id="iterationCount">
+                            <option value="1000">1,000</option>
+                            <option value="10000" selected>10,000</option>
+                            <option value="100000">100,000</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Max Array Length</label>
+                        <input type="number" id="arrLength" value="50" min="1" max="1000" />
+                    </div>
+                    <div class="input-group">
+                        <label>Min Value</label>
+                        <input type="number" id="valMin" value="-100" />
+                    </div>
+                    <div class="input-group">
+                        <label>Max Value</label>
+                        <input type="number" id="valMax" value="100" />
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-primary w-100" id="btnStartFuzz">
+                        <i class="fas fa-bolt"></i> Start Fuzzer
+                    </button>
+                    <button class="btn btn-danger w-100 hidden" id="btnStopFuzz">
+                        <i class="fas fa-stop"></i> Halt Execution
+                    </button>
+                </div>
+            </div>
+
+            <!-- Fuzzing Odometer / Telemetry -->
+            <div class="telemetry-section">
+                <div class="odometer-container">
+                    <span class="odometer-label">Test Cases Passed</span>
+                    <div class="odometer-value" id="odometerDisplay">0</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="fuzzProgress"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crash Report Panel -->
+            <div class="crash-report hidden" id="crashReport">
+                <div class="crash-header">
+                    <i class="fas fa-skull-crossbones"></i> CRASH DETECTED
+                </div>
+                <div class="crash-body">
+                    <p>Your algorithm failed on an edge case!</p>
+                    <div class="data-row">
+                        <span>Failing Input:</span>
+                        <code id="crashInput">...</code>
+                    </div>
+                    <div class="data-row">
+                        <span>Expected Output (Reference):</span>
+                        <code id="crashExpected" class="success-text">...</code>
+                    </div>
+                    <div class="data-row">
+                        <span>Your Output:</span>
+                        <code id="crashActual" class="error-text">...</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="success-report hidden" id="successReport">
+                <div class="success-header">
+                    <i class="fas fa-check-shield"></i> ALGORITHM VERIFIED
+                </div>
+                <p>Your code successfully passed <span id="successCount"></span> randomized fuzz tests and is mathematically robust!</p>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor -->
+        <div class="panel-right">
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="editor-tab active"><i class="fab fa-js"></i> user_solution.js</button>
+                </div>
+            </div>
+            
+            <div class="editor-wrapper" id="editorContainer">
+                <!-- CodeMirror injects here -->
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="fuzz-engine.js"></script>
+</body>
+</html>

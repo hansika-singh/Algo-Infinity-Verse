@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spaced Repetition Review Queue | Algo Infinity Verse</title>
+    <meta name="description" content="Maintain your DSA skills using spaced repetition. Review due problems at optimal intervals." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="review-queue.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="review-queue">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero queue-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content" style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1200px; margin:0 auto; flex-wrap:wrap; gap:2rem;">
+        <div style="flex:1; min-width:300px; text-align:left;">
+          <h1 class="hero-title" style="text-align:left; margin:0;">
+            <span class="title-line">SM-2 Spaced Retention</span>
+            <span class="main-title gradient-text">Review Queue</span>
+          </h1>
+          <p class="section-subtitle" style="text-align:left; margin:1rem 0 0 0; max-width:600px;">
+            Solve due problems at algorithmic intervals to convert short-term memory into durable cognitive patterns.
+          </p>
+        </div>
+
+        <!-- Streak Stats Widget -->
+        <div class="visualizer-card streak-stat-widget" style="padding:1.25rem 2rem; display:flex; gap:2rem; align-items:center; min-width:280px; justify-content:space-around;">
+          <div style="text-align:center;">
+            <div style="font-size:2.5rem; color:#ef4444; filter: drop-shadow(0 0 8px rgba(239,68,68,0.3));"><i class="fas fa-fire"></i></div>
+            <div id="reviewStreakCount" style="font-size:1.5rem; font-weight:700; font-family:'Orbitron',sans-serif; margin-top:0.25rem;">0</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Review Streak</div>
+          </div>
+          <div style="width:1px; background:var(--glass-border); height:60px;"></div>
+          <div style="text-align:center;">
+            <div style="font-size:2.5rem; color:#10b981; filter: drop-shadow(0 0 8px rgba(16,185,129,0.3));"><i class="fas fa-calendar-check"></i></div>
+            <div id="dueCountBadge" style="font-size:1.5rem; font-weight:700; font-family:'Orbitron',sans-serif; margin-top:0.25rem;">0</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Due Today</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Container -->
+    <section class="visualizer-section">
+      <div class="visualizer-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+        
+        <!-- Filter Tabs -->
+        <div class="queue-filter-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap; border-bottom:1px solid var(--glass-border); padding-bottom:0.75rem;">
+          <div class="filter-tab-buttons" style="display:flex; gap:0.5rem;">
+            <button id="btnFilterAll" class="queue-tab-btn active" data-filter="all">All Reviews (<span id="countAll">0</span>)</button>
+            <button id="btnFilterDue" class="queue-tab-btn" data-filter="due">Due Now (<span id="countDue">0</span>)</button>
+            <button id="btnFilterUpcoming" class="queue-tab-btn" data-filter="upcoming">Upcoming (<span id="countUpcoming">0</span>)</button>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-secondary);">
+            <i class="fas fa-info-circle"></i> Ratings update intervals instantly using the SM-2 algorithm.
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div id="queueGrid" class="queue-grid-container">
+          <!-- Problem review cards injected -->
+          <div class="loading-placeholder">Syncing schedule parameters...</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Legacy Quiz Editor Modal (included so practice works out of the box) -->
+    <div class="modal quiz-modal" id="quizEditorModal">
+      <div class="quiz-modal-content">
+        <div id="quizLoadingScreen" class="quiz-loading hidden">
+          <div class="quiz-spinner"></div>
+          <h3 class="loading-text">Vectoring Challenge...</h3>
+          <p id="loadingTopicName"></p>
+        </div>
+        <div class="quiz-modal-header">
+          <div class="quiz-problem-info">
+            <span class="quiz-topic-badge" id="quizTopicBadge"></span>
+            <span class="quiz-difficulty" id="quizDifficulty"></span>
+            <h3 id="quizTitle">Problem Title</h3>
+            <button type="button" class="quiz-modal-close" id="quizModalClose" aria-label="Close">&times;</button>
+          </div>
+        </div>
+        <div class="quiz-modal-body">
+          <div class="quiz-layout">
+            <div class="quiz-problem-panel">
+              <!-- Tab Navigation -->
+              <div class="quiz-panel-tabs" style="display: flex; border-bottom: 1px solid var(--glass-border); margin-bottom: 1rem; gap: 0.5rem;">
+                <button id="btnQuizTabProblem" class="quiz-tab-btn active" onclick="switchQuizTab('problem')" type="button">Description</button>
+                <button id="btnQuizTabNotes" class="quiz-tab-btn" onclick="switchQuizTab('notes')" type="button">Notes & Mnemonics</button>
+              </div>
+
+              <!-- Problem Content Area -->
+              <div id="quizTabProblemContent">
+                <div class="problem-description">
+                  <h4>Problem Description</h4>
+                  <p id="quizDescription"></p>
+                  <div class="problem-examples">
+                    <h5>Examples</h5>
+                    <div id="quizExamples"></div>
+                  </div>
+                </div>
+                <div class="test-cases-section">
+                  <h5 class="test-cases-heading">Test Cases</h5>
+                  <div class="test-cases-container" id="quizTestCasesContainer"></div>
+                </div>
+              </div>
+
+              <!-- Notes & Mnemonics Content Area -->
+              <div id="quizTabNotesContent" style="display: none; padding-right: 0.5rem; max-height: 480px; overflow-y: auto;">
+                <h4 style="margin-top:0; font-family:'Orbitron',sans-serif; color:var(--accent);">Problem Study Guide</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom: 1rem;">Attach study hooks, traps, and guidelines below. Notes are saved to your profile.</p>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="noteText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">My Notes</label>
+                  <textarea id="noteText" class="control-input" placeholder="General observations, explanations, or approach summaries..." style="height: 70px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="mnemonicText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Mnemonics / Memory Hooks</label>
+                  <textarea id="mnemonicText" class="control-input" placeholder="e.g. 'FAST/SLOW pointers: Slow moves 1, Fast moves 2'..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="pitfallsText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Common Pitfalls & Traps</label>
+                  <textarea id="pitfallsText" class="control-input" placeholder="What to watch out for (e.g. integer overflow, empty checks)..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="whenToUseText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">When to use this Pattern?</label>
+                  <textarea id="whenToUseText" class="control-input" placeholder="Characteristics of problems that need this solution pattern..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+
+                <div class="control-group" style="margin-bottom: 1rem;">
+                  <label for="noteTags" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Tags (Comma-separated)</label>
+                  <input type="text" id="noteTags" class="control-input" placeholder="e.g. sliding-window, hash-map" style="width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;">
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem;">
+                  <span id="noteSaveStatus" style="font-size:0.8rem; color:#10b981; font-style:italic;"></span>
+                  <button id="btnSaveProblemNotes" class="btn btn-primary" onclick="saveActiveProblemNotes()" type="button" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;"><i class="fas fa-save"></i> Save Notes</button>
+                </div>
+              </div>
+            </div>
+            <div class="quiz-editor-panel">
+              <div class="code-editor-container">
+                <div class="editor-header">
+                  <div class="problem-details">
+                    <select id="languageSelect" class="language-select">
+                      <option value="javascript">JavaScript</option>
+                      <option value="python">Python</option>
+                      <option value="java">Java</option>
+                      <option value="cpp">C++</option>
+                      <option value="c">C</option>
+                      <option value="swift">Swift</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="code-editor">
+                  <textarea id="codeEditor" class="code-textarea" spellcheck="false"></textarea>
+                </div>
+                <div class="output-panel" id="outputPanel">
+                  <button
+                    type="button"
+                    class="output-header"
+                    id="outputHeader"
+                    aria-controls="quizOutputContent"
+                    aria-expanded="true"
+                  >
+                    <span>Output</span>
+                    <i class="fas fa-chevron-down" id="outputToggleIcon"></i>
+                  </button>
+                  <div class="output-content" id="quizOutputContent">
+                    <p class="output-placeholder">
+                      Run your code to see output...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-modal-footer" style="padding: 1rem; border-top: 1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.2);">
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" id="quizRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button class="btn btn-primary" id="quizSubmitBtn">
+              <i class="fas fa-paper-plane"></i> Submit
+            </button>
+          </div>
+          
+          <div id="sm2RatingContainer" style="display:none; align-items:center; gap:0.6rem; background:rgba(255,255,255,0.03); padding:0.4rem 0.8rem; border-radius:8px; border:1px solid var(--glass-border);">
+            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; font-family:'Orbitron',sans-serif;">SM-2 Schedule:</span>
+            <button class="btn" style="background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; font-family:'Orbitron',sans-serif; cursor:pointer;" onclick="rateRecallDifficulty(1)" type="button">Again</button>
+            <button class="btn" style="background:rgba(245, 158, 11, 0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; font-family:'Orbitron',sans-serif; cursor:pointer;" onclick="rateRecallDifficulty(3)" type="button">Good</button>
+            <button class="btn" style="background:rgba(16, 185, 129, 0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; font-family:'Orbitron',sans-serif; cursor:pointer;" onclick="rateRecallDifficulty(5)" type="button">Easy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="review-queue.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

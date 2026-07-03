@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Union-Find (DSU) Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Union-Find / Disjoint Set Union visualizer with path compression and union by rank animations." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="union-find-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="union-find-visualizer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero uf-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Groups. Roots. Compression.</span>
+          <span class="main-title uf-gradient">Union-Find Visualizer</span>
+          <span class="subtitle">Disjoint Set Union — animated step by step.</span>
+        </h1>
+        <p class="section-subtitle">Watch Union-Find operations in real time — Make Set, Union by Rank, Find with Path Compression. See exactly how trees flatten as path compression kicks in.</p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary uf-btn-primary">
+            <i class="fas fa-play"></i> Open Visualizer
+          </a>
+          <a href="#learn" class="btn btn-secondary">
+            <i class="fas fa-graduation-cap"></i> How It Works
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+
+        <!-- Controls Card -->
+        <div class="uf-control-card">
+
+          <!-- Setup row -->
+          <div class="uf-control-row">
+            <div class="uf-ctrl-group">
+              <label class="uf-label" for="ufNodeCount">Number of Elements (n)</label>
+              <input type="number" id="ufNodeCount" class="uf-input" value="8" min="2" max="12" aria-label="Number of elements" />
+            </div>
+            <button class="btn btn-primary uf-btn-primary" id="ufInitBtn">
+              <i class="fas fa-hammer"></i> Initialize
+            </button>
+          </div>
+
+          <!-- Operation row -->
+          <div class="uf-ops-row">
+
+            <!-- Union -->
+            <div class="uf-op-group">
+              <div class="uf-op-title"><i class="fas fa-link"></i> Union</div>
+              <div class="uf-op-inputs">
+                <input type="number" id="ufUnionA" class="uf-input-sm" value="0" min="0" aria-label="Union element A" placeholder="a" />
+                <span class="uf-op-sep">∪</span>
+                <input type="number" id="ufUnionB" class="uf-input-sm" value="1" min="0" aria-label="Union element B" placeholder="b" />
+                <button class="btn uf-op-btn uf-op-union" id="ufUnionBtn">Union</button>
+              </div>
+            </div>
+
+            <!-- Find -->
+            <div class="uf-op-group">
+              <div class="uf-op-title"><i class="fas fa-search"></i> Find</div>
+              <div class="uf-op-inputs">
+                <input type="number" id="ufFindX" class="uf-input-sm" value="0" min="0" aria-label="Find element" placeholder="x" />
+                <button class="btn uf-op-btn uf-op-find" id="ufFindBtn">Find Root</button>
+              </div>
+            </div>
+
+            <!-- Connected? -->
+            <div class="uf-op-group">
+              <div class="uf-op-title"><i class="fas fa-question-circle"></i> Connected?</div>
+              <div class="uf-op-inputs">
+                <input type="number" id="ufConnA" class="uf-input-sm" value="0" min="0" aria-label="Connected element A" placeholder="a" />
+                <span class="uf-op-sep">↔</span>
+                <input type="number" id="ufConnB" class="uf-input-sm" value="1" min="0" aria-label="Connected element B" placeholder="b" />
+                <button class="btn uf-op-btn uf-op-conn" id="ufConnBtn">Check</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Playback -->
+          <div class="uf-playback-row">
+            <button class="btn btn-secondary uf-pb-btn" id="ufStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button class="btn btn-secondary uf-pb-btn" id="ufPlayBtn" disabled>
+              <i class="fas fa-play"></i> Play All
+            </button>
+            <button class="btn btn-secondary uf-pb-btn" id="ufResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="uf-speed-wrap">
+              <label class="uf-speed-label" for="ufSpeed">Speed:</label>
+              <input type="range" id="ufSpeed" class="uf-range" min="1" max="5" value="3" aria-label="Animation speed" />
+              <span class="uf-speed-val" id="ufSpeedVal">Normal</span>
+            </div>
+            <div class="uf-step-counter">
+              Step <span id="ufStepNum">0</span> / <span id="ufStepTotal">0</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Status bar -->
+        <div class="uf-status" id="ufStatus">Initialize a DSU to begin.</div>
+
+        <!-- Options row -->
+        <div class="uf-options-row">
+          <label class="uf-opt-label">
+            <input type="checkbox" id="ufPathComp" checked aria-label="Enable path compression" />
+            Path Compression
+          </label>
+          <label class="uf-opt-label">
+            <input type="checkbox" id="ufUnionRank" checked aria-label="Enable union by rank" />
+            Union by Rank
+          </label>
+          <div class="uf-opt-sep"></div>
+          <span class="uf-components-label">Components: <strong id="ufComponents">0</strong></span>
+        </div>
+
+        <!-- Canvas -->
+        <div class="uf-canvas-wrap">
+          <canvas id="ufCanvas" class="uf-canvas" aria-label="Union-Find tree visualization"></canvas>
+          <div class="uf-canvas-empty" id="ufCanvasEmpty">
+            <i class="fas fa-project-diagram"></i>
+            <p>Click <strong>Initialize</strong> to create the DSU</p>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="uf-legend">
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-root"></span>Root node</span>
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-default"></span>Regular node</span>
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-active"></span>Active / visiting</span>
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-path"></span>Path compressed</span>
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-union"></span>Being unioned</span>
+          <span class="uf-legend-item"><span class="uf-legend-dot uf-dot-connected"></span>Same component</span>
+        </div>
+
+        <!-- Parent / Rank table -->
+        <div class="uf-table-wrap" id="ufTableWrap">
+          <div class="uf-table-title">Internal State</div>
+          <div class="uf-table-scroll">
+            <table class="uf-table" id="ufTable">
+              <thead>
+                <tr>
+                  <th>Element</th>
+                  <th id="ufTableParentHdr">Parent</th>
+                  <th>Rank</th>
+                  <th>Root</th>
+                </tr>
+              </thead>
+              <tbody id="ufTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Operation log -->
+        <div class="uf-log-wrap">
+          <div class="uf-log-title"><i class="fas fa-list"></i> Operation Log</div>
+          <div class="uf-log" id="ufLog">
+            <div class="uf-log-empty">No operations yet.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How Union-Find Works</h2>
+        <div class="uf-learn-grid">
+          <div class="uf-learn-card">
+            <div class="uf-learn-num">01</div>
+            <h3>Make Set — O(1)</h3>
+            <p>Each element starts as its own set. parent[x] = x, rank[x] = 0. There are n disjoint sets initially.</p>
+            <div class="uf-chips"><span class="uf-chip">Time: O(1)</span><span class="uf-chip">n components</span></div>
+          </div>
+          <div class="uf-learn-card">
+            <div class="uf-learn-num">02</div>
+            <h3>Find with Path Compression — O(α(n))</h3>
+            <p>Find the root of x's set. Path compression makes every node on the path point directly to the root — flattening the tree.</p>
+            <div class="uf-chips"><span class="uf-chip">Time: O(α(n)) amortized</span><span class="uf-chip">Flattens tree</span></div>
+          </div>
+          <div class="uf-learn-card">
+            <div class="uf-learn-num">03</div>
+            <h3>Union by Rank — O(α(n))</h3>
+            <p>Attach the shorter tree under the taller one. The rank is an upper bound on tree height. This keeps trees shallow.</p>
+            <div class="uf-chips"><span class="uf-chip">Time: O(α(n)) amortized</span><span class="uf-chip">Keeps trees flat</span></div>
+          </div>
+          <div class="uf-learn-card">
+            <div class="uf-learn-num">04</div>
+            <h3>Applications</h3>
+            <p>Kruskal's MST, connected components, cycle detection, network connectivity, image segmentation, percolation.</p>
+            <div class="uf-chips"><span class="uf-chip">Kruskal's MST</span><span class="uf-chip">Cycle Detection</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="union-find-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

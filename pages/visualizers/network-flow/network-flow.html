@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo Infinity Verse | Max Flow Playground</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="network-flow.css">
+</head>
+<body>
+    <div class="cyber-layout">
+        <header class="hud-header">
+            <div class="brand">
+                <i class="fas fa-water neon-cyan"></i>
+                <h1>NETWORK_FLOW <span>// MAX FLOW / MIN CUT</span></h1>
+            </div>
+            <div class="telemetry-badges">
+                <span class="badge" id="max-flow-display"><i class="fas fa-chart-line"></i> Current Flow: 0</span>
+                <span class="badge time"><i class="fas fa-microchip"></i> Engine Active</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <aside class="control-panel glass-panel">
+                <h2 class="panel-title"><i class="fas fa-cogs"></i> ENGINE_CONFIG</h2>
+                
+                <div class="input-group">
+                    <label>Algorithm Selection</label>
+                    <select id="algo-select" class="cyber-input">
+                        <option value="edmonds-karp">Edmonds-Karp (BFS Path)</option>
+                        <option value="dinic">Dinic's (Level Graph)</option>
+                        <option value="push-relabel">Push-Relabel (Preflow)</option>
+                    </select>
+                </div>
+
+                <div class="action-group">
+                    <button id="btn-play" class="cyber-btn primary"><i class="fas fa-play"></i> Run</button>
+                    <button id="btn-step" class="cyber-btn accent"><i class="fas fa-step-forward"></i> Step</button>
+                    <button id="btn-reset" class="cyber-btn danger"><i class="fas fa-undo"></i> Reset Flow</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <h2 class="panel-title"><i class="fas fa-project-diagram"></i> GRAPH_EDITOR</h2>
+                <div class="editor-tools">
+                    <button id="tool-move" class="tool-btn active"><i class="fas fa-hand-pointer"></i> Move</button>
+                    <button id="tool-node" class="tool-btn"><i class="fas fa-plus-circle"></i> Add Node</button>
+                    <button id="tool-edge" class="tool-btn"><i class="fas fa-project-diagram"></i> Add Edge</button>
+                </div>
+                <button id="btn-clear-graph" class="cyber-btn danger mt-1"><i class="fas fa-trash"></i> Nuke Graph</button>
+                <button id="btn-min-cut" class="cyber-btn violet mt-1"><i class="fas fa-cut"></i> Show Min-Cut</button>
+
+                <div class="divider"></div>
+
+                <h2 class="panel-title"><i class="fas fa-terminal"></i> TELEMETRY_LOG</h2>
+                <div id="execution-log" class="terminal-log">
+                    <div class="log-entry system">[SYSTEM] Graph initialized. Ready for routing.</div>
+                </div>
+            </aside>
+
+            <section class="visualization-stage glass-panel">
+                <svg id="flow-canvas" width="100%" height="100%">
+                    <defs>
+                        <marker id="arrow" viewBox="0 -5 10 10" refX="25" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,-5L10,0L0,5" fill="#334155"></path>
+                        </marker>
+                        <marker id="arrow-flow" viewBox="0 -5 10 10" refX="25" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,-5L10,0L0,5" fill="#06b6d4"></path>
+                        </marker>
+                        <marker id="arrow-active" viewBox="0 -5 10 10" refX="25" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,-5L10,0L0,5" fill="#f59e0b"></path>
+                        </marker>
+                    </defs>
+                </svg>
+            </section>
+        </main>
+    </div>
+    <script src="network-flow.js"></script>
+</body>
+</html>

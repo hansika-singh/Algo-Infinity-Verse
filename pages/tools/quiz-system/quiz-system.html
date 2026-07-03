@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Assessments | Algo Infinity Verse</title>
+    <meta name="description" content="Test your knowledge with our centralized, scalable DSA quiz system. Get targeted explanations for every mistake." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="quiz-system.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="quiz-system">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section class="hero quiz-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Test Your Knowledge</span>
+                <span class="main-title gradient-text-quiz">DSA Assessments</span>
+                <span class="subtitle">
+                    Select a module to evaluate your algorithmic problem-solving skills.
+                    Get targeted explanations for every mistake you make.
+                </span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- Main Quiz Area -->
+    <section class="section">
+        <div class="container">
+            
+            <!-- View 1: Category Selection -->
+            <div id="view-categories" class="quiz-view active">
+                <h3 class="section-heading"><i class="fas fa-layer-group"></i> Select a Module</h3>
+                <div class="category-grid" id="categoryGrid">
+                    <!-- Injected by JS Controller -->
+                </div>
+            </div>
+
+            <!-- View 2: Active Quiz -->
+            <div id="view-active-quiz" class="quiz-view hidden">
+                <div class="quiz-header">
+                    <button class="btn-exit" id="btnExitQuiz" aria-label="Exit quiz and return to categories"><i class="fas fa-times"></i> Exit</button>
+                    <div class="quiz-progress-container">
+                        <div class="progress-text">
+                            <span id="quizTopicLabel">Topic</span>
+                            <span id="quizProgressLabel">Question 1 of 5</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="quizProgressBar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <h2 class="question-text" id="questionText">Question goes here?</h2>
+                    
+                    <div class="options-grid" id="optionsGrid">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <!-- ✨ Explain My Mistake Panel -->
+                    <div class="mistake-panel" id="mistakePanel" role="region" aria-label="Explain My Mistake" aria-live="polite" aria-atomic="true">
+                        <div class="mistake-panel-header">
+                            <div class="mistake-panel-title-row">
+                                <div class="mistake-icon-wrap">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h3 class="mistake-panel-title">Explain My Mistake</h3>
+                            </div>
+                            <span class="mistake-badge" id="mistakeBadge">⚡ Tag</span>
+                        </div>
+
+                        <div class="mistake-body">
+                            <div class="mistake-section">
+                                <p class="mistake-section-label"><i class="fas fa-brain"></i> Misconception</p>
+                                <p class="mistake-misconception" id="mistakeMisconception"></p>
+                            </div>
+                            <div class="mistake-section">
+                                <p class="mistake-section-label"><i class="fas fa-wrench"></i> Quick Fix</p>
+                                <p class="mistake-hint" id="mistakeHint"></p>
+                            </div>
+                        </div>
+
+                        <a class="retry-link" id="retryLink" href="#" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-redo-alt"></i>
+                            <span>Review: <strong id="retryLabel"></strong></span>
+                            <i class="fas fa-external-link-alt retry-ext-icon"></i>
+                        </a>
+                    </div>
+
+                    <div class="quiz-controls">
+                        <div class="feedback-msg" id="feedbackMsg"></div>
+                        <button class="btn-next" id="btnNextQuestion" disabled aria-label="Next question">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 3: Quiz Results -->
+            <div id="view-results" class="quiz-view hidden">
+                <div class="results-container">
+                    <i class="fas fa-trophy results-icon"></i>
+                    <h2 class="results-title">Assessment Complete!</h2>
+                    
+                    <div class="score-display">
+                        <span class="score-number" id="finalScoreDisplay">0%</span>
+                    </div>
+                    
+                    <p class="results-message" id="resultsMessage">Great job completing the module.</p>
+
+                    <!-- ✨ Weak Areas Section (shown only when mistakes were made) -->
+                    <div class="weak-areas-section hidden" id="weakAreasSection">
+                        <div class="weak-areas-header">
+                            <i class="fas fa-crosshairs"></i>
+                            <h4 class="weak-areas-title">Concepts to Review</h4>
+                        </div>
+                        <ul class="weak-areas-list" id="weakAreasList">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button class="btn-restart" id="btnRestartQuiz" aria-label="Retry this quiz module"><i class="fas fa-redo"></i> Retry Module</button>
+                        <button class="btn-return" id="btnReturnHome" aria-label="Return to category selection"><i class="fas fa-home"></i> Back to Categories</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    
+    <!-- External Scripts -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="quiz-system.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

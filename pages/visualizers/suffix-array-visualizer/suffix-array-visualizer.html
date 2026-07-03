@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[Feature] Suffix Array Visualizer with sorting rounds | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Visualize building suffix arrays using the doubling method. Step through each sorting round and watch ranks + suffix ordering update." 
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="suffix-array-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body data-page="suffix-array-visualizer">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">[Feature]</span>
+          <span class="main-title gradient-text">Suffix Array Visualizer</span>
+          <span class="subtitle">sorting rounds • rank updates • doubling method</span>
+        </h1>
+
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          <!-- LEFT MAIN -->
+          <div class="visualizer-main-panel">
+            <div class="visualizer-card canvas-card">
+              <div class="section-title">
+                <h4><i class="fas fa-layer-group"></i> Rounds & Rank Table</h4>
+                <div class="badge" id="saStepIndicator">Round: 0 / 0</div>
+              </div>
+
+              <div class="rank-table-wrap" id="rankTableWrap">
+                <div class="rank-table-header" role="row">
+                  <div class="rank-col rank-col-suffix">Suffix</div>
+                  <div class="rank-col rank-col-rank">Rank</div>
+                  <div class="rank-col rank-col-key">Round Key (len=2^k)</div>
+                  <div class="rank-col rank-col-next">Next Rank Ref</div>
+                </div>
+                <div class="rank-table-body" id="saRankTableBody">
+                  <!-- filled by JS -->
+                </div>
+              </div>
+
+              <div class="round-explainer">
+                <div class="explain-row">
+                  <span class="explain-label"><i class="fas fa-bullseye"></i> Phase</span>
+                  <span class="explain-value" id="saPhaseLabel">Initialization</span>
+                </div>
+                <div class="explain-row">
+                  <span class="explain-label"><i class="fas fa-sort-amount-down"></i> What happens</span>
+                  <span class="explain-value" id="saExplanation">Enter a string, then step through doubling rounds.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="visualizer-card theory-card">
+              <h3>
+                <i class="fas fa-book-open" style="color: var(--accent); margin-right: 0.5rem"></i>
+                Complexity Notes
+              </h3>
+              <div class="complexity-grid">
+                <div class="complexity-card-mini">
+                  <h5>Doubling Time</h5>
+                  <p id="saTimeComplexity">O(n log n)</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Doubling Space</h5>
+                  <p id="saSpaceComplexity">O(n)</p>
+                </div>
+              </div>
+              <p class="theory-text">
+                The doubling method sorts suffixes by a pair of ranks:
+                <span class="fira">(rank[i], rank[i + 2^k])</span>. Each round doubles the compared prefix length,
+                until all suffixes become uniquely ranked.
+              </p>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDEBAR -->
+          <aside class="visualizer-sidebar">
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-sliders-h" style="color: var(--accent); margin-right: 0.5rem"></i>
+                Controls
+              </h3>
+
+              <div class="control-group">
+                <label for="saTextInput">Input String</label>
+                <input
+                  type="text"
+                  id="saTextInput"
+                  class="control-input"
+                  maxlength="60"
+                  value="banana"
+                  placeholder="Enter text (e.g., banana)"
+                />
+              </div>
+
+              <div class="control-group">
+                <label for="saMethodSelect">Build Method</label>
+                <select id="saMethodSelect" class="control-input" disabled>
+                  <option value="doubling" selected>Doubling (rank by pairs)</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label for="saSpeedRange">
+                  Animation Delay
+                  <span class="val-display" id="saSpeedDisplay">400ms</span>
+                </label>
+                <input
+                  type="range"
+                  id="saSpeedRange"
+                  min="50"
+                  max="1200"
+                  step="50"
+                  value="400"
+                  class="slider-custom"
+                />
+              </div>
+
+              <div class="control-group">
+                <label for="saRoundSlider">Jump to Round</label>
+                <input
+                  type="range"
+                  id="saRoundSlider"
+                  min="0"
+                  max="0"
+                  step="1"
+                  value="0"
+                  class="slider-custom"
+                />
+                <div class="round-slider-meta">
+                  <span class="fira">k</span> <span id="saKDisplay">0</span>
+                  <span class="dot">•</span>
+                  <span class="fira">len</span> <span id="saLenDisplay">1</span>
+                </div>
+              </div>
+
+              <div class="btn-control-row sa-btn-row">
+                <button id="saPlayBtn" class="btn btn-primary btn-control" title="Play rounds">
+                  <i class="fas fa-play"></i> Play
+                </button>
+                <button id="saPauseBtn" class="btn btn-secondary btn-control" disabled title="Pause">
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+              </div>
+
+              <div class="btn-control-row sa-btn-row">
+                <button id="saStepBackBtn" class="btn btn-secondary btn-control-icon" title="Previous round" disabled>
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="saStepForwardBtn" class="btn btn-secondary btn-control-icon" title="Next round" disabled>
+                  <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="saResetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+
+              <div class="status-box" id="saStatus" aria-live="polite">
+                Enter a string and press <b>Generate</b> by stepping forward.
+              </div>
+
+              <div class="legend-panel">
+                <div class="legend-item"><span class="legend-color current"></span><span>Active suffix index</span></div>
+                <div class="legend-item"><span class="legend-color updated"></span><span>Ranks updated this round</span></div>
+              </div>
+            </div>
+
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-wand-magic-sparkles" style="color: var(--accent); margin-right: 0.5rem"></i>
+                Suffix Ordering (Final)
+              </h3>
+              <div class="final-order" id="saFinalOrder">—</div>
+              <div class="final-order-sub">Order shown when rounds finish (after ranks stabilize).</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <div class="chatbot-widget">
+      <button class="chatbot-toggle" id="chatbotToggle" aria-label="Toggle chat">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot"><p>Hi! I can help you understand suffix arrays and the doubling method.</p></div>
+        </div>
+        <div class="chatbot-input">
+          <input type="text" id="chatbotInput" placeholder="Type your question..." aria-label="Type your chat message" />
+          <button id="chatbotSend" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="suffix-array-visualizer.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>
+

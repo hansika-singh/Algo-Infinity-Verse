@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Pattern Recognition Trainer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="pattern-trainer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="pattern-trainer">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero pt-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Train Your Pattern Eye</span>
+          <span class="main-title pt-gradient">Pattern Recognition Trainer</span>
+          <span class="subtitle">Read. Identify. Master.</span>
+        </h1>
+        <p class="section-subtitle">Read a problem, identify the correct DSA pattern, and learn why it applies. Build the intuition that separates good engineers from great ones.</p>
+        <div class="hero-buttons">
+          <a href="#trainer" class="btn btn-primary"><i class="fas fa-brain"></i> Start Training</a>
+          <a href="/index.html#practice" class="btn btn-secondary"><i class="fas fa-code"></i> Practice Problems</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats bar -->
+    <section class="section" style="padding: 1.5rem 2rem;">
+      <div class="container">
+        <div class="pt-stats-bar">
+          <div class="pt-stat"><span id="ptScore">0</span><label>Score</label></div>
+          <div class="pt-stat"><span id="ptCorrect">0</span><label>Correct</label></div>
+          <div class="pt-stat"><span id="ptTotal">0</span><label>Attempted</label></div>
+          <div class="pt-stat"><span id="ptStreak">0</span><label>Streak 🔥</label></div>
+          <div class="pt-stat pt-accuracy"><span id="ptAccuracy">0%</span><label>Accuracy</label></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trainer -->
+    <section id="trainer" class="section" style="padding-top: 1rem;">
+      <div class="container">
+        <div class="pt-layout">
+
+          <!-- Question Card -->
+          <div class="pt-question-card" id="ptQuestionCard">
+            <div class="pt-q-meta">
+              <span class="pt-q-num" id="ptQNum">Question 1 / 20</span>
+              <span class="pt-diff-badge" id="ptDiffBadge">Easy</span>
+            </div>
+
+            <div class="pt-q-company" id="ptQCompany"></div>
+
+            <div class="pt-q-text" id="ptQText">Loading...</div>
+
+            <div class="pt-constraints" id="ptConstraints"></div>
+
+            <!-- Pattern Options -->
+            <div class="pt-options" id="ptOptions" role="group" aria-label="Pattern options"></div>
+
+            <!-- Feedback -->
+            <div class="pt-feedback hidden" id="ptFeedback">
+              <div class="pt-feedback-icon" id="ptFeedbackIcon"></div>
+              <div class="pt-feedback-body">
+                <div class="pt-feedback-title" id="ptFeedbackTitle"></div>
+                <div class="pt-feedback-text" id="ptFeedbackText"></div>
+              </div>
+            </div>
+
+            <!-- Next -->
+            <button class="btn btn-primary pt-next-btn hidden" id="ptNextBtn">
+              Next Question <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="pt-sidebar">
+
+            <!-- Pattern Reference -->
+            <div class="pt-sidebar-card">
+              <div class="pt-sidebar-title"><i class="fas fa-map"></i> Pattern Reference</div>
+              <div class="pt-pattern-list" id="ptPatternList"></div>
+            </div>
+
+            <!-- Progress -->
+            <div class="pt-sidebar-card">
+              <div class="pt-sidebar-title"><i class="fas fa-chart-bar"></i> Pattern Breakdown</div>
+              <div class="pt-breakdown" id="ptBreakdown"></div>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-sidebar-card">
+              <button class="btn btn-secondary pt-full-btn" id="ptRestartBtn"><i class="fas fa-undo"></i> Restart</button>
+              <button class="btn btn-secondary pt-full-btn" id="ptSkipBtn" style="margin-top:0.5rem"><i class="fas fa-forward"></i> Skip Question</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result Modal -->
+    <div class="modal" id="ptResultModal">
+      <div class="modal-content pt-result-modal">
+        <div class="modal-header">
+          <h3>Session Complete! 🎉</h3>
+        </div>
+        <div class="modal-body pt-result-body" id="ptResultBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="ptPlayAgainBtn"><i class="fas fa-redo"></i> Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./pattern-trainer.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

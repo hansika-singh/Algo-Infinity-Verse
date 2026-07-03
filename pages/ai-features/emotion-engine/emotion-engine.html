@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotion-Aware Workspace | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-ocean.min.css">
+    
+    <link rel="stylesheet" href="emotion-engine.css" />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="emotion-body">
+
+    <nav class="engine-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="telemetry-badge" id="telemetryBadge">
+            <i class="fas fa-heartbeat"></i> Emotion Engine: Active
+        </div>
+    </nav>
+
+    <main class="engine-workspace">
+        <div class="problem-panel">
+            <div class="panel-header">
+                <span id="difficultyBadge" class="badge hard">Hard</span>
+                <span>Dynamic Programming</span>
+            </div>
+            <div class="problem-content" id="problemContent">
+                <h2 id="problemTitle">Alien Dictionary (Topological Sort)</h2>
+                <p id="problemDesc">
+                    There is a new alien language that uses the English alphabet. However, the order among the letters is unknown to you. You are given a list of strings <code>words</code> from the alien language's dictionary. Return a string of the unique letters in the new alien language sorted in lexicographically increasing order by the new language's rules.
+                </p>
+                <div class="hint-box hidden" id="hintBox">
+                    <strong><i class="fas fa-lightbulb"></i> Adaptive Hint:</strong> 
+                    <span id="hintText">Try building a directed graph where edges represent character precedence, then detect cycles.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="editor-panel">
+            <div class="panel-header">
+                <span><i class="fas fa-code"></i> solution.js</span>
+                <button class="btn btn-primary btn-sm" id="btnRunCode"><i class="fas fa-play"></i> Run Tests</button>
+            </div>
+            <div class="editor-wrapper">
+                <div id="editorContainer"></div>
+                
+                <div class="intervention-overlay hidden" id="interventionOverlay">
+                    <div class="intervention-card">
+                        <div class="icon-pulse"><i class="fas fa-brain"></i></div>
+                        <h3>You seem stuck. Let's shift gears.</h3>
+                        <p>We've noticed repeated errors and high rewrite frequency. Learning is about growth, not frustration. How can we help?</p>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-outline" id="btnGiveHint">
+                                <i class="fas fa-lightbulb"></i> Give me a Hint
+                            </button>
+                            <button class="btn btn-outline" id="btnReduceDiff">
+                                <i class="fas fa-arrow-down"></i> Step-Down Difficulty
+                            </button>
+                            <button class="btn btn-outline" id="btnSwitchMode">
+                                <i class="fas fa-project-diagram"></i> Switch to Visual Mode
+                            </button>
+                        </div>
+                        <button class="btn-text" id="btnDismiss"><i class="fas fa-times"></i> I'm fine, let me keep trying</button>
+                    </div>
+                </div>
+            </div>
+            <div class="console-panel" id="consoleOutput">
+                <span class="text-muted">> Waiting for execution...</span>
+            </div>
+        </div>
+    </main>
+
+    <div class="debug-panel">
+        <div>Frustration Score: <span id="debugScore">0</span>/100</div>
+        <div>Metric: <span id="debugMetric">Stable</span></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="emotion-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raft Consensus Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for the Raft Distributed Consensus Algorithm." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="raft-simulator.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="raft-body">
+
+    <nav class="navbar raft-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-server"></i> Raft Cluster: Online
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="raft-workspace">
+        
+        <!-- Left Panel: Controls & Logs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-network-wired"></i> Cluster Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Observe how nodes elect a leader using randomized timeouts and heartbeats. Click a node on the canvas to kill/revive it and trigger a split-brain election.
+                </p>
+
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnClientReq">
+                        <i class="fas fa-database"></i> Send Client Request
+                    </button>
+                    <button class="btn btn-danger" id="btnKillLeader">
+                        <i class="fas fa-skull"></i> Kill Leader
+                    </button>
+                    <button class="btn btn-outline" id="btnPause">
+                        <i class="fas fa-pause"></i> Pause Network
+                    </button>
+                    <button class="btn btn-outline" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset Cluster
+                    </button>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Node States</h4>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="node-swatch follower"></span> Follower</div>
+                    <div class="legend-item"><span class="node-swatch candidate"></span> Candidate</div>
+                    <div class="legend-item"><span class="node-swatch leader"></span> Leader</div>
+                    <div class="legend-item"><span class="node-swatch dead"></span> Dead</div>
+                </div>
+            </div>
+
+            <!-- Server State Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> State Machine Logs</h4>
+                <div class="node-logs-container" id="nodeLogsContainer">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Network Canvas -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> Network Topology</span>
+                <span class="time-display">Term: <span id="globalTermDisplay">0</span></span>
+            </div>
+            
+            <div class="canvas-wrapper" id="networkCanvas">
+                <!-- SVG Layer for Links and Packets -->
+                <svg class="network-svg" id="svgLayer">
+                    <!-- Connections -->
+                    <g id="connectionsGroup"></g>
+                    <!-- Packets -->
+                    <g id="packetsGroup"></g>
+                </svg>
+                
+                <!-- DOM Nodes Layer -->
+                <div class="nodes-layer" id="nodesLayer"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="raft-simulator.js"></script>
+</body>
+</html>

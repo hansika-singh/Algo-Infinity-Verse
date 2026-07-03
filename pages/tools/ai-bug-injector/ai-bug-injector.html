@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Bug-Injector Sandbox | Algo Infinity Verse</title>
+    <meta name="description" content="A gamified defensive-coding sandbox where an AI collaborator injects logical defects. Find the bug and write tests to expose the deception." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ai-bug-injector.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="ai-bug-injector">
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">AI Bug-Injector</span>
+          <span class="main-title gradient-text">Code Deception Sandbox</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="visualizer-section">
+      <div class="visualizer-container">
+        
+        <aside class="control-panel">
+          <h2 class="panel-title"><i class="fas fa-gamepad"></i> Game Dashboard</h2>
+          
+          <!-- Scoreboard Section -->
+          <div class="scoreboard-card">
+            <div class="score-row">
+              <span class="score-label">Resilience Score:</span>
+              <span class="score-value" id="game-score">1000</span>
+            </div>
+            <div class="score-row">
+              <span class="score-label">Streak Multiplier:</span>
+              <span class="score-value streak-glow" id="game-multiplier">1.0x</span>
+            </div>
+            <div class="score-row">
+              <span class="score-label">Time Remaining:</span>
+              <span class="score-value" id="game-timer">120s</span>
+            </div>
+            <div class="timer-bar-container">
+              <div class="timer-bar" id="timer-progress" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Algorithm Challenge Selector -->
+          <div class="control-group">
+            <label>Select Challenge</label>
+            <div class="challenge-list" id="challenge-list">
+              <!-- Dynamically loaded buttons -->
+            </div>
+          </div>
+
+          <!-- Decepto-AI Collaborator Interaction Panel -->
+          <div class="control-group">
+            <label>Decepto-AI</label>
+            <div class="ai-interaction-card">
+              <div class="ai-avatar-row">
+                <div class="ai-avatar">
+                  <svg viewBox="0 0 100 100" fill="none">
+                    <rect x="25" y="25" width="50" height="40" rx="10" fill="#3b82f6" stroke="#60a5fa" stroke-width="3" />
+                    <rect x="35" y="65" width="30" height="15" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2" />
+                    <!-- Eyes -->
+                    <circle id="ai-eye-l" cx="40" cy="40" r="5" fill="#22c55e" />
+                    <circle id="ai-eye-r" cx="60" cy="40" r="5" fill="#22c55e" />
+                    <!-- Mouth line -->
+                    <path d="M 40 55 Q 50 60 60 55" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" />
+                    <!-- Antennas -->
+                    <line x1="50" y1="25" x2="50" y2="10" stroke="#60a5fa" stroke-width="4" />
+                    <circle cx="50" cy="10" r="6" fill="#ef4444" />
+                  </svg>
+                </div>
+                <div class="ai-meta">
+                  <span class="ai-name">Decepto-AI</span>
+                  <span class="ai-status glow-green" id="ai-status-indicator">Injected Defect</span>
+                </div>
+              </div>
+              <div class="ai-dialogue" id="ai-speech">
+                Welcome to my code deception chamber. I've slipped a logical bug into the Binary Search code. Can you find the exact line, or will your production crash?
+              </div>
+            </div>
+          </div>
+
+          <div class="button-grid">
+            <button class="btn-vis btn-danger" id="btn-reset-game"><i class="fas fa-sync-alt"></i> Restart Level</button>
+          </div>
+        </aside>
+
+        <main class="editor-sandbox-area">
+          
+          <!-- Code Editor Panel -->
+          <div class="glass-panel editor-card">
+            <div class="editor-header">
+              <div class="editor-title"><i class="fas fa-code"></i> code_sandbox.js</div>
+              <div class="editor-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+            </div>
+            
+            <div class="code-container" id="editor-code-window">
+              <!-- Clickable Code Lines will be rendered here -->
+            </div>
+            
+            <div class="editor-footer">
+              <div class="instruction-banner" id="editor-status-banner">
+                <i class="fas fa-search"></i> STEP 1: Scan the code and click on the logical bug line.
+              </div>
+            </div>
+          </div>
+
+          <!-- Failing Test Case Prover Panel -->
+          <div class="glass-panel test-proof-card locked" id="test-proof-section">
+            <div class="proof-header">
+              <h3><i class="fas fa-vial"></i> Step 2: Write a Failing Test</h3>
+              <span class="badge" id="proof-status-badge">Locked</span>
+            </div>
+            <p class="proof-description">
+              Prove the logical defect is active! Input custom test parameters that cause the buggy version to behave differently (different return value, infinite loop, or crash) compared to the correct implementation.
+            </p>
+
+            <div class="proof-inputs-container" id="inputs-wrapper">
+              <!-- Input fields will be dynamically injected here for the active algorithm -->
+            </div>
+
+            <div class="proof-action-row">
+              <button class="btn-vis btn-run" id="btn-run-proof" disabled><i class="fas fa-play"></i> Run Proof Test</button>
+            </div>
+
+            <!-- Terminal Output Console -->
+            <div class="terminal-card">
+              <div class="terminal-header">
+                <span>Terminal Output</span>
+                <span class="terminal-dot"></span>
+              </div>
+              <div class="terminal-body" id="terminal-console">
+                [SYSTEM]: Console ready. Awaiting bug line selection to unlock testing suite.
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+    
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="ai-bug-injector.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

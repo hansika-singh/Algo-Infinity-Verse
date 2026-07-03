@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topological Sort Visualizer with DAG Validation | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive step-by-step visualization of Kahn's algorithm and DFS-based topological sorting. Construct directed graphs, validate DAG state, and trace cycle detection."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="topological-sort-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="topological-sort-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Topological Sort</span>
+          <span class="subtitle">Animate Kahn's Algorithm & DFS Stack Ordering with Cycle Validation</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextGraph"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          
+          <!-- LEFT SIDEBAR: Graph Controls -->
+          <div class="visualizer-sidebar">
+            
+            <!-- Editor Modes -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-paint-brush" style="color: var(--accent); margin-right: 0.5rem"></i>Canvas Editor
+              </h3>
+              <p class="sidebar-help-text">Select edit mode, then click/drag on the canvas to configure the graph.</p>
+              
+              <div class="editor-modes-grid">
+                <button class="btn mode-btn active" data-mode="node">
+                  <i class="fas fa-plus-circle"></i> Add Node
+                </button>
+                <button class="btn mode-btn" data-mode="edge">
+                  <i class="fas fa-arrow-right"></i> Add Edge
+                </button>
+                <button class="btn mode-btn" data-mode="delete">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <button class="btn mode-btn" data-mode="run">
+                  <i class="fas fa-play-circle"></i> Select Start
+                </button>
+              </div>
+            </div>
+
+            <!-- Presets & Algorithm -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-cogs" style="color: var(--accent); margin-right: 0.5rem"></i>Settings
+              </h3>
+              
+              <!-- Presets Dropdown -->
+              <div class="control-group">
+                <label for="presetSelect">Load Preset Graph</label>
+                <select id="presetSelect" class="control-input">
+                  <option value="diamond">Diamond DAG</option>
+                  <option value="linear">Linear Dependencies</option>
+                  <option value="cyclic">Cyclic Graph (Invalid DAG)</option>
+                  <option value="disconnected">Disconnected Components</option>
+                  <option value="tree">Tree Hierarchy</option>
+                  <option value="empty">Clear Canvas</option>
+                </select>
+              </div>
+
+              <!-- Algorithm Select -->
+              <div class="control-group">
+                <label for="algoSelect">Sorting Algorithm</label>
+                <select id="algoSelect" class="control-input">
+                  <option value="kahns">Kahn's Algorithm (Indegrees BFS)</option>
+                  <option value="dfs">DFS Stack-Based Ordering</option>
+                </select>
+              </div>
+
+              <!-- Speed -->
+              <div class="control-group">
+                <label for="speedRange">Step Delay <span class="val-display" id="speedDisplay">700ms</span></label>
+                <input type="range" id="speedRange" min="200" max="2000" step="50" value="700" class="slider-custom" />
+              </div>
+
+              <!-- Audio -->
+              <div class="control-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                  <label for="soundToggle" style="margin-bottom: 0;">Audio Synthesis</label>
+                  <label class="switch-custom">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="slider-switch"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Playback controls -->
+            <div class="visualizer-card">
+              <h3>
+                <i class="fas fa-play" style="color: var(--accent); margin-right: 0.5rem"></i>Controls
+              </h3>
+              <div class="btn-control-row">
+                <button id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Run
+                </button>
+                <button id="pauseBtn" class="btn btn-secondary btn-control" style="display: none;">
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+              </div>
+              <div class="btn-control-row" style="margin-top: 0.5rem;">
+                <button id="stepBackBtn" class="btn btn-secondary btn-control-icon" title="Step Back" disabled>
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="stepForwardBtn" class="btn btn-secondary btn-control-icon" title="Step Forward" disabled>
+                  <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="resetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset Animation">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- MAIN VISUALIZER SVG CANVAS -->
+          <div class="visualizer-main-panel">
+            
+            <!-- SVG Canvas Area -->
+            <div class="visualizer-card canvas-card" style="padding: 0; position: relative;">
+              
+              <!-- Canvas HUD Details -->
+              <div class="canvas-hud">
+                <span id="canvasModeBadge" class="hud-badge mode-badge">Mode: Add Node</span>
+                <span id="validationBadge" class="hud-badge success-badge">DAG Status: Valid</span>
+              </div>
+              
+              <!-- Interactive SVG Container -->
+              <div class="svg-container-wrapper">
+                <svg id="visualizerSvg" width="100%" height="450">
+                  <defs>
+                    <marker
+                      id="arrowhead"
+                      markerWidth="10"
+                      markerHeight="7"
+                      refX="10"
+                      refY="3.5"
+                      orient="auto"
+                    >
+                      <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent)" />
+                    </marker>
+                    <marker
+                      id="arrowhead-active"
+                      markerWidth="10"
+                      markerHeight="7"
+                      refX="10"
+                      refY="3.5"
+                      orient="auto"
+                    >
+                      <polygon points="0 0, 10 3.5, 0 7" fill="var(--active-blue)" />
+                    </marker>
+                    <marker
+                      id="arrowhead-visited"
+                      markerWidth="10"
+                      markerHeight="7"
+                      refX="10"
+                      refY="3.5"
+                      orient="auto"
+                    >
+                      <polygon points="0 0, 10 3.5, 0 7" fill="var(--match-green)" />
+                    </marker>
+                    <marker
+                      id="arrowhead-cycle"
+                      markerWidth="10"
+                      markerHeight="7"
+                      refX="10"
+                      refY="3.5"
+                      orient="auto"
+                    >
+                      <polygon points="0 0, 10 3.5, 0 7" fill="var(--collision-red)" />
+                    </marker>
+                    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.02)" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  
+                  <!-- Grid Background -->
+                  <rect width="100%" height="100%" fill="url(#gridPattern)" id="canvasBg"/>
+                  
+                  <!-- Groupings for Layering -->
+                  <g id="svgEdges"></g>
+                  <g id="svgNodes"></g>
+                </svg>
+
+                <div class="canvas-placeholder-text" id="canvasPlaceholder" style="display: none;">
+                  Click anywhere inside the grid to add Node 'A'.
+                </div>
+              </div>
+            </div>
+
+            <!-- Algorithm Status Alert Panel -->
+            <div class="validation-alert-card hidden" id="validationAlert">
+              <div class="alert-icon-wrapper" id="alertIcon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="alert-text-wrapper">
+                <h4 id="alertTitle">Cycle Validation Notice</h4>
+                <p id="alertDescription">Detailed status text will appear here.</p>
+              </div>
+            </div>
+
+            <!-- Trace Structures visualiser -->
+            <div class="data-structures-dashboard">
+              
+              <!-- Active Data Structure (Queue / Call Stack) -->
+              <div class="visualizer-card structure-card">
+                <h4 class="structure-card-header">
+                  <span id="structureTitle">Active Structure (Queue)</span>
+                </h4>
+                <div class="structure-contents-wrapper" id="activeStructureWrapper">
+                  <div class="structure-empty-msg">[Empty]</div>
+                </div>
+              </div>
+
+              <!-- Indegrees Table / DFS Stack -->
+              <div class="visualizer-card structure-card" id="indegreeCard">
+                <h4 class="structure-card-header">
+                  <span id="auxiliaryTitle">Vertex Indegrees</span>
+                </h4>
+                <div class="structure-contents-wrapper" id="auxiliaryStructureWrapper">
+                  <div class="indegree-flex-container" id="indegreeContainer">
+                    <!-- Dynamic Badges -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Output Tape -->
+            <div class="visualizer-card output-card">
+              <h3>
+                <i class="fas fa-stream" style="color: var(--accent); margin-right: 0.5rem"></i>Resolved Topological Order Output
+              </h3>
+              <div class="topological-tape-container" id="topologicalTape">
+                <!-- Badges appended chronologically -->
+                <div class="tape-placeholder">Awaiting sorting execution...</div>
+              </div>
+            </div>
+
+            <!-- Logs Card -->
+            <div class="visualizer-card logs-card-wrapper">
+              <div class="logs-card-header">
+                <h3><i class="fas fa-terminal" style="color: var(--accent); margin-right: 0.5rem"></i>Execution Log Trace</h3>
+                <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" id="clearLogsBtn">Clear</button>
+              </div>
+              <div class="console-logs-container" id="logPanel">
+                <div class="log-entry sys">Canvas editor ready. Load a preset or place nodes.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Topological Sort Theory Section -->
+    <section class="section" id="theory-section" style="padding-top: 0;">
+      <div class="container">
+        <div class="visualizer-card theory-panel">
+          <h2 class="theory-title"><i class="fas fa-book-open"></i> Topological Ordering & DAG Concepts</h2>
+          
+          <div class="theory-grid">
+            <div class="theory-column">
+              <h4><i class="fas fa-project-diagram"></i> What is a Directed Acyclic Graph (DAG)?</h4>
+              <p>
+                A **Directed Acyclic Graph (DAG)** is a graph with directed edges and no cycles. This means there is no path starting at any node $V$ that follows the direction of the edges to loop back to $V$.
+              </p>
+              <p>
+                A **Topological Sort** is a linear ordering of vertices such that for every directed edge $U \rightarrow V$, vertex $U$ comes before $V$ in the ordering. Topological sort is only possible if and only if the graph is a **DAG**. If a cycle exists, no valid topological ordering exists.
+              </p>
+            </div>
+            
+            <div class="theory-column">
+              <h4><i class="fas fa-stream"></i> Algorithms comparison</h4>
+              <p>
+                **Kahn's Algorithm (BFS)** works by continually identifying nodes with an **indegree of 0** (no incoming dependencies), appending them to a queue, and "removing" their outgoing connections. If we finish sorting and some nodes have not been visited, a cycle must exist.
+              </p>
+              <p>
+                **DFS Topological Sort** runs a Depth First Search from each unvisited node. As we backtrack (finish visiting all descendants of node $V$), we push $V$ onto a Stack. If we encounter a node currently being visited (in the recursion stack), we detect a back edge, verifying the graph has a cycle.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+      <button
+        class="chatbot-toggle"
+        id="chatbotToggle"
+        aria-label="Toggle chat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button
+            class="chatbot-close"
+            id="chatbotClose"
+            aria-label="Close chat"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you learn about Directed Acyclic Graphs (DAGs) and Topological Sorting today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+          />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button
+            class="quick-q"
+            data-question="What are the differences between Kahn's algorithm and DFS topological sort?"
+          >
+            Kahn's vs DFS
+          </button>
+          <button
+            class="quick-q"
+            data-question="Explain how Kahn's algorithm detects cycles in a graph."
+          >
+            Kahn's Cycle Detection
+          </button>
+          <button class="quick-q" data-question="What is an indegree in a graph?">
+            What is Indegree?
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="topological-sort-visualizer.js"></script>
+  
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

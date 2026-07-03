@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Heatmap | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="interview-heatmap.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="interview-heatmap">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero ihm-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Where Does Your Attention Really Go?</span>
+          <span class="main-title ihm-gradient">Interview Heatmap</span>
+          <span class="subtitle">See your behavioral patterns while solving.</span>
+        </h1>
+        <p class="section-subtitle">Solve the practice problem below as you normally would. We'll track your mouse movement and scroll behavior across each section, then show you exactly where your attention went.</p>
+        <div class="hero-buttons">
+          <a href="#tracker" class="btn btn-primary"><i class="fas fa-crosshairs"></i> Start Tracking</a>
+          <a href="/pages/tools/wrong-turn-replay/wrong-turn-replay.html" class="btn btn-secondary"><i class="fas fa-history"></i> Wrong Turn Replay</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tracker Section -->
+    <section id="tracker" class="section">
+      <div class="container">
+
+        <!-- Status bar -->
+        <div class="ihm-status-bar" id="ihmStatusBar">
+          <div class="ihm-status-left">
+            <span class="ihm-status-dot" id="ihmStatusDot"></span>
+            <span id="ihmStatusText">Tracking not started</span>
+          </div>
+          <div class="ihm-status-right">
+            <button id="ihmStartBtn" class="btn btn-primary ihm-control-btn">
+              <i class="fas fa-play"></i> Start Session
+            </button>
+            <button id="ihmReportBtn" class="btn btn-secondary ihm-control-btn" disabled>
+              <i class="fas fa-chart-pie"></i> Generate Report
+            </button>
+            <button id="ihmResetBtn" class="ihm-reset-btn" aria-label="Reset session">
+              <i class="fas fa-rotate-left"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Mock problem workspace -->
+        <div class="ihm-workspace" id="ihmWorkspace">
+
+          <div class="ihm-zone" data-zone="statement" id="zoneStatement">
+            <div class="ihm-zone-label"><i class="fas fa-file-lines"></i> Problem Statement</div>
+            <h3 class="ihm-problem-title">Longest Increasing Subsequence</h3>
+            <p>
+              Given an integer array <code>nums</code>, return the length of the longest strictly
+              increasing subsequence. A subsequence is a sequence derived from the array by deleting
+              some or no elements without changing the order of the remaining elements.
+            </p>
+            <p>
+              You must design an algorithm that runs in better than O(n²) time complexity if possible,
+              though an O(n²) dynamic programming solution is also acceptable for a first pass.
+            </p>
+          </div>
+
+          <div class="ihm-zone" data-zone="constraints" id="zoneConstraints">
+            <div class="ihm-zone-label"><i class="fas fa-list-check"></i> Constraints</div>
+            <ul class="ihm-constraints-list">
+              <li><code>1 &lt;= nums.length &lt;= 2500</code></li>
+              <li><code>-10⁴ &lt;= nums[i] &lt;= 10⁴</code></li>
+              <li>All elements may include negative numbers and duplicates.</li>
+              <li>The subsequence does not need to be contiguous.</li>
+            </ul>
+          </div>
+
+          <div class="ihm-zone" data-zone="examples" id="zoneExamples">
+            <div class="ihm-zone-label"><i class="fas fa-flask"></i> Examples</div>
+            <div class="ihm-example-block">
+              <strong>Example 1:</strong>
+              <pre>Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], length 4.</pre>
+            </div>
+            <div class="ihm-example-block">
+              <strong>Example 2:</strong>
+              <pre>Input: nums = [0,1,0,3,2,3]
+Output: 4</pre>
+            </div>
+          </div>
+
+          <div class="ihm-zone ihm-zone-code" data-zone="coding" id="zoneCoding">
+            <div class="ihm-zone-label"><i class="fas fa-code"></i> Coding Area</div>
+            <textarea
+              id="ihmCodeArea"
+              class="ihm-code-textarea"
+              spellcheck="false"
+              placeholder="function lengthOfLIS(nums) {
+  // start typing your solution here...
+}"
+            ></textarea>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Report Section -->
+    <section class="section" id="reportSection">
+      <div class="container">
+        <div class="ihm-report-card" id="ihmReportCard">
+          <div class="ihm-report-header">
+            <div class="ihm-report-title"><i class="fas fa-chart-pie"></i> Attention Report</div>
+            <span class="ihm-report-duration" id="ihmReportDuration"></span>
+          </div>
+
+          <!-- Heatmap visualization -->
+          <div class="ihm-heatmap-wrap">
+            <div class="ihm-heatmap-title">Attention Distribution</div>
+            <div class="ihm-heatmap-bars" id="ihmHeatmapBars"></div>
+          </div>
+
+          <!-- Stats grid -->
+          <div class="ihm-stats-grid" id="ihmStatsGrid"></div>
+
+          <!-- Observations -->
+          <div class="ihm-observations">
+            <div class="ihm-observations-title"><i class="fas fa-magnifying-glass"></i> Observations</div>
+            <ul id="ihmObservationsList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./interview-heatmap.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

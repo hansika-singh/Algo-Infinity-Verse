@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collaborative CRDT Engine | Algo Infinity Verse</title>
+    <meta name="description" content="Visual implementation of a Sequence CRDT using Fractional Indexing for real-time collaboration." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="crdt-visualizer.css" />
+</head>
+<body class="crdt-body">
+
+    <nav class="navbar crdt-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-network-wired"></i> Distributed CRDT Network
+        </div>
+    </nav>
+
+    <!-- Header Description -->
+    <header class="workspace-header">
+        <div class="header-info">
+            <h2>Fractional Indexing CRDT (Logoot / LSEQ)</h2>
+            <p>
+                In collaborative editors (like Google Docs), assigning integer indices (0, 1, 2) breaks down during concurrent edits. 
+                This engine assigns <strong>Fractional Strings</strong> to characters to maintain absolute total ordering across the network without central locking.
+            </p>
+        </div>
+    </header>
+
+    <main class="crdt-workspace">
+        
+        <!-- User A Workspace -->
+        <div class="user-panel" id="panelA">
+            <div class="panel-header user-a-theme">
+                <h3><i class="fas fa-user"></i> Site A (Alice)</h3>
+            </div>
+            <div class="panel-body">
+                <label class="editor-label">Text Editor</label>
+                <textarea class="crdt-editor" id="editorA" placeholder="Type here..."></textarea>
+                
+                <div class="data-structure-view">
+                    <h4>Local CRDT Array</h4>
+                    <div class="table-wrapper">
+                        <table class="crdt-table">
+                            <thead>
+                                <tr>
+                                    <th>Char</th>
+                                    <th>Fractional Key</th>
+                                    <th>Site ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyA">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Central Network Simulator -->
+        <div class="network-panel">
+            <div class="network-header">
+                <h3><i class="fas fa-globe"></i> Network Queue</h3>
+            </div>
+            
+            <div class="network-controls">
+                <div class="delay-control">
+                    <label>Network Delay: <span id="delayValue">2.0s</span></label>
+                    <input type="range" id="delaySlider" min="0" max="5000" step="500" value="2000" />
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-warning w-100" id="btnFreezeNetwork">
+                        <i class="fas fa-snowflake"></i> Freeze Network
+                    </button>
+                    <button class="btn btn-primary w-100 hidden" id="btnResumeNetwork">
+                        <i class="fas fa-fire"></i> Release Packets
+                    </button>
+                    <button class="btn btn-danger w-100" id="btnClearAll" style="grid-column: span 2;">
+                        <i class="fas fa-trash-alt"></i> Reset Documents
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Packet Queue -->
+            <div class="network-arena">
+                <div class="queue-lane" id="laneAtoB">
+                    <div class="lane-label">A ➔ B</div>
+                    <div class="packet-track" id="trackAtoB"></div>
+                </div>
+                <div class="queue-lane" id="laneBtoA">
+                    <div class="lane-label">B ➔ A</div>
+                    <div class="packet-track" id="trackBtoA"></div>
+                </div>
+            </div>
+            
+            <div class="network-explanation">
+                <i class="fas fa-info-circle"></i> Try freezing the network, typing different words in both editors simultaneously, and releasing the packets to watch the CRDT flawlessly interleave and converge!
+            </div>
+        </div>
+
+        <!-- User B Workspace -->
+        <div class="user-panel" id="panelB">
+            <div class="panel-header user-b-theme">
+                <h3><i class="fas fa-user"></i> Site B (Bob)</h3>
+            </div>
+            <div class="panel-body">
+                <label class="editor-label">Text Editor</label>
+                <textarea class="crdt-editor" id="editorB" placeholder="Type here..."></textarea>
+                
+                <div class="data-structure-view">
+                    <h4>Local CRDT Array</h4>
+                    <div class="table-wrapper">
+                        <table class="crdt-table">
+                            <thead>
+                                <tr>
+                                    <th>Char</th>
+                                    <th>Fractional Key</th>
+                                    <th>Site ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyB">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="crdt-visualizer.js"></script>
+</body>
+</html>

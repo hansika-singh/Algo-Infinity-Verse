@@ -1,0 +1,162 @@
+/* ===== PSEUDO-CODE EDITOR STYLES ===== */
+
+.editor-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.toolbar-left, .toolbar-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-badge.valid {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.status-badge.invalid {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.pseudo-editor-container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pseudo-line-numbers {
+  padding: 1rem 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.3);
+  text-align: right;
+  min-width: 40px;
+  border-right: 1px solid var(--glass-border);
+  overflow: hidden;
+  user-select: none;
+}
+
+.pseudo-editor-scroll-area {
+  flex-grow: 1;
+  position: relative;
+  overflow: auto;
+}
+
+/* Overlapping Textarea and Pre */
+.pseudo-code-editor, .highlight-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  padding: 1rem;
+  margin: 0;
+  border: none;
+  background: transparent;
+  white-space: pre;
+  overflow-wrap: normal;
+  tab-size: 4;
+}
+
+.pseudo-code-editor {
+  color: transparent;
+  caret-color: var(--text-primary);
+  z-index: 2;
+  resize: none;
+  outline: none;
+}
+
+.pseudo-code-editor:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: -2px;
+}
+
+.highlight-layer {
+  color: var(--text-primary);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Syntax Highlighting Colors */
+.token-keyword { color: #c678dd; font-weight: bold; }
+.token-string { color: #98c379; }
+.token-number { color: #d19a66; }
+.token-operator { color: #56b6c2; }
+.token-comment { color: #5c6370; font-style: italic; }
+.token-variable { color: #e06c75; }
+.token-error { 
+  background-color: rgba(239, 68, 68, 0.3); 
+  border-bottom: 2px dashed #ef4444; 
+}
+
+/* Linting Panel */
+.lint-panel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.lint-panel h3 {
+  font-size: 1rem;
+  color: var(--primary-light);
+  margin-bottom: 0.75rem;
+}
+
+.lint-log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+}
+
+.lint-log li {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.lint-empty {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.lint-error {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+}

@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn CP Patterns | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Master competitive programming patterns — Two Pointers, Sliding Window, Prefix Sum, Binary Search on Answer, and more with interactive exercises."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="cp-patterns-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="cp-patterns-learning">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Recognize Patterns Before Writing Code</span>
+          <span
+            class="main-title gradient-text"
+            style="
+              background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+            "
+            >CP Patterns</span
+          >
+          <span class="subtitle"
+            >Two Pointers. Sliding Window. Prefix Sum. Binary Search on
+            Answer.</span
+          >
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_cp" id="typingTextCPPatterns"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a
+            href="#introduction"
+            class="btn btn-primary"
+            style="
+              background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+              border: none;
+              color: #fff;
+              font-weight: 600;
+            "
+          >
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-two-pointers" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="8">0</span
+            ><span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="24">0</span
+            ><span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="8">0</span
+            ><span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <!-- Main Content -->
+    <section id="cp-patterns-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">⚡</span> Learn CP Patterns
+        </h2>
+        <p class="section-subtitle">
+          Master the patterns behind array, string, and search problems in
+          contests and interviews
+        </p>
+
+        <!-- Progress Bar -->
+        <div
+          class="js-progress-bar"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Learning progress"
+        >
+          <span class="js-progress-text"
+            ><span id="progressCount">0</span> / 8 topics completed</span
+          >
+          <div class="js-progress-track">
+            <div class="js-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="js-layout">
+          <!-- Sidebar -->
+          <aside class="js-sidebar" aria-label="Topic navigation">
+            <div class="js-sidebar-title">Topics</div>
+            <ul class="js-sidebar-nav" id="topicNav">
+              <li>
+                <a href="#introduction"
+                  ><span class="nav-icon">⚡</span> Introduction</a
+                >
+              </li>
+              <li>
+                <a href="#two-pointers"
+                  ><span class="nav-icon">👈👉</span> Two Pointers</a
+                >
+              </li>
+              <li>
+                <a href="#sliding-window"
+                  ><span class="nav-icon">🪟</span> Sliding Window</a
+                >
+              </li>
+              <li>
+                <a href="#prefix-sum"
+                  ><span class="nav-icon">➕</span> Prefix Sum</a
+                >
+              </li>
+              <li>
+                <a href="#binary-search"
+                  ><span class="nav-icon">🔍</span> Binary Search on Answer</a
+                >
+              </li>
+              <li>
+                <a href="#fast-slow"
+                  ><span class="nav-icon">🐢🐇</span> Fast &amp; Slow
+                  Pointers</a
+                >
+              </li>
+              <li>
+                <a href="#monotonic-stack"
+                  ><span class="nav-icon">📚</span> Monotonic Stack</a
+                >
+              </li>
+              <li>
+                <a href="#pattern-decision"
+                  ><span class="nav-icon">🗺️</span> Pattern Decision Guide</a
+                >
+              </li>
+            </ul>
+          </aside>
+
+          <!-- Main -->
+          <main class="js-main-content" id="mainContent">
+            <!-- 1. Introduction -->
+            <article class="js-lesson" id="introduction" data-topic="1">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">01</span>
+                <h3>Introduction to CP Patterns</h3>
+              </div>
+              <p>
+                A <strong>pattern</strong> is a reusable algorithmic template
+                that applies to a family of problems. Recognizing which pattern
+                fits a problem — before writing any code — is what separates
+                prepared candidates from the rest.
+              </p>
+              <div class="hl-concept-card">
+                <h4>Why Learn Patterns?</h4>
+                <ul>
+                  <li>
+                    <strong>O(n) instead of O(n²)</strong> — patterns collapse
+                    brute-force nested loops into a single pass
+                  </li>
+                  <li>
+                    <strong>Instant recognition</strong> — see "subarray", think
+                    sliding window; see "sorted array + pair", think two
+                    pointers
+                  </li>
+                  <li>
+                    <strong>Interview confidence</strong> — you're not solving
+                    from scratch, you're applying a known template
+                  </li>
+                  <li>
+                    <strong>Foundation of harder problems</strong> — DP, graphs,
+                    and greedy all build on these primitives
+                  </li>
+                </ul>
+              </div>
+              <p>The four core patterns and their typical trigger words:</p>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Pattern Triggers</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="Two Pointers      → sorted array, pair with target sum, palindrome check
+Sliding Window    → subarray/substring, contiguous, window of size k
+Prefix Sum        → range sum query, subarray sum equals k
+Binary Search     → minimise the maximum, feasible condition, answer in a range"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-cmt">// Keyword → Pattern mapping</span>
+Two Pointers   <span class="tok-kw">=&gt;</span> sorted array, pair/triplet sum, palindrome
+Sliding Window <span class="tok-kw">=&gt;</span> subarray, substring, window of size k
+Prefix Sum     <span class="tok-kw">=&gt;</span> range sum, subarray sum equals k
+Binary Search  <span class="tok-kw">=&gt;</span> minimise maximum, feasible(x) is monotonic</code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Mental model</div>
+                <pre>
+Problem → identify constraint type → pick pattern → fill template → code</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-intro">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Identify the Pattern
+                </div>
+                <p>
+                  For each problem, name the most likely pattern: (a) "Find the
+                  longest substring with at most K distinct characters." (b)
+                  "Given a sorted array, find two numbers that sum to a target."
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-intro"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-intro">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Answer</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="(a) Sliding Window — 'longest substring' + 'at most K' = variable-size window
+(b) Two Pointers  — sorted array + pair that satisfies a sum condition"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-cmt">// (a) Sliding Window</span>
+<span class="tok-cmt">// "longest substring" + "at most K distinct" = variable window</span>
+
+<span class="tok-cmt">// (b) Two Pointers</span>
+<span class="tok-cmt">// sorted array + pair sum = classic two-pointer setup ✅</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. Two Pointers -->
+            <article class="js-lesson" id="two-pointers" data-topic="2">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">02</span>
+                <h3>Two Pointers</h3>
+              </div>
+              <p>
+                Start one pointer at the left end and one at the right. Converge
+                them based on a condition. Eliminates the O(n²) brute-force of
+                checking all pairs. Requires a <strong>sorted</strong> array or
+                a problem where the two ends are meaningful.
+              </p>
+              <div class="hl-table-wrap">
+                <table class="hl-table">
+                  <thead>
+                    <tr>
+                      <th>Property</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Time complexity</td>
+                      <td>O(n)</td>
+                    </tr>
+                    <tr>
+                      <td>Space complexity</td>
+                      <td>O(1)</td>
+                    </tr>
+                    <tr>
+                      <td>Requires sorted input?</td>
+                      <td>Usually yes (for sum problems)</td>
+                    </tr>
+                    <tr>
+                      <td>Pointer movement</td>
+                      <td>Both inward; one moves per step</td>
+                    </tr>
+                    <tr>
+                      <td>Classic problems</td>
+                      <td>
+                        Two Sum II, 3Sum, Container with Most Water, Trapping
+                        Rain Water
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="hl-callout">
+                <span class="hl-callout-icon">💡</span>
+                <p>
+                  <strong>Key insight:</strong> Because the array is sorted,
+                  moving the left pointer increases the sum and moving the right
+                  pointer decreases it. This lets you home in on the target
+                  without trying all pairs.
+                </p>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="def two_sum_sorted(arr, target):\n    L, R = 0, len(arr) - 1\n    while L < R:\n        s = arr[L] + arr[R]\n        if s == target:\n            return L, R\n        elif s < target:\n            L += 1   # need bigger sum\n        else:\n            R -= 1   # need smaller sum\n    return -1, -1\n\n# Time: O(n)   Space: O(1)"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">two_sum_sorted</span>(arr, target):
+    L, R = <span class="tok-num">0</span>, len(arr) - <span class="tok-num">1</span>
+    <span class="tok-kw">while</span> L &lt; R:
+        s = arr[L] + arr[R]
+        <span class="tok-kw">if</span> s == target:
+            <span class="tok-kw">return</span> L, R
+        <span class="tok-kw">elif</span> s &lt; target:
+            L += <span class="tok-num">1</span>   <span class="tok-cmt"># need bigger sum</span>
+        <span class="tok-kw">else</span>:
+            R -= <span class="tok-num">1</span>   <span class="tok-cmt"># need smaller sum</span>
+    <span class="tok-kw">return</span> -<span class="tok-num">1</span>, -<span class="tok-num">1</span>
+
+<span class="tok-cmt"># Time: O(n)   Space: O(1)</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Example</div>
+                <pre>
+arr = [1, 3, 5, 6, 8, 11],  target = 9
+L=0 (1), R=5 (11) → 12 > 9, R--
+L=0 (1), R=4 (8)  →  9 = 9 ✅  →  return (0, 4)</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-two-pointers">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: 3Sum
+                </div>
+                <p>
+                  Given a sorted array, find all unique triplets that sum to
+                  zero. How do you extend the two-pointer approach? What is the
+                  time complexity?
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-two-pointers"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-two-pointers">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Python</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="def threeSum(nums):\n    nums.sort()\n    result = []\n    for i in range(len(nums) - 2):\n        if i > 0 and nums[i] == nums[i-1]: continue  # skip duplicates\n        L, R = i + 1, len(nums) - 1\n        while L < R:\n            s = nums[i] + nums[L] + nums[R]\n            if s == 0:\n                result.append([nums[i], nums[L], nums[R]])\n                while L < R and nums[L] == nums[L+1]: L += 1\n                while L < R and nums[R] == nums[R-1]: R -= 1\n                L += 1; R -= 1\n            elif s < 0: L += 1\n            else: R -= 1\n    return result\n# Time: O(n²)   Space: O(1) extra"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">threeSum</span>(nums):
+    nums.sort()
+    result = []
+    <span class="tok-kw">for</span> i <span class="tok-kw">in</span> range(len(nums) - <span class="tok-num">2</span>):
+        <span class="tok-kw">if</span> i > <span class="tok-num">0</span> <span class="tok-kw">and</span> nums[i] == nums[i-<span class="tok-num">1</span>]: <span class="tok-kw">continue</span>  <span class="tok-cmt"># skip dups</span>
+        L, R = i + <span class="tok-num">1</span>, len(nums) - <span class="tok-num">1</span>
+        <span class="tok-kw">while</span> L &lt; R:
+            s = nums[i] + nums[L] + nums[R]
+            <span class="tok-kw">if</span> s == <span class="tok-num">0</span>:
+                result.append([nums[i], nums[L], nums[R]])
+                L += <span class="tok-num">1</span>; R -= <span class="tok-num">1</span>
+            <span class="tok-kw">elif</span> s &lt; <span class="tok-num">0</span>: L += <span class="tok-num">1</span>
+            <span class="tok-kw">else</span>: R -= <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> result
+<span class="tok-cmt"># Fix one element with outer loop → O(n²) total</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3. Sliding Window -->
+            <article class="js-lesson" id="sliding-window" data-topic="3">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">03</span>
+                <h3>Sliding Window</h3>
+              </div>
+              <p>
+                Maintain a contiguous window using two pointers that
+                <strong>only move right</strong>. Expand the right edge to
+                include new elements; shrink the left edge when a constraint
+                breaks. Turns O(n²) subarray searches into O(n).
+              </p>
+              <div class="hl-concept-card">
+                <h4>Two window variants</h4>
+                <ul>
+                  <li>
+                    <strong>Fixed size (k):</strong> both pointers move together
+                    — slide by adding <code>arr[r]</code> and subtracting
+                    <code>arr[r-k]</code>
+                  </li>
+                  <li>
+                    <strong>Variable size:</strong> expand right freely, shrink
+                    left until constraint is satisfied again
+                  </li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="# Fixed window — max sum subarray of size k\ndef max_sum_window(arr, k):\n    window = sum(arr[:k])\n    best = window\n    for i in range(k, len(arr)):\n        window += arr[i] - arr[i - k]  # slide\n        best = max(best, window)\n    return best\n\n# Variable window — longest substring with at most k distinct chars\ndef longest_k_distinct(s, k):\n    freq = {}\n    L = best = 0\n    for R, ch in enumerate(s):\n        freq[ch] = freq.get(ch, 0) + 1\n        while len(freq) > k:            # shrink\n            freq[s[L]] -= 1\n            if freq[s[L]] == 0: del freq[s[L]]\n            L += 1\n        best = max(best, R - L + 1)\n    return best"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-cmt"># Fixed window — max sum subarray of size k</span>
+<span class="tok-kw">def</span> <span class="tok-fn">max_sum_window</span>(arr, k):
+    window = sum(arr[:k])
+    best = window
+    <span class="tok-kw">for</span> i <span class="tok-kw">in</span> range(k, len(arr)):
+        window += arr[i] - arr[i - k]  <span class="tok-cmt"># slide right</span>
+        best = max(best, window)
+    <span class="tok-kw">return</span> best
+
+<span class="tok-cmt"># Variable window — longest substring ≤ k distinct chars</span>
+<span class="tok-kw">def</span> <span class="tok-fn">longest_k_distinct</span>(s, k):
+    freq = {}
+    L = best = <span class="tok-num">0</span>
+    <span class="tok-kw">for</span> R, ch <span class="tok-kw">in</span> enumerate(s):
+        freq[ch] = freq.get(ch, <span class="tok-num">0</span>) + <span class="tok-num">1</span>
+        <span class="tok-kw">while</span> len(freq) > k:        <span class="tok-cmt"># constraint broken</span>
+            freq[s[L]] -= <span class="tok-num">1</span>
+            <span class="tok-kw">if</span> freq[s[L]] == <span class="tok-num">0</span>: <span class="tok-kw">del</span> freq[s[L]]
+            L += <span class="tok-num">1</span>
+        best = max(best, R - L + <span class="tok-num">1</span>)
+    <span class="tok-kw">return</span> best
+<span class="tok-cmt"># Both: O(n) time</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Fixed window example</div>
+                <pre>
+arr=[2,1,5,1,3,2], k=3
+Windows: [2,1,5]=8  [1,5,1]=7  [5,1,3]=9 ← best  [1,3,2]=6
+Answer: 9</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-sliding-window">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Minimum Window
+                  Substring
+                </div>
+                <p>
+                  Given strings <code>s</code> and <code>t</code>, find the
+                  minimum window in <code>s</code> containing all characters of
+                  <code>t</code>. Which window variant applies and what is the
+                  shrink condition?
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-sliding-window"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-sliding-window">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Python</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="from collections import Counter\ndef minWindow(s, t):\n    need = Counter(t)\n    have, total = 0, len(need)\n    freq = {}\n    L = best_len = float('inf')\n    best = ''\n    for R, ch in enumerate(s):\n        freq[ch] = freq.get(ch, 0) + 1\n        if ch in need and freq[ch] == need[ch]:\n            have += 1\n        while have == total:          # valid window — try to shrink\n            if R - L + 1 < best_len:\n                best_len = R - L + 1\n                best = s[L:R+1]\n            freq[s[L]] -= 1\n            if s[L] in need and freq[s[L]] < need[s[L]]:\n                have -= 1\n            L += 1\n    return best\n# Time: O(n)  Variable window, shrink while window is valid"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-kw">from</span> collections <span class="tok-kw">import</span> Counter
+<span class="tok-kw">def</span> <span class="tok-fn">minWindow</span>(s, t):
+    need = Counter(t)
+    have, total = <span class="tok-num">0</span>, len(need)
+    freq = {}; L = <span class="tok-num">0</span>; best = <span class="tok-str">''</span>; best_len = float(<span class="tok-str">'inf'</span>)
+    <span class="tok-kw">for</span> R, ch <span class="tok-kw">in</span> enumerate(s):
+        freq[ch] = freq.get(ch, <span class="tok-num">0</span>) + <span class="tok-num">1</span>
+        <span class="tok-kw">if</span> ch <span class="tok-kw">in</span> need <span class="tok-kw">and</span> freq[ch] == need[ch]: have += <span class="tok-num">1</span>
+        <span class="tok-kw">while</span> have == total:    <span class="tok-cmt"># valid — shrink from left</span>
+            <span class="tok-kw">if</span> R - L + <span class="tok-num">1</span> &lt; best_len:
+                best_len = R - L + <span class="tok-num">1</span>; best = s[L:R+<span class="tok-num">1</span>]
+            freq[s[L]] -= <span class="tok-num">1</span>
+            <span class="tok-kw">if</span> s[L] <span class="tok-kw">in</span> need <span class="tok-kw">and</span> freq[s[L]] &lt; need[s[L]]: have -= <span class="tok-num">1</span>
+            L += <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> best
+<span class="tok-cmt"># Variable window. Shrink while window satisfies constraint.</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4. Prefix Sum -->
+            <article class="js-lesson" id="prefix-sum" data-topic="4">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">04</span>
+                <h3>Prefix Sum</h3>
+              </div>
+              <p>
+                Precompute a cumulative sum array so any range sum query
+                <code>[L, R]</code> answers in O(1). The core identity:
+                <strong>sum(L, R) = prefix[R+1] − prefix[L]</strong>. Build once
+                in O(n), query many times in O(1).
+              </p>
+              <div class="hl-concept-card">
+                <h4>When to use Prefix Sum</h4>
+                <ul>
+                  <li>
+                    <strong>Multiple range sum queries</strong> on a static
+                    array
+                  </li>
+                  <li>
+                    <strong>Subarray sum equals K</strong> — use a hashmap of
+                    prefix sums
+                  </li>
+                  <li>
+                    <strong>2D prefix sum</strong> — range sum of a submatrix in
+                    O(1)
+                  </li>
+                  <li>
+                    <strong>Difference arrays</strong> — range update in O(1),
+                    reconstruct in O(n)
+                  </li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="def build_prefix(arr):\n    prefix = [0] * (len(arr) + 1)\n    for i, v in enumerate(arr):\n        prefix[i + 1] = prefix[i] + v\n    return prefix\n\ndef range_sum(prefix, L, R):\n    return prefix[R + 1] - prefix[L]  # O(1)\n\n# Harder: count subarrays summing to k\ndef subarray_sum_k(nums, k):\n    count = 0\n    prefix = 0\n    seen = {0: 1}       # prefix_sum -> frequency\n    for n in nums:\n        prefix += n\n        count += seen.get(prefix - k, 0)\n        seen[prefix] = seen.get(prefix, 0) + 1\n    return count\n# Time: O(n)   Space: O(n)"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">build_prefix</span>(arr):
+    prefix = [<span class="tok-num">0</span>] * (len(arr) + <span class="tok-num">1</span>)
+    <span class="tok-kw">for</span> i, v <span class="tok-kw">in</span> enumerate(arr):
+        prefix[i + <span class="tok-num">1</span>] = prefix[i] + v
+    <span class="tok-kw">return</span> prefix
+
+<span class="tok-kw">def</span> <span class="tok-fn">range_sum</span>(prefix, L, R):
+    <span class="tok-kw">return</span> prefix[R + <span class="tok-num">1</span>] - prefix[L]  <span class="tok-cmt"># O(1) query</span>
+
+<span class="tok-cmt"># Count subarrays summing to k — hashmap trick</span>
+<span class="tok-kw">def</span> <span class="tok-fn">subarray_sum_k</span>(nums, k):
+    count = prefix = <span class="tok-num">0</span>
+    seen = {<span class="tok-num">0</span>: <span class="tok-num">1</span>}          <span class="tok-cmt"># prefix_sum → frequency</span>
+    <span class="tok-kw">for</span> n <span class="tok-kw">in</span> nums:
+        prefix += n
+        count += seen.get(prefix - k, <span class="tok-num">0</span>)
+        seen[prefix] = seen.get(prefix, <span class="tok-num">0</span>) + <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> count
+<span class="tok-cmt"># Time: O(n)   Space: O(n)</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Example</div>
+                <pre>
+arr    = [3, 1, 4, 1, 5]
+prefix = [0, 3, 4, 8, 9, 14]
+range_sum(prefix, 1, 3) = prefix[4] - prefix[1] = 9 - 3 = 6 ✅</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-prefix-sum">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Subarray Sum Equals
+                  K
+                </div>
+                <p>
+                  For <code>nums = [1, 2, 3], k = 3</code>, trace the hashmap
+                  approach and count how many subarrays sum to 3.
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-prefix-sum"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-prefix-sum">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Trace</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="seen={0:1}, prefix=0, count=0\nn=1: prefix=1, need=1-3=-2, seen[-2]=0,  seen={0:1,1:1}\nn=2: prefix=3, need=3-3=0,  seen[0]=1 → count=1, seen={0:1,1:1,3:1}\nn=3: prefix=6, need=6-3=3,  seen[3]=1 → count=2, seen={0:1,1:1,3:1,6:1}\nAnswer: 2  ([1,2] and [3])"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code>seen={<span class="tok-num">0</span>:<span class="tok-num">1</span>}, prefix=<span class="tok-num">0</span>, count=<span class="tok-num">0</span>
+n=<span class="tok-num">1</span>: prefix=<span class="tok-num">1</span>, need=<span class="tok-num">-2</span>, +<span class="tok-num">0</span>  → seen={<span class="tok-num">0</span>:<span class="tok-num">1</span>,<span class="tok-num">1</span>:<span class="tok-num">1</span>}
+n=<span class="tok-num">2</span>: prefix=<span class="tok-num">3</span>, need=<span class="tok-num">0</span>,  +<span class="tok-num">1</span>  → count=<span class="tok-num">1</span>  <span class="tok-cmt">// [1,2]</span>
+n=<span class="tok-num">3</span>: prefix=<span class="tok-num">6</span>, need=<span class="tok-num">3</span>,  +<span class="tok-num">1</span>  → count=<span class="tok-num">2</span>  <span class="tok-cmt">// [3]</span>
+Answer: <span class="tok-num">2</span> ✅</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. Binary Search on Answer -->
+            <article class="js-lesson" id="binary-search" data-topic="5">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">05</span>
+                <h3>Binary Search on Answer</h3>
+              </div>
+              <p>
+                When the answer lives in a range <code>[lo, hi]</code> and
+                there's a <strong>monotonic feasibility function</strong> — if
+                answer <em>x</em> works then <em>x+1</em> also works (or vice
+                versa) — binary search the answer space directly instead of
+                iterating every candidate.
+              </p>
+              <div class="hl-concept-card">
+                <h4>The two templates</h4>
+                <ul>
+                  <li>
+                    <strong>Minimum feasible value</strong> —
+                    <code>feasible(mid)</code> is true → go left (<code
+                      >hi = mid</code
+                    >)
+                  </li>
+                  <li>
+                    <strong>Maximum feasible value</strong> —
+                    <code>feasible(mid)</code> is true → go right (<code
+                      >lo = mid</code
+                    >)
+                  </li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="# Template: find minimum value x such that feasible(x) is True\ndef binary_search_answer(lo, hi):\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if feasible(mid):\n            hi = mid        # try smaller\n        else:\n            lo = mid + 1    # need bigger\n    return lo               # minimum feasible\n\n# Example: Koko Eating Bananas\n# feasible(speed) = can Koko eat all piles in h hours at this speed?\ndef minEatingSpeed(piles, h):\n    def feasible(speed):\n        return sum((p + speed - 1) // speed for p in piles) <= h\n    lo, hi = 1, max(piles)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if feasible(mid): hi = mid\n        else: lo = mid + 1\n    return lo\n# Time: O(n log(max_pile))"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-cmt"># Template: find MINIMUM x where feasible(x) is True</span>
+<span class="tok-kw">def</span> <span class="tok-fn">binary_search_answer</span>(lo, hi):
+    <span class="tok-kw">while</span> lo &lt; hi:
+        mid = (lo + hi) // <span class="tok-num">2</span>
+        <span class="tok-kw">if</span> feasible(mid):
+            hi = mid        <span class="tok-cmt"># feasible — try smaller</span>
+        <span class="tok-kw">else</span>:
+            lo = mid + <span class="tok-num">1</span>    <span class="tok-cmt"># not feasible — need bigger</span>
+    <span class="tok-kw">return</span> lo               <span class="tok-cmt"># minimum feasible value</span>
+
+<span class="tok-cmt"># Koko Eating Bananas — classic application</span>
+<span class="tok-kw">def</span> <span class="tok-fn">minEatingSpeed</span>(piles, h):
+    <span class="tok-kw">def</span> <span class="tok-fn">feasible</span>(speed):
+        <span class="tok-kw">return</span> sum((p + speed - <span class="tok-num">1</span>) // speed <span class="tok-kw">for</span> p <span class="tok-kw">in</span> piles) &lt;= h
+    lo, hi = <span class="tok-num">1</span>, max(piles)
+    <span class="tok-kw">while</span> lo &lt; hi:
+        mid = (lo + hi) // <span class="tok-num">2</span>
+        <span class="tok-kw">if</span> feasible(mid): hi = mid
+        <span class="tok-kw">else</span>: lo = mid + <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> lo
+<span class="tok-cmt"># Time: O(n log(max_pile))</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">
+                  Example trace — search space [1..10], feasible threshold = 4
+                </div>
+                <pre>
+lo=1, hi=10 → mid=5, feasible(5)=yes → hi=5
+lo=1, hi=5  → mid=3, feasible(3)=no  → lo=4
+lo=4, hi=5  → mid=4, feasible(4)=yes → hi=4
+lo=4, hi=4  → done → answer = 4 ✅</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-binary-search">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Capacity to Ship
+                </div>
+                <p>
+                  Packages with weights <code>[1,2,3,4,5,6,7,8,9,10]</code> must
+                  be shipped in <code>D=5</code> days in order. What is the
+                  minimum ship capacity? Define <code>feasible(cap)</code> in
+                  one sentence.
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-binary-search"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-binary-search">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Python</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="def shipWithinDays(weights, days):\n    def feasible(cap):\n        # Can we ship all packages in 'days' days with this capacity?\n        trips, cur = 1, 0\n        for w in weights:\n            if cur + w > cap: trips += 1; cur = 0\n            cur += w\n        return trips <= days\n    lo, hi = max(weights), sum(weights)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if feasible(mid): hi = mid\n        else: lo = mid + 1\n    return lo   # Answer: 15"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">shipWithinDays</span>(weights, days):
+    <span class="tok-kw">def</span> <span class="tok-fn">feasible</span>(cap):
+        <span class="tok-cmt"># Greedily pack days — count trips needed</span>
+        trips, cur = <span class="tok-num">1</span>, <span class="tok-num">0</span>
+        <span class="tok-kw">for</span> w <span class="tok-kw">in</span> weights:
+            <span class="tok-kw">if</span> cur + w > cap: trips += <span class="tok-num">1</span>; cur = <span class="tok-num">0</span>
+            cur += w
+        <span class="tok-kw">return</span> trips &lt;= days
+    lo, hi = max(weights), sum(weights)
+    <span class="tok-kw">while</span> lo &lt; hi:
+        mid = (lo + hi) // <span class="tok-num">2</span>
+        <span class="tok-kw">if</span> feasible(mid): hi = mid
+        <span class="tok-kw">else</span>: lo = mid + <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> lo  <span class="tok-cmt"># → 15</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6. Fast & Slow Pointers -->
+            <article class="js-lesson" id="fast-slow" data-topic="6">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">06</span>
+                <h3>Fast &amp; Slow Pointers</h3>
+              </div>
+              <p>
+                Also called <strong>Floyd's cycle detection</strong>. One
+                pointer moves one step at a time, the other moves two. If they
+                ever meet, there's a cycle. Works on linked lists and can find
+                the cycle entry point.
+              </p>
+              <div class="hl-concept-card">
+                <h4>What it solves</h4>
+                <ul>
+                  <li>
+                    <strong>Detect cycle</strong> in a linked list — O(n) time,
+                    O(1) space
+                  </li>
+                  <li>
+                    <strong>Find cycle start</strong> — reset slow to head after
+                    meeting, step both by 1
+                  </li>
+                  <li>
+                    <strong>Find middle</strong> of a linked list — when fast
+                    reaches end, slow is at middle
+                  </li>
+                  <li>
+                    <strong>Happy number</strong> — detect cycle in integer
+                    sequence
+                  </li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="def hasCycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False\n\ndef detectCycleStart(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast: break\n    else:\n        return None  # no cycle\n    slow = head\n    while slow != fast:\n        slow = slow.next\n        fast = fast.next\n    return slow  # cycle entry\n# Time: O(n)   Space: O(1)"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">hasCycle</span>(head):
+    slow = fast = head
+    <span class="tok-kw">while</span> fast <span class="tok-kw">and</span> fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        <span class="tok-kw">if</span> slow == fast: <span class="tok-kw">return True</span>
+    <span class="tok-kw">return False</span>
+
+<span class="tok-kw">def</span> <span class="tok-fn">detectCycleStart</span>(head):
+    slow = fast = head
+    <span class="tok-kw">while</span> fast <span class="tok-kw">and</span> fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        <span class="tok-kw">if</span> slow == fast: <span class="tok-kw">break</span>
+    <span class="tok-kw">else</span>: <span class="tok-kw">return None</span>
+    slow = head
+    <span class="tok-kw">while</span> slow != fast:
+        slow = slow.next; fast = fast.next
+    <span class="tok-kw">return</span> slow  <span class="tok-cmt"># cycle entry node</span>
+<span class="tok-cmt"># Time: O(n)   Space: O(1)</span></code></pre>
+              </div>
+              <div class="js-exercise" id="exercise-fast-slow">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Find the Middle
+                </div>
+                <p>
+                  Use fast and slow pointers to find the middle node of a linked
+                  list of length 5. Which node does slow point to when fast
+                  reaches the end?
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-fast-slow"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-fast-slow">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Trace</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="List: 1 → 2 → 3 → 4 → 5\nStep 0: slow=1, fast=1\nStep 1: slow=2, fast=3\nStep 2: slow=3, fast=5\nfast.next = None → loop ends. slow = node 3 (middle) ✅\ndef middleNode(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    return slow"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code>List: <span class="tok-num">1</span>→<span class="tok-num">2</span>→<span class="tok-num">3</span>→<span class="tok-num">4</span>→<span class="tok-num">5</span>
+Step <span class="tok-num">1</span>: slow=<span class="tok-num">2</span>, fast=<span class="tok-num">3</span>
+Step <span class="tok-num">2</span>: slow=<span class="tok-num">3</span>, fast=<span class="tok-num">5</span>
+fast.next = <span class="tok-kw">None</span> → done
+slow = node <span class="tok-num">3</span> ← middle ✅</code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 7. Monotonic Stack -->
+            <article class="js-lesson" id="monotonic-stack" data-topic="7">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">07</span>
+                <h3>Monotonic Stack</h3>
+              </div>
+              <p>
+                A stack that is kept in strictly increasing or decreasing order.
+                When a new element violates the order, pop elements until the
+                order is restored. Each element is pushed and popped at most
+                once — O(n) total.
+              </p>
+              <div class="hl-concept-card">
+                <h4>Classic applications</h4>
+                <ul>
+                  <li>
+                    <strong>Next greater element</strong> — for each element,
+                    find the first larger to its right
+                  </li>
+                  <li>
+                    <strong>Daily temperatures</strong> — how many days until a
+                    warmer temperature?
+                  </li>
+                  <li>
+                    <strong>Largest rectangle in histogram</strong> — find max
+                    area under bars
+                  </li>
+                  <li>
+                    <strong>Trapping rain water</strong> — also solvable with
+                    monotonic stack
+                  </li>
+                </ul>
+              </div>
+              <div class="hl-code-block">
+                <div class="hl-code-header">
+                  <span class="hl-code-lang">Python</span
+                  ><button
+                    class="hl-code-copy"
+                    data-code="def nextGreaterElement(nums):\n    result = [-1] * len(nums)\n    stack = []  # indices, monotonically decreasing values\n    for i, val in enumerate(nums):\n        while stack and nums[stack[-1]] < val:\n            idx = stack.pop()\n            result[idx] = val  # val is the next greater for idx\n        stack.append(i)\n    return result\n\n# Example: [2, 1, 5, 3, 4]\n# Result:  [5, 5,-1, 4,-1]\n# Time: O(n)   Space: O(n)"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code><span class="tok-kw">def</span> <span class="tok-fn">nextGreaterElement</span>(nums):
+    result = [-<span class="tok-num">1</span>] * len(nums)
+    stack = []  <span class="tok-cmt"># indices, values decreasing</span>
+    <span class="tok-kw">for</span> i, val <span class="tok-kw">in</span> enumerate(nums):
+        <span class="tok-kw">while</span> stack <span class="tok-kw">and</span> nums[stack[-<span class="tok-num">1</span>]] &lt; val:
+            idx = stack.pop()
+            result[idx] = val  <span class="tok-cmt"># val is next greater for idx</span>
+        stack.append(i)
+    <span class="tok-kw">return</span> result
+
+<span class="tok-cmt"># [2, 1, 5, 3, 4] → [5, 5, -1, 4, -1]</span>
+<span class="tok-cmt"># Time: O(n)   Space: O(n)</span></code></pre>
+              </div>
+              <div class="hl-output">
+                <div class="hl-output-label">Trace: nums = [2, 1, 5]</div>
+                <pre>
+i=0 val=2: stack=[0]
+i=1 val=1: 1 < 2, push. stack=[0,1]
+i=2 val=5: 5 > nums[1]=1 → result[1]=5, pop; 5 > nums[0]=2 → result[0]=5, pop
+           stack=[2]
+result = [5, 5, -1] ✅</pre
+                >
+              </div>
+              <div class="js-exercise" id="exercise-mono-stack">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Daily Temperatures
+                </div>
+                <p>
+                  For <code>temps = [73, 74, 75, 71, 69, 72, 76, 73]</code>,
+                  find how many days to wait for a warmer temperature at each
+                  index. Use a monotonic stack.
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mono-stack"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-mono-stack">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Python</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="def dailyTemperatures(temps):\n    result = [0] * len(temps)\n    stack = []  # indices, decreasing temperatures\n    for i, t in enumerate(temps):\n        while stack and temps[stack[-1]] < t:\n            idx = stack.pop()\n            result[idx] = i - idx\n        stack.append(i)\n    return result\n# [73,74,75,71,69,72,76,73] → [1,1,4,2,1,1,0,0]"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-kw">def</span> <span class="tok-fn">dailyTemperatures</span>(temps):
+    result = [<span class="tok-num">0</span>] * len(temps)
+    stack = []
+    <span class="tok-kw">for</span> i, t <span class="tok-kw">in</span> enumerate(temps):
+        <span class="tok-kw">while</span> stack <span class="tok-kw">and</span> temps[stack[-<span class="tok-num">1</span>]] &lt; t:
+            idx = stack.pop()
+            result[idx] = i - idx
+        stack.append(i)
+    <span class="tok-kw">return</span> result
+<span class="tok-cmt"># [73,74,75,71,69,72,76,73] → [1,1,4,2,1,1,0,0] ✅</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- 8. Pattern Decision Guide -->
+            <article class="js-lesson" id="pattern-decision" data-topic="8">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">08</span>
+                <h3>Pattern Decision Guide</h3>
+              </div>
+              <p>
+                Choosing the right pattern before coding is the most valuable
+                skill to develop. Use this guide during problem-reading time.
+              </p>
+              <div class="hl-table-wrap">
+                <table class="hl-table">
+                  <thead>
+                    <tr>
+                      <th>Problem Signal</th>
+                      <th>Pattern</th>
+                      <th>Time</th>
+                      <th>Key condition</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Pair/triplet sum in sorted array</td>
+                      <td>Two Pointers</td>
+                      <td>O(n)</td>
+                      <td>🏆 sorted input</td>
+                    </tr>
+                    <tr>
+                      <td>Longest/shortest subarray/substring</td>
+                      <td>Sliding Window</td>
+                      <td>O(n)</td>
+                      <td>🏆 contiguous constraint</td>
+                    </tr>
+                    <tr>
+                      <td>Multiple range sum queries</td>
+                      <td>Prefix Sum</td>
+                      <td>O(1) query</td>
+                      <td>🏆 static array, repeated queries</td>
+                    </tr>
+                    <tr>
+                      <td>Minimise maximum / feasibility in range</td>
+                      <td>Binary Search on Answer</td>
+                      <td>O(n log n)</td>
+                      <td>🏆 monotonic feasible(x)</td>
+                    </tr>
+                    <tr>
+                      <td>Cycle in linked list / find middle</td>
+                      <td>Fast &amp; Slow Pointers</td>
+                      <td>O(n)</td>
+                      <td>🏆 pointer arithmetic, O(1) space</td>
+                    </tr>
+                    <tr>
+                      <td>Next greater/smaller element</td>
+                      <td>Monotonic Stack</td>
+                      <td>O(n)</td>
+                      <td>🏆 "first X to the right"</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="hl-callout">
+                <span class="hl-callout-icon">🎯</span>
+                <p>
+                  <strong>Interview decision tree:</strong> See "sorted + pair"
+                  → Two Pointers. See "subarray/substring + contiguous" →
+                  Sliding Window. See "range sum queries" → Prefix Sum. See
+                  "minimise maximum" or "can we achieve X?" → Binary Search on
+                  Answer.
+                </p>
+              </div>
+              <div class="js-exercise" id="exercise-decision">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Practice: Mixed Identification
+                </div>
+                <p>
+                  Which pattern fits each? (a) "Find the smallest subarray with
+                  sum ≥ target." (b) "You can paint n fences in k days — what is
+                  the minimum time per fence?" (c) "Count subarrays with exactly
+                  k odd numbers."
+                </p>
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-decision"
+                >
+                  Show Solution
+                </button>
+                <div class="js-exercise-solution" id="solution-decision">
+                  <div class="hl-code-block">
+                    <div class="hl-code-header">
+                      <span class="hl-code-lang">Answer</span
+                      ><button
+                        class="hl-code-copy"
+                        data-code="(a) Sliding Window (variable) — shortest subarray with sum >= target\n    Expand right, shrink left while sum >= target\n(b) Binary Search on Answer — minimise(time) where feasible(time) = can finish in k days\n    lo=1, hi=max_time, check feasibility with greedy\n(c) Prefix Sum + hashmap — count subarrays with exact sum k\n    prefix[j] - prefix[i] = k  →  same as subarray sum equals k"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code><span class="tok-cmt">// (a) Sliding Window (variable size)</span>
+<span class="tok-cmt">//     Expand R, shrink L while sum >= target → track min length</span>
+
+<span class="tok-cmt">// (b) Binary Search on Answer</span>
+<span class="tok-cmt">//     feasible(t) = "can we paint all n fences in k days at rate t?"</span>
+<span class="tok-cmt">//     Monotonic → binary search [1, max_time]</span>
+
+<span class="tok-cmt">// (c) Prefix Sum + hashmap</span>
+<span class="tok-cmt">//     Count pairs (i,j) where prefix[j] - prefix[i] == k ✅</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./cp-patterns-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

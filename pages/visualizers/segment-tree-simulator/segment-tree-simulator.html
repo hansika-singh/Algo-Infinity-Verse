@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Segment Tree Query Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Segment Tree simulator — build, query ranges, update points, and watch propagation animate step by step." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="segment-tree-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="segment-tree-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero st-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">See Every Node. Every Query.</span>
+          <span class="main-title st-gradient">Segment Tree Simulator</span>
+          <span class="subtitle">Build · Query · Update · Watch it propagate.</span>
+        </h1>
+        <p class="section-subtitle">The hardest data structure made visual. Build a segment tree from any array, run range queries, point updates — and watch each step animate in real time.</p>
+        <div class="hero-buttons">
+          <a href="#simulator" class="btn btn-primary st-btn-primary">
+            <i class="fas fa-play"></i> Open Simulator
+          </a>
+          <a href="#learn" class="btn btn-secondary">
+            <i class="fas fa-graduation-cap"></i> How It Works
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulator -->
+    <section id="simulator" class="section">
+      <div class="container">
+
+        <!-- Array Input + Build -->
+        <div class="st-control-card">
+          <div class="st-control-row">
+            <div class="st-ctrl-group">
+              <label class="st-label" for="stArrayInput">Array (comma separated, max 16)</label>
+              <input type="text" id="stArrayInput" class="st-input" value="1, 3, 5, 7, 9, 11" aria-label="Array input" placeholder="e.g. 1, 3, 5, 7, 9, 11" />
+            </div>
+            <button class="btn btn-primary st-btn-primary" id="stBuildBtn">
+              <i class="fas fa-hammer"></i> Build Tree
+            </button>
+          </div>
+
+          <div class="st-ops-row">
+            <!-- Range Query -->
+            <div class="st-op-group">
+              <div class="st-op-title"><i class="fas fa-search"></i> Range Query</div>
+              <div class="st-op-inputs">
+                <input type="number" id="stQueryL" class="st-input-sm" value="1" min="0" aria-label="Query left index" placeholder="L" />
+                <span class="st-op-sep">to</span>
+                <input type="number" id="stQueryR" class="st-input-sm" value="4" min="0" aria-label="Query right index" placeholder="R" />
+                <button class="btn st-op-btn st-op-query" id="stQueryBtn">Query Sum</button>
+              </div>
+            </div>
+
+            <!-- Point Update -->
+            <div class="st-op-group">
+              <div class="st-op-title"><i class="fas fa-pen"></i> Point Update</div>
+              <div class="st-op-inputs">
+                <span class="st-op-sep">idx</span>
+                <input type="number" id="stUpdateIdx" class="st-input-sm" value="2" min="0" aria-label="Update index" placeholder="i" />
+                <span class="st-op-sep">val</span>
+                <input type="number" id="stUpdateVal" class="st-input-sm" value="10" aria-label="Update value" placeholder="v" />
+                <button class="btn st-op-btn st-op-update" id="stUpdateBtn">Update</button>
+              </div>
+            </div>
+
+            <!-- Speed -->
+            <div class="st-op-group">
+              <div class="st-op-title"><i class="fas fa-tachometer-alt"></i> Speed</div>
+              <div class="st-op-inputs">
+                <input type="range" id="stSpeed" class="st-range" min="1" max="5" value="3" aria-label="Animation speed" />
+                <span class="st-speed-label" id="stSpeedLabel">Normal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Playback controls -->
+          <div class="st-playback-row">
+            <button class="btn btn-secondary st-pb-btn" id="stPlayBtn" disabled aria-label="Play">
+              <i class="fas fa-play"></i> Play
+            </button>
+            <button class="btn btn-secondary st-pb-btn" id="stPauseBtn" disabled aria-label="Pause">
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="btn btn-secondary st-pb-btn" id="stStepBtn" disabled aria-label="Step forward">
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button class="btn btn-secondary st-pb-btn" id="stResetBtn" aria-label="Reset">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="st-step-counter">
+              Step <span id="stStepNum">0</span> / <span id="stStepTotal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+         <div class="st-status-bar" id="stStatus" role="status" aria-live="polite" aria-atomic="true">Build a tree from an array to begin.</div>
+
+        <!-- Tree Canvas -->
+        <div class="st-canvas-wrap">
+          <canvas id="stCanvas" class="st-canvas" aria-label="Segment tree visualization"></canvas>
+          <div class="st-canvas-empty" id="stCanvasEmpty">
+            <i class="fas fa-tree"></i>
+            <p>Enter an array above and click <strong>Build Tree</strong></p>
+          </div>
+        </div>
+
+        <!-- Bottom Array Layout -->
+        <div class="st-array-wrapper">
+          <div class="st-array-container" id="stArrayLayout"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="st-legend">
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-default"></span>Default</span>
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-active"></span>Active / Visiting</span>
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-match"></span>In Range</span>
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-partial"></span>Partial Overlap</span>
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-none"></span>No Overlap</span>
+          <span class="st-legend-item"><span class="st-legend-dot st-dot-updated"></span>Updated</span>
+        </div>
+
+        <!-- Result panel -->
+        <div class="st-result-panel hidden" id="stResultPanel" role="status" aria-live="polite" aria-atomic="true">
+          <div class="st-result-icon" id="stResultIcon"></div>
+          <div class="st-result-text" id="stResultText"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> How Segment Trees Work</h2>
+
+        <div class="st-learn-grid">
+
+          <div class="st-learn-card">
+            <div class="st-learn-num">01</div>
+            <h3>Build — O(n)</h3>
+            <p>Each leaf node stores one array element. Internal nodes store the aggregate (sum/min/max) of their children's ranges. The tree has 2n−1 nodes total.</p>
+            <div class="st-complexity-chips">
+              <span class="st-chip">Time: O(n)</span>
+              <span class="st-chip">Space: O(n)</span>
+            </div>
+          </div>
+
+          <div class="st-learn-card">
+            <div class="st-learn-num">02</div>
+            <h3>Range Query — O(log n)</h3>
+            <p>At each node, check: fully inside range → return value. No overlap → return 0. Partial → recurse into both children. At most 4 nodes per level are visited.</p>
+            <div class="st-complexity-chips">
+              <span class="st-chip">Time: O(log n)</span>
+              <span class="st-chip">Space: O(log n)</span>
+            </div>
+          </div>
+
+          <div class="st-learn-card">
+            <div class="st-learn-num">03</div>
+            <h3>Point Update — O(log n)</h3>
+            <p>Find the leaf, update it, then propagate upward: each parent recalculates its value from children. Exactly one path from leaf to root is touched.</p>
+            <div class="st-complexity-chips">
+              <span class="st-chip">Time: O(log n)</span>
+              <span class="st-chip">Space: O(1)</span>
+            </div>
+          </div>
+
+          <div class="st-learn-card">
+            <div class="st-learn-num">04</div>
+            <h3>vs Prefix Sum Array</h3>
+            <p>Prefix Sum: O(1) query but O(n) update. Segment Tree: O(log n) both. Use Segment Tree when you need both queries and updates.</p>
+            <div class="st-complexity-chips">
+              <span class="st-chip st-chip-green">Both O(log n)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Applications -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🌍</span> Real-World Applications</h2>
+        <div class="tips-grid">
+          <div class="tip-card"><h3>📊 Range Sum Queries</h3><p>Database aggregations — sum sales between date A and date B, with live updates as new sales come in.</p></div>
+          <div class="tip-card"><h3>🎮 Game Development</h3><p>Collision detection over intervals, health bar range queries, and live entity updates on large game maps.</p></div>
+          <div class="tip-card"><h3>🏆 Competitive Programming</h3><p>The go-to structure for interval problems — range min, range max, range sum, range GCD, lazy propagation.</p></div>
+          <div class="tip-card"><h3>📈 Stock Analytics</h3><p>Range maximum/minimum price over a date window, with O(log n) updates as each new price tick arrives.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js?v=20260601"></script>
+    <script src="/theme.js"></script>
+    <script src="/auth-gate.js"></script>
+    <script src="segment-tree-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

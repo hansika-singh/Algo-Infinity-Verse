@@ -1,0 +1,561 @@
+/* 3D Heap Visualizer Styles */
+:root {
+    --glass-bg: rgba(15, 23, 42, 0.65);
+    --glass-border: rgba(30, 41, 59, 0.7);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Theme Accents */
+    --conc-primary: #f97316; /* Orange */
+    --conc-primary-hover: #ea580c;
+    --conc-accent: #14b8a6; /* Teal */
+    --conc-danger: #ef4444; /* Red */
+    --conc-success: #10b981; /* Green */
+    --conc-warning: #eab308; /* Yellow */
+}
+
+body.heap-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Workspace Layout */
+.heap-workspace {
+    flex: 1;
+    display: flex;
+    background: #020617;
+    min-height: calc(100vh - 60px);
+}
+
+/* Left Panel */
+.panel-left {
+    width: 380px;
+    min-width: 380px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(15, 23, 42, 0.85);
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    z-index: 10;
+    overflow-y: auto;
+}
+.panel-header {
+    padding: 1.2rem 1.5rem;
+    background: rgba(2, 6, 23, 0.9);
+    border-bottom: 1px solid var(--glass-border);
+}
+.panel-header h3 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.control-section {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.control-group label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mode toggles */
+.mode-toggle-group {
+    display: flex;
+    background: #0f172a;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 2px;
+}
+.btn-mode {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-mode:hover {
+    color: #fff;
+}
+.btn-mode.active {
+    background: var(--conc-primary);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+}
+
+.action-input-row {
+    display: flex;
+    gap: 0.5rem;
+}
+.action-input-row input {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 0.6rem;
+    color: #fff;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    outline: none;
+    text-align: center;
+}
+.action-input-row input:focus {
+    border-color: var(--conc-primary);
+}
+
+/* Rotation sliders */
+.rotation-controls {
+    background: rgba(255,255,255,0.01);
+    border: 1px dashed var(--glass-border);
+    padding: 1rem;
+    border-radius: 8px;
+}
+.slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+.slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--conc-accent);
+}
+.slider-val {
+    font-family: 'Fira Code', monospace;
+    color: var(--conc-accent);
+    min-width: 40px;
+    text-align: right;
+}
+
+/* Speed Slider */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.slider-container input[type="range"] {
+    flex: 1;
+    accent-color: var(--conc-primary);
+}
+#speedValue {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--conc-primary);
+    min-width: 35px;
+}
+
+.action-buttons-row {
+    display: flex;
+    gap: 0.5rem;
+}
+.action-buttons-row .btn {
+    flex: 1;
+}
+
+/* Center Panel (Visualizers split screen) */
+.panel-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Top Pane: 3D tree */
+.tree-viewport-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-image: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    overflow: hidden;
+    border-bottom: 1px solid var(--glass-border);
+}
+.viewport-header {
+    height: 40px;
+    background: rgba(255,255,255,0.01);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.2rem;
+    z-index: 10;
+}
+.viewport-header .header-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+.index-formula-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--conc-accent);
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.viewport-3d-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px; /* Perspective depth */
+}
+
+/* SVG Overlay for connectors */
+.svg-overlay-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+.svg-line-connector {
+    stroke: #334155;
+    stroke-width: 2;
+    fill: none;
+    transition: all 0.3s;
+}
+.svg-line-connector.compare {
+    stroke: var(--conc-warning);
+    stroke-width: 3.5;
+    stroke-dasharray: 4 2;
+    animation: dashConnector 0.5s linear infinite;
+}
+.svg-line-connector.swap {
+    stroke: var(--conc-danger);
+    stroke-width: 4;
+}
+
+@keyframes dashConnector {
+    to { stroke-dashoffset: -10; }
+}
+
+/* 3D Tree Container */
+.tree-container-3d {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.1, 0.8, 0.3, 1.0); /* smooth rotation transition */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Heap Tree Node card */
+.heap-node-3d {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #475569;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    transform-style: preserve-3d;
+    z-index: 2;
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s, box-shadow 0.3s;
+}
+.heap-node-3d .node-value {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+.heap-node-3d .node-index-bubble {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background: var(--conc-primary);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Node visual highlight states */
+.heap-node-3d.compare {
+    border-color: var(--conc-warning);
+    box-shadow: 0 0 15px var(--conc-warning);
+    background: radial-gradient(circle at center, #713f12 0%, #0f172a 100%);
+    transform: scale(1.1);
+}
+.heap-node-3d.swap {
+    border-color: var(--conc-danger);
+    box-shadow: 0 0 20px var(--conc-danger);
+    background: radial-gradient(circle at center, #7f1d1d 0%, #0f172a 100%);
+    transform: scale(1.15) rotateY(180deg);
+}
+.heap-node-3d.active-focus {
+    border-color: var(--conc-success);
+    box-shadow: 0 0 15px var(--conc-success);
+    background: radial-gradient(circle at center, #064e3b 0%, #0f172a 100%);
+}
+.heap-node-3d.highlight-rel {
+    border-color: var(--conc-accent);
+    box-shadow: 0 0 12px var(--conc-accent);
+    background: radial-gradient(circle at center, #115e59 0%, #0f172a 100%);
+}
+
+/* Bottom Pane: Array */
+.array-memory-section {
+    height: 180px;
+    min-height: 180px;
+    background: rgba(15, 23, 42, 0.45);
+    border-top: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+.array-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+.array-header .header-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+.array-info-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+.array-scroll-wrapper {
+    flex: 1;
+    overflow-x: auto;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.array-container {
+    display: flex;
+    gap: 0.5rem;
+    min-width: 100%;
+    align-items: center;
+}
+.empty-array-msg {
+    font-size: 0.8rem;
+    color: #475569;
+    font-style: italic;
+    width: 100%;
+    text-align: center;
+}
+
+/* Array Cell card */
+.array-cell {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    background: #0f172a;
+    border: 2px solid var(--glass-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.array-cell .index-label {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    color: #475569;
+}
+.array-cell .value-display {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--conc-accent);
+}
+.array-cell:hover {
+    border-color: var(--conc-primary);
+    transform: translateY(-2px);
+}
+
+/* Array highlight classes */
+.array-cell.compare {
+    border-color: var(--conc-warning);
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+    background: rgba(234, 179, 8, 0.05);
+}
+.array-cell.swap {
+    border-color: var(--conc-danger);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.05);
+}
+.array-cell.active-focus {
+    border-color: var(--conc-success);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.05);
+}
+.array-cell.highlight-rel {
+    border-color: var(--conc-accent);
+    box-shadow: 0 0 10px rgba(20, 184, 166, 0.4);
+    background: rgba(20, 184, 166, 0.05);
+}
+
+/* Right Panel: Logs & Formula HUD */
+.panel-right {
+    width: 350px;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(15, 23, 42, 0.85);
+    border-left: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    z-index: 10;
+}
+.btn-clear {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+.btn-clear:hover {
+    color: var(--conc-danger);
+}
+
+.logs-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.logs-container {
+    flex: 1;
+    padding: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    overflow-y: auto;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.log-entry {
+    line-height: 1.4;
+    color: #94a3b8;
+    overflow-wrap: break-word;
+}
+.log-entry.sys { color: #64748b; }
+.log-entry.comp { color: var(--conc-warning); }
+.log-entry.swp { color: var(--conc-danger); }
+.log-entry.add { color: var(--conc-success); }
+.log-entry.ext { color: var(--conc-accent); }
+
+/* Math Formula Card */
+.formula-helper-card {
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid var(--glass-border);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.formula-helper-card h5 {
+    margin: 0 0 0.3rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.formula-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+.formula-value {
+    font-family: 'Fira Code', monospace;
+    color: var(--conc-accent);
+}
+
+/* Global button utility */
+.btn {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+.btn-primary { background: var(--conc-primary); color: #fff; }
+.btn-primary:hover { background: var(--conc-primary-hover); transform: translateY(-1px); }
+.btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--conc-danger); border: 1px solid var(--conc-danger); }
+.btn-danger:hover { background: var(--conc-danger); color: #fff; }
+.btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-primary); }
+.btn-outline:hover { background: rgba(255,255,255,0.05); border-color: #475569; }
+.w-100 { width: 100%; }
+
+@media (max-width: 1200px) {
+    .heap-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left, .panel-right { width: 100%; min-width: 100%; height: auto; }
+    .panel-center { height: 600px; min-height: 600px; }
+}

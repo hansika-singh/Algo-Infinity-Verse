@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Circuit Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Build quantum circuits and visualize state vectors using WebGPU and 3D Bloch Spheres." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Three.js for 3D Bloch Spheres -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Chart.js for Probability Histogram -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="quantum-simulator.css" />
+</head>
+<body class="quantum-body">
+
+    <nav class="navbar quantum-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="gpuStatusBadge">
+            <i class="fas fa-microchip"></i> WebGPU Engine: Initializing...
+        </div>
+    </nav>
+
+    <main class="quantum-workspace">
+        
+        <!-- Left Panel: Quantum Gates Palette -->
+        <aside class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cubes"></i> Logic Gates</h3>
+            </div>
+            
+            <div class="palette-container">
+                <p class="desc-text">Drag gates onto the circuit timeline to manipulate the qubit states.</p>
+                
+                <div class="gate-category">Superposition</div>
+                <div class="gate-node gate-h" draggable="true" data-gate="H">
+                    <strong>H</strong>
+                    <span>Hadamard</span>
+                </div>
+
+                <div class="gate-category">Pauli Rotations</div>
+                <div class="gate-node gate-x" draggable="true" data-gate="X">
+                    <strong>X</strong>
+                    <span>NOT (Bit Flip)</span>
+                </div>
+                <div class="gate-node gate-y" draggable="true" data-gate="Y">
+                    <strong>Y</strong>
+                    <span>Phase & Bit Flip</span>
+                </div>
+                <div class="gate-node gate-z" draggable="true" data-gate="Z">
+                    <strong>Z</strong>
+                    <span>Phase Flip</span>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-danger w-100" id="btnClearCircuit">
+                    <i class="fas fa-trash-alt"></i> Clear Circuit
+                </button>
+            </div>
+        </aside>
+
+        <!-- Center Panel: 3D Visualization & Circuit Board -->
+        <div class="panel-center">
+            
+            <!-- Top: 3D Bloch Spheres -->
+            <div class="bloch-arena" id="blochContainer">
+                <div class="camera-hint"><i class="fas fa-mouse"></i> Drag to rotate Spheres</div>
+                <!-- Three.js Canvas Injected Here -->
+            </div>
+
+            <!-- Bottom: Circuit Composer -->
+            <div class="circuit-composer">
+                <div class="composer-header">
+                    <h4><i class="fas fa-project-diagram"></i> Circuit Timeline</h4>
+                    <button class="btn btn-primary btn-sm" id="btnExecute">
+                        <i class="fas fa-bolt"></i> Execute Circuit
+                    </button>
+                </div>
+                
+                <div class="circuit-grid" id="circuitGrid">
+                    <!-- Qubit 0 -->
+                    <div class="qubit-row">
+                        <div class="qubit-label">|q0⟩</div>
+                        <div class="wire">
+                            <div class="drop-zone" data-q="0" data-step="0"></div>
+                            <div class="drop-zone" data-q="0" data-step="1"></div>
+                            <div class="drop-zone" data-q="0" data-step="2"></div>
+                            <div class="drop-zone" data-q="0" data-step="3"></div>
+                            <div class="drop-zone" data-q="0" data-step="4"></div>
+                        </div>
+                    </div>
+                    <!-- Qubit 1 -->
+                    <div class="qubit-row">
+                        <div class="qubit-label">|q1⟩</div>
+                        <div class="wire">
+                            <div class="drop-zone" data-q="1" data-step="0"></div>
+                            <div class="drop-zone" data-q="1" data-step="1"></div>
+                            <div class="drop-zone" data-q="1" data-step="2"></div>
+                            <div class="drop-zone" data-q="1" data-step="3"></div>
+                            <div class="drop-zone" data-q="1" data-step="4"></div>
+                        </div>
+                    </div>
+                    <!-- Qubit 2 -->
+                    <div class="qubit-row">
+                        <div class="qubit-label">|q2⟩</div>
+                        <div class="wire">
+                            <div class="drop-zone" data-q="2" data-step="0"></div>
+                            <div class="drop-zone" data-q="2" data-step="1"></div>
+                            <div class="drop-zone" data-q="2" data-step="2"></div>
+                            <div class="drop-zone" data-q="2" data-step="3"></div>
+                            <div class="drop-zone" data-q="2" data-step="4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Math & Probability -->
+        <aside class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-chart-bar"></i> Measurement & Math</h3>
+            </div>
+            
+            <div class="metrics-content">
+                <div class="state-vector-panel">
+                    <h4>State Vectors (α|0⟩ + β|1⟩)</h4>
+                    <div class="vector-display" id="vectorDisplays">
+                        <div class="vec-row"><span class="q-id">q0</span> <code id="vecQ0">1.00|0⟩ + 0.00|1⟩</code></div>
+                        <div class="vec-row"><span class="q-id">q1</span> <code id="vecQ1">1.00|0⟩ + 0.00|1⟩</code></div>
+                        <div class="vec-row"><span class="q-id">q2</span> <code id="vecQ2">1.00|0⟩ + 0.00|1⟩</code></div>
+                    </div>
+                </div>
+
+                <div class="probability-panel">
+                    <h4>Probability Distribution (|ψ|²)</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="probChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="wgsl-log">
+                    <h4><i class="fas fa-terminal"></i> WebGPU Compute Log</h4>
+                    <div class="log-container" id="wgslConsole">
+                        > Waiting for execution...
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="quantum-simulator.js"></script>
+</body>
+</html>

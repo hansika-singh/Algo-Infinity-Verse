@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Binary Search – Algorithm Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Master the Binary Search algorithm. Learn the divide and conquer strategy, understand O(log n) time complexity, and interact with our step-by-step visualizer." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="binary-search.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="binary-search">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master the</span>
+          <span class="main-title gradient-text">Binary Search Algorithm</span>
+          <span class="subtitle">Logarithmic Time Searching in O(log n)</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_binary_search" id="typingTextBinarySearch"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#introduction" class="btn btn-primary"><i class="fas fa-play"></i> Start Learning</a>
+          <a href="#practice" class="btn btn-secondary"><i class="fas fa-pen"></i> Practice Exercises</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="1">0</span>
+            <span class="stat-label">Visualizer</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="4">0</span>
+            <span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <section id="binary-search-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🔍</span>
+          Learn Binary Search
+        </h2>
+        <p class="section-subtitle">Master the divide and conquer strategy for lightning-fast searches.</p>
+
+        <div class="mode-toggle-wrapper">
+          <div class="mode-toggle-segmented" role="tablist" aria-label="Learning Modes">
+            <button class="mode-toggle-btn active" data-set-mode="learning" role="tab" aria-selected="true" aria-controls="mainContent topicNav">
+              <i class="fas fa-book-open"></i> Learning Mode
+            </button>
+            <button class="mode-toggle-btn" data-set-mode="interview" role="tab" aria-selected="false" aria-controls="mainContent topicNav">
+              <i class="fas fa-briefcase"></i> Interview Mode
+            </button>
+            <span class="mode-toggle-glider" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="binary-search-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+          <span class="binary-search-progress-text"><span id="progressCount">0</span> / <span id="progressTotal">5</span> topics completed</span>
+          <div class="binary-search-progress-track">
+            <div class="binary-search-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="binary-search-layout">
+          <aside class="binary-search-sidebar" aria-label="Topic navigation">
+            <div class="binary-search-sidebar-title">Topics</div>
+            <ul class="binary-search-sidebar-nav" id="topicNav">
+              <li data-mode="learning"><a href="#introduction"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li data-mode="learning"><a href="#prerequisites"><span class="nav-icon">⚙️</span> Prerequisites & Rules</a></li>
+              <li data-mode="learning"><a href="#algorithm"><span class="nav-icon">🕹️</span> Algorithm & Visualizer</a></li>
+              <li data-mode="learning"><a href="#complexity"><span class="nav-icon">⏱️</span> Complexity Analysis</a></li>
+              <li data-mode="interview"><a href="#concise-notes"><span class="nav-icon">📋</span> Concise Notes</a></li>
+              <li data-mode="interview"><a href="#common-traps"><span class="nav-icon">⚠️</span> Common Traps</a></li>
+              <li data-mode="interview"><a href="#interview-faqs"><span class="nav-icon">❓</span> Interview FAQs</a></li>
+              <li><a href="#practice"><span class="nav-icon">🏋️</span> Practice Exercises</a></li>
+            </ul>
+          </aside>
+
+          <main class="binary-search-main-content" id="mainContent">
+
+            <article class="binary-search-lesson" id="introduction" data-topic="1" data-mode="learning">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">01</span>
+                <h3>Deep Dive: Overview</h3>
+              </div>
+              <p>
+                Binary Search is a highly efficient search algorithm that follows the <strong>Divide and Conquer</strong> paradigm. Instead of scanning through a collection element by element (which is how a Linear Search operates in <strong>O(N)</strong> time), Binary Search drastically reduces the search space by cutting it in half after every single comparison.
+              </p>
+              <div class="binary-search-concept-card">
+                <h4>Why is it so powerful?</h4>
+                <p>To understand its power, consider searching through an array of one million items. A linear search might take up to one million checks in the worst-case scenario. Binary search guarantees a result in a maximum of just <strong>20 steps</strong>.</p>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="prerequisites" data-topic="2" data-mode="learning">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">02</span>
+                <h3>Prerequisites & Rules</h3>
+              </div>
+              <p>Before implementing Binary Search, the data structure must meet two strict requirements:</p>
+              
+              <div class="binary-search-concept-card">
+                <h4>1. Random Access</h4>
+                <p>The underlying data structure must allow for direct index access in <strong>O(1)</strong> time. This is why binary search is perfect for Arrays, but highly inefficient for Linked Lists.</p>
+              </div>
+
+              <div class="binary-search-callout">
+                <span class="binary-search-callout-icon">⚠️</span>
+                <p><strong>The Golden Rule — Monotonicity:</strong> The array <strong>must be sorted</strong> (either strictly increasing or strictly decreasing). Sorting an array takes <strong>O(N log N)</strong> time, so sorting just to perform a single binary search is counterproductive. It is best used when searching an array multiple times.</p>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="algorithm" data-topic="3" data-mode="learning">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">03</span>
+                <h3>Algorithm & Visualizer</h3>
+              </div>
+              <p>
+                The logic mirrors looking up a word in a dictionary. You open the book to the middle. If your target word precedes the page you are on, you know with absolute certainty it is in the left half. You ignore the right half entirely and repeat the process.
+              </p>
+
+              <div class="binary-search-code-block" style="margin-bottom: 40px;">
+                <div class="binary-search-code-header">
+                  <span class="binary-search-code-lang">JavaScript</span>
+                  <button class="binary-search-code-copy" aria-label="Copy code" data-code="function binarySearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+
+  while (low <= high) {
+    let mid = Math.floor((low + high) / 2);
+
+    if (arr[mid] === target) return mid;
+    else if (arr[mid] < target) low = mid + 1;
+    else high = mid - 1;
+  }
+  return -1;
+}">Copy</button>
+                </div>
+                <pre><code><span class="tok-kw">function</span> <span class="tok-fn">binarySearch</span>(<span class="tok-var">arr</span>, <span class="tok-var">target</span>) {
+  <span class="tok-kw">let</span> <span class="tok-var">low</span> = <span class="tok-num">0</span>;
+  <span class="tok-kw">let</span> <span class="tok-var">high</span> = <span class="tok-var">arr</span>.<span class="tok-prop">length</span> - <span class="tok-num">1</span>;
+
+  <span class="tok-kw">while</span> (<span class="tok-var">low</span> &lt;= <span class="tok-var">high</span>) {
+    <span class="tok-kw">let</span> <span class="tok-var">mid</span> = <span class="tok-var">Math</span>.<span class="tok-fn">floor</span>((<span class="tok-var">low</span> + <span class="tok-var">high</span>) / <span class="tok-num">2</span>);
+
+    <span class="tok-kw">if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] === <span class="tok-var">target</span>) <span class="tok-kw">return</span> <span class="tok-var">mid</span>;
+    <span class="tok-kw">else if</span> (<span class="tok-var">arr</span>[<span class="tok-var">mid</span>] &lt; <span class="tok-var">target</span>) <span class="tok-var">low</span> = <span class="tok-var">mid</span> + <span class="tok-num">1</span>;
+    <span class="tok-kw">else</span> <span class="tok-var">high</span> = <span class="tok-var">mid</span> - <span class="tok-num">1</span>;
+  }
+  <span class="tok-kw">return</span> -<span class="tok-num">1</span>;
+}</code></pre>
+              </div>
+
+              <div class="binary-search-concept-card" style="text-align: center;">
+                  <h4>Interactive Visualizer</h4>
+                  <p style="margin-bottom: 20px;">Let's simulate the algorithm. We are searching for the target number <strong>88</strong>.</p>
+                  
+                  <div class="controls" style="margin-bottom: 20px;">
+                      <button id="step-btn" class="btn btn-primary">Step Forward</button>
+                      <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                  </div>
+
+                  <div class="array-container" id="array-container" style="padding: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;"></div>
+
+                  <div class="status-panel" style="padding: 20px; background: rgba(108, 99, 255, 0.05); border-radius: 8px;">
+                      <p id="status-text" style="font-family: 'Fira Code', monospace; margin-bottom: 15px;">Awaiting execution...</p>
+                      <div class="pointers" style="display: flex; gap: 20px; justify-content: center;">
+                          <span class="badge">Low: <span id="low-val">0</span></span>
+                          <span class="badge">Mid: <span id="mid-val">-</span></span>
+                          <span class="badge">High: <span id="high-val">9</span></span>
+                      </div>
+                  </div>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="complexity" data-topic="4" data-mode="learning">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">04</span>
+                <h3>Mathematical Complexity</h3>
+              </div>
+
+              <div class="binary-search-concept-card">
+                <h4>Time Complexity</h4>
+                <ul>
+                  <li><strong>Best Case: O(1)</strong> - The target is exactly at the middle index on the first calculation.</li>
+                  <li><strong>Worst Case: O(log N)</strong> - The target is at the very ends of the array, or doesn't exist.</li>
+                  <li><strong>Average Case: O(log N)</strong></li>
+                </ul>
+              </div>
+
+              <div class="binary-search-concept-card">
+                <h4>Space Complexity</h4>
+                <ul>
+                  <li><strong>Iterative: O(1)</strong> - Only requires storing three pointer variables (<code>low</code>, <code>high</code>, <code>mid</code>).</li>
+                  <li><strong>Recursive: O(log N)</strong> - Requires memory overhead for the call stack during recursive halving.</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- ========================================================
+                 INTERVIEW MODE SECTIONS
+                 ======================================================== -->
+            <article class="binary-search-lesson" id="concise-notes" data-topic="6" data-mode="interview">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">01</span>
+                <h3>Concise Notes</h3>
+              </div>
+              <p>
+                A high-speed summary of the Binary Search algorithm, its mathematical core, and its performance footprint.
+              </p>
+              
+              <div class="concise-grid">
+                <div class="concise-card">
+                  <h4><i class="fas fa-bullseye"></i> Core Invariant</h4>
+                  <ul>
+                    <li>Requires <strong>sorted input</strong> (strictly increasing or decreasing).</li>
+                    <li>Uses the <strong>Divide and Conquer</strong> paradigm to prune the search space by half in each iteration.</li>
+                    <li>Access speed must be <strong>O(1)</strong> (arrays). Linked lists turn search into <strong>O(N)</strong>.</li>
+                  </ul>
+                </div>
+                <div class="concise-card">
+                  <h4><i class="fas fa-calculator"></i> Key Formulas</h4>
+                  <ul>
+                    <li><strong>Midpoint Index</strong>: <code>mid = low + Math.floor((high - low) / 2)</code> (prevents memory overflow).</li>
+                    <li><strong>Search Range</strong>: <code>high = mid - 1</code> (left half) or <code>low = mid + 1</code> (right half).</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="binary-search-table-wrap">
+                <table class="binary-search-table">
+                  <thead>
+                    <tr>
+                      <th>Scenario</th>
+                      <th>Time Complexity</th>
+                      <th>Space Complexity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Best Case</strong> (Target at mid)</td>
+                      <td>O(1)</td>
+                      <td>O(1) (Iterative)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Worst Case</strong> (Target not found / at end)</td>
+                      <td>O(log N)</td>
+                      <td>O(1) (Iterative) / O(log N) (Recursive)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Average Case</strong></td>
+                      <td>O(log N)</td>
+                      <td>O(1) (Iterative)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="common-traps" data-topic="7" data-mode="interview">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">02</span>
+                <h3>Common Interview Traps</h3>
+              </div>
+              <p>Beware of these classic traps that interviewers use to trip up candidates:</p>
+
+              <div class="interview-traps-container">
+                <div class="interview-trap-card">
+                  <div class="interview-trap-header">
+                    <i class="fas fa-exclamation-triangle"></i> Trap 1: Integer Overflow
+                  </div>
+                  <p>
+                    Writing <code>let mid = Math.floor((low + high) / 2)</code> can cause integer overflow in languages with fixed-width integers (like Java or C++) if <code>low + high</code> exceeds <code>2^31 - 1</code>.
+                  </p>
+                  <p>
+                    <strong>Remedy:</strong> Always use <code>low + Math.floor((high - low) / 2)</code>.
+                  </p>
+                </div>
+
+                <div class="interview-trap-card">
+                  <div class="interview-trap-header">
+                    <i class="fas fa-redo"></i> Trap 2: Infinite Loops (Off-By-One Errors)
+                  </div>
+                  <p>
+                    Incorrectly updating pointers (like <code>low = mid</code> or <code>high = mid</code>) combined with <code>while (low &lt; high)</code> can lead to an infinite loop, especially when the search range reduces to two elements.
+                  </p>
+                  <p>
+                    <strong>Remedy:</strong> Match <code>while (low &lt;= high)</code> with explicit boundaries: <code>low = mid + 1</code> and <code>high = mid - 1</code>. If using <code>low &lt; high</code>, ensure the search terminates properly.
+                  </p>
+                </div>
+
+                <div class="interview-trap-card">
+                  <div class="interview-trap-header">
+                    <i class="fas fa-random"></i> Trap 3: Binary Search on Unsorted Data
+                  </div>
+                  <p>
+                    Interviewers might ask to find an element in a modified array (e.g. rotated sorted array, peak element). You cannot apply naive binary search, but the property of monotonicity still holds on halves.
+                  </p>
+                  <p>
+                    <strong>Remedy:</strong> Find the sorted half first, or evaluate the condition <code>arr[mid] &gt; arr[mid + 1]</code> to determine which way the peak lies.
+                  </p>
+                </div>
+
+                <div class="interview-trap-card">
+                  <div class="interview-trap-header">
+                    <i class="fas fa-clone"></i> Trap 4: Handling Duplicate Elements
+                  </div>
+                  <p>
+                    A standard binary search returns <em>any</em> index matching the target. If the interviewer asks for the <em>first</em> or <em>last</em> index of a duplicate target, standard implementation fails.
+                  </p>
+                  <p>
+                    <strong>Remedy:</strong> When <code>arr[mid] === target</code>, do not return immediately. To find the first occurrence, set <code>high = mid - 1</code> and save <code>mid</code> as a candidate answer. To find the last occurrence, set <code>low = mid + 1</code>.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="interview-faqs" data-topic="8" data-mode="interview">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">03</span>
+                <h3>Interview FAQs</h3>
+              </div>
+              <p>Top questions asked by FAANG interviewers regarding binary search:</p>
+
+              <div class="faq-accordion">
+                <div class="faq-item">
+                  <button class="faq-question-btn" aria-expanded="false" aria-controls="faq-ans-1">
+                    Can Binary Search be used on a Linked List?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                  </button>
+                  <div id="faq-ans-1" class="faq-answer" role="region">
+                    <div class="faq-answer-content">
+                      <p>
+                        Technically yes, but it is highly inefficient. 
+                      </p>
+                      <p>
+                        Since linked lists do not support <strong>random access</strong> in O(1) time, finding the middle element requires traversing the list from the head, taking O(N) operations. Thus, each step of the binary search takes O(N) time, making the overall complexity <strong>O(N log N)</strong> or <strong>O(N)</strong>, which is worse or equal to simple Linear Search (<strong>O(N)</strong>).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <button class="faq-question-btn" aria-expanded="false" aria-controls="faq-ans-2">
+                    When should I use iterative vs recursive binary search?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                  </button>
+                  <div id="faq-ans-2" class="faq-answer" role="region">
+                    <div class="faq-answer-content">
+                      <p>
+                        <strong>Iterative</strong> is generally preferred in production because of its <strong>O(1) auxiliary space complexity</strong>. 
+                      </p>
+                      <p>
+                        <strong>Recursive</strong> binary search requires <strong>O(log N) space</strong> on the call stack. In systems with limited stack space, recursive execution could trigger stack overflow errors, whereas iterative loop space execution is safe.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <button class="faq-question-btn" aria-expanded="false" aria-controls="faq-ans-3">
+                    What is "binary search on search space" (or binary search on answers)?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                  </button>
+                  <div id="faq-ans-3" class="faq-answer" role="region">
+                    <div class="faq-answer-content">
+                      <p>
+                        This is an advanced technique used when the search target is not an element in an array, but an integer/value in a range <code>[min_possible_value, max_possible_value]</code>.
+                      </p>
+                      <p>
+                        If we can define a function <code>isPossible(x)</code> that returns <code>true</code> or <code>false</code> and exhibits <strong>monotonicity</strong> (i.e., if it's possible for <code>x</code>, it's also possible for all values greater than <code>x</code>), we can binary search the answer range. Common examples include <em>Allocate Books</em>, <em>Koko Eating Bananas</em>, and <em>Split Array Largest Sum</em>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <button class="faq-question-btn" aria-expanded="false" aria-controls="faq-ans-4">
+                    How do you perform binary search in a rotated sorted array?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                  </button>
+                  <div id="faq-ans-4" class="faq-answer" role="region">
+                    <div class="faq-answer-content">
+                      <p>
+                        At any point in a rotated sorted array, if you split it in half, at least one of the halves is guaranteed to be fully sorted.
+                      </p>
+                      <p>
+                        1. Calculate <code>mid</code>.
+                        2. Check if the left half is sorted (<code>arr[low] &lt;= arr[mid]</code>). If yes, check if the target lies within the left boundaries. If so, search left (<code>high = mid - 1</code>), else search right (<code>low = mid + 1</code>).
+                        3. If the left half is not sorted, the right half must be sorted. Check if the target lies within the right boundaries. If so, search right, else search left.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="binary-search-lesson" id="practice" data-topic="5">
+              <div class="binary-search-lesson-header">
+                <span class="binary-search-lesson-number">05</span>
+                <h3>Practice Exercises</h3>
+              </div>
+              <p>Binary search variations are heavily tested in technical interviews. Master these patterns to build your intuition:</p>
+
+              <div class="binary-search-exercise">
+                <div class="binary-search-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Basic Implementation (LeetCode 704)
+                </div>
+                <p>Given an array of integers <code>nums</code> which is sorted in ascending order, and an integer <code>target</code>, write a function to search target in nums.</p>
+                <a href="https://leetcode.com/problems/binary-search/" target="_blank" class="btn btn-outline" style="margin-top: 10px;">Solve on LeetCode</a>
+              </div>
+
+              <div class="binary-search-exercise">
+                <div class="binary-search-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Search Insert Position (LeetCode 35)
+                </div>
+                <p>Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.</p>
+                <a href="https://leetcode.com/problems/search-insert-position/" target="_blank" class="btn btn-outline" style="margin-top: 10px;">Solve on LeetCode</a>
+              </div>
+
+              <div class="binary-search-exercise">
+                <div class="binary-search-exercise-title">
+                    <i class="fas fa-dumbbell"></i> Find First/Last Position (LeetCode 34)
+                </div>
+                <p>Find the starting and ending position of a given target value in a sorted array.</p>
+                <a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/" target="_blank" class="btn btn-outline" style="margin-top: 10px;">Solve on LeetCode</a>
+              </div>
+
+              <div class="binary-search-exercise">
+                <div class="binary-search-exercise-title">
+                    <i class="fas fa-dumbbell"></i> Search in Rotated Sorted Array (LeetCode 33)
+                </div>
+                <p>Search for a target value in a sorted array that has been rotated at an unknown pivot.</p>
+                <a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" class="btn btn-outline" style="margin-top: 10px;">Solve on LeetCode</a>
+              </div>              
+
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="binary-search.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

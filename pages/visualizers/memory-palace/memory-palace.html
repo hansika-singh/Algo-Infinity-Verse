@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Palace — RAM Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Visual RAM simulator showing how arrays, linked lists, stacks, queues, hash maps, and binary trees actually live in memory." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="memory-palace.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="memory-palace">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero mp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Where Does Your Data Actually Live?</span>
+          <span class="main-title mp-gradient">Memory Palace</span>
+          <span class="subtitle">Visual RAM Simulator for Data Structures</span>
+        </h1>
+        <p class="section-subtitle">See how arrays sit contiguously in RAM while linked lists scatter across it. Watch a hash map's internal array, pointer chains for collision, and a binary tree stored as a heap array — all in a live 256-cell memory grid.</p>
+        <div class="hero-buttons">
+          <a href="#simulator" class="btn btn-primary mp-btn-primary"><i class="fas fa-microchip"></i> Open Simulator</a>
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Why This Matters</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulator -->
+    <section id="simulator" class="section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="mp-control-card">
+
+          <!-- DS selector -->
+          <div class="mp-row">
+            <span class="mp-row-label">Data Structure:</span>
+            <div class="mp-ds-btns">
+              <button class="mp-ds-btn active" data-ds="array">Array</button>
+              <button class="mp-ds-btn" data-ds="linkedlist">Linked List</button>
+              <button class="mp-ds-btn" data-ds="stack">Stack</button>
+              <button class="mp-ds-btn" data-ds="queue">Queue (Ring Buffer)</button>
+              <button class="mp-ds-btn" data-ds="hashmap">Hash Map</button>
+              <button class="mp-ds-btn" data-ds="binarytree">Binary Tree</button>
+            </div>
+          </div>
+
+          <!-- Operations -->
+          <div class="mp-row" id="mpOpsRow">
+            <span class="mp-row-label">Operation:</span>
+            <div class="mp-ops-wrap" id="mpOpsWrap"></div>
+          </div>
+
+          <!-- Value input -->
+          <div class="mp-row">
+            <span class="mp-row-label">Value:</span>
+            <input type="number" id="mpValue" class="mp-val-input" value="42" aria-label="Value to insert" />
+            <button class="btn mp-btn-primary mp-exec-btn" id="mpExecBtn">
+              <i class="fas fa-bolt"></i> Execute
+            </button>
+            <button class="btn btn-secondary mp-exec-btn" id="mpResetBtn">
+              <i class="fas fa-undo"></i> Reset Memory
+            </button>
+          </div>
+
+          <!-- Options -->
+          <div class="mp-row">
+            <span class="mp-row-label">Options:</span>
+            <label class="mp-opt-label">
+              <input type="checkbox" id="mpShowBinary" class="mp-check" />
+              Show binary values
+            </label>
+            <label class="mp-opt-label">
+              <input type="checkbox" id="mpShowPointers" class="mp-check" checked />
+              Show pointer arrows
+            </label>
+            <label class="mp-opt-label">
+              <input type="checkbox" id="mpAnimate" class="mp-check" checked />
+              Animate allocations
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Status -->
+        <div class="mp-status" id="mpStatus">Select a data structure and execute an operation to see it live in memory.</div>
+
+        <!-- Main layout -->
+        <div class="mp-main-layout">
+
+          <!-- Memory grid -->
+          <div class="mp-grid-section">
+            <div class="mp-grid-header">
+              <div class="mp-grid-title">
+                <i class="fas fa-memory"></i> RAM — 256 Cells
+                <span class="mp-grid-sub">(each cell = 1 word)</span>
+              </div>
+              <div class="mp-grid-stats" id="mpGridStats">
+                <span class="mp-stat">Used: <strong id="mpUsed">0</strong></span>
+                <span class="mp-stat">Free: <strong id="mpFree">256</strong></span>
+                <span class="mp-stat">Fragmented: <strong id="mpFrag">0%</strong></span>
+              </div>
+            </div>
+            <div class="mp-grid" id="mpGrid"></div>
+          </div>
+
+          <!-- Info panel -->
+          <div class="mp-info-panel">
+
+            <!-- DS visualization -->
+            <div class="mp-ds-viz-card" id="mpDsVizCard">
+              <div class="mp-panel-title" id="mpDsVizTitle">Array</div>
+              <div class="mp-ds-viz" id="mpDsViz"></div>
+            </div>
+
+            <!-- Memory detail -->
+            <div class="mp-detail-card">
+              <div class="mp-panel-title">Selected Cell</div>
+              <div class="mp-cell-detail" id="mpCellDetail">
+                <div class="mp-detail-empty">Click a memory cell to inspect it.</div>
+              </div>
+            </div>
+
+            <!-- Allocation log -->
+            <div class="mp-log-card">
+              <div class="mp-panel-title"><i class="fas fa-list"></i> Allocation Log</div>
+              <div class="mp-alloc-log" id="mpAllocLog">
+                <div class="mp-log-empty">No operations yet.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div class="mp-legend">
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-free"></span>Free</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-data"></span>Data</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-pointer"></span>Pointer</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-header"></span>Header/Metadata</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-stack-ptr"></span>Stack pointer</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-active"></span>Just allocated</span>
+          <span class="mp-legend-item"><span class="mp-ldot mp-ldot-freed"></span>Freed</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🧠</span> Why Memory Layout Matters</h2>
+        <div class="mp-learn-grid">
+
+          <div class="mp-learn-card mp-learn-cache">
+            <div class="mp-learn-icon">⚡</div>
+            <h3>Cache Locality</h3>
+            <p>Arrays are contiguous — each access likely hits the CPU cache. Linked lists scatter across RAM — every pointer dereference is a potential cache miss. This is why array iteration can be 100× faster than linked list traversal even at the same O(n) complexity.</p>
+          </div>
+
+          <div class="mp-learn-card mp-learn-frag">
+            <div class="mp-learn-icon">🔀</div>
+            <h3>Memory Fragmentation</h3>
+            <p>After many alloc/free cycles, RAM develops gaps too small for new allocations. Contiguous structures (arrays) suffer from this — they need a single large block. Linked structures tolerate fragmentation since each node can live anywhere.</p>
+          </div>
+
+          <div class="mp-learn-card mp-learn-ptr">
+            <div class="mp-learn-icon">👉</div>
+            <h3>Pointer Overhead</h3>
+            <p>Every linked list node stores extra pointer(s) — 8 bytes each on 64-bit systems. A doubly-linked list of 1M integers uses ~24MB instead of 4MB for an array. Hash maps store both key pointers and value pointers in each bucket.</p>
+          </div>
+
+          <div class="mp-learn-card mp-learn-heap">
+            <div class="mp-learn-icon">🌳</div>
+            <h3>Heap-Indexed Trees</h3>
+            <p>Binary trees stored as arrays (heap indexing) eliminate pointer overhead entirely. Parent of i = ⌊(i-1)/2⌋. Left child = 2i+1. Right child = 2i+2. This is why binary heaps are so cache-efficient despite being "trees".</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="memory-palace.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

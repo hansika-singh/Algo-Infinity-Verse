@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Peer Coding Study Rooms | Algo Infinity Verse</title>
+    <meta name="description" content="Collaborative Study Rooms. Solve coding problems with friends in real time, check leaderboards, and maintain streaks." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="peer-coding-rooms.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="peer-coding-rooms">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero peer-coding-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Collaborate. Code. Match.</span>
+          <span class="main-title gradient-text">Collaborative Study Rooms</span>
+        </h1>
+        <p class="section-subtitle">
+          Join or create timed coding challenge rooms, complete algorithm sets with peers, and level up your streaks together.
+        </p>
+      </div>
+    </section>
+
+    <!-- MAIN CONTAINER -->
+    <section class="visualizer-section">
+      <div class="visualizer-container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1rem;">
+        
+        <!-- ── LOBBY VIEW ── -->
+        <div id="lobbyView" class="lobby-grid">
+          <!-- Rooms list column -->
+          <div class="lobby-main">
+            <div class="visualizer-card">
+              <h2 class="card-title" style="margin-bottom: 1.5rem;"><i class="fas fa-list-ul" style="color: var(--accent); margin-right: 0.5rem;"></i>Active Timed Rooms</h2>
+              <div id="activeRoomsList" class="rooms-list-container">
+                <!-- Room cards injected here -->
+                <div class="loading-placeholder">Loading active rooms...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Room Controls Column -->
+          <div class="lobby-sidebar">
+            <!-- Create Room Card -->
+            <div class="visualizer-card" style="margin-bottom: 1.5rem;">
+              <h3 class="card-title" style="margin-bottom: 1.25rem;"><i class="fas fa-plus-circle" style="color: var(--accent); margin-right: 0.5rem;"></i>Create Study Room</h3>
+              <form id="createRoomForm" class="control-group">
+                <div class="control-group">
+                  <label for="topicSelect">Topic Category</label>
+                  <select id="topicSelect" class="control-input">
+                    <option value="arrays">Arrays</option>
+                    <option value="strings">Strings</option>
+                    <option value="linkedlist">Linked Lists</option>
+                    <option value="trees">Binary Trees</option>
+                    <option value="graphs">Graphs</option>
+                    <option value="dp">Dynamic Programming</option>
+                  </select>
+                </div>
+                <div class="control-group">
+                  <label for="difficultySelect">Difficulty Level</label>
+                  <select id="difficultySelect" class="control-input">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+                <div class="control-group">
+                  <label for="timerSelect">Timer Duration</label>
+                  <select id="timerSelect" class="control-input">
+                    <option value="300">5 Minutes</option>
+                    <option value="600" selected>10 Minutes</option>
+                    <option value="900">15 Minutes</option>
+                    <option value="1200">20 Minutes</option>
+                  </select>
+                </div>
+                <div class="control-group">
+                  <label for="capacitySelect">Max Participants</label>
+                  <select id="capacitySelect" class="control-input">
+                    <option value="2">2 Players</option>
+                    <option value="4" selected>4 Players</option>
+                    <option value="6">6 Players</option>
+                    <option value="8">8 Players</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+                  <i class="fas fa-rocket"></i> Create & Launch
+                </button>
+              </form>
+            </div>
+
+            <!-- Join Room Code Card -->
+            <div class="visualizer-card">
+              <h3 class="card-title" style="margin-bottom: 1rem;"><i class="fas fa-key" style="color: var(--accent); margin-right: 0.5rem;"></i>Join via Room Code</h3>
+              <div class="control-group" style="display:flex; gap:0.5rem;">
+                <input type="text" id="directRoomCode" class="control-input" placeholder="e.g. ROOM-59281" style="text-transform: uppercase;">
+                <button id="btnJoinDirect" class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i> Join</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ACTIVE STUDY ROOM VIEW ── -->
+        <div id="roomView" class="room-grid" style="display: none;">
+          <!-- Left side: Description & Editor -->
+          <div class="room-main">
+            <!-- Problem Details card -->
+            <div class="visualizer-card" style="margin-bottom: 1.5rem;">
+              <div class="room-header-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.75rem;">
+                <h2 id="roomProblemTitle" style="margin:0;">Problem Name</h2>
+                <div style="display:flex; gap:0.5rem;">
+                  <span id="roomProblemDifficulty" class="badge">Easy</span>
+                  <span id="roomProblemCategory" class="badge">Arrays</span>
+                </div>
+              </div>
+              <div id="roomProblemDescription" class="problem-details-text" style="font-size:0.95rem; line-height:1.6; max-height:220px; overflow-y:auto; padding-right:0.5rem;">
+                Problem description text...
+              </div>
+            </div>
+
+            <!-- Editor Card -->
+            <div class="visualizer-card editor-card">
+              <div class="editor-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+                <span class="editor-filename"><i class="fas fa-file-code" style="color:var(--accent); margin-right:0.4rem;"></i>solution.js</span>
+                <span class="language-label">JavaScript</span>
+              </div>
+              <!-- CodeMirror Container -->
+              <div id="roomEditorContainer" class="editor-wrapper" style="border: 1px solid var(--glass-border); border-radius: 8px; overflow: hidden;"></div>
+              
+              <!-- Console/Results Card Section -->
+              <div class="console-panel" style="margin-top: 1rem;">
+                <div class="console-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                  <h4 style="margin:0;"><i class="fas fa-terminal" style="margin-right:0.4rem;"></i>Console Output</h4>
+                  <button id="btnClearConsole" class="btn btn-secondary btn-control-mini" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;"><i class="fas fa-eraser"></i> Clear</button>
+                </div>
+                <div id="roomConsoleOutput" class="console-content" style="background: rgba(0,0,0,0.3); border-radius:6px; padding:0.75rem; font-family:'Fira Code', monospace; font-size:0.85rem; max-height: 120px; overflow-y:auto;">
+                  Run code to see console test outputs...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side: Timer, Scoreboard, Chat -->
+          <div class="room-sidebar">
+            <!-- Timer Card -->
+            <div class="visualizer-card" style="text-align: center; margin-bottom: 1.5rem;">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--text-secondary); text-transform: uppercase; font-size:0.8rem; letter-spacing:1px;">Time Remaining</h4>
+              <div id="roomCountdownTimer" class="countdown-timer-text">10:00</div>
+              <!-- Host Start Button -->
+              <button id="btnHostStartChallenge" class="btn btn-primary" style="display:none; width:100%; justify-content:center; margin-top: 1rem;">
+                <i class="fas fa-play"></i> Start timed Challenge
+              </button>
+              <button id="btnSubmitSolution" class="btn btn-success" style="display:none; width:100%; justify-content:center; margin-top: 1rem; gap:0.5rem;">
+                <i class="fas fa-cloud-upload-alt"></i> Submit Solution
+              </button>
+            </div>
+
+            <!-- Leaderboard Card -->
+            <div class="visualizer-card" style="margin-bottom: 1.5rem;">
+              <h3 class="card-title" style="margin-bottom: 1rem;"><i class="fas fa-trophy" style="color:var(--accent); margin-right:0.5rem;"></i>Leaderboard</h3>
+              <div id="roomParticipantsList" class="participants-grid">
+                <!-- Participants status grid injected here -->
+              </div>
+            </div>
+
+            <!-- Room Chat Card -->
+            <div class="visualizer-card room-chat-card">
+              <h3 class="card-title" style="margin-bottom: 0.75rem;"><i class="fas fa-comments" style="color:var(--accent); margin-right:0.5rem;"></i>Room Chat</h3>
+              <div id="roomChatHistory" class="chat-history-container" style="height: 180px; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem; background: rgba(0,0,0,0.15);">
+                <!-- Messages injected -->
+              </div>
+              <div class="chat-input-area" style="display:flex; gap:0.4rem;">
+                <input type="text" id="roomChatInput" class="control-input" placeholder="Type a message..." style="flex:1;">
+                <button id="btnSendRoomChat" class="btn btn-secondary" style="padding:0.5rem 0.75rem;"><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+
+            <!-- Exit Button -->
+            <button id="btnExitRoom" class="btn btn-danger" style="width:100%; justify-content:center; display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+              <i class="fas fa-sign-out-alt"></i> Exit Room
+            </button>
+          </div>
+        </div>
+
+        <!-- ── RECAP VIEW ── -->
+        <div id="recapView" class="visualizer-card" style="display: none; padding: 2.5rem; max-width: 800px; margin: 0 auto;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="trophy-badge" style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
+            <h2 style="margin: 0 0 0.5rem 0;">Challenge Round Ended!</h2>
+            <p style="color: var(--text-secondary);">Here is how everyone performed. Daily streak successfully maintained!</p>
+          </div>
+
+          <!-- Score Table -->
+          <table class="recap-table" style="width: 100%; border-collapse: collapse; margin-bottom: 2.5rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--glass-border); text-align: left;">
+                <th style="padding: 0.75rem 0.5rem; color: var(--accent);">Rank</th>
+                <th style="padding: 0.75rem 0.5rem; color: var(--accent);">Name</th>
+                <th style="padding: 0.75rem 0.5rem; color: var(--accent);">Time Taken</th>
+                <th style="padding: 0.75rem 0.5rem; color: var(--accent);">Points</th>
+                <th style="padding: 0.75rem 0.5rem; color: var(--accent);">Status</th>
+              </tr>
+            </thead>
+            <tbody id="recapLeaderboardBody">
+              <!-- Score rows injected here -->
+            </tbody>
+          </table>
+
+          <!-- Solution Inspector -->
+          <div class="solution-inspector-container" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <h3 style="margin:0; font-family:'Orbitron',sans-serif;"><i class="fas fa-search-code" style="color:var(--accent); margin-right:0.5rem;"></i>Inspect Peer Solutions</h3>
+              <select id="recapUserSelector" class="control-input" style="width:auto; margin:0;">
+                <option value="">-- Choose Participant --</option>
+              </select>
+            </div>
+            <!-- Read-only inspector CodeMirror wrapper -->
+            <div id="inspectorEditorContainer" class="editor-wrapper" style="border: 1px solid var(--glass-border); border-radius: 8px; overflow: hidden; background: rgba(0,0,0,0.25);"></div>
+          </div>
+
+          <button id="btnRecapBackToLobby" class="btn btn-primary" style="width:100%; justify-content:center; display:flex; align-items:center; gap:0.5rem;">
+            <i class="fas fa-home"></i> Back to Lobby
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="peer-coding-rooms.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

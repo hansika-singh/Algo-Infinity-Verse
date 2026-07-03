@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Think-Aloud AI Judge | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Analyze your coding thoughts, extract comment logs, detect misconceptions, and receive Socratic evaluations."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="think-aloud-judge.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="think-aloud-judge">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero judge-hero">
+      <div class="judge-hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="judge-hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Think-Aloud AI Judge</span>
+          <span class="main-title gradient-text">Analyze Code Reasoning</span>
+          <span class="subtitle">Evaluate your thinking process, not just outputs</span>
+        </h1>
+        <p class="judge-desc">
+          Write code and explain your cognitive steps. Our AI Judge parses comment streams, evaluates problem decomposition, flags logic misconceptions, and grades your mental methodology.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Workspace Dashboard -->
+    <section class="section" id="workspace-section">
+      <div class="judge-dashboard">
+        <!-- LEFT: Workspace Pane -->
+        <div class="workspace-panel">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i class="fas fa-brain header-icon"></i>
+                <h3>Reasoning Workspace</h3>
+              </div>
+              <div class="selectors-group">
+                <select id="problemSelect" class="styled-select" aria-label="Choose problem">
+                  <option value="twosum">Problem: Two Sum</option>
+                  <option value="reverselist">Problem: Reverse Linked List</option>
+                  <option value="fibonacci">Problem: Fibonacci Recursion</option>
+                </select>
+                <select id="languageSelect" class="styled-select" aria-label="Choose language">
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Problem Description Block -->
+            <div class="problem-desc-card" id="problemDescription">
+              <!-- Content loaded dynamically -->
+            </div>
+
+            <!-- Code Editor Workspace -->
+            <div class="editor-pane-wrapper">
+              <div class="pane-subheader">
+                <span><i class="fas fa-code"></i> Live Code Editor</span>
+                <span class="tip-badge">💡 Write comments explaining your thoughts!</span>
+              </div>
+              <div class="editor-layout">
+                <div class="line-numbers" id="editorLineNumbers">1</div>
+                <textarea
+                  id="codeEditor"
+                  class="code-textarea"
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  aria-label="Code reasoning editor"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Think-Aloud Steps Log -->
+            <div class="thoughts-pane-wrapper">
+              <div class="pane-subheader">
+                <span><i class="fas fa-list-ol"></i> Step-by-Step Thinking Log (Optional)</span>
+                <button id="extractCommentsBtn" class="btn btn-outline-mini">
+                  <i class="fas fa-file-import"></i> Extract from Comments
+                </button>
+              </div>
+              <textarea
+                id="thoughtsLog"
+                class="thoughts-textarea"
+                placeholder="Step 1: Clarify assumptions (e.g. can elements be negative?)...&#10;Step 2: Initialize pointers / helper containers...&#10;Step 3: Define transition conditions..."
+              ></textarea>
+            </div>
+
+            <div class="action-buttons-row">
+              <button id="runCodeBtn" class="btn btn-secondary flex-btn">
+                <i class="fas fa-play"></i> Run Code
+              </button>
+              <button id="analyzeReasoningBtn" class="btn btn-primary glow-btn flex-btn">
+                <i class="fas fa-microscope"></i> Analyze Reasoning
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Analysis Dashboard Pane -->
+        <div class="analysis-panel">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i class="fas fa-chart-line header-icon accent-icon"></i>
+                <h3>AI Judge Analysis</h3>
+              </div>
+            </div>
+
+            <!-- Output/Terminal Console -->
+            <div class="terminal-wrapper">
+              <div class="terminal-header">
+                <span><i class="fas fa-terminal"></i> Terminal Output</span>
+                <span id="runStatusBadge" class="status-badge status-ready">Ready</span>
+              </div>
+              <div class="terminal-body" id="terminalOutput">
+                <span class="terminal-placeholder">Click "Run Code" to view sandbox compiler outputs.</span>
+              </div>
+            </div>
+
+            <!-- Score gauge card -->
+            <div class="analysis-card score-card">
+              <div class="score-circle-container">
+                <svg class="progress-ring" width="120" height="120">
+                  <circle
+                    class="progress-ring-circle-bg"
+                    stroke="rgba(255,255,255,0.05)"
+                    stroke-width="8"
+                    fill="transparent"
+                    r="50"
+                    cx="60"
+                    cy="60"
+                  />
+                  <circle
+                    id="scoreCircle"
+                    class="progress-ring-circle"
+                    stroke="var(--primary, #8b5cf6)"
+                    stroke-width="8"
+                    fill="transparent"
+                    r="50"
+                    cx="60"
+                    cy="60"
+                    stroke-dasharray="314.16"
+                    stroke-dashoffset="314.16"
+                  />
+                </svg>
+                <div class="score-display">
+                  <span class="score-number" id="scoreNum">--</span>
+                  <span class="score-label">Reasoning</span>
+                </div>
+              </div>
+              <div class="score-info">
+                <h4>Methodology Rating</h4>
+                <p id="methodologyLabel" class="text-muted">Awaiting reasoning evaluation...</p>
+                <div class="badge-row" id="patternBadges">
+                  <!-- Badges loaded dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Cognitive Misconceptions alerts -->
+            <div class="analysis-card">
+              <h4 class="card-subtitle"><i class="fas fa-exclamation-triangle warning-icon"></i> Cognitive Misconceptions</h4>
+              <div class="misconceptions-list" id="misconceptionList">
+                <div class="misconception-placeholder">
+                  No analysis run yet. Click "Analyze Reasoning" to inspect coding gaps.
+                </div>
+              </div>
+            </div>
+
+            <!-- Socratic Feedback / Coach Card -->
+            <div class="analysis-card feedback-card">
+              <h4 class="card-subtitle"><i class="fas fa-graduation-cap coach-icon"></i> Socratic Review Coach</h4>
+              <div id="socraticFeedback" class="feedback-body">
+                <p class="text-muted">
+                  The judge will evaluate how you deconstruct problems, handle edge cases, and structure algorithms, giving you Socratic review checkpoints.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Chatbot Widget (standard dynamic toggle injected by JS) -->
+    <div class="chatbot-widget">
+      <button class="chatbot-toggle" id="chatbotToggle" aria-label="Toggle chat">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">3</span>
+      </button>
+      <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h4>Algo Assistant</h4>
+          <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot">
+            <p>Hi! I'm your DSA assistant. How can I help you today?</p>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input type="text" id="chatbotInput" placeholder="Type your question..." />
+          <button id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="quick-questions">
+          <button class="quick-q" data-question="What is the time complexity of this problem?">
+            Time Complexity
+          </button>
+          <button class="quick-q" data-question="Can you give me a hint for this problem?">
+            Hint
+          </button>
+          <button class="quick-q" data-question="What approach should I use?">
+            Approach
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="think-aloud-judge.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

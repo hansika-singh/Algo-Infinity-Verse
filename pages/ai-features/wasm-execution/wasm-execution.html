@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wasm Execution Engine | Algo Infinity Verse</title>
+    <meta name="description" content="Serverless, client-side code execution using WebAssembly." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror Core and Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="wasm-execution.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="wasm-body">
+
+    <nav class="navbar wasm-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-status" id="engineStatusBadge">
+            <i class="fas fa-cog fa-spin"></i> Engine: Booting Wasm...
+        </div>
+    </nav>
+
+    <main class="wasm-workspace">
+        
+        <!-- Left Panel: Problem Description -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-file-alt"></i> Problem Overview</h3>
+            </div>
+            <div class="problem-content">
+                <h2>1. Two Sum (Python Optimization)</h2>
+                <div class="prob-tags">
+                    <span class="tag tag-easy">Easy</span>
+                    <span class="tag">Arrays</span>
+                    <span class="tag">Hash Map</span>
+                </div>
+                <p>
+                    Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.
+                </p>
+                <p>
+                    <strong>Note:</strong> Your Python code will be compiled and executed locally in your browser using <em>WebAssembly (Pyodide)</em>. No data is sent to a backend server.
+                </p>
+                <div class="test-cases">
+                    <h4>Example 1:</h4>
+                    <pre><strong>Input:</strong> nums = [2,7,11,15], target = 9
+<strong>Output:</strong> [0,1]
+<strong>Explanation:</strong> Because nums[0] + nums[1] == 9, we return [0, 1].</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Editor & Terminal -->
+        <div class="panel-right">
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="editor-tab active"><i class="fab fa-python" style="color: #fbbf24;"></i> solution.py</button>
+                </div>
+                <div class="editor-controls">
+                    <span class="compile-badge"><i class="fas fa-bolt"></i> Client-Side Wasm</span>
+                    <button class="btn btn-success btn-sm" id="btnRunCode" disabled>
+                        <i class="fas fa-play"></i> Run Code
+                    </button>
+                </div>
+            </div>
+            
+            <div class="editor-wrapper" id="editorContainer">
+                <!-- CodeMirror injects here -->
+            </div>
+
+            <!-- Custom Terminal UI -->
+            <div class="terminal-panel">
+                <div class="terminal-header">
+                    <div class="term-tabs">
+                        <span class="term-tab active">Console Output</span>
+                    </div>
+                    <button class="btn-icon" id="btnClearConsole" title="Clear Console"><i class="fas fa-eraser"></i></button>
+                </div>
+                <div class="terminal-content" id="terminalOutput">
+                    <div class="term-line sys-msg">Initializing Pyodide WebAssembly runtime... This may take a moment on first load.</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <!-- Main Logic -->
+    <script src="wasm-execution.js"></script>
+</body>
+</html>

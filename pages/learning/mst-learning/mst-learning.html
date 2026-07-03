@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Minimum Spanning Trees | Algo Infinity Verse</title>
+
+    <meta
+      name="description"
+      content="Master Minimum Spanning Trees (MST), Prim's Algorithm, Kruskal's Algorithm, Union-Find, and graph optimization problems with interactive exercises."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="mst-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="mst-learning">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Master Graph Optimization</span>
+          <span class="main-title gradient-text" style="background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Minimum Spanning Trees</span>
+          <span class="subtitle"
+            >Prim's Algorithm. Kruskal's Algorithm. Union-Find.</span
+          >
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_mst" id="typingTextMST"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+        <div class="hero-buttons">
+          <a href="#spanning-tree" class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%); border: none; color: #fff; font-weight: 600;">
+            <i class="fas fa-play"></i> Start Learning
+          </a>
+          <a href="#exercise-mst" class="btn btn-secondary">
+            <i class="fas fa-pen"></i> Practice Exercises
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-number" data-target="10">0</span
+            ><span class="stat-label">Topics</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="6">0</span
+            ><span class="stat-label">Examples</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" data-target="5">0</span
+            ><span class="stat-label">Exercises</span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <!-- Main Content -->
+    <section id="mst-learning" class="section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🔥</span> Learn Minimum Spanning Trees
+        </h2>
+        <p class="section-subtitle">
+          Master MST, Prim's Algorithm, Kruskal's Algorithm, and Union-Find
+        </p>
+
+        <!-- Progress Bar -->
+        <div
+          class="js-progress-bar"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Learning progress"
+        >
+          <span class="js-progress-text"
+            ><span id="progressCount">0</span> / 10 topics completed</span
+          >
+          <div class="js-progress-track">
+            <div class="js-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="js-layout">
+          <!-- Sidebar -->
+          <aside class="js-sidebar" aria-label="Topic navigation">
+            <div class="js-sidebar-title">Topics</div>
+            <ul class="js-sidebar-nav" id="topicNav">
+              <li>
+                <a href="#spanning-tree">🌳 Spanning Tree Fundamentals</a>
+              </li>
+              <li><a href="#mst">🎯 Minimum Spanning Tree</a></li>
+              <li><a href="#mst-properties">📌 MST Properties</a></li>
+              <li><a href="#prim">📊 Prim's Algorithm</a></li>
+              <li><a href="#kruskal">⚙️ Kruskal's Algorithm</a></li>
+              <li><a href="#union-find">🔗 Union Find (DSU)</a></li>
+              <li><a href="#applications">🌍 MST Applications</a></li>
+              <li><a href="#comparison">⚖️ Kruskal vs Prim</a></li>
+              <li><a href="#complexity">📈 Complexity Analysis</a></li>
+              <li><a href="#exercise-mst">📝 Practice Exercises</a></li>
+            </ul>
+          </aside>
+
+          <!-- Main -->
+          <main class="js-main-content" id="mainContent">
+            <article class="js-lesson" id="spanning-tree" data-topic="1">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">01</span>
+                <h3>Spanning Tree Fundamentals</h3>
+              </div>
+
+              <p>
+                A spanning tree of a connected graph is a subgraph that contains
+                all vertices while maintaining connectivity without forming
+                cycles.
+              </p>
+
+              <div class="hl-concept-card">
+                <h4>Properties of a Spanning Tree</h4>
+                <ul>
+                  <li>Contains all vertices of the graph</li>
+                  <li>Contains exactly V − 1 edges</li>
+                  <li>Contains no cycles</li>
+                  <li>Graph remains connected</li>
+                </ul>
+              </div>
+
+              <div class="hl-output">
+                <div class="hl-output-label">Example</div>
+                <pre>
+Graph:
+A-B
+A-C
+B-C
+B-D
+
+Possible Spanning Tree:
+A-B
+A-C
+B-D </pre
+                >
+              </div>
+            </article>
+
+            <article class="js-lesson" id="mst" data-topic="2">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">02</span>
+                <h3>Minimum Spanning Tree (MST)</h3>
+              </div>
+
+              <p>
+                A Minimum Spanning Tree is a spanning tree whose total edge
+                weight is minimum among all possible spanning trees.
+              </p>
+
+              <div class="hl-concept-card">
+                <h4>MST Characteristics</h4>
+                <ul>
+                  <li>Includes all vertices</li>
+                  <li>Contains V−1 edges</li>
+                  <li>No cycles</li>
+                  <li>Minimum possible cost</li>
+                </ul>
+              </div>
+              <div class="hl-output">
+                <pre>
+      A
+     / \
+    2   4
+   /     \
+  B---3---C
+
+MST:
+A-B (2)
+B-C (3)
+
+Cost = 5
+</pre
+                >
+              </div>
+
+              <div class="hl-output">
+                <pre>
+A-B = 4
+A-C = 2
+B-C = 5
+B-D = 10
+C-D = 3
+
+MST:
+A-C = 2
+C-D = 3
+A-B = 4
+
+Total Cost = 9 </pre
+                >
+              </div>
+            </article>
+
+            <article class="js-lesson" id="mst-properties" data-topic="3">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">03</span>
+                <h3>MST Properties</h3>
+              </div>
+
+              <ul>
+                <li>MST contains exactly V−1 edges.</li>
+                <li>Removing any MST edge disconnects the graph.</li>
+                <li>Adding any extra edge creates a cycle.</li>
+                <li>A graph may have multiple MSTs with equal cost.</li>
+              </ul>
+            </article>
+
+            <article class="js-lesson" id="prim" data-topic="4">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">04</span>
+                <h3>Prim's Algorithm</h3>
+              </div>
+
+              <p>Prim's Algorithm grows the MST one vertex at a time.</p>
+
+              <div class="hl-concept-card">
+                <h4>Steps</h4>
+                <ol>
+                  <li>Start from any vertex.</li>
+                  <li>
+                    Select the minimum edge connecting MST to a new vertex.
+                  </li>
+                  <li>Add the edge.</li>
+                  <li>Repeat until all vertices are included.</li>
+                </ol>
+              </div>
+              <div class="hl-callout">
+                <strong>Time Complexity:</strong> O(E log V)
+                <br />
+                <strong>Space Complexity:</strong> O(V)
+              </div>
+
+              <pre><code>
+Start Vertex
+
+while MST not complete:
+   choose minimum edge
+   connecting tree to new vertex
+   add edge to MST
+</code></pre>
+            </article>
+
+            <article class="js-lesson" id="kruskal" data-topic="5">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">05</span>
+                <h3>Kruskal's Algorithm</h3>
+              </div>
+
+              <p>
+                Kruskal's Algorithm builds MST by selecting the smallest edges
+                first while avoiding cycles.
+              </p>
+              <div class="hl-callout">
+                <strong>Time Complexity:</strong> O(E log E)
+                <br />
+                <strong>Space Complexity:</strong> O(V)
+              </div>
+
+              <pre><code>
+Sort edges by weight
+
+for each edge:
+   if cycle not formed:
+      add edge to MST
+</code></pre>
+            </article>
+
+            <article class="js-lesson" id="union-find" data-topic="6">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">06</span>
+                <h3>Union Find (DSU)</h3>
+              </div>
+
+              <p>
+                Disjoint Set Union helps detect cycles efficiently in Kruskal's
+                Algorithm.
+              </p>
+
+              <pre><code>
+find(x)
+
+union(x,y)
+
+if find(u) != find(v):
+    union(u,v)
+</code></pre>
+            </article>
+
+            <article class="js-lesson" id="applications" data-topic="7">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">07</span>
+                <h3>MST Applications</h3>
+              </div>
+
+              <ul>
+                <li>Computer Network Design</li>
+                <li>Road Construction Planning</li>
+                <li>Electrical Grid Design</li>
+                <li>Water Pipeline Systems</li>
+                <li>Image Segmentation</li>
+                <li>Clustering Algorithms</li>
+              </ul>
+            </article>
+
+            <article class="js-lesson" id="comparison" data-topic="8">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">08</span>
+                <h3>Kruskal vs Prim Comparison</h3>
+              </div>
+<div class="hl-table-wrap">
+              <table class="hl-table">
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Kruskal</th>
+                    <th>Prim</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Approach</td>
+                    <td>Edge Based</td>
+                    <td>Vertex Based</td>
+                  </tr>
+                  <tr>
+                    <td>Data Structure</td>
+                    <td>Union Find</td>
+                    <td>Priority Queue</td>
+                  </tr>
+                  <tr>
+                    <td>Best For</td>
+                    <td>Sparse Graphs</td>
+                    <td>Dense Graphs</td>
+                  </tr>
+                  <tr>
+                    <td>Complexity</td>
+                    <td>O(E log E)</td>
+                    <td>O(E log V)</td>
+                  </tr>
+                </tbody>
+              </table></div>
+            </article>
+
+            <article class="js-lesson" id="complexity" data-topic="9">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">09</span>
+                <h3>Complexity Analysis</h3>
+              </div>
+<div class="hl-table-wrap">
+              <table class="hl-table">
+                <thead>
+                  <tr>
+                    <th>Algorithm</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Kruskal</td>
+                    <td>O(E log E)</td>
+                    <td>O(V)</td>
+                  </tr>
+                  <tr>
+                    <td>Prim</td>
+                    <td>O(E log V)</td>
+                    <td>O(V)</td>
+                  </tr>
+                </tbody>
+              </table></div>
+            </article>
+
+            <article class="js-lesson" id="exercise-mst" data-topic="10">
+              <div class="js-lesson-header">
+                <span class="js-lesson-number">10</span>
+                <h3>Practice Exercises</h3>
+              </div>
+
+              <div class="js-exercise">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 1
+                </div>
+
+                <p>How many edges are present in an MST with 10 vertices?</p>
+
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mst-1"
+                >
+                  Show Solution
+                </button>
+
+                <div class="js-exercise-solution" id="solution-mst-1">
+                  <p>An MST always contains <strong>V − 1</strong> edges.</p>
+                  <p>
+                    For 10 vertices:
+                    <code>10 − 1 = 9</code>
+                  </p>
+                  <p><strong>Answer:</strong> 9 edges.</p>
+                </div>
+              </div>
+
+              <div class="js-exercise">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 2
+                </div>
+
+                <p>Why can't an MST contain a cycle?</p>
+
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mst-2"
+                >
+                  Show Solution
+                </button>
+
+                <div class="js-exercise-solution" id="solution-mst-2">
+                  <p>A spanning tree must be acyclic.</p>
+
+                  <p>
+                    If a cycle exists, one edge from the cycle can be removed
+                    without disconnecting the graph, reducing the total cost.
+                  </p>
+
+                  <p>Therefore, an MST can never contain a cycle.</p>
+                </div>
+              </div>
+
+              <div class="js-exercise">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 3
+                </div>
+
+                <p>
+                  Which algorithm generally performs better on sparse graphs?
+                </p>
+
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mst-3"
+                >
+                  Show Solution
+                </button>
+
+                <div class="js-exercise-solution" id="solution-mst-3">
+                  <p>
+                    <strong>Kruskal's Algorithm</strong> is generally preferred
+                    for sparse graphs because it efficiently processes a smaller
+                    number of edges.
+                  </p>
+
+                  <p><strong>Answer:</strong> Kruskal's Algorithm.</p>
+                </div>
+              </div>
+
+              <div class="js-exercise">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 4
+                </div>
+
+                <p>
+                  What data structure is commonly used with Kruskal's Algorithm?
+                </p>
+
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mst-4"
+                >
+                  Show Solution
+                </button>
+
+                <div class="js-exercise-solution" id="solution-mst-4">
+                  <p>
+                    Kruskal's Algorithm uses the
+                    <strong>Disjoint Set Union (DSU)</strong> or
+                    <strong>Union-Find</strong> data structure.
+                  </p>
+
+                  <p>
+                    It helps detect cycles efficiently while building the MST.
+                  </p>
+
+                  <p><strong>Answer:</strong> Union-Find (DSU).</p>
+                </div>
+              </div>
+
+              <div class="js-exercise">
+                <div class="js-exercise-title">
+                  <i class="fas fa-dumbbell"></i> Exercise 5
+                </div>
+
+                <p>Calculate the MST cost for the following graph:</p>
+
+                <pre>
+A-B = 1
+A-C = 4
+B-C = 2
+B-D = 5
+C-D = 3
+    </pre
+                >
+
+                <button
+                  class="js-exercise-toggle"
+                  aria-expanded="false"
+                  aria-controls="solution-mst-5"
+                >
+                  Show Solution
+                </button>
+
+                <div class="js-exercise-solution" id="solution-mst-5">
+                  <p>Select the smallest edges without creating cycles:</p>
+
+                  <ul>
+                    <li>A-B = 1</li>
+                    <li>B-C = 2</li>
+                    <li>C-D = 3</li>
+                  </ul>
+
+                  <p>
+                    Total MST Cost =
+                    <code>1 + 2 + 3 = 6</code>
+                  </p>
+
+                  <p><strong>Answer:</strong> MST Cost = 6.</p>
+                </div>
+              </div>
+            </article>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./mst-learning.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

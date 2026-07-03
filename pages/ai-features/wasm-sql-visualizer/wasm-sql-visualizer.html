@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wasm SQL Engine & Query Plan Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Execute real SQL in the browser and visualize the query execution plan using WebAssembly and D3.js." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for SQL Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-ocean.min.css">
+    
+    <!-- D3.js for Graph Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- SQL.js (SQLite compiled to WebAssembly) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="wasm-sql-visualizer.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="sql-body">
+
+    <nav class="navbar sql-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-circle-notch fa-spin"></i> Booting SQLite Wasm...
+        </div>
+    </nav>
+
+    <main class="sql-workspace">
+        
+        <!-- Left Panel: SQL Editor & Data Table -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-database"></i> SQL Query Editor</h3>
+                <div class="header-actions">
+                    <button class="btn btn-outline btn-sm" id="btnSeedData"><i class="fas fa-seedling"></i> Seed 10k Rows</button>
+                    <button class="btn btn-outline btn-sm" id="btnCreateIndex" title="Fix the slow query!"><i class="fas fa-bolt"></i> Add Index on Age</button>
+                </div>
+            </div>
+
+            <!-- CodeMirror Inject -->
+            <div class="editor-wrapper" id="editorContainer"></div>
+
+            <div class="action-bar">
+                <div class="preset-queries">
+                    <span class="preset-label">Presets:</span>
+                    <button class="badge-btn" id="btnPresetSlow">Slow Scan</button>
+                    <button class="badge-btn" id="btnPresetJoin">Complex Join</button>
+                </div>
+                <button class="btn btn-primary" id="btnRunQuery" disabled>
+                    <i class="fas fa-play"></i> Execute Query
+                </button>
+            </div>
+
+            <!-- Results Table -->
+            <div class="results-container">
+                <div class="results-header">
+                    <span><i class="fas fa-table"></i> Query Results</span>
+                    <span class="execution-time" id="executionTime">0ms</span>
+                </div>
+                <div class="table-wrapper" id="tableWrapper">
+                    <table class="sql-table" id="resultsTable">
+                        <thead><tr id="tableHead"><th>Waiting for query...</th></tr></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: D3 Query Plan Graph -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> Visual Query Execution Plan</h3>
+                <div class="legend">
+                    <span class="legend-item"><span class="box box-scan"></span> Table Scan (Slow)</span>
+                    <span class="legend-item"><span class="box box-search"></span> Index Seek (Fast)</span>
+                </div>
+            </div>
+            
+            <div class="graph-container" id="graphContainer">
+                <div class="empty-state" id="graphEmptyState">
+                    <i class="fas fa-sitemap"></i>
+                    <p>Run a query to generate its execution plan tree.</p>
+                </div>
+                <!-- D3 SVG injected here -->
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+    <script src="wasm-sql-visualizer.js"></script>
+</body>
+</html>

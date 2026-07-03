@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed Event Streaming (Kafka) | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate Apache Kafka log partitioning, consumer groups, and rebalancing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="kafka-simulator.css" />
+</head>
+<body class="kafka-body">
+
+    <nav class="navbar kafka-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-check-circle"></i> Cluster Healthy
+        </div>
+    </nav>
+
+    <main class="kafka-workspace">
+        
+        <!-- SVG Mapping Layer -->
+        <svg class="mapping-layer" id="mappingLayer"></svg>
+        
+        <!-- Rebalancing Overlay -->
+        <div class="rebalance-overlay hidden" id="rebalanceOverlay">
+            <i class="fas fa-sync"></i>
+            <h2>Rebalancing Group</h2>
+            <p style="color: #cbd5e1; font-family: 'Fira Code', monospace; margin-top: 0.5rem;">Revoking partitions & assigning new topology...</p>
+        </div>
+
+        <!-- Left Panel: Producers -->
+        <aside class="panel panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-upload"></i> Producers</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">Producers append immutable messages to the distributed log. Choose a routing strategy to see how data is partitioned.</p>
+
+                <div class="input-group">
+                    <label>Routing Strategy</label>
+                    <select id="routingStrategy">
+                        <option value="round-robin">Round-Robin (Even Split)</option>
+                        <option value="hash">Key-Hash (Sticky Routing)</option>
+                    </select>
+                </div>
+
+                <div class="input-group hidden" id="keyInputGroup">
+                    <label>Message Key (for Hash Routing)</label>
+                    <input type="text" id="msgKeyInput" placeholder="e.g. user_123" />
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button class="btn btn-primary" id="btnProduceSingle">
+                        <i class="fas fa-paper-plane"></i> Send 1 Msg
+                    </button>
+                    <button class="btn btn-outline" id="btnStartFirehose">
+                        <i class="fas fa-fire"></i> Start Firehose
+                    </button>
+                </div>
+            </div>
+
+            <div class="telemetry-section">
+                <h4><i class="fas fa-database"></i> __consumer_offsets</h4>
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 1rem;">Internal topic tracking the committed read position for the Consumer Group.</p>
+                
+                <table class="offset-table">
+                    <thead>
+                        <tr>
+                            <th>Partition</th>
+                            <th>High Watermark</th>
+                            <th>Committed Offset</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offsetTableBody">
+                        <tr><td>P-0</td><td id="hw-0">0</td><td id="off-0" class="offset-val">0</td></tr>
+                        <tr><td>P-1</td><td id="hw-1">0</td><td id="off-1" class="offset-val">0</td></tr>
+                        <tr><td>P-2</td><td id="hw-2">0</td><td id="off-2" class="offset-val">0</td></tr>
+                        <tr><td>P-3</td><td id="hw-3">0</td><td id="off-3" class="offset-val">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </aside>
+
+        <!-- Center Panel: Brokers/Partitions -->
+        <section class="panel panel-center" id="brokerArena">
+            <div class="topic-header">
+                Topic: user-events (4 Partitions)
+            </div>
+            
+            <div class="partitions-arena">
+                <!-- Partition 0 -->
+                <div class="partition-track" id="part-0">
+                    <div class="partition-header">Partition 0</div>
+                    <div class="messages-container" id="msg-container-0"></div>
+                </div>
+                <!-- Partition 1 -->
+                <div class="partition-track" id="part-1">
+                    <div class="partition-header">Partition 1</div>
+                    <div class="messages-container" id="msg-container-1"></div>
+                </div>
+                <!-- Partition 2 -->
+                <div class="partition-track" id="part-2">
+                    <div class="partition-header">Partition 2</div>
+                    <div class="messages-container" id="msg-container-2"></div>
+                </div>
+                <!-- Partition 3 -->
+                <div class="partition-track" id="part-3">
+                    <div class="partition-header">Partition 3</div>
+                    <div class="messages-container" id="msg-container-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Consumers -->
+        <aside class="panel panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-download"></i> Consumer Group</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">Consumers in a group share the partition load. Adding or removing a consumer triggers a <strong>Rebalance</strong> to redistribute partitions.</p>
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnAddConsumer">
+                        <i class="fas fa-user-plus"></i> Add Consumer
+                    </button>
+                    <button class="btn btn-danger" id="btnKillConsumer">
+                        <i class="fas fa-skull"></i> Kill Consumer
+                    </button>
+                </div>
+            </div>
+
+            <div class="consumers-list" id="consumersList">
+                <!-- Consumers injected here -->
+            </div>
+        </aside>
+
+    </main>
+    <script src="kafka-simulator.js"></script>
+</body>
+</html>

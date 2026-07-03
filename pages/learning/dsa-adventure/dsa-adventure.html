@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algorithm Visualizer V3.1 - Algo Infinity Verse</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="dsa-adventure.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="v3-layout">
+  <div id="navbar-placeholder"></div>
+
+  <main class="v3-container">
+    
+    <!-- Panel 1: Command Center -->
+    <section class="panel command-center">
+      <header class="panel-header">
+        <h1 class="panel-title">Algo Explorer</h1>
+        <div class="scenario-badge" id="scenarioBadge">Scenario: Initialization</div>
+      </header>
+      
+      <div class="narrative-content" id="narrativeContent"></div>
+      
+      <div class="metrics-dashboard hidden" id="metricsPanel">
+        <div class="metric">
+          <span class="metric-lbl">Time O()</span>
+          <span class="metric-val" id="metricTime">-</span>
+        </div>
+        <div class="metric">
+          <span class="metric-lbl">Space O()</span>
+          <span class="metric-val" id="metricSpace">-</span>
+        </div>
+        <div class="metric">
+          <span class="metric-lbl">Nodes Visited</span>
+          <span class="metric-val" id="metricNodes">-</span>
+        </div>
+      </div>
+
+      <div class="action-choices" id="choicesContainer"></div>
+    </section>
+
+    <!-- Panel 2: Execution Arena -->
+    <section class="panel execution-arena">
+      <div class="arena-top-bar">
+        <div class="status-indicator" id="arenaStatus"><i class="fas fa-circle-notch fa-spin hidden" id="statusSpinner"></i> <span id="statusText">Awaiting Input</span></div>
+        
+        <div class="execution-controls">
+          <button id="btnPlayPause" class="ctrl-btn" disabled title="Play/Pause" aria-label="Play/Pause"><i class="fas fa-pause"></i></button>
+          <button id="btnStep" class="ctrl-btn" disabled title="Step Forward" aria-label="Step Forward"><i class="fas fa-step-forward"></i></button>
+          <button id="btnStop" class="ctrl-btn" disabled title="Stop Execution" aria-label="Stop Execution"><i class="fas fa-stop"></i></button>
+          <div class="speed-controls">
+            <label for="speedSlider">Speed:</label>
+            <input type="range" id="speedSlider" min="1" max="100" value="50">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-wrapper">
+        <div class="grid-board" id="gridContainer"></div>
+      </div>
+
+      <div class="arena-legend">
+        <span><span class="l-box start"></span> Start</span>
+        <span><span class="l-box target"></span> Target</span>
+        <span><span class="l-box wall"></span> Wall</span>
+        <span><span class="l-box visited"></span> Explored</span>
+        <span><span class="l-box path"></span> Path</span>
+      </div>
+    </section>
+
+    <!-- Panel 3: The Inspector -->
+    <section class="panel inspector-panel">
+      <header class="panel-header">
+        <h2 class="panel-title">Live Inspector</h2>
+      </header>
+
+      <div class="memory-viewer">
+        <div class="memory-header">
+          <span>Memory Structure</span>
+          <span class="memory-type" id="memoryType">NONE</span>
+        </div>
+        <div class="memory-container" id="memoryContainer">
+          <div class="memory-empty">Awaiting Execution</div>
+        </div>
+      </div>
+
+      <div class="terminal-logger">
+        <div class="terminal-header">Current Operation</div>
+        <div class="current-op-box" id="currentOpBox" aria-live="polite">Awaiting algorithm selection...</div>
+        <div class="terminal-content" id="terminalLog" aria-live="polite"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../../../script.js"></script>
+  <script src="dsa-adventure.js"></script>
+</body>
+</html>

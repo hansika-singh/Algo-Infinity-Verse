@@ -1,0 +1,56 @@
+name: claim-issue
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  claim:
+    if: github.event.issue.pull_request == null && contains(github.event.comment.body, '/claim')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign commenter on /claim
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const issueNumber = context.issue.number;
+            const commenter = context.actor;
+
+            const { data: issue } = await github.rest.issues.get({
+              owner,
+              repo,
+              issue_number: issueNumber,
+            });
+
+            if (issue.assignees.length > 0) {
+              const current = issue.assignees.map(a => `@${a.login}`).join(', ');
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `Sorry @${commenter}, this issue is already assigned to ${current}. Please wait until it becomes available.`,
+              });
+              return;
+            }
+
+            await github.rest.issues.addAssignees({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              assignees: [commenter],
+            });
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body: `This issue has been assigned to @${commenter}. Good luck!\n\nPlease remember to stay active — the issue will be automatically unassigned after 7 days of inactivity.`,
+            });
+
+            console.log(`Assigned issue #${issueNumber} to ${commenter}.`);
