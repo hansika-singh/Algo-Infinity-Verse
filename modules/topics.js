@@ -142,6 +142,16 @@ function isTopicCompleted(topicId) {
     return getTopicProgress(topicId) >= 100;
 }
 
+/**
+ * Get an array of topic objects that the user has fully completed (progress >= 100%).
+ * Utilizes existing getUserProgress and the global dsaTopics array.
+ */
+function getCompletedTopics() {
+    const progress = getUserProgress();
+    const all = window.dsaTopics || [];
+    return all.filter(topic => (progress[topic.id] || 0) >= 100);
+}
+
 // Export functions
 export { 
     renderTopicCards, 
@@ -149,7 +159,8 @@ export {
     getTopicProgress, 
     isTopicCompleted,
     getUserProgress,
-    saveUserProgress
+    saveUserProgress,
+    getCompletedTopics
 };
 
 // Initialize on DOM ready if topics exist
