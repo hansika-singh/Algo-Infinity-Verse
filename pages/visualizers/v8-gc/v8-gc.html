@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V8 Generational GC Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate V8's Scavenger and Mark-Compact Garbage Collection mechanisms." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="v8-gc.css" />
+</head>
+<body class="v8-body">
+
+    <nav class="navbar v8-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-memory"></i> V8 Heap Manager: Active
+        </div>
+    </nav>
+
+    <main class="v8-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-cogs"></i> V8 Memory Controller</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    The <strong>Generational Hypothesis</strong> states most objects die young. 
+                    V8 splits the heap into a <em>Young Gen</em> (Nursery) and an <em>Old Gen</em> to optimize Garbage Collection.
+                </p>
+
+                <div class="alloc-panel">
+                    <h4><i class="fas fa-plus-circle"></i> Memory Allocation</h4>
+                    <p class="desc-text" style="font-size: 0.75rem;">New objects are always allocated in the <strong>Eden Space</strong>.</p>
+                    <div class="action-grid">
+                        <button type="button" class="btn btn-primary" id="btnAllocate">
+                            <i class="fas fa-box"></i> Allocate Object
+                        </button>
+                        <button type="button" class="btn btn-outline" id="btnAllocBatch">
+                            <i class="fas fa-boxes"></i> Allocate Batch (x4)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gc-panel mt-3">
+                    <h4><i class="fas fa-broom"></i> Manual GC Triggers</h4>
+                    <p class="desc-text" style="font-size: 0.75rem;">GC normally runs automatically when spaces fill up, but you can force it here.</p>
+                    <div class="action-grid">
+                        <button type="button" class="btn btn-warning" id="btnMinorGC">
+                            <i class="fas fa-recycle"></i> Minor GC (Scavenger)
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btnMajorGC">
+                            <i class="fas fa-dumpster-fire"></i> Major GC (Mark-Compact)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telemetry -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-chart-bar"></i> Heap Telemetry</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Minor GCs</span>
+                        <span class="tel-value text-warning" id="statMinorGC">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Major GCs</span>
+                        <span class="tel-value text-danger" id="statMajorGC">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Objects Tenured</span>
+                        <span class="tel-value text-primary" id="statTenured">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Garbage Collected</span>
+                        <span class="tel-value text-success" id="statGarbage">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> V8 System Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Isolate initialized. Memory spaces active.</div>
+                    <div class="log-entry sys">> Tip: Click any object in the heap to sever its root reference (make it garbage).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Heap Visualization -->
+        <div class="panel-right">
+            
+            <div class="heap-header">
+                <h2><i class="fas fa-layer-group"></i> V8 Heap Memory Spaces</h2>
+                <div class="legend">
+                    <span class="legend-item"><span class="box box-live"></span> Reachable</span>
+                    <span class="legend-item"><span class="box box-dead"></span> Unreachable (Garbage)</span>
+                    <span class="legend-item"><span class="box box-tenured"></span> Tenured (Age 2+)</span>
+                </div>
+            </div>
+
+            <div class="heap-arena">
+                
+                <!-- Young Generation -->
+                <div class="heap-zone young-gen">
+                    <div class="zone-title">
+                        <h3>Young Generation (Nursery)</h3>
+                        <span class="zone-desc">Fast Allocation & Minor GC (Scavenger)</span>
+                    </div>
+                    
+                    <div class="space-grid">
+                        <!-- Eden Space -->
+                        <div class="mem-space" id="spaceEden">
+                            <div class="space-header">Eden Space <span class="capacity" id="capEden">0/8</span></div>
+                            <div class="slots-container" id="slotsEden">
+                                <!-- Slots injected via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Survivor Spaces (Semi-Spaces) -->
+                        <div class="survivor-wrapper">
+                            <div class="mem-space survivor active-to" id="spaceS0">
+                                <div class="space-header">Survivor 0 <span class="role-badge" id="roleS0">To-Space</span> <span class="capacity" id="capS0">0/4</span></div>
+                                <div class="slots-container" id="slotsS0"></div>
+                            </div>
+                            
+                            <div class="mem-space survivor active-from" id="spaceS1">
+                                <div class="space-header">Survivor 1 <span class="role-badge" id="roleS1">From-Space</span> <span class="capacity" id="capS1">0/4</span></div>
+                                <div class="slots-container" id="slotsS1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Old Generation -->
+                <div class="heap-zone old-gen">
+                    <div class="zone-title">
+                        <h3>Old Generation</h3>
+                        <span class="zone-desc">Long-lived objects. Major GC (Mark-Sweep-Compact)</span>
+                    </div>
+                    
+                    <div class="mem-space old-space" id="spaceOld">
+                        <div class="space-header">Tenured Objects <span class="capacity" id="capOld">0/24</span></div>
+                        <div class="slots-container old-slots" id="slotsOld">
+                            <!-- Slots injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="v8-gc.js"></script>
+</body>
+</html>

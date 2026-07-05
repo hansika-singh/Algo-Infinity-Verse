@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fast Fourier Transform (FFT) Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Digital Signal Processing (DSP) lab. Draw waveforms and visualize the Cooley-Tukey FFT algorithm." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="fft-visualizer.css" />
+</head>
+<body class="fft-body">
+
+    <nav class="navbar fft-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-wave-square"></i> DSP Engine: Ready
+        </div>
+    </nav>
+
+    <main class="fft-workspace">
+        
+        <!-- Top Section: Controls & Dual Canvas -->
+        <div class="fft-top-section">
+            
+            <!-- Left Panel: Time Domain (Input) -->
+            <div class="panel time-domain-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-pencil-alt"></i> Time Domain (Input Signal)</h3>
+                </div>
+                
+                <div class="control-toolbar">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline btn-sm" id="btnWaveSine">Sine</button>
+                        <button type="button" class="btn btn-outline btn-sm" id="btnWaveComposite">Composite</button>
+                        <button type="button" class="btn btn-outline btn-sm" id="btnWaveSquare">Square</button>
+                        <button type="button" class="btn btn-danger btn-sm" id="btnClear"><i class="fas fa-trash"></i> Clear</button>
+                    </div>
+                </div>
+
+                <div class="canvas-wrapper">
+                    <canvas id="timeCanvas"></canvas>
+                    <div class="canvas-overlay-text">Draw a wave here...</div>
+                </div>
+                <div class="panel-footer">
+                    <span>Amplitude over Time: <code class="math-text">f(t)</code></span>
+                    <span>N = 256 Samples</span>
+                </div>
+            </div>
+
+            <!-- Center Panel: FFT Engine Controls -->
+            <div class="panel controls-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-microchip"></i> FFT Engine</h3>
+                </div>
+                <div class="engine-controls">
+                    <p class="desc-text">
+                        The <strong>Cooley-Tukey</strong> algorithm uses Divide & Conquer to compute the Discrete Fourier Transform in <strong>O(N log N)</strong> instead of O(N²).
+                    </p>
+
+                    <div class="math-formula">
+                        <math>
+                            <mrow>
+                                <msub><mi>X</mi><mi>k</mi></msub>
+                                <mo>=</mo>
+                                <munderover><mo>&#x2211;</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>-</mo><mn>1</mn></mrow></munderover>
+                                <msub><mi>x</mi><mi>n</mi></msub>
+                                <mo>&#x00B7;</mo>
+                                <msup><mi>e</mi><mrow><mo>-</mo><mi>i</mi><mn>2</mn><mi>&#x03C0;</mi><mi>k</mi><mi>n</mi><mo>/</mo><mi>N</mi></mrow></msup>
+                            </mrow>
+                        </math>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-100" id="btnRunFFT">
+                        <i class="fas fa-bolt"></i> Compute FFT
+                    </button>
+
+                    <div class="telemetry-box mt-3">
+                        <div class="tel-row"><span>Algorithmic Approach:</span> <strong class="text-accent">Radix-2 DIT</strong></div>
+                        <div class="tel-row"><span>Time Complexity:</span> <strong class="text-success">O(N log N)</strong></div>
+                        <div class="tel-row"><span>Execution Time:</span> <strong id="execTime">0.00 ms</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Frequency Domain (Output) -->
+            <div class="panel freq-domain-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-chart-bar"></i> Frequency Domain (Magnitude)</h3>
+                </div>
+                
+                <div class="canvas-wrapper freq-wrapper">
+                    <canvas id="freqCanvas"></canvas>
+                    <div class="empty-state" id="freqEmptyState">
+                        <i class="fas fa-chart-line"></i>
+                        <p>Awaiting FFT computation...</p>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span>Magnitude over Frequency: <code class="math-text">|X(k)|</code></span>
+                    <span>Nyquist Limit: N/2</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Section: Butterfly Diagram -->
+        <div class="fft-bottom-section">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> Cooley-Tukey Butterfly Graph (N=16 Sub-sample)</h3>
+                <span class="legend"><span class="swatch even"></span> Even Indices <span class="swatch odd" style="margin-left: 10px;"></span> Odd Indices</span>
+            </div>
+            <div class="butterfly-wrapper" id="butterflyWrapper">
+                <!-- SVG Injected by JS -->
+                <svg id="butterflySvg" width="100%" height="100%"></svg>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="fft-visualizer.js"></script>
+</body>
+</html>

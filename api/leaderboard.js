@@ -35,11 +35,11 @@ initFirebase();
 const SESSION_COOKIE = "aiv_session";
 
 function sessionSecret() {
-  return process.env.SESSION_SECRET || "dev-only-change-me-with-SESSION_SECRET-before-deploying";
-  if (!process.env.SESSION_SECRET) {
-    throw new Error("SESSION_SECRET is required");
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("SESSION_SECRET is required in production.");
   }
-  return process.env.SESSION_SECRET;
+  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
 }
 
 function sign(value) {
@@ -104,14 +104,43 @@ export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
   try {
+    // Parse pagination parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
     const cookies = parseCookies(req.headers.cookie || "");
     const session = verifySessionToken(cookies[SESSION_COOKIE]);
-    const leaders = (await readUsers())
+    
+    // Get all users and sort
+    const allUsers = await readUsers();
+    const sortedUsers = allUsers
       .map(publicUser)
       .sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name))
       .map((user, index) => ({ ...user, rank: index + 1 }));
 
-    return res.status(200).json({ leaders, currentUserId: session?.sub || null });
+    // Calculate pagination metadata
+    const totalUsers = sortedUsers.length;
+    const totalPages = Math.ceil(totalUsers / limit);
+    const currentPage = page;
+    const pageSize = limit;
+
+    // Get paginated data
+    const paginatedUsers = sortedUsers.slice(offset, offset + limit);
+
+    // Prepare response with pagination metadata
+    return res.status(200).json({
+      leaders: paginatedUsers,
+      currentUserId: session?.sub || null,
+      pagination: {
+        currentPage,
+        totalPages,
+        totalUsers,
+        pageSize,
+        hasNext: currentPage < totalPages,
+        hasPrev: currentPage > 1
+      }
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });

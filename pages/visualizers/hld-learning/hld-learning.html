@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo Infinity Verse | HLD Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="hld-learning.css">
+</head>
+<body>
+    <div class="cyber-layout">
+        <header class="hud-header">
+            <div class="brand">
+                <i class="fas fa-network-wired neon-cyan"></i>
+                <h1>HEAVY-LIGHT DECOMPOSITION <span>// ALGORITHM DOCS</span></h1>
+            </div>
+            <div class="telemetry-badges">
+                <span class="badge time"><i class="fas fa-stopwatch"></i> Query: $O(\log^2 N)$</span>
+                <span class="badge space"><i class="fas fa-memory"></i> Space: $O(N)$</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <aside class="toc-panel glass-panel">
+                <h2 class="panel-title"><i class="fas fa-list-ol"></i> INDEX</h2>
+                <nav class="toc-nav">
+                    <a href="#why-hld" class="toc-link active">1. Why HLD?</a>
+                    <a href="#heavy-light" class="toc-link">2. Heavy vs Light Edges</a>
+                    <a href="#visualizer" class="toc-link">3. Architecture Visualizer</a>
+                    <a href="#dfs-construction" class="toc-link">4. DFS Construction</a>
+                    <a href="#seg-tree" class="toc-link">5. Segment Tree Map</a>
+                    <a href="#queries" class="toc-link">6. Routing Queries</a>
+                    <a href="#practice" class="toc-link">7. Practice Arena</a>
+                </nav>
+            </aside>
+
+            <section class="content-stage glass-panel scroll-container">
+                
+                <article id="why-hld" class="doc-section">
+                    <h2>1. The Intuition: Why HLD?</h2>
+                    <p>When dealing with flat arrays, answering range queries (like max, min, or sum) is trivial with a Segment Tree in $O(\log N)$. However, a Tree is not flat. If you need to find the maximum edge weight on a path between node $U$ and node $V$, a standard DFS takes $O(N)$ per query. For $10^5$ queries, this will instantly result in a Time Limit Exceeded (TLE) error.</p>
+                    <p><strong>Heavy-Light Decomposition (HLD)</strong> solves this by slicing the tree into a set of continuous, non-overlapping linear paths (chains). Once flattened, we map these chains onto a 1D array and unleash a standard Segment Tree on top of it. This drops our query time to a blistering $O(\log^2 N)$.</p>
+                </article>
+
+                <article id="heavy-light" class="doc-section">
+                    <h2>2. Heavy vs Light Edges</h2>
+                    <p>How do we decide which paths form the "chains"? We do it based on subtree size to guarantee mathematical efficiency.</p>
+                    <ul>
+                        <li><strong>Heavy Edge:</strong> Connects a node to the child that has the <em>largest subtree size</em>. (Max 1 per node).</li>
+                        <li><strong>Light Edge:</strong> Connects a node to any of its other children.</li>
+                    </ul>
+                    <div class="math-panel">
+                        <i class="fas fa-bolt text-amber"></i> <strong>The Golden Theorem:</strong> Any path from the root to a leaf node will contain at most $O(\log N)$ light edges. Because every time you traverse a light edge, the subtree size at least halves: $size(v) \le size(u) / 2$.
+                    </div>
+                </article>
+
+                <article id="visualizer" class="doc-section">
+                    <h2>3. Architecture Visualizer</h2>
+                    <p>Observe how the tree is decomposed. <span style="color:var(--cyan); font-weight:bold;">Cyan edges</span> represent the Heavy Chains. <span style="color:var(--amber); border-bottom: 1px dashed var(--amber);">Amber dashed edges</span> represent Light Edges bridging the chains.</p>
+                    <div id="d3-hld-canvas" class="visualizer-container"></div>
+                </article>
+
+                <article id="dfs-construction" class="doc-section">
+                    <h2>4. DFS Construction (Two-Pass System)</h2>
+                    <p>We construct the decomposition using two Depth-First Searches.</p>
+                    <h3>Pass 1: Subtree Sizing</h3>
+                    <p>We calculate depths, parents, and sizes to identify the heavy child for every node.</p>
+                    <pre class="cyber-code"><code>void dfs1(int v = 1, int p = 0, int d = 0) {
+    parent[v] = p;
+    depth[v] = d;
+    sz[v] = 1;
+    for (int &to : adj[v]) {
+        if (to == p) continue;
+        dfs1(to, v, d + 1);
+        sz[v] += sz[to];
+        // Swap to keep the heavy child at the front of the adjacency list
+        if (sz[to] > sz[adj[v][0]]) swap(to, adj[v][0]);
+    }
+}</code></pre>
+                    <h3>Pass 2: Flattening the Tree</h3>
+                    <p>We traverse the tree again, prioritizing the heavy children to ensure they occupy contiguous indices in our 1D array (`pos` array).</p>
+                    <pre class="cyber-code"><code>void dfs2(int v = 1, int p = 0, int curr_head = 1) {
+    head[v] = curr_head;  // The head of the chain this node belongs to
+    pos[v] = timer++;     // The node's position in the 1D Segment Tree array
+    
+    for (int to : adj[v]) {
+        if (to == p) continue;
+        // If it's the heavy child, it continues the current chain
+        if (to == adj[v][0]) dfs2(to, v, curr_head);
+        // If it's a light child, it starts a brand new chain
+        else dfs2(to, v, to);
+    }
+}</code></pre>
+                </article>
+
+                <article id="queries" class="doc-section">
+                    <h2>5. Routing Queries $O(\log^2 N)$</h2>
+                    <p>To query the path between $A$ and $B$, we jump up the tree along the heavy chains until both nodes are on the same chain.</p>
+                    <pre class="cyber-code"><code>int query_path(int a, int b) {
+    int res = 0;
+    while (head[a] != head[b]) {
+        if (depth[head[a]] < depth[head[b]]) swap(a, b);
+        // Query the segment tree for the current chain
+        res = max(res, segTree.query(pos[head[a]], pos[a]));
+        a = parent[head[a]]; // Jump the light edge
+    }
+    if (depth[a] > depth[b]) swap(a, b);
+    res = max(res, segTree.query(pos[a], pos[b]));
+    return res;
+}</code></pre>
+                </article>
+                
+                <article id="practice" class="doc-section">
+                    <h2>6. Practice Arena</h2>
+                    <p>To fully integrate this into your competitive programming arsenal, implement HLD from scratch on these verified testbeds:</p>
+                    <ul class="practice-list">
+                        <li><i class="fas fa-link neon-violet"></i> SPOJ: QTREE (Query on a tree)</li>
+                        <li><i class="fas fa-link neon-violet"></i> CSES: Path Queries II</li>
+                        <li><i class="fas fa-link neon-violet"></i> Codeforces: 343D - Water Tree</li>
+                    </ul>
+                </article>
+
+            </section>
+        </main>
+    </div>
+    <script src="hld-learning.js"></script>
+</body>
+</html>

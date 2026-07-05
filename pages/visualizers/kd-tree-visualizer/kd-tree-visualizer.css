@@ -1,0 +1,184 @@
+/* kd-tree-visualizer.css */
+
+.vis-workspace {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    overflow: hidden;
+}
+
+.vis-sidebar {
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: 15px;
+    width: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+.control-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+.control-group select, .control-group input[type="range"] {
+    width: 100%;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn-primary {
+    background: var(--accent-color);
+    color: white;
+}
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+.btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover:not(:disabled) {
+    background: var(--bg-hover, #374151);
+}
+.btn-secondary:disabled, .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.metrics-panel {
+    background: rgba(0,0,0,0.2);
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+.metric-row {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+.highlight-text {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.panel-header {
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.3);
+}
+.panel-header h4 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* D3 SVG Styles */
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: var(--bg-secondary, #2c3e50);
+    stroke: var(--border-color, #4a5568);
+    stroke-width: 2px;
+    transition: all 0.3s;
+}
+
+.node.axis-x circle {
+    stroke: #e74c3c; /* Red for vertical partition (X split) */
+}
+.node.axis-y circle {
+    stroke: #3498db; /* Blue for horizontal partition (Y split) */
+}
+
+.node.active-eval circle {
+    fill: #f1c40f !important;
+    stroke: #f39c12 !important;
+    stroke-width: 4px;
+    filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.6));
+}
+
+.node.pruned {
+    opacity: 0.3;
+}
+.node.pruned circle {
+    stroke: #7f8c8d;
+}
+.node.nearest circle {
+    fill: #2ecc71 !important;
+    stroke: #27ae60 !important;
+    stroke-width: 4px;
+    filter: drop-shadow(0 0 15px rgba(46, 204, 113, 0.8));
+}
+
+.node text {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    fill: #ffffff;
+    text-anchor: middle;
+}
+.node text.coord-text {
+    font-size: 12px;
+    font-weight: bold;
+}
+.node .label-bg {
+    fill: var(--bg-primary, #ffffff);
+    opacity: 0.85;
+    stroke: none;
+}
+.node text.val-text {
+    font-size: 11px;
+    fill: var(--text-color, #000);
+}
+
+.link {
+    fill: none;
+    stroke: var(--text-muted, #718096);
+    stroke-width: 2px;
+    transition: stroke 0.3s;
+}
+
+.link.active-eval {
+    stroke: #f1c40f;
+    stroke-width: 3px;
+}
+.link.pruned {
+    stroke: #e74c3c;
+    stroke-dasharray: 5, 5;
+    opacity: 0.3;
+}

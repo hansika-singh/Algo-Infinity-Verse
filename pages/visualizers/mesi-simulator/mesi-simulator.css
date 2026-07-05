@@ -1,0 +1,154 @@
+/* MESI Hardware Simulator Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Hardware Theme (Cyberpunk Motherboard) */
+    --hw-primary: #06b6d4; /* Cyan */
+    --hw-primary-hover: #0891b2;
+    --hw-accent: #8b5cf6; /* Violet */
+    --hw-danger: #ef4444; /* Red */
+    --hw-success: #10b981; /* Emerald */
+    --panel-bg: #0b1121;
+
+    /* MESI States */
+    --st-m: #ef4444; /* Modified: Red (Dirty) */
+    --st-e: #a855f7; /* Exclusive: Purple */
+    --st-s: #06b6d4; /* Shared: Cyan */
+    --st-i: #475569; /* Invalid: Slate */
+}
+
+body.mesi-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.mesi-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--hw-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.engine-badge.active { color: #fff; background: var(--hw-primary); border-color: var(--hw-primary); box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); }
+
+/* Buttons & Inputs */
+.btn { padding: 0.8rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--hw-primary); color: #020617; }
+.btn-primary:hover:not(:disabled) { background: #67e8f9; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--hw-danger); border: 1px solid var(--hw-danger); }
+.btn-danger:hover:not(:disabled) { background: var(--hw-danger); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.w-100 { width: 100%; }
+
+.input-row { display: flex; gap: 1rem; }
+.input-group { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group select, .input-group input { background: #020617; border: 1px solid #334155; color: #fff; padding: 0.6rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.input-group select:focus, .input-group input:focus { border-color: var(--hw-primary); }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+/* Workspace Layout */
+.mesi-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel */
+.panel-left { width: 400px; display: flex; flex-direction: column; background: var(--panel-bg); border-right: 1px solid var(--glass-border); z-index: 10; overflow-y: auto; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.control-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); }
+.desc-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 1.5rem; }
+
+.legend-section { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+.legend-section h4 { margin: 0 0 1rem; font-size: 0.85rem; color: #fff; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; }
+.legend-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+.legend-item { display: flex; align-items: center; gap: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); cursor: help;}
+.legend-item strong { color: #e2e8f0; font-family: 'Orbitron', sans-serif;}
+
+/* State Badges */
+.state-badge { display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 700; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); transition: all 0.3s; }
+.st-m { background: var(--st-m); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+.st-e { background: var(--st-e); box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
+.st-s { background: var(--st-s); box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
+.st-i { background: var(--st-i); border: 1px dashed #64748b; color: #94a3b8; text-shadow: none; }
+
+/* Logs */
+.logs-section { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; min-height: 150px; background: #000; }
+.logs-section h4 { margin: 0 0 1rem; font-size: 0.85rem; color: #fff; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; display: flex; align-items: center; gap: 0.5rem;}
+.log-container { flex: 1; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; padding-right: 0.5rem; }
+.log-entry { line-height: 1.4; color: #cbd5e1; }
+.log-entry.sys { color: #64748b; }
+.log-entry.req { color: var(--hw-primary); }
+.log-entry.snoop { color: var(--hw-accent); }
+.log-entry.mem { color: var(--hw-success); }
+.log-entry.inv { color: var(--hw-danger); font-style: italic; }
+
+/* Right Panel (Motherboard) */
+.panel-right { flex: 1; display: flex; flex-direction: column; background: #020617; position: relative; }
+.motherboard-container { flex: 1; position: relative; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; 
+    /* Matrix Grid Background */
+    background-image: 
+        linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* SVG Bus Layer */
+.bus-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.bus-line { fill: none; stroke: #1e293b; stroke-width: 4px; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s, filter 0.3s; }
+.bus-line.active { stroke: var(--hw-primary); filter: drop-shadow(0 0 8px var(--hw-primary)); animation: dashFlow 0.5s linear infinite; stroke-dasharray: 10; }
+.bus-line.invalidating { stroke: var(--hw-danger); filter: drop-shadow(0 0 8px var(--hw-danger)); stroke-dasharray: 10; animation: dashFlow 0.5s linear infinite reverse;}
+
+@keyframes dashFlow { from { stroke-dashoffset: 20; } to { stroke-dashoffset: 0; } }
+
+/* Hardware Nodes */
+.cpu-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4rem; position: relative; z-index: 2; margin-top: 2rem; width: 100%; max-width: 700px;}
+
+.cpu-node { background: rgba(15, 23, 42, 0.9); border: 2px solid #334155; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: transform 0.2s, border-color 0.2s; }
+.cpu-node.active-cpu { border-color: var(--hw-primary); box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); transform: scale(1.02); }
+
+.cpu-header { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;}
+.cpu-node.active-cpu .cpu-header { color: var(--hw-primary); border-bottom-color: rgba(6, 182, 212, 0.3); }
+
+.l1-cache { display: flex; flex-direction: column; gap: 0.3rem; }
+.cache-row { display: flex; align-items: center; background: #020617; border: 1px solid #1e293b; border-radius: 4px; padding: 0.3rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+.cache-row .addr { color: var(--text-secondary); width: 40px; }
+.cache-row .state { margin-right: 0.5rem; }
+.cache-row .data { color: #f8fafc; flex: 1; text-align: center; letter-spacing: 2px; }
+.cache-row.highlight { animation: flashRow 1s ease; }
+
+@keyframes flashRow { 0% { background: rgba(6, 182, 212, 0.4); } 100% { background: #020617; } }
+
+/* Central Bus Controller */
+.system-bus-node { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1e293b; border: 2px solid #475569; border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; z-index: 5; transition: all 0.3s; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+.system-bus-node i { font-size: 2rem; margin-bottom: 0.5rem; }
+.system-bus-node.active-bus { border-color: var(--hw-primary); color: #fff; box-shadow: 0 0 25px rgba(6, 182, 212, 0.5); }
+
+/* Main Memory */
+.main-memory-node { width: 100%; max-width: 600px; background: rgba(15, 23, 42, 0.9); border: 2px solid #334155; border-radius: 12px; padding: 1rem 1.5rem; z-index: 2; margin-top: 2rem; backdrop-filter: blur(5px); transition: border-color 0.3s; }
+.main-memory-node.active-mem { border-color: var(--hw-success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+
+.mem-header { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; }
+.mem-grid { display: flex; justify-content: space-between; gap: 1rem; }
+.mem-cell { flex: 1; background: #020617; border: 1px solid #1e293b; border-radius: 6px; padding: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: 'Fira Code', monospace; transition: background 0.3s; }
+.mem-cell.highlight { animation: flashMem 1s ease; }
+.mem-cell .addr { color: var(--text-secondary); font-size: 0.75rem; }
+.mem-cell .data { color: var(--hw-success); font-size: 1.2rem; font-weight: 700; letter-spacing: 2px;}
+
+@keyframes flashMem { 0% { background: rgba(16, 185, 129, 0.4); } 100% { background: #020617; } }
+
+@media (max-width: 1200px) {
+    .mesi-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .panel-right { min-height: 700px; flex: none; }
+}

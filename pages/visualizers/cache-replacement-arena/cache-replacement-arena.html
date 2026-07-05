@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cache Replacement Policy Arena | Algo Infinity Verse</title>
+    <meta name="description" content="Watch LRU, LFU, ARC, and CLOCK race on the same access trace. See exactly why LRU fails on scans, why ARC adapts, and what fragmentation looks like in a cache." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="cache-replacement-arena.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="cache-replacement-arena">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="cra-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="cra-hero-inner">
+        <div class="cra-hero-eyebrow">⚡ Operating Systems · Database Buffer Pools · CDN Engineering</div>
+        <h1 class="cra-hero-title">Cache Replacement Policy Arena</h1>
+        <p class="cra-hero-sub">Four algorithms. One trace. Only one wins.</p>
+        <p class="cra-hero-desc">LRU is the default everyone teaches — but it fails catastrophically on sequential scans, wiping hot data from the cache entirely. LFU can't adapt when the working set shifts. ARC watches both recency AND frequency, adapting its split in real time. CLOCK approximates LRU with O(1) operations using a single reference bit. Watch them race.</p>
+        <a href="#arena" class="btn btn-primary cra-btn-primary"><i class="fas fa-trophy"></i> Open Arena</a>
+      </div>
+    </section>
+
+    <!-- Arena -->
+    <section id="arena" class="section cra-section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="cra-control-card">
+          <div class="cra-ctrl-row">
+            <span class="cra-ctrl-label">Cache Size</span>
+            <input type="range" id="craCacheSize" class="cra-range" min="4" max="12" value="6" aria-label="Cache size" />
+            <span class="cra-size-val" id="craCacheSizeVal">6 slots</span>
+          </div>
+
+          <div class="cra-ctrl-row">
+            <span class="cra-ctrl-label">Access Trace</span>
+            <input type="text" id="craTraceInput" class="cra-trace-input" value="1 2 3 4 1 2 5 1 2 3 4 5" aria-label="Access trace" placeholder="e.g. 1 2 3 1 2 4 1 2" />
+          </div>
+
+          <div class="cra-ctrl-row">
+            <span class="cra-ctrl-label">Presets</span>
+            <div class="cra-preset-btns">
+              <button type="button" class="cra-preset-btn" data-preset="temporal">Temporal Locality</button>
+              <button type="button" class="cra-preset-btn" data-preset="scan">Sequential Scan</button>
+              <button type="button" class="cra-preset-btn" data-preset="frequency">Frequency Skew</button>
+              <button type="button" class="cra-preset-btn" data-preset="workingset">Working Set Shift</button>
+              <button type="button" class="cra-preset-btn" data-preset="thrash">LRU Thrash</button>
+            </div>
+          </div>
+
+          <div class="cra-ctrl-row">
+            <button type="button" class="btn cra-btn-primary cra-run-btn" id="craRunBtn"><i class="fas fa-play"></i> Run All</button>
+            <button type="button" class="btn btn-secondary cra-step-btn" id="craStepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" class="btn btn-secondary cra-reset-btn" id="craResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <div class="cra-speed-row">
+              <span class="cra-ctrl-label">Speed</span>
+              <input type="range" id="craSpeed" class="cra-range cra-range-sm" min="1" max="5" value="3" aria-label="Speed" />
+              <span class="cra-speed-label" id="craSpeedLabel">Normal</span>
+            </div>
+            <div class="cra-access-ctr">Access <span id="craAccessNum">0</span> / <span id="craAccessTotal">0</span> — page <strong id="craCurrentPage">—</strong></div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="cra-status" id="craStatus">Choose a preset or enter a trace, then click Run All or Step through access by access.</div>
+
+        <!-- 4 cache panels -->
+        <div class="cra-arena-grid" id="craArenaGrid">
+
+          <!-- LRU -->
+          <div class="cra-cache-panel" data-algo="lru">
+            <div class="cra-panel-header" style="--pc:#06b6d4">
+              <div class="cra-panel-title-row">
+                <span class="cra-algo-name">LRU</span>
+                <span class="cra-algo-full">Least Recently Used</span>
+              </div>
+              <span class="cra-hit-rate" id="craHitLru">0%</span>
+            </div>
+            <div class="cra-cache-slots" id="craSlotsLru"></div>
+            <div class="cra-panel-stats">
+              <div class="cra-ps-row"><span>Hits</span><span class="cra-ps-hits" id="craHitsLru">0</span></div>
+              <div class="cra-ps-row"><span>Misses</span><span class="cra-ps-miss" id="craMissLru">0</span></div>
+              <div class="cra-ps-row"><span>Evictions</span><span id="craEvictLru">0</span></div>
+            </div>
+            <div class="cra-evict-flash hidden" id="craEvictFlashLru">EVICT</div>
+          </div>
+
+          <!-- LFU -->
+          <div class="cra-cache-panel" data-algo="lfu">
+            <div class="cra-panel-header" style="--pc:#a855f7">
+              <div class="cra-panel-title-row">
+                <span class="cra-algo-name">LFU</span>
+                <span class="cra-algo-full">Least Frequently Used</span>
+              </div>
+              <span class="cra-hit-rate" id="craHitLfu">0%</span>
+            </div>
+            <div class="cra-cache-slots" id="craSlotsLfu"></div>
+            <div class="cra-panel-stats">
+              <div class="cra-ps-row"><span>Hits</span><span class="cra-ps-hits" id="craHitsLfu">0</span></div>
+              <div class="cra-ps-row"><span>Misses</span><span class="cra-ps-miss" id="craMissLfu">0</span></div>
+              <div class="cra-ps-row"><span>Evictions</span><span id="craEvictLfu">0</span></div>
+            </div>
+            <div class="cra-evict-flash hidden" id="craEvictFlashLfu">EVICT</div>
+          </div>
+
+          <!-- ARC -->
+          <div class="cra-cache-panel" data-algo="arc">
+            <div class="cra-panel-header" style="--pc:#22c55e">
+              <div class="cra-panel-title-row">
+                <span class="cra-algo-name">ARC</span>
+                <span class="cra-algo-full">Adaptive Replacement Cache</span>
+              </div>
+              <span class="cra-hit-rate" id="craHitArc">0%</span>
+            </div>
+            <div class="cra-cache-slots" id="craSlotsArc"></div>
+            <div class="cra-arc-target">
+              <span>T1 target: <strong id="craArcT">3</strong> slots</span>
+              <div class="cra-arc-bar-wrap">
+                <div class="cra-arc-bar-t1" id="craArcBarT1"></div>
+                <div class="cra-arc-bar-t2" id="craArcBarT2"></div>
+              </div>
+            </div>
+            <div class="cra-panel-stats">
+              <div class="cra-ps-row"><span>Hits</span><span class="cra-ps-hits" id="craHitsArc">0</span></div>
+              <div class="cra-ps-row"><span>Misses</span><span class="cra-ps-miss" id="craMissArc">0</span></div>
+              <div class="cra-ps-row"><span>Evictions</span><span id="craEvictArc">0</span></div>
+            </div>
+            <div class="cra-evict-flash hidden" id="craEvictFlashArc">EVICT</div>
+          </div>
+
+          <!-- CLOCK -->
+          <div class="cra-cache-panel" data-algo="clock">
+            <div class="cra-panel-header" style="--pc:#f59e0b">
+              <div class="cra-panel-title-row">
+                <span class="cra-algo-name">CLOCK</span>
+                <span class="cra-algo-full">Clock / Second-Chance</span>
+              </div>
+              <span class="cra-hit-rate" id="craHitClock">0%</span>
+            </div>
+            <div class="cra-cache-slots" id="craSlotsClock"></div>
+            <div class="cra-panel-stats">
+              <div class="cra-ps-row"><span>Hits</span><span class="cra-ps-hits" id="craHitsClock">0</span></div>
+              <div class="cra-ps-row"><span>Misses</span><span class="cra-ps-miss" id="craMissClock">0</span></div>
+              <div class="cra-ps-row"><span>Evictions</span><span id="craEvictClock">0</span></div>
+            </div>
+            <div class="cra-clock-hand">Clock hand: slot <strong id="craClockHand">0</strong></div>
+            <div class="cra-evict-flash hidden" id="craEvictFlashClock">EVICT</div>
+          </div>
+
+        </div>
+
+        <!-- Hit rate comparison chart -->
+        <div class="cra-chart-card">
+          <div class="cra-chart-title"><i class="fas fa-chart-line"></i> Hit Rate Over Time (per algorithm)</div>
+          <canvas id="craChartCanvas" class="cra-chart-canvas"></canvas>
+          <div class="cra-chart-legend">
+            <span class="cra-cl"><span class="cra-cl-dot" style="background:#06b6d4"></span>LRU</span>
+            <span class="cra-cl"><span class="cra-cl-dot" style="background:#a855f7"></span>LFU</span>
+            <span class="cra-cl"><span class="cra-cl-dot" style="background:#22c55e"></span>ARC</span>
+            <span class="cra-cl"><span class="cra-cl-dot" style="background:#f59e0b"></span>CLOCK</span>
+          </div>
+        </div>
+
+        <!-- Winner + explanation -->
+        <div class="cra-verdict-card hidden" id="craVerdictCard">
+          <div class="cra-verdict-title" id="craVerdictTitle"></div>
+          <div class="cra-verdict-body" id="craVerdictBody"></div>
+          <div class="cra-verdict-grid" id="craVerdictGrid"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📖</span> Why One Size Does Not Fit All</h2>
+        <div class="cra-learn-grid">
+          <div class="cra-learn-card" style="--lc:#06b6d4">
+            <div class="cra-learn-icon">♻️</div>
+            <h3>LRU — The Default Everyone Uses</h3>
+            <p>Linked list + hash map. O(1) hit, O(1) eviction. Perfect for temporal locality — recently accessed items are likely to be accessed again. Fatal flaw: a sequential scan of N items evicts all N cache residents, even items accessed millions of times. MySQL calls this "cache pollution" and uses a midpoint-insertion variant to prevent it.</p>
+          </div>
+          <div class="cra-learn-card" style="--lc:#a855f7">
+            <div class="cra-learn-icon">📊</div>
+            <h3>LFU — Frequency Over Recency</h3>
+            <p>Tracks exact access count per item. Items accessed most often survive longest. Wins on frequency-skewed workloads (80% of accesses hit 20% of items). Fatal flaw: frequency counts never decay — an item accessed 1000 times hours ago beats a new hot item accessed 5 times. "Cache sedimentation" traps stale-but-historically-popular items.</p>
+          </div>
+          <div class="cra-learn-card" style="--lc:#22c55e">
+            <div class="cra-learn-icon">🎯</div>
+            <h3>ARC — IBM's Patent, ZFS's Secret</h3>
+            <p>Maintains 4 lists: T1 (seen once recently), T2 (seen twice+), B1 (ghost of evicted T1), B2 (ghost of evicted T2). A ghost hit on B1 means "we should have kept that" → shift budget to T1. Ghost hit on B2 → shift to T2. The split target t adapts in real time. Used in ZFS, NetApp ONTAP, and IBM's storage systems.</p>
+          </div>
+          <div class="cra-learn-card" style="--lc:#f59e0b">
+            <div class="cra-learn-icon">🕐</div>
+            <h3>CLOCK — O(1) LRU Approximation</h3>
+            <p>A circular buffer of cache slots, each with a single reference bit. On access: set bit to 1. On eviction: sweep clockwise — if bit is 1, clear it and continue (second chance); if bit is 0, evict. Approximates LRU without the overhead of moving list nodes. Used in Linux's page cache, PostgreSQL's buffer manager, and most OS virtual memory systems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="cache-replacement-arena.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

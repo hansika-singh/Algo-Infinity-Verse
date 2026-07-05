@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V8 JS Engine Internals | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize V8 Hidden Classes (Maps) and Inline Caching optimizations." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="v8-visualizer.css" />
+</head>
+<body class="v8-body">
+
+    <nav class="navbar v8-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fab fa-js-square"></i> JIT Compiler: Ready
+        </div>
+    </nav>
+
+    <main class="v8-workspace">
+        
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-code"></i> Source Code (JIT Simulation)</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Watch how V8 optimizes dynamic objects. Adding properties in different orders creates distinct <strong>Hidden Classes (Maps)</strong>. Functions cache these Maps (<strong>Inline Caching</strong>) for fast access.
+                </p>
+
+                <div class="editor-wrapper">
+                    <textarea id="codeEditor"></textarea>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button type="button" class="btn btn-primary" id="btnStep">
+                        Step Execution <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset VM
+                    </button>
+                </div>
+            </div>
+
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> VM Telemetry</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Ignition Interpreter initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-sitemap"></i> Hidden Class Transition Tree</span>
+                <span class="badge-count">Total Maps: <span id="mapCountDisplay">1</span></span>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div id="d3Container"></div>
+            </div>
+            
+            <div class="panel-footer">
+                <div class="legend">
+                    <span class="legend-item"><span class="swatch map-node"></span> Map (Hidden Class)</span>
+                    <span class="legend-item"><span class="swatch map-edge"></span> Property Transition</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-bolt"></i> Inline Caching (IC)</span>
+            </div>
+            
+            <div class="ic-section">
+                <p class="desc-text" style="font-size: 0.8rem;">
+                    Functions record the Hidden Classes of objects passed to them. Too many classes cause a <strong>Megamorphic De-optimization</strong> cliff.
+                </p>
+
+                <div class="ic-container" id="icContainer">
+                    <div class="empty-state" id="icEmptyState">
+                        <i class="fas fa-code-branch"></i>
+                        <p>Define a function to observe IC states.</p>
+                    </div>
+                    </div>
+            </div>
+            
+            <div class="memory-section">
+                <h4><i class="fas fa-box"></i> Object Memory</h4>
+                <div class="obj-grid" id="objGrid">
+                    </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="v8-visualizer.js"></script>
+</body>
+</html>

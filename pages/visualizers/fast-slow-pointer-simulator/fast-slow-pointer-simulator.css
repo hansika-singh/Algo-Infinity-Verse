@@ -1,0 +1,243 @@
+/* fast-slow-pointer-simulator.css */
+
+/* Reusing some visualizer common styles */
+.visualizer-hero {
+  padding: 8rem 0 4rem;
+}
+
+.typing-text_visualizer {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+.visualizer-container {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.visualizer-main-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.visualizer-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.visualizer-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Linked List Nodes & Canvas */
+.ll-node-wrapper {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: var(--bg-primary);
+  border: 3px solid var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.ll-node-wrapper.highlight-slow {
+  border-color: #00d2ff;
+  box-shadow: 0 0 15px #00d2ff;
+}
+
+.ll-node-wrapper.highlight-fast {
+  border-color: #ff007f;
+  box-shadow: 0 0 15px #ff007f;
+}
+
+.ll-node-wrapper.highlight-both {
+  border-color: #a200ff;
+  box-shadow: 0 0 20px #a200ff;
+  background-color: rgba(162, 0, 255, 0.2);
+}
+
+/* Pointers (Tortoise / Hare) */
+.pointer-icon {
+  position: absolute;
+  font-size: 1.5rem;
+  transition: all 0.5s ease;
+  z-index: 20;
+}
+
+.pointer-slow {
+  color: #00d2ff; /* Cyan */
+  top: -30px;
+}
+
+.pointer-fast {
+  color: #ff007f; /* Pink */
+  bottom: -30px;
+}
+
+/* SVG Arrows */
+.arrow-path {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 3;
+  marker-end: url(#arrowhead);
+  transition: stroke 0.3s ease;
+}
+
+.arrow-path.highlight {
+  stroke: var(--accent);
+}
+
+/* Math Dashboard */
+.math-dashboard-content {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+}
+
+.math-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+.math-box h5 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.math-box p {
+  font-family: 'Fira Code', monospace;
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+#cycleProofText p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+#cycleProofText .math-eq {
+  color: var(--accent);
+  font-weight: bold;
+  font-style: normal;
+  display: block;
+  margin: 0.5rem 0;
+}
+
+/* Controls */
+.control-group {
+  margin-bottom: 1.2rem;
+}
+
+.control-group label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.control-input {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.slider-custom {
+  width: 100%;
+  appearance: none;
+  background: var(--border);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.slider-custom::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.slider-custom::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.btn-control-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-control {
+  flex: 1;
+  padding: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+/* Complexity Cards */
+.complexity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.complexity-card-mini {
+  background: var(--bg-primary);
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.complexity-card-mini h5 {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.complexity-card-mini p {
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .visualizer-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .math-panel-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spatial Indexing Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Quadtree and Geohash visualizer for Location-Based Services." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="spatial-visualizer.css" />
+</head>
+<body class="spatial-body">
+
+    <nav class="navbar spatial-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-satellite"></i> Spatial Engine: Active
+        </div>
+    </nav>
+
+    <main class="spatial-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-map-marked-alt"></i> Location Services</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Observe how 2D space is partitioned. A <strong>Quadtree</strong> recursively subdivides regions to optimize proximity searches. Hover over the map to perform a radial search.
+                </p>
+
+                <div class="input-group">
+                    <label>Index Data Structure</label>
+                    <div class="mode-toggle">
+                        <button type="button" class="mode-btn active" data-mode="quadtree"><i class="fas fa-border-all"></i> Quadtree</button>
+                        <button type="button" class="mode-btn" data-mode="geohash"><i class="fas fa-wave-square"></i> Z-Curve (Geohash)</button>
+                    </div>
+                </div>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Drivers (Moving)</label>
+                        <input type="range" id="driverCount" min="50" max="1000" value="400" />
+                        <span class="slider-val" id="driverVal">400</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Restaurants (Static)</label>
+                        <input type="range" id="staticCount" min="0" max="500" value="100" />
+                        <span class="slider-val" id="staticVal">100</span>
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Search Radius</label>
+                        <input type="range" id="searchRadius" min="20" max="300" value="80" />
+                        <span class="slider-val" id="radiusVal">80 km</span>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showGridToggle" checked>
+                        <span class="slider"></span>
+                        <span class="toggle-label">Show Quadtree Bounds</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Telemetry & Benchmarks -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-tachometer-alt"></i> Search Performance</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box bad">
+                        <span class="tel-label">Brute Force O(N)</span>
+                        <span class="tel-value"><span id="bruteChecks">0</span> Checks</span>
+                    </div>
+                    <div class="tel-box good">
+                        <span class="tel-label">Spatial Index O(log N)</span>
+                        <span class="tel-value text-accent"><span id="quadChecks">0</span> Checks</span>
+                    </div>
+                </div>
+
+                <div class="results-box">
+                    <div class="result-row">
+                        <span>Entities Found:</span>
+                        <strong class="text-primary" id="foundCount">0</strong>
+                    </div>
+                    <div class="efficiency-indicator">
+                        <i class="fas fa-bolt"></i> <span id="efficiencyRatio">0%</span> more efficient
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> System Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Spatial partition engine initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-globe-americas"></i> Live Map Simulation</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="dot driver"></span> Drivers</span>
+                    <span class="legend-item"><span class="dot static"></span> Restaurants</span>
+                    <span class="legend-item"><span class="dot highlight"></span> In Radius</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="mapCanvas"></canvas>
+                <div class="search-hint" id="searchHint">
+                    <i class="fas fa-mouse-pointer"></i> Hover to search
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="spatial-visualizer.js"></script>
+</body>
+</html>

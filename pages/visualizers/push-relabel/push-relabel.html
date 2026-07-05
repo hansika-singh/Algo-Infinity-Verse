@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push-Relabel Maximum Flow | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="push-relabel.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="push-relabel.js" defer></script>
+</head>
+<body data-page="push-relabel">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Push-Relabel (Maximum Flow)</h2>
+            <p class="status" role="status" aria-live="polite">Status: Graph Editor Mode | Max Flow: 0</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-random" class="btn outline" aria-label="Generate Random Graph"><i class="fas fa-dice"></i> Random</button>
+            <button type="button" id="btn-clear" class="btn danger" aria-label="Clear Graph"><i class="fas fa-trash"></i> Clear</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm"><i class="fas fa-play"></i> Start</button>
+            <button type="button" id="btn-reset" class="btn outline" aria-label="Reset Algorithm" disabled><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Algorithm State</h3>
+                <div class="telemetry-grid">
+                    <div class="metric"><span class="label">Active Vertex</span><span id="stat-active" class="value">—</span></div>
+                    <div class="metric"><span class="label">Current Operation</span><span id="stat-op" class="value">—</span></div>
+                    <div class="metric"><span class="label">Excess $e(u)$</span><span id="stat-excess" class="value">0</span></div>
+                    <div class="metric"><span class="label">Height $h(u)$</span><span id="stat-height" class="value">0</span></div>
+                    <div class="metric"><span class="label">Current Edge</span><span id="stat-edge" class="value">—</span></div>
+                    <div class="metric"><span class="label">Total Max Flow</span><span id="stat-maxflow" class="value highlight-val">0</span></div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                <div class="pseudocode" id="pseudocode-block">
+                    <div id="line-init-h" class="code-line">1. h(S) = |V|, h(others) = 0</div>
+                    <div id="line-init-f" class="code-line">2. Push full capacity from S</div>
+                    <div id="line-while" class="code-line">3. While active vertex u exists:</div>
+                    <div id="line-find" class="code-line indent">4. Find admissible edge (u, v)</div>
+                    <div id="line-push" class="code-line indent-2">5. If found: Push(u, v)</div>
+                    <div id="line-relabel" class="code-line indent-2">6. Else: Relabel(u)</div>
+                    <div id="line-done" class="code-line">7. Return Flow entering Sink</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="instruction-overlay" id="editor-hint">
+                <i class="fas fa-mouse-pointer"></i> Click to add node | Drag between nodes for edges | Dbl-click to edit
+            </div>
+            <canvas id="viz-canvas" role="img" aria-label="Push-Relabel interactive graph visualization"></canvas>
+            
+            <div id="weight-editor" class="glass-panel hidden">
+                <label for="edge-capacity">Capacity:</label>
+                <input type="number" id="edge-capacity" min="1" max="99" value="10">
+                <button type="button" id="btn-save-weight" class="btn primary btn-sm">Save</button>
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text"><strong>Push-Relabel</strong> operates locally by maintaining a <em>preflow</em>. Nodes can hold "excess" flow. Flow is strictly pushed downhill ($h(u) > h(v)$).</p>
+                <ul class="edu-list">
+                    <li><span class="badge push">Push</span> Moves flow downhill using residual capacity.</li>
+                    <li><span class="badge relabel">Relabel</span> Raises a node's height to create a downhill slope.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-clock"></i> Complexity</h3>
+                <div class="complexity-stat">
+                    <span class="label">Time (Worst Case)</span>
+                    <span class="value">O(V²E)</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Space</span>
+                    <span class="value">O(V²)</span>
+                </div>
+                <p class="edu-text sub-text">Faster than Edmonds-Karp for dense graphs due to localized operations rather than full BFS path searches.</p>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
