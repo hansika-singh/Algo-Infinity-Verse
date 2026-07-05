@@ -4605,16 +4605,17 @@ function updateBadges() {
   grid.innerHTML = badges
     .map(
       (badge) =>
-        `<div class="badge-lg ${badge.earned ? "" : "locked"}" tabindex="0" aria-label="${badge.name}: ${badge.description}. ${badge.criteria}">
-            ${badge.icon}
-            <span class="badge-tooltip">
-              <strong>${badge.name}</strong>
-              <span>${badge.description}</span>
-              <span>${badge.criteria}</span>
-            </span>
+        `<div class="badge-lg ${badge.earned ? "earned" : "locked"}" 
+          tabindex="0" 
+          title="${badge.name}: ${badge.criteria}"
+          onclick="${badge.earned ? "" : `showNotification('🔒 ${badge.criteria}', 'info')`}">
+          <span class="badge-icon">${badge.icon}</span>
+          <span class="badge-name">${badge.name}</span>
+          <span class="badge-criteria">${badge.earned ? "✅ Earned!" : badge.criteria}</span>
         </div>`,
     )
     .join("");
+    
   }
 }
 
@@ -4820,6 +4821,78 @@ function checkLevelUp() {
 function updateGamification() {
   updateXPBar();
   updateBadges();
+  updateStreakDisplay();
+  updateActivityFeed();
+  updateXPStats();
+}
+
+function updateXPStats() {
+  const totalProblems = document.getElementById("totalProblemsCount");
+  const streakEl = document.getElementById("streakCount");
+  const totalXP = document.getElementById("totalXPCount");
+  const nextLevel = document.getElementById("xpNextLevel");
+  const badgesCount = document.getElementById("badgesEarnedCount");
+
+  if (totalProblems) totalProblems.textContent = userProgress.completedProblems.length;
+  if (streakEl) streakEl.textContent = `${userProgress.streak || 0}🔥`;
+  if (totalXP) totalXP.textContent = userProgress.xp || 0;
+
+  const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
+  const currentLevel = userProgress.level || 1;
+  if (nextLevel) nextLevel.textContent = `Next: ${levelNames[currentLevel] || "Legend"}`;
+
+  const earned = userProgress.badges ? userProgress.badges.length : 0;
+  if (badgesCount) badgesCount.textContent = `${earned}/6 earned`;
+}
+
+function updateStreakDisplay() {
+  const streakNum = document.getElementById("streakNumber");
+  const bestStreakEl = document.getElementById("bestStreak");
+  const streakWeek = document.getElementById("streakWeek");
+
+  const streak = userProgress.streak || 0;
+  const bestStreak = userProgress.bestStreak || streak;
+
+  if (streakNum) streakNum.textContent = streak;
+  if (bestStreakEl) bestStreakEl.textContent = bestStreak;
+
+  if (streakWeek) {
+    const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    const today = new Date().getDay();
+    streakWeek.innerHTML = days.map((day, i) => {
+      const isActive = i < streak && i <= today;
+      return `
+        <div class="streak-day ${isActive ? "active" : "inactive"}">
+          <span>${isActive ? "🔥" : "○"}</span>
+          <span>${day}</span>
+        </div>
+      `;
+    }).join("");
+  }
+}
+
+function updateActivityFeed() {
+  const activityList = document.getElementById("activityList");
+  if (!activityList) return;
+
+  const completed = userProgress.completedProblems || [];
+  if (completed.length === 0) {
+    activityList.innerHTML = `<p class="activity-empty">No activity yet. Start solving problems! 🚀</p>`;
+    return;
+  }
+
+  const recent = completed.slice(-5).reverse();
+  activityList.innerHTML = recent.map(id => {
+    const problem = practiceProblems.find(p => p.id === id);
+    if (!problem) return "";
+    const xp = getXPForDifficulty(problem.difficulty);
+    return `
+      <div class="activity-item">
+        <span class="activity-name">✅ ${problem.title}</span>
+        <span class="activity-xp">+${xp} XP</span>
+      </div>
+    `;
+  }).join("");
 }
 
 function showNotification(message, type = "info") {
