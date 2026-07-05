@@ -1594,56 +1594,22 @@ const roadmapSteps = [
 
 const advancedRoadmapSteps = [
   { id: 7, title: "Advanced Arrays & Optimization", icon: "fa-bolt", desc: "Master complex array manipulations, sliding window, and two-pointer techniques.", theory: `<p><strong>Advanced Array Optimization:</strong> Optimizing array operations from O(N²) to O(N) or O(N log N).</p><p><strong>Sliding Window:</strong> Used to track contiguous subarrays.</p><p><strong>Trapping Rain Water Pattern:</strong> Two-pointer technique to solve complex optimization problems.</p>`, type: "coding", problems: [9, 5], complexity: [{ op: "Trapping Rain Water (Two Pointers)", time: "O(N)", space: "O(1)" }, { op: "LRU Cache Get / Put Operations", time: "O(1)", space: "O(Capacity)" }] },
-  { id: 8, title: "Advanced Dynamic Programming", icon: "fa-layer-group", desc: "Learn advanced DP optimizations, multi-dimensional DP, and sequence matching techniques.", theory: `<p><strong>Advanced DP Concepts:</strong> Identifying states with multiple dimensions.</p><p><strong>Longest Increasing Subsequence (LIS):</strong> Can be optimized from O(N²) to O(N log N).</p><p><strong>Space Optimization:</strong> Reduce space complexity from O(N) to O(1) when state depends only on previous states.</p>`, type: "coding", problems: [7, 14], complexity: [{ op: "LIS (Naive DP)", time: "O(N²)", space: "O(N)" }, { op: "LIS (DP + Binary Search)", time: "O(N log N)", space: "O(N)" }, { op: "House Robber (Tabulation)", time: "O(N)", space: "O(N)" }, { op: "House Robber (Space Optimized)", time: "O(N)", space: "O(1)" }] },
-  { id: 9, title: "Advanced Graph Algorithms", icon: "fa-circle-nodes", desc: "Solve complex graph problems using shortest path, cycle detection, topological sorting, and BFS/DFS.", theory: `<p><strong>Advanced Graphs:</strong> Complex graph traversal strategies.</p><p><strong>Topological Sort:</strong> Ordering of vertices in a DAG.</p><p><strong>Word Ladder (BFS State Space Search):</strong> BFS to find shortest path.</p><p><strong>Grid DFS/BFS (Flood Fill):</strong> Traversing matrix structures.</p>`, type: "coding", problems: [8, 13, 15], complexity: [{ op: "BFS Shortest Path (Word Ladder)", time: "O(M² * N)", space: "O(M² * N)" }, { op: "DFS Island Counting", time: "O(R * C)", space: "O(R * C)" }, { op: "Topological Sort", time: "O(V + E)", space: "O(V + E)" }] },
-  { id: 10, title: "Advanced Optimization & Interview Strategies", icon: "fa-crown", desc: "Master interview-level optimization techniques, bit manipulation, and competitive programming tips.", theory: `<p><strong>Final Interview Strategies:</strong> Optimal time/space balances.</p><p><strong>Bit Manipulation:</strong> Using bitwise operations for O(1) space and fast execution.</p><p><strong>Backtracking Pruning:</strong> Cutting off recursive paths early.</p>`, type: "quiz", quiz: [{ question: "Which technique is most appropriate for finding the shortest path in an unweighted graph?", options: ["DFS", "BFS", "Dijkstra", "Kruskal"], correct: 1, explanation: "BFS explores layer by layer and is guaranteed to find the shortest path." }, { question: "What is the optimal time complexity of LIS?", options: ["O(N²)", "O(N log N)", "O(N)", "O(2^N)"], correct: 1, explanation: "LIS can be solved in O(N log N) using DP with binary search." }, { question: "How can we optimize space complexity of House Robber from O(N) to O(1)?", options: ["Using a binary search tree", "Keeping track of last two values", "Using a hash map", "Not possible"], correct: 1, explanation: "Since each state only depends on the previous two states, we only need two variables." }], complexity: [{ op: "Bitwise Operations", time: "O(1)", space: "O(1)" }, { op: "Pruned Backtracking Search", time: "O(Branch^Depth)", space: "O(Depth)" }] }
-];
-
-let roadmapTabsInitialized = false;
-let roadmapStagesInitialized = false;
-let currentQuizAnswers = {};
-let currentRoadmapSearch = '';
-
-/* Temporarily disabled because roadmapAdvancedTab is not present in the current HTML structure.*/
-function initRoadmap() {
-  if (!roadmapTabsInitialized) {
-    const basicTab = document.getElementById("roadmapBasicTab");
-    //const advancedTab = document.getElementById("roadmapAdvancedTab");
-    const overviewTab = document.getElementById("roadmapOverviewTab");
-    
-    if (basicTab || advancedTab || overviewTab) {
-      if (basicTab) basicTab.addEventListener("click", () => {
-        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
-        basicTab.classList.add("active");
-        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
+      const tabs = [basicTab, advancedTab, overviewTab];
+      const containerIds = ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"];
+      const activateTab = (tab, containerId) => {
+        tabs.forEach(t => t && t.classList.remove("active"));
+        tab.classList.add("active");
+        containerIds.forEach(id => {
           const el = document.getElementById(id);
           if (el) el.classList.remove("active");
         });
-        const basic = document.getElementById("basicRoadmapContainer");
-        if (basic) basic.classList.add("active");
-      });
+        const container = document.getElementById(containerId);
+        if (container) container.classList.add("active");
+      };
 
-      if (advancedTab) advancedTab.addEventListener("click", () => {
-        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
-        advancedTab.classList.add("active");
-        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove("active");
-        });
-        const advanced = document.getElementById("advancedRoadmapContainer");
-        if (advanced) advanced.classList.add("active");
-      });
-
-      if (overviewTab) overviewTab.addEventListener("click", () => {
-        [basicTab, advancedTab, overviewTab].forEach(t => t && t.classList.remove("active"));
-        overviewTab.classList.add("active");
-        ["basicRoadmapContainer","advancedRoadmapContainer","overviewRoadmapContainer"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.classList.remove("active");
-        });
-        const overview = document.getElementById("overviewRoadmapContainer");
-        if (overview) overview.classList.add("active");
-      });
+      if (basicTab) basicTab.addEventListener("click", () => activateTab(basicTab, "basicRoadmapContainer"));
+      if (advancedTab) advancedTab.addEventListener("click", () => activateTab(advancedTab, "advancedRoadmapContainer"));
+      if (overviewTab) overviewTab.addEventListener("click", () => activateTab(overviewTab, "overviewRoadmapContainer"));
     }
     
     // Close button for step modal
