@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Golang M:N Scheduler Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize the Go Runtime Scheduler, Work Stealing, and M:N Concurrency." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="go-scheduler.css" />
+</head>
+<body class="go-body">
+
+    <nav class="navbar go-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-server"></i> Go Runtime: Active
+        </div>
+    </nav>
+
+    <main class="go-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> Scheduler Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Go maps thousands of <strong>Goroutines (G)</strong> onto a few <strong>OS Threads (M)</strong> using <strong>Processors (P)</strong>. 
+                </p>
+
+                <div class="action-grid">
+                    <button type="button" class="btn btn-primary w-100" id="btnSpawn1">
+                        <i class="fas fa-plus"></i> Spawn 1 G
+                    </button>
+                    <button type="button" class="btn btn-primary w-100" id="btnSpawn10">
+                        <i class="fas fa-layer-group"></i> Spawn 10 Gs
+                    </button>
+                </div>
+
+                <div class="chaos-section mt-3">
+                    <h4><i class="fas fa-skull-crossbones"></i> System Interrupts</h4>
+                    <p class="desc-text" style="font-size: 0.75rem;">Force a running Goroutine to make a blocking system call (e.g., Disk I/O). Watch the OS Thread (M) detach!</p>
+                    <button type="button" class="btn btn-warning w-100" id="btnBlockSyscall">
+                        <i class="fas fa-pause-circle"></i> Trigger Blocking I/O
+                    </button>
+                </div>
+
+                <div class="speed-control mt-3">
+                    <label>Clock Speed (Tick Rate)</label>
+                    <input type="range" id="speedSlider" min="50" max="1000" value="400" style="direction: rtl;" />
+                </div>
+            </div>
+
+            <!-- Telemetry & Logs -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-chart-bar"></i> Runtime Telemetry</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Active Gs</span>
+                        <span class="tel-value text-accent" id="statActiveG">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Idle Threads (M)</span>
+                        <span class="tel-value text-primary" id="statIdleM">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logs-section">
+                <h4><i class="fas fa-list-alt"></i> Scheduler Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> GOMAXPROCS=4. Scheduler initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Architecture Visualizer -->
+        <div class="panel-right">
+            
+            <!-- Global Queue -->
+            <div class="arch-section global-queue-section">
+                <div class="section-header">
+                    <div class="header-title"><i class="fas fa-globe"></i> Global Run Queue (GQ)</div>
+                    <div class="queue-count">Count: <span id="gqCount">0</span></div>
+                </div>
+                <div class="queue-container" id="globalQueue">
+                    <!-- Gs injected here -->
+                    <div class="empty-text" id="gqEmpty">Queue is empty</div>
+                </div>
+                <div class="helper-text">Gs are placed here when spawned or if Local Queues overflow. Ps check here occasionally.</div>
+            </div>
+
+            <!-- Processors (P) and Threads (M) -->
+            <div class="arch-section processors-section">
+                <div class="section-header">
+                    <div class="header-title"><i class="fas fa-microchip"></i> Logical Processors (P) & OS Threads (M)</div>
+                    <div class="queue-count">GOMAXPROCS = 4</div>
+                </div>
+                
+                <div class="processors-grid" id="processorsGrid">
+                    <!-- P0 -->
+                    <div class="processor-card" id="P0">
+                        <div class="p-header">P0 <span class="badge-steal" id="steal-P0">Stealing...</span></div>
+                        <div class="m-slot" id="M-slot-P0">
+                            <!-- Thread M injected here -->
+                        </div>
+                        <div class="lrq-header">Local Run Queue (LRQ)</div>
+                        <div class="lrq-container" id="lrq-P0"></div>
+                    </div>
+                    <!-- P1 -->
+                    <div class="processor-card" id="P1">
+                        <div class="p-header">P1 <span class="badge-steal" id="steal-P1">Stealing...</span></div>
+                        <div class="m-slot" id="M-slot-P1"></div>
+                        <div class="lrq-header">Local Run Queue (LRQ)</div>
+                        <div class="lrq-container" id="lrq-P1"></div>
+                    </div>
+                    <!-- P2 -->
+                    <div class="processor-card" id="P2">
+                        <div class="p-header">P2 <span class="badge-steal" id="steal-P2">Stealing...</span></div>
+                        <div class="m-slot" id="M-slot-P2"></div>
+                        <div class="lrq-header">Local Run Queue (LRQ)</div>
+                        <div class="lrq-container" id="lrq-P2"></div>
+                    </div>
+                    <!-- P3 -->
+                    <div class="processor-card" id="P3">
+                        <div class="p-header">P3 <span class="badge-steal" id="steal-P3">Stealing...</span></div>
+                        <div class="m-slot" id="M-slot-P3"></div>
+                        <div class="lrq-header">Local Run Queue (LRQ)</div>
+                        <div class="lrq-container" id="lrq-P3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blocked / Syscall Pool -->
+            <div class="arch-section blocked-section">
+                <div class="section-header">
+                    <div class="header-title"><i class="fas fa-lock"></i> Blocked OS Threads (Waiting on I/O)</div>
+                </div>
+                <div class="blocked-container" id="blockedPool">
+                    <!-- Blocked Ms and Gs injected here -->
+                    <div class="empty-text" id="blockedEmpty">No blocked threads</div>
+                </div>
+                <div class="helper-text">When a G makes a blocking syscall, its M detaches from the P and waits here. The P grabs a new M to continue working!</div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="go-scheduler.js"></script>
+</body>
+</html>

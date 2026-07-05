@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Programming Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Dynamic Programming state space, recursion trees, and memoization tables." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="dp-visualizer.css" />
+    
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/pages/visualizers/visualizers.html"><i class="fas fa-shapes"></i> Visualizers</a>
+        </div>
+    </nav>
+
+    <main class="vis-workspace">
+        
+        <!-- Left Panel: Problem Context -->
+        <aside class="vis-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-brain"></i> DP Visualizer</h3>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="control-group">
+                    <label for="problemSelect">Select Problem:</label>
+                    <select id="problemSelect">
+                        <option value="fibonacci">Fibonacci Sequence</option>
+                        <option value="knapsack">0/1 Knapsack</option>
+                        <option value="lcs">Longest Common Subsequence</option>
+                        <option value="coinchange">Coin Change</option>
+                        <option value="mcm">Matrix Chain Multiplication</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="inputContainer">
+                    <label for="dpInput">Input N:</label>
+                    <input type="number" id="dpInput" value="5" min="1" max="15">
+                </div>
+
+                <div class="control-group">
+                    <button type="button" id="btnGenerate" class="btn-primary">Generate Tree</button>
+                </div>
+                
+                <div class="legend-box">
+                    <h4>State Legend</h4>
+                    <div class="legend-item"><span class="color-box uncalc"></span> Uncalculated</div>
+                    <div class="legend-item"><span class="color-box active"></span> Currently Computing</div>
+                    <div class="legend-item"><span class="color-box calc"></span> Calculated / Memoized</div>
+                    <div class="legend-item"><span class="color-box overlap"></span> Overlapping Subproblem</div>
+                </div>
+
+                <div class="code-context">
+                    <h4>Source Code</h4>
+                    <pre><code id="sourceCodeDisplay">// Select a problem to view code</code></pre>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Area: Visualization Canvas & HUD -->
+        <div class="canvas-wrapper">
+            
+            <div class="visualization-panels">
+                <!-- Recursion Tree Panel -->
+                <div class="panel tree-panel">
+                    <h4>Recursion Tree</h4>
+                    <div id="treeContainer" class="scrollable-container">
+                        <canvas id="recursionCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Memoization Table Panel -->
+                <div class="panel table-panel">
+                    <h4>Memoization Table</h4>
+                    <div id="tableContainer" class="scrollable-container">
+                        <table id="memoTable">
+                            <!-- Populated dynamically -->
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Call Stack Panel -->
+                <div class="panel stack-panel">
+                    <h4>Call Stack</h4>
+                    <div id="stackContainer" class="scrollable-container">
+                        <ul id="callStackList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating Data Overlay -->
+            <div class="hud-overlay">
+                <div class="hud-top">
+                    <div class="current-state-display" id="currentStateDisplay">
+                        Ready
+                    </div>
+                </div>
+                
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <button type="button" class="btn-control" id="btnReset" title="Reset"><i class="fas fa-undo"></i></button>
+                    <button type="button" class="btn-control" id="btnStepBack" title="Step Back"><i class="fas fa-step-backward"></i></button>
+                    <button type="button" class="btn-control play-btn" id="btnPlayPause" title="Play/Pause"><i class="fas fa-play"></i></button>
+                    <button type="button" class="btn-control" id="btnStepFwd" title="Step Forward"><i class="fas fa-step-forward"></i></button>
+                    
+                    <div class="timeline-scrubber">
+                        <input type="range" id="timelineSlider" min="0" max="100" value="0">
+                        <span class="timeline-progress" id="timelineProgress">0 / 0</span>
+                    </div>
+
+                    <div class="speed-control">
+                        <label for="speedSlider"><i class="fas fa-tachometer-alt"></i> Speed</label>
+                        <input type="range" id="speedSlider" min="100" max="2000" value="800" dir="rtl">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <script src="dp-visualizer.js"></script>
+</body>
+</html>

@@ -7,7 +7,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "echo 'No build step required'"
+    "dev:api": "node dev-server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [
     "dsa",
@@ -17,11 +20,37 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "bullmq": "^5.79.1",
     "cors": "^2.8.6",
+    "csv-parse": "^7.0.0",
     "express": "^5.2.1",
-    "firebase-admin": "^12.0.0",
+    "firebase": "^12.15.0",
+    "firebase-admin": "^12.7.0",
+    "form-data": "^4.0.6",
+    "ioredis": "^5.11.1",
+    "js-yaml": "^4.1.0",
     "mammoth": "^1.8.0",
-    "multer": "^2.1.1",
-    "pdf-parse": "^1.1.1"
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.1",
+    "openai": "^4.79.0",
+    "pdf-parse": "^1.1.1",
+    "peer": "^1.0.2",
+    "puppeteer": "^25.1.0",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "acorn": "^8.17.0",
+    "jest": "^30.4.2"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/tests/e2e/"
+    ]
   }
 }

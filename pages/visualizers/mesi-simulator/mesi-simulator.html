@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L1/L2 Cache Coherence (MESI) Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Hardware architecture simulator demonstrating the MESI protocol and cache invalidation over a system bus." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="mesi-simulator.css" />
+</head>
+<body class="mesi-body">
+
+    <nav class="navbar mesi-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> Hardware Bus: Idle
+        </div>
+    </nav>
+
+    <main class="mesi-workspace">
+        
+        <!-- Left Panel: Controls, Legend, and Logs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-terminal"></i> CPU Instruction Terminal</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Execute Read and Write instructions across 4 independent CPU cores. The hardware <strong>System Bus</strong> uses the <strong>MESI Protocol</strong> to snoop traffic and automatically invalidate stale L1 cache lines.
+                </p>
+
+                <!-- Instruction Builder -->
+                <div class="instruction-builder">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Core</label>
+                            <select id="selCore">
+                                <option value="0">CPU 0</option>
+                                <option value="1">CPU 1</option>
+                                <option value="2">CPU 2</option>
+                                <option value="3">CPU 3</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Address</label>
+                            <select id="selAddress">
+                                <option value="0">0x00</option>
+                                <option value="1">0x01</option>
+                                <option value="2">0x02</option>
+                                <option value="3">0x03</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group mt-2" id="dataInputGroup">
+                        <label>Data (Hex, for Writes)</label>
+                        <input type="text" id="inputData" placeholder="e.g. FF" maxlength="2" />
+                    </div>
+
+                    <div class="action-grid mt-3">
+                        <button type="button" class="btn btn-primary" id="btnRead">
+                            <i class="fas fa-book-reader"></i> Execute READ
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btnWrite">
+                            <i class="fas fa-pen-nib"></i> Execute WRITE
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol Legend -->
+            <div class="legend-section">
+                <h4>MESI State Machine</h4>
+                <div class="legend-grid">
+                    <div class="legend-item" title="Line modified locally. Memory is stale.">
+                        <span class="state-badge st-m">M</span> <span><strong>Modified:</strong> Dirty. I own it.</span>
+                    </div>
+                    <div class="legend-item" title="Clean and only present in this cache.">
+                        <span class="state-badge st-e">E</span> <span><strong>Exclusive:</strong> Clean. Only I have it.</span>
+                    </div>
+                    <div class="legend-item" title="Clean, but other caches might have it.">
+                        <span class="state-badge st-s">S</span> <span><strong>Shared:</strong> Clean. Others have it.</span>
+                    </div>
+                    <div class="legend-item" title="Data is stale/empty. Must fetch from bus.">
+                        <span class="state-badge st-i">I</span> <span><strong>Invalid:</strong> Empty or Stale.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bus Snoop Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-satellite-dish"></i> Bus Snooping Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Motherboard initialized. All L1 Caches empty (Invalid).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Interactive Motherboard -->
+        <div class="panel-right">
+            <div class="motherboard-container" id="motherboard">
+                
+                <!-- SVG Bus Wiring -->
+                <svg class="bus-svg" id="busSvg">
+                    <!-- Lines injected dynamically -->
+                </svg>
+
+                <div class="cpu-grid">
+                    <!-- CPU 0 -->
+                    <div class="cpu-node" id="cpu-0">
+                        <div class="cpu-header"><i class="fas fa-microchip"></i> Core 0</div>
+                        <div class="l1-cache">
+                            <div class="cache-row"><span class="addr">0x00</span><span class="state st-i" id="c0-s0">I</span><span class="data" id="c0-d0">--</span></div>
+                            <div class="cache-row"><span class="addr">0x01</span><span class="state st-i" id="c0-s1">I</span><span class="data" id="c0-d1">--</span></div>
+                            <div class="cache-row"><span class="addr">0x02</span><span class="state st-i" id="c0-s2">I</span><span class="data" id="c0-d2">--</span></div>
+                            <div class="cache-row"><span class="addr">0x03</span><span class="state st-i" id="c0-s3">I</span><span class="data" id="c0-d3">--</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- CPU 1 -->
+                    <div class="cpu-node" id="cpu-1">
+                        <div class="cpu-header"><i class="fas fa-microchip"></i> Core 1</div>
+                        <div class="l1-cache">
+                            <div class="cache-row"><span class="addr">0x00</span><span class="state st-i" id="c1-s0">I</span><span class="data" id="c1-d0">--</span></div>
+                            <div class="cache-row"><span class="addr">0x01</span><span class="state st-i" id="c1-s1">I</span><span class="data" id="c1-d1">--</span></div>
+                            <div class="cache-row"><span class="addr">0x02</span><span class="state st-i" id="c1-s2">I</span><span class="data" id="c1-d2">--</span></div>
+                            <div class="cache-row"><span class="addr">0x03</span><span class="state st-i" id="c1-s3">I</span><span class="data" id="c1-d3">--</span></div>
+                        </div>
+                    </div>
+
+                    <!-- System Bus Controller (Center) -->
+                    <div class="system-bus-node" id="system-bus">
+                        <i class="fas fa-random"></i>
+                        <span>System Bus Controller</span>
+                    </div>
+
+                    <!-- CPU 2 -->
+                    <div class="cpu-node" id="cpu-2">
+                        <div class="cpu-header"><i class="fas fa-microchip"></i> Core 2</div>
+                        <div class="l1-cache">
+                            <div class="cache-row"><span class="addr">0x00</span><span class="state st-i" id="c2-s0">I</span><span class="data" id="c2-d0">--</span></div>
+                            <div class="cache-row"><span class="addr">0x01</span><span class="state st-i" id="c2-s1">I</span><span class="data" id="c2-d1">--</span></div>
+                            <div class="cache-row"><span class="addr">0x02</span><span class="state st-i" id="c2-s2">I</span><span class="data" id="c2-d2">--</span></div>
+                            <div class="cache-row"><span class="addr">0x03</span><span class="state st-i" id="c2-s3">I</span><span class="data" id="c2-d3">--</span></div>
+                        </div>
+                    </div>
+
+                    <!-- CPU 3 -->
+                    <div class="cpu-node" id="cpu-3">
+                        <div class="cpu-header"><i class="fas fa-microchip"></i> Core 3</div>
+                        <div class="l1-cache">
+                            <div class="cache-row"><span class="addr">0x00</span><span class="state st-i" id="c3-s0">I</span><span class="data" id="c3-d0">--</span></div>
+                            <div class="cache-row"><span class="addr">0x01</span><span class="state st-i" id="c3-s1">I</span><span class="data" id="c3-d1">--</span></div>
+                            <div class="cache-row"><span class="addr">0x02</span><span class="state st-i" id="c3-s2">I</span><span class="data" id="c3-d2">--</span></div>
+                            <div class="cache-row"><span class="addr">0x03</span><span class="state st-i" id="c3-s3">I</span><span class="data" id="c3-d3">--</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shared L2 / Main Memory -->
+                <div class="main-memory-node" id="main-memory">
+                    <div class="mem-header"><i class="fas fa-database"></i> Shared L2 / Main Memory</div>
+                    <div class="mem-grid">
+                        <div class="mem-cell"><span class="addr">0x00</span><span class="data" id="mem-d0">AA</span></div>
+                        <div class="mem-cell"><span class="addr">0x01</span><span class="data" id="mem-d1">BB</span></div>
+                        <div class="mem-cell"><span class="addr">0x02</span><span class="data" id="mem-d2">CC</span></div>
+                        <div class="mem-cell"><span class="addr">0x03</span><span class="data" id="mem-d3">DD</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="mesi-simulator.js"></script>
+</body>
+</html>

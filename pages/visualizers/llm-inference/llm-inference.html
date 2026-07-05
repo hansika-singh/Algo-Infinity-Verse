@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM Inference Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize LLM Decoding Algorithms: Beam Search, Top-p (Nucleus) Sampling, and Temperature." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js and Chart.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="llm-inference.css" />
+</head>
+<body class="llm-body">
+
+    <nav class="navbar llm-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-brain"></i> LLM Engine: Idle
+        </div>
+    </nav>
+
+    <main class="llm-workspace">
+        
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> Decoding Parameters</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Control how the Large Language Model navigates the probability tree to generate tokens.
+                </p>
+
+                <div class="input-group">
+                    <label>Decoding Algorithm</label>
+                    <select id="algoSelect">
+                        <option value="greedy">Greedy Search (Best Token)</option>
+                        <option value="beam" selected>Beam Search</option>
+                        <option value="topp">Top-p (Nucleus Sampling)</option>
+                    </select>
+                </div>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Beam Width (k)</label>
+                        <div class="slider-with-val">
+                            <input type="range" id="beamWidth" min="2" max="5" value="3" />
+                            <span class="slider-val" id="beamVal">3</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Top-p (Nucleus)</label>
+                        <div class="slider-with-val">
+                            <input type="range" id="topP" min="0.1" max="1.0" step="0.1" value="0.9" disabled />
+                            <span class="slider-val" id="topPVal">0.9</span>
+                        </div>
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Temperature (T)</label>
+                        <div class="slider-with-val">
+                            <input type="range" id="temperature" min="0.1" max="2.0" step="0.1" value="1.0" />
+                            <span class="slider-val" id="tempVal">1.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group mt-3">
+                    <label>Initial Prompt Context</label>
+                    <input type="text" id="promptInput" value="The AI model" />
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="btn btn-primary w-100" id="btnGenerate">
+                        <i class="fas fa-magic"></i> Generate Text
+                    </button>
+                    <button type="button" class="btn btn-danger w-100 hidden" id="btnStop">
+                        <i class="fas fa-stop"></i> Halt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Token Probabilities Dashboard -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-chart-bar"></i> Current Step Distribution</h4>
+                <p class="desc-text" style="font-size: 0.75rem; margin-top: 0.2rem;">
+                    Logits are scaled by Temperature, converted to probabilities via Softmax, and pruned based on the selected algorithm.
+                </p>
+                <div class="chart-container">
+                    <canvas id="probChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Generation Output</h4>
+                <div class="output-container" id="textOutput">
+                    <span class="prompt-text">The AI model</span><span class="cursor blink"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: D3 Probability Tree -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-sitemap"></i> Token Generation Tree</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch active-node"></span> Active Path</span>
+                    <span class="legend-item"><span class="node-swatch pruned-node"></span> Pruned/Dead</span>
+                    <span class="legend-item"><span class="node-swatch final-node"></span> Selected Output</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <div id="d3Container"></div>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-brain"></i>
+                    <p>Click "Generate Text" to build the probability tree.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="llm-inference.js"></script>
+</body>
+</html>

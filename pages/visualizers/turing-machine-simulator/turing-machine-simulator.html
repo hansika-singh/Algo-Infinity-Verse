@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turing Machine Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Turing Machine execution, state transitions, and tape management." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="turing-machine-simulator.css" />
+    
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/pages/visualizers/visualizers.html"><i class="fas fa-shapes"></i> Visualizers</a>
+        </div>
+    </nav>
+
+    <main class="vis-workspace">
+        
+        <!-- Left Panel: Problem Context -->
+        <aside class="vis-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-cogs"></i> TM Simulator</h3>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="control-group">
+                    <label for="exampleSelect">Select Example:</label>
+                    <select id="exampleSelect">
+                        <option value="binary_increment">Binary Incrementer</option>
+                        <option value="palindrome">Palindrome Checker</option>
+                        <option value="busy_beaver">Busy Beaver (3-state)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="initialTapeInput">Initial Tape Input:</label>
+                    <input type="text" id="initialTapeInput" value="1011" placeholder="e.g. 1011">
+                </div>
+                
+                <div class="control-group">
+                    <button type="button" id="btnLoadExample" class="btn-primary">Load & Reset</button>
+                </div>
+
+                <div class="legend-box">
+                    <h4>Execution Stats</h4>
+                    <div class="legend-item">Current State: <span id="statCurrentState">-</span></div>
+                    <div class="legend-item">Steps: <span id="statSteps">0</span></div>
+                    <div class="legend-item">Head Pos: <span id="statHeadPos">0</span></div>
+                    <div class="legend-item">Status: <span id="statStatus">Ready</span></div>
+                </div>
+
+                <div class="code-context">
+                    <h4>Transition Rules</h4>
+                    <p class="small-text">Format: (State, Read) &rarr; (Write, Move, Next State)</p>
+                    <textarea id="transitionRulesText" rows="10" spellcheck="false"></textarea>
+                    <button type="button" id="btnUpdateRules" class="btn-secondary" style="margin-top: 10px; width: 100%;">Update Rules</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Area: Visualization Canvas & HUD -->
+        <div class="canvas-wrapper">
+            
+            <div class="visualization-panels">
+                
+                <!-- Tape Panel -->
+                <div class="panel tape-panel">
+                    <h4>Infinite Tape</h4>
+                    <div id="tapeContainer" class="tape-container">
+                        <!-- Tape cells will be injected here -->
+                    </div>
+                    <div class="head-pointer"><i class="fas fa-caret-up"></i></div>
+                </div>
+
+                <!-- State Graph Panel -->
+                <div class="panel graph-panel">
+                    <h4>State Transition Graph</h4>
+                    <div id="graphContainer">
+                        <svg id="stateGraphSvg" width="100%" height="100%"></svg>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Floating Data Overlay -->
+            <div class="hud-overlay">
+                
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <button type="button" class="btn-control" id="btnReset" title="Reset" aria-label="Reset"><i class="fas fa-undo" aria-hidden="true"></i></button>
+                    <button type="button" class="btn-control" id="btnStepBack" title="Step Back" aria-label="Step Back"><i class="fas fa-step-backward" aria-hidden="true"></i></button>
+                    <button type="button" class="btn-control play-btn" id="btnPlayPause" title="Play/Pause" aria-label="Play or Pause" aria-pressed="false"><i class="fas fa-play" aria-hidden="true"></i></button>
+                    <button type="button" class="btn-control" id="btnStepFwd" title="Step Forward" aria-label="Step Forward"><i class="fas fa-step-forward" aria-hidden="true"></i></button>
+                    
+                    <div class="speed-control">
+                        <label for="speedSlider"><i class="fas fa-tachometer-alt"></i> Delay</label>
+                        <input type="range" id="speedSlider" min="50" max="1500" value="500" dir="rtl">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <!-- Using D3 for State Graph Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="turing-machine-simulator.js"></script>
+</body>
+</html>

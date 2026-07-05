@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed MapReduce Orchestrator | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate a Hadoop/Spark Big Data cluster using Web Workers for concurrent MapReduce processing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="mapreduce-orchestrator.css" />
+</head>
+<body class="mr-body">
+
+    <nav class="navbar mr-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-server"></i> Cluster: Idle
+        </div>
+    </nav>
+
+    <main class="mr-workspace">
+        
+        <!-- Left Panel: Input & Cluster Config -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-database"></i> Big Data Input</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Process massive datasets concurrently. The <strong>Master Node</strong> splits the text into chunks and distributes them to <strong>Worker Nodes</strong>.
+                </p>
+
+                <div class="input-group">
+                    <label>Raw Data (Text to process)</label>
+                    <textarea id="dataInput" placeholder="Enter massive text data here..."></textarea>
+                    <button type="button" class="btn btn-secondary btn-sm mt-1" id="btnGenData">
+                        <i class="fas fa-random"></i> Generate 100k Word Dataset
+                    </button>
+                </div>
+
+                <div class="input-group mt-3">
+                    <label>Active Worker Nodes (Web Workers)</label>
+                    <div class="slider-with-val">
+                        <input type="range" id="workerCountSlider" min="1" max="16" value="4">
+                        <span class="slider-val" id="workerCountVal">4</span>
+                    </div>
+                    <small class="help-text">More workers = smaller chunks, higher concurrency.</small>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button type="button" class="btn btn-primary w-100" id="btnStartJob">
+                        <i class="fas fa-play"></i> Run MapReduce Job
+                    </button>
+                </div>
+            </div>
+
+            <!-- Telemetry & Logs -->
+            <div class="telemetry-section">
+                <h4><i class="fas fa-tachometer-alt"></i> Job Telemetry</h4>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Total Words</span>
+                        <span class="tel-value text-accent" id="statWords">0</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Execution Time</span>
+                        <span class="tel-value text-primary" id="statTime">0 ms</span>
+                    </div>
+                </div>
+
+                <div class="job-progress mt-3">
+                    <div class="progress-header">
+                        <span id="progressPhase">Waiting for job...</span>
+                        <span id="progressPct">0%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Master Node Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Cluster booted. Awaiting data payload.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: The Cluster Topology Visualizer -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <span><i class="fas fa-project-diagram"></i> Distributed Architecture</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="swatch s-map"></span> Map Phase</span>
+                    <span class="legend-item"><span class="swatch s-shuffle"></span> Shuffle</span>
+                    <span class="legend-item"><span class="swatch s-reduce"></span> Reduce Phase</span>
+                </div>
+            </div>
+            
+            <div class="cluster-arena" id="clusterArena">
+                <!-- Master Node -->
+                <div class="tier master-tier">
+                    <div class="mr-node master-node" id="nodeMaster">
+                        <i class="fas fa-brain"></i>
+                        <span>Master Node</span>
+                    </div>
+                </div>
+
+                <!-- Phase Divider: MAP -->
+                <div class="phase-divider"><span class="phase-badge p-map">1. MAP PHASE (Chunking & Counting)</span></div>
+
+                <!-- Mapper Nodes -->
+                <div class="tier worker-tier" id="mapperTier">
+                    <!-- Populated dynamically based on slider -->
+                </div>
+
+                <!-- Phase Divider: SHUFFLE -->
+                <div class="phase-divider"><span class="phase-badge p-shuffle">2. SHUFFLE & SORT PHASE (Grouping Keys)</span></div>
+
+                <!-- Router/Shuffle Visualizer -->
+                <div class="tier shuffle-tier">
+                    <div class="mr-node shuffle-node" id="nodeShuffle">
+                        <i class="fas fa-random"></i>
+                        <span>Network Shuffle Router</span>
+                    </div>
+                </div>
+
+                <!-- Phase Divider: REDUCE -->
+                <div class="phase-divider"><span class="phase-badge p-reduce">3. REDUCE PHASE (Aggregating)</span></div>
+
+                <!-- Reducer Nodes -->
+                <div class="tier worker-tier" id="reducerTier">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Final Output -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-poll-h"></i> Final Output (Aggregated)</h3>
+            </div>
+            
+            <div class="results-wrapper">
+                <div class="results-header">
+                    <span>Key (Word)</span>
+                    <span>Value (Count)</span>
+                </div>
+                <div class="results-list" id="resultsList">
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>Results will stream here after the Reduce phase.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="mapreduce-orchestrator.js"></script>
+</body>
+</html>

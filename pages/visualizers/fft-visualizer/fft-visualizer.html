@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FFT Divide-and-Conquer Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for the Fast Fourier Transform (FFT) algorithm." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="fft-visualizer.css" />
+</head>
+<body class="fft-body">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="fft-workspace" style="margin-top: 80px;">
+        
+        <!-- Left Panel: Controls & Operations -->
+        <div class="panel-left" id="panelLeft">
+            <div class="panel-header">
+                <h3><i class="fas fa-wave-square"></i> FFT Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="action-row">
+                    <button class="btn btn-outline w-100" id="btnRandomize">
+                        <i class="fas fa-random"></i> Random Input
+                    </button>
+                    <button class="btn btn-outline w-100 mt-2" id="btnReset">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Controls -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-edit"></i> Sequence Input</h4>
+                <div class="input-group">
+                    <input type="text" id="inputSequence" placeholder="e.g. 1, 0, -1, 0 (comma separated)" />
+                </div>
+                <small class="text-muted" style="display:block; margin-bottom: 10px;">Will zero-pad to nearest power of 2.</small>
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnLoadCustom">Load sequence</button>
+                    <button class="btn btn-secondary" id="btnExampleSine">Sine Wave</button>
+                    <button class="btn btn-secondary w-100" style="grid-column: span 2;" id="btnExampleImpulse">Impulse</button>
+                </div>
+            </div>
+
+            <!-- Playback & Execution -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-play-circle"></i> Execution</h4>
+                <div class="action-grid">
+                    <button class="btn btn-accent" id="btnPlay"><i class="fas fa-play"></i> Play</button>
+                    <button class="btn btn-outline" id="btnPause"><i class="fas fa-pause"></i> Pause</button>
+                    <button class="btn btn-outline w-100" style="grid-column: span 2;" id="btnStep">Step Forward <i class="fas fa-step-forward"></i></button>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Execution Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Visualizer initialized. Ready for input.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Resizer -->
+        <div class="resizer" id="mainResizer"></div>
+
+        <!-- Right Panel: Canvas Area -->
+        <div class="panel-right" id="panelRight">
+            <div class="canvas-header">
+                <div class="stats-bar">
+                    <span class="stat-item"><i class="fas fa-layer-group"></i> Depth: <span id="statDepth">0</span></span>
+                    <span class="stat-item"><i class="fas fa-ruler-horizontal"></i> N: <span id="statSize">0</span></span>
+                    <span class="stat-item"><i class="fas fa-clock"></i> Complexity: <span id="statTime">O(N log N)</span></span>
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch even-part"></span> Even</span>
+                    <span class="legend-item"><span class="node-swatch odd-part"></span> Odd</span>
+                    <span class="legend-item"><span class="node-swatch merge-part"></span> Merged</span>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="animSpeed" min="100" max="2000" value="800" style="direction: rtl;">
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper split-canvas" id="canvasWrapper">
+                
+                <!-- Sub-panel for Array Splitting (Recursion Tree) -->
+                <div class="array-view-panel" id="arrayViewPanel">
+                    <h5 class="view-title">Divide & Conquer (Array Splitting)</h5>
+                    <div id="treeContainer" class="tree-container">
+                        <!-- DOM nodes injected here -->
+                    </div>
+                </div>
+
+                <!-- Split Resizer -->
+                <div class="resizer" id="splitResizer"></div>
+
+                <!-- Sub-panel for Complex Plane (Roots of unity, Butterfly) -->
+                <div class="complex-plane-panel" id="complexPlanePanel">
+                    <h5 class="view-title">Complex Plane & Butterfly</h5>
+                    <canvas id="complexCanvas" width="400" height="400"></canvas>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-project-diagram"></i>
+                    <p>No sequence loaded.<br/>Enter data or pick an example.</p>
+                </div>
+            </div>
+            
+            <!-- Pseudocode Panel -->
+            <div class="pseudo-panel" id="pseudoPanel">
+                <div class="pseudo-header">
+                    <h4><i class="fas fa-code"></i> Pseudocode Execution</h4>
+                </div>
+                <pre id="pseudoCodeContent" class="language-pseudo">
+function FFT(P):
+  n = length(P)
+  if n == 1: return P
+  
+  <span id="pseudo-split">Pe, Po = split(P, even), split(P, odd)</span>
+  <span id="pseudo-recurse">ye, yo = FFT(Pe), FFT(Po)</span>
+  
+  <span id="pseudo-merge">y = array of size n</span>
+  <span id="pseudo-omega">omega = e^(2 * PI * i / n)</span>
+  
+  <span id="pseudo-loop">for j = 0 to n/2 - 1:</span>
+    <span id="pseudo-butterfly">y[j] = ye[j] + omega^j * yo[j]</span>
+    <span id="pseudo-butterfly2">y[j + n/2] = ye[j] - omega^j * yo[j]</span>
+    
+  return y
+                </pre>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/components/navbar.js"></script>
+    <script src="/components/footer.js"></script>
+    <script src="fft-visualizer.js"></script>
+</body>
+</html>
