@@ -4300,6 +4300,8 @@ function updateProfile() {
   });
 
   updateLevelProgress();
+  updateSkillsSection();
+  updateDifficultyBreakdown();
 }
 
 function updateLevelProgress() {
@@ -4338,6 +4340,59 @@ function updateLevelProgress() {
 
   if (progressLabelSection)
     progressLabelSection.textContent = Math.round(progressPercent) + "%";
+}
+function updateSkillsSection() {
+  const container = document.getElementById("skillsContainer");
+  if (!container) return;
+
+  const topics = [
+    { name: "Arrays", category: "arrays", icon: "📊" },
+    { name: "Strings", category: "strings", icon: "🔤" },
+    { name: "Linked List", category: "linkedlist", icon: "🔗" },
+    { name: "Trees", category: "trees", icon: "🌳" },
+    { name: "Graphs", category: "graphs", icon: "🕸️" },
+    { name: "Dynamic Programming", category: "dp", icon: "🎯" },
+  ];
+
+  const completed = userProgress.completedProblems || [];
+
+  container.innerHTML = topics.map(topic => {
+    const topicProblems = practiceProblems.filter(p => p.category === topic.category);
+    const solvedCount = topicProblems.filter(p => completed.includes(p.id)).length;
+    const total = topicProblems.length || 1;
+    const percent = Math.round((solvedCount / total) * 100);
+
+    return `
+      <div class="skill-item">
+        <div class="skill-header">
+          <span>${topic.icon} ${topic.name}</span>
+          <span>${solvedCount}/${total} (${percent}%)</span>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-fill" style="width:${percent}%"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function updateDifficultyBreakdown() {
+  const completed = userProgress.completedProblems || [];
+
+  const easy = practiceProblems.filter(p =>
+    completed.includes(p.id) && p.difficulty === "easy").length;
+  const medium = practiceProblems.filter(p =>
+    completed.includes(p.id) && p.difficulty === "medium").length;
+  const hard = practiceProblems.filter(p =>
+    completed.includes(p.id) && p.difficulty === "hard").length;
+
+  const easyEl = document.getElementById("easyCount");
+  const mediumEl = document.getElementById("mediumCount");
+  const hardEl = document.getElementById("hardCount");
+
+  if (easyEl) easyEl.textContent = easy;
+  if (mediumEl) mediumEl.textContent = medium;
+  if (hardEl) hardEl.textContent = hard;
 }
 
 // ===== DASHBOARD =====
