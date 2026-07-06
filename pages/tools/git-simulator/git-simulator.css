@@ -1,0 +1,303 @@
+/* pages/tools/git-simulator/git-simulator.css */
+
+.simulator-layout {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px); /* Adjust for navbar */
+    background-color: var(--bg-primary, #0f172a);
+    color: var(--text-primary, #f8fafc);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .simulator-layout {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+}
+
+/* ─── TERMINAL PANEL ─── */
+.terminal-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color, #334155);
+    background-color: #000;
+    min-width: 400px;
+}
+
+.terminal-header, .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: var(--bg-secondary, #1e293b);
+    border-bottom: 1px solid var(--border-color, #334155);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.terminal-controls button {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #94a3b8);
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.terminal-controls button:hover {
+    color: var(--accent-primary, #38bdf8);
+}
+
+.terminal-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.terminal-line {
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+
+.terminal-line.welcome-text {
+    color: #4ade80; /* Green */
+}
+
+.terminal-line.error-text {
+    color: #f87171; /* Red */
+}
+
+.terminal-line.success-text {
+    color: #34d399; /* Green */
+}
+
+.terminal-line.warning-text {
+    color: #fbbf24; /* Yellow */
+}
+
+.terminal-line.output-text {
+    color: #e2e8f0;
+}
+
+.terminal-line .highlight {
+    color: #38bdf8; /* Blue */
+    font-weight: bold;
+}
+
+.terminal-prompt-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.prompt-symbol {
+    color: #f472b6; /* Pink */
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    caret-color: #38bdf8;
+}
+
+/* ─── GRAPH PANEL ─── */
+.graph-panel {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: var(--bg-primary, #0f172a);
+}
+
+.repo-status {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.status-badge {
+    background-color: var(--bg-tertiary, #334155);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.detached {
+    background-color: #ef444420;
+    color: #f87171;
+    border: 1px solid #ef4444;
+}
+
+.graph-container {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    background-image: radial-gradient(var(--border-color, #334155) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+#d3GraphSvg {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+.empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+/* ─── CONTEXT PANE ─── */
+.context-pane {
+    height: 200px;
+    border-top: 1px solid var(--border-color, #334155);
+    background-color: var(--bg-secondary, #1e293b);
+    display: flex;
+    padding: 15px;
+    gap: 20px;
+}
+
+.context-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary, #0f172a);
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #334155);
+    overflow: hidden;
+}
+
+.context-col h4 {
+    margin: 0;
+    padding: 10px 15px;
+    background-color: var(--bg-tertiary, #334155);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary, #94a3b8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-list {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.file-list li {
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.file-list li.added { color: #34d399; background: #34d39910; }
+.file-list li.modified { color: #fbbf24; background: #fbbf2410; }
+.file-list li.untracked { color: #f87171; background: #f8717110; }
+.file-list li.empty-text { color: var(--text-secondary, #94a3b8); justify-content: center; font-style: italic; background: transparent; }
+
+/* ─── D3 GRAPH STYLES ─── */
+.commit-node {
+    fill: #38bdf8;
+    stroke: #fff;
+    stroke-width: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.commit-node:hover {
+    filter: brightness(1.2);
+    stroke: #34d399;
+}
+
+.commit-node.head {
+    stroke: #f472b6;
+    stroke-width: 3px;
+}
+
+.commit-link {
+    fill: none;
+    stroke: #64748b;
+    stroke-width: 3px;
+}
+
+.branch-label-rect {
+    fill: #334155;
+    rx: 4;
+    ry: 4;
+}
+
+.branch-label-text {
+    fill: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.branch-label-text.head {
+    fill: #f472b6;
+}
+
+/* ─── TOOLTIP ─── */
+.d3-tooltip {
+    position: absolute;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 6px;
+    padding: 12px;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    color: #f8fafc;
+    min-width: 200px;
+    transition: opacity 0.2s;
+}
+
+.tt-header {
+    font-size: 0.85rem;
+    font-family: 'Fira Code', monospace;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+}
+
+.tt-body {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+.tt-footer {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}

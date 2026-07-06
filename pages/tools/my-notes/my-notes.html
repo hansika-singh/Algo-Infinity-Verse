@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Notes & Mnemonics Library | Algo Infinity Verse</title>
+    <meta name="description" content="Review your saved patterns, PITFALLS, and mnemonics for DSA problems to keep your skills sharp." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="my-notes.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="my-notes">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero notes-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Pattern Recognition Library</span>
+          <span class="main-title gradient-text">My Notes & Mnemonics</span>
+        </h1>
+        <p class="section-subtitle">
+          Review your accumulated pitfalls, study guides, memory mnemonics, and problem associations to build durable DSA mastery.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Container -->
+    <section class="visualizer-section">
+      <div class="visualizer-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+        
+        <div class="notes-layout">
+          <!-- Filters Sidebar -->
+          <div class="notes-sidebar">
+            <div class="visualizer-card">
+              <h3 class="card-title" style="margin-bottom: 1.25rem;"><i class="fas fa-filter" style="color:var(--accent); margin-right:0.5rem;"></i>Filters</h3>
+              
+              <div class="control-group">
+                <label for="notesSearchInput">Search Notes</label>
+                <div style="position:relative;">
+                  <input type="text" id="notesSearchInput" class="control-input" placeholder="Search keywords, titles..." style="padding-left: 2rem;">
+                  <i class="fas fa-search" style="position:absolute; left:0.75rem; top:0.75rem; color:var(--text-secondary); font-size:0.85rem;"></i>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label for="categoryFilterSelect">DSA Category</label>
+                <select id="categoryFilterSelect" class="control-input">
+                  <option value="">All Categories</option>
+                  <option value="arrays">Arrays</option>
+                  <option value="strings">Strings</option>
+                  <option value="linkedlist">Linked Lists</option>
+                  <option value="trees">Binary Trees</option>
+                  <option value="graphs">Graphs</option>
+                  <option value="dp">Dynamic Programming</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label>Filter by Tag</label>
+                <div id="tagCloudContainer" class="tag-cloud">
+                  <!-- Tag badges injected here -->
+                </div>
+              </div>
+              
+              <button type="button" id="btnClearFilters" class="btn btn-secondary" style="width:100%; justify-content:center; display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+                <i class="fas fa-undo"></i> Reset Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Notes Listing Column -->
+          <div class="notes-main">
+            <div id="notesCardsGrid" class="notes-grid">
+              <!-- Cards injected here -->
+              <div class="loading-placeholder">Loading your memory cache...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detail View Modal -->
+    <div id="notesDetailModal" class="modal">
+      <div class="modal-content" style="max-width: 650px; background: rgba(15, 15, 35, 0.95); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2rem; color: var(--text-primary);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--glass-border); padding-bottom:1rem; margin-bottom:1.5rem;">
+          <div>
+            <span id="modalProblemCategory" class="badge">Arrays</span>
+            <h2 id="modalProblemTitle" style="margin: 0.5rem 0 0 0; font-family:'Orbitron',sans-serif;">Problem Title</h2>
+          </div>
+          <button type="button" class="quiz-modal-close" onclick="closeNotesDetailModal()" style="background:none; border:none; color:var(--text-secondary); font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+
+        <div id="modalTagsContainer" class="tag-row" style="margin-bottom: 1.5rem; display:flex; gap:0.5rem; flex-wrap:wrap;"></div>
+
+        <div class="notes-detail-sections" style="max-height: 400px; overflow-y:auto; padding-right: 0.5rem; display:flex; flex-direction:column; gap:1.25rem;">
+          <div class="detail-section">
+            <h4 style="margin:0 0 0.5rem 0; color:var(--accent); font-family:'Orbitron',sans-serif;"><i class="fas fa-pencil-alt" style="margin-right:0.4rem;"></i>Notes</h4>
+            <p id="modalNotesText" style="margin:0; font-size:0.92rem; line-height:1.5; background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.05);"></p>
+          </div>
+          
+          <div class="detail-section">
+            <h4 style="margin:0 0 0.5rem 0; color:#10b981; font-family:'Orbitron',sans-serif;"><i class="fas fa-brain" style="margin-right:0.4rem;"></i>Mnemonics & Hooks</h4>
+            <p id="modalMnemonicText" style="margin:0; font-size:0.92rem; line-height:1.5; background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.05);"></p>
+          </div>
+          
+          <div class="detail-section">
+            <h4 style="margin:0 0 0.5rem 0; color:#ef4444; font-family:'Orbitron',sans-serif;"><i class="fas fa-skull-crossbones" style="margin-right:0.4rem;"></i>Common Pitfalls</h4>
+            <p id="modalPitfallsText" style="margin:0; font-size:0.92rem; line-height:1.5; background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.05);"></p>
+          </div>
+          
+          <div class="detail-section">
+            <h4 style="margin:0 0 0.5rem 0; color:#f59e0b; font-family:'Orbitron',sans-serif;"><i class="fas fa-lightbulb" style="margin-right:0.4rem;"></i>When to use?</h4>
+            <p id="modalWhenToUseText" style="margin:0; font-size:0.92rem; line-height:1.5; background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:6px; border:1px solid rgba(255,255,255,0.05);"></p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:1rem; margin-top:2rem; justify-content:flex-end; border-top:1px solid var(--glass-border); padding-top:1.25rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeNotesDetailModal()">Close</button>
+          <button type="button" id="btnModalPractice" class="btn btn-primary"><i class="fas fa-rocket"></i> Practice Problem</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legacy Quiz Editor Modal (included so openQuizEditor works) -->
+    <div class="modal quiz-modal" id="quizEditorModal">
+      <div class="quiz-modal-content">
+        <div id="quizLoadingScreen" class="quiz-loading hidden">
+          <div class="quiz-spinner"></div>
+          <h3 class="loading-text">Vectoring Challenge...</h3>
+          <p id="loadingTopicName"></p>
+        </div>
+        <div class="quiz-modal-header">
+          <div class="quiz-problem-info">
+            <span class="quiz-topic-badge" id="quizTopicBadge"></span>
+            <span class="quiz-difficulty" id="quizDifficulty"></span>
+            <h3 id="quizTitle">Problem Title</h3>
+            <button type="button" class="quiz-modal-close" id="quizModalClose" aria-label="Close" onclick="closeQuizEditor()">&times;</button>
+          </div>
+        </div>
+        <div class="quiz-modal-body">
+          <div class="quiz-layout">
+            <div class="quiz-problem-panel">
+              <!-- Tab Navigation -->
+              <div class="quiz-panel-tabs" style="display: flex; border-bottom: 1px solid var(--glass-border); margin-bottom: 1rem; gap: 0.5rem;">
+                <button id="btnQuizTabProblem" class="quiz-tab-btn active" onclick="switchQuizTab('problem')" type="button">Description</button>
+                <button id="btnQuizTabNotes" class="quiz-tab-btn" onclick="switchQuizTab('notes')" type="button">Notes & Mnemonics</button>
+              </div>
+
+              <!-- Problem Content Area -->
+              <div id="quizTabProblemContent">
+                <div class="problem-description">
+                  <h4>Problem Description</h4>
+                  <p id="quizDescription"></p>
+                  <div class="problem-examples">
+                    <h5>Examples</h5>
+                    <div id="quizExamples"></div>
+                  </div>
+                </div>
+                <div class="test-cases-section">
+                  <h5 class="test-cases-heading">Test Cases</h5>
+                  <div class="test-cases-container" id="quizTestCasesContainer"></div>
+                </div>
+              </div>
+
+              <!-- Notes & Mnemonics Content Area -->
+              <div id="quizTabNotesContent" style="display: none; padding-right: 0.5rem; max-height: 480px; overflow-y: auto;">
+                <h4 style="margin-top:0; font-family:'Orbitron',sans-serif; color:var(--accent);">Problem Study Guide</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom: 1rem;">Attach study hooks, traps, and guidelines below. Notes are saved to your profile.</p>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="noteText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">My Notes</label>
+                  <textarea id="noteText" class="control-input" placeholder="General observations, explanations, or approach summaries..." style="height: 70px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="mnemonicText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Mnemonics / Memory Hooks</label>
+                  <textarea id="mnemonicText" class="control-input" placeholder="e.g. 'FAST/SLOW pointers: Slow moves 1, Fast moves 2'..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="pitfallsText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Common Pitfalls & Traps</label>
+                  <textarea id="pitfallsText" class="control-input" placeholder="What to watch out for (e.g. integer overflow, empty checks)..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 0.75rem;">
+                  <label for="whenToUseText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">When to use this Pattern?</label>
+                  <textarea id="whenToUseText" class="control-input" placeholder="Characteristics of problems that need this solution pattern..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+                </div>
+
+                <div class="control-group" style="margin-bottom: 1rem;">
+                  <label for="noteTags" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Tags (Comma-separated)</label>
+                  <input type="text" id="noteTags" class="control-input" placeholder="e.g. sliding-window, hash-map" style="width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;">
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem;">
+                  <span id="noteSaveStatus" style="font-size:0.8rem; color:#10b981; font-style:italic;"></span>
+                  <button id="btnSaveProblemNotes" class="btn btn-primary" onclick="saveActiveProblemNotes()" type="button" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;"><i class="fas fa-save"></i> Save Notes</button>
+                </div>
+              </div>
+            </div>
+            <div class="quiz-editor-panel">
+              <div class="code-editor-container">
+                <div class="editor-header">
+                  <div class="problem-details">
+                    <select id="languageSelect" class="language-select">
+                      <option value="javascript">JavaScript</option>
+                      <option value="python">Python</option>
+                      <option value="java">Java</option>
+                      <option value="cpp">C++</option>
+                      <option value="c">C</option>
+                      <option value="swift">Swift</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="code-editor">
+                  <textarea id="codeEditor" class="code-textarea" spellcheck="false"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-modal-footer" style="padding: 1rem; border-top: 1px solid var(--glass-border); text-align: right; background: rgba(0,0,0,0.2);">
+          <button type="button" class="btn btn-secondary" onclick="closeQuizEditor()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="my-notes.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

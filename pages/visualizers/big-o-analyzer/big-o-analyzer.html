@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gamified Big O Complexity Analyzer | Algo Infinity Verse</title>
+    <meta name="description" content="Test your algorithm analysis skills with our Gamified Big O Analyzer Quiz. Features interactive growth-rate graphs and real-time feedback." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="big-o-analyzer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+  <body data-page="big-o-analyzer">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Gamified</span>
+          <span class="main-title gradient-text">Big O Analyzer</span>
+          <span class="subtitle">Master Time & Space Complexity</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text" id="typingTextBigO"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Quiz Section -->
+    <section class="section" id="quiz-section">
+      <div class="container">
+        
+        <!-- Score & Timer Dashboard -->
+        <div class="dashboard-panel glass-card">
+          <div class="stat-item">
+            <i class="fas fa-trophy"></i>
+            <div class="stat-details">
+              <span class="stat-label">Score</span>
+              <span class="stat-value" id="scoreDisplay">0</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-fire"></i>
+            <div class="stat-details">
+              <span class="stat-label">Streak</span>
+              <span class="stat-value" id="streakDisplay">0</span>
+            </div>
+          </div>
+          <div class="stat-item timer-item">
+            <i class="fas fa-stopwatch"></i>
+            <div class="stat-details">
+              <span class="stat-label">Time Remaining</span>
+              <span class="stat-value" id="timerDisplay">60s</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-layer-group"></i>
+            <div class="stat-details">
+              <span class="stat-label">Level</span>
+              <select id="difficultySelect" class="level-select">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" id="startQuizBtn" class="btn btn-primary"><i class="fas fa-play"></i> Start Quiz</button>
+        </div>
+
+        <div class="quiz-container hidden" id="quizContainer">
+          <!-- Left Panel: Code Snippet & Questions -->
+          <div class="quiz-main-panel">
+            <div class="glass-card snippet-card">
+              <div class="card-header">
+                <h3><i class="fas fa-code"></i> Analyze this algorithm</h3>
+                <span class="question-counter" id="questionCounter">Q 1/10</span>
+              </div>
+              <pre><code class="language-javascript" id="codeSnippet">
+// Code will appear here
+              </code></pre>
+            </div>
+
+            <div class="glass-card question-card">
+              <h3 id="questionPrompt">What is the Time Complexity?</h3>
+              <div class="options-grid" id="optionsGrid">
+                <!-- Options injected by JS -->
+              </div>
+            </div>
+
+            <div class="glass-card explanation-card hidden" id="explanationCard">
+              <h3 id="feedbackTitle"><i class="fas fa-check-circle"></i> Correct!</h3>
+              <p id="explanationText">Explanation goes here.</p>
+              <button type="button" id="nextQuestionBtn" class="btn btn-secondary">Next Question <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Right Panel: Graphs & Progress -->
+          <div class="quiz-sidebar">
+            <div class="glass-card graph-card">
+              <h3><i class="fas fa-chart-line"></i> Complexity Graph</h3>
+              <div class="canvas-wrapper">
+                <canvas id="complexityGraph" width="300" height="250"></canvas>
+              </div>
+              <p class="graph-caption">Comparing your answer against common growth rates.</p>
+            </div>
+
+            <div class="glass-card progress-card">
+              <h3><i class="fas fa-chart-bar"></i> Session Stats</h3>
+              <div class="progress-stats">
+                <div class="p-stat">
+                  <span>Accuracy</span>
+                  <strong id="accuracyDisplay">0%</strong>
+                </div>
+                <div class="p-stat">
+                  <span>Questions Attempted</span>
+                  <strong id="attemptedDisplay">0</strong>
+                </div>
+                <div class="p-stat">
+                  <span>Best Streak</span>
+                  <strong id="bestStreakDisplay">0</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Game Over State -->
+        <div class="game-over-panel hidden glass-card" id="gameOverPanel">
+          <h2><i class="fas fa-flag-checkered"></i> Quiz Completed!</h2>
+          <div class="final-score-display">
+            <span class="huge-score" id="finalScore">0</span>
+            <span>Total Score</span>
+          </div>
+          <p id="finalMessage">Great job! Keep practicing to master Big O.</p>
+          <div class="game-over-actions">
+            <button type="button" id="restartBtn" class="btn btn-primary"><i class="fas fa-redo"></i> Play Again</button>
+            <button type="button" id="shareBtn" class="btn btn-secondary"><i class="fas fa-share-alt"></i> Share Score</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="big-o-analyzer.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

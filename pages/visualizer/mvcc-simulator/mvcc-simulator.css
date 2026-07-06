@@ -1,0 +1,121 @@
+/* MVCC & Transaction Isolation Simulator Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Database/MVCC Theme */
+    --mvcc-primary: #3b82f6; /* Blue */
+    --mvcc-success: #10b981; /* Emerald */
+    --mvcc-warning: #f59e0b; /* Amber */
+    --mvcc-danger: #ef4444; /* Red */
+    --mvcc-purple: #8b5cf6;
+    
+    --panel-bg: #0b1121;
+}
+
+body.mvcc-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.mvcc-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--mvcc-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--mvcc-success); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.4rem 1rem; border-radius: 99px; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Workspace Layout */
+.mvcc-workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #020617; }
+
+/* Header */
+.workspace-header { padding: 1.5rem 2rem; background: var(--panel-bg); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.header-info h2 { margin: 0 0 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.3rem; color: #fff; }
+.header-info p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); max-width: 800px; line-height: 1.5; }
+.global-controls { display: flex; gap: 1rem; }
+
+/* Buttons */
+.btn { padding: 0.6rem 1.2rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-warning { background: rgba(245, 158, 11, 0.1); color: var(--mvcc-warning); border: 1px solid var(--mvcc-warning); }
+.btn-warning:hover { background: var(--mvcc-warning); color: #000; }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--mvcc-danger); border: 1px solid var(--mvcc-danger); }
+.btn-danger:hover { background: var(--mvcc-danger); color: #fff; }
+
+/* Terminals Container */
+.terminals-container { display: flex; flex: 1; height: 50%; border-bottom: 1px solid var(--glass-border); }
+
+.terminal-panel { flex: 1; display: flex; flex-direction: column; background: #0f172a; border-right: 1px solid var(--glass-border); }
+.terminal-panel:last-child { border-right: none; }
+
+.terminal-header { padding: 0.8rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+.term-title { font-family: 'Orbitron', sans-serif; font-weight: 600; color: #e2e8f0; display: flex; align-items: center; gap: 0.5rem; }
+.term-status { font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; background: #334155; color: #cbd5e1; }
+.term-status.active { background: rgba(16, 185, 129, 0.2); color: var(--mvcc-success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+
+.term-controls { padding: 1rem 1.5rem; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--glass-border); }
+.input-group { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group select { background: #020617; border: 1px solid #334155; color: #fff; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; outline: none; }
+.input-group select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.macro-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.btn-macro { padding: 0.5rem 0.8rem; border-radius: 4px; font-family: 'Fira Code', monospace; font-weight: 600; font-size: 0.75rem; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; background: #1e293b; color: #e2e8f0; }
+.btn-macro:hover:not(:disabled) { background: #334155; transform: translateY(-1px); }
+.btn-macro:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-macro.begin { border-color: var(--mvcc-primary); color: var(--mvcc-primary); background: rgba(59, 130, 246, 0.1); }
+.btn-macro.commit { border-color: var(--mvcc-success); color: var(--mvcc-success); background: rgba(16, 185, 129, 0.1); }
+.btn-macro.rollback { border-color: var(--mvcc-danger); color: var(--mvcc-danger); background: rgba(239, 68, 68, 0.1); }
+.btn-macro.update { border-color: var(--mvcc-warning); color: var(--mvcc-warning); background: rgba(245, 158, 11, 0.1); }
+
+.term-output { flex: 1; padding: 1rem 1.5rem; font-family: 'Fira Code', Consolas, monospace; font-size: 0.85rem; overflow-y: auto; background: #000; display: flex; flex-direction: column; gap: 0.4rem; }
+.log-line { line-height: 1.5; color: #f8fafc; word-wrap: break-word; }
+.log-line.sys { color: #64748b; font-style: italic; }
+.log-line.cmd { color: var(--mvcc-primary); font-weight: bold; }
+.log-line.res { color: var(--mvcc-success); }
+.log-line.err { color: var(--mvcc-danger); }
+.log-line.warn { color: var(--mvcc-warning); }
+
+/* Database State Panel */
+.db-state-panel { height: 50%; display: flex; flex-direction: column; background: var(--panel-bg); }
+.db-header { padding: 1rem 2rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+.db-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;}
+.tx-counter-display { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); }
+.text-primary { color: var(--mvcc-primary); font-size: 1.2rem; }
+
+.table-wrapper { flex: 1; overflow-y: auto; padding: 1rem 2rem; }
+.db-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.9rem; text-align: left; }
+.db-table th { background: #1e293b; color: #f8fafc; padding: 0.8rem 1rem; position: sticky; top: 0; z-index: 10; font-weight: 600; border-bottom: 2px solid #334155; }
+.db-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #1e293b; color: #cbd5e1; transition: background 0.3s; }
+.db-table tr.new-row td { animation: flashRow 1s ease; }
+
+@keyframes flashRow { 0% { background-color: rgba(59, 130, 246, 0.4); } 100% { background-color: transparent; } }
+
+/* MVCC Row States */
+.db-table tr.live td { color: #f8fafc; }
+.db-table tr.dead td { color: #64748b; text-decoration: line-through; background: rgba(255,255,255,0.02); }
+.db-table tr.uncommitted td { color: var(--mvcc-warning); font-style: italic; }
+.xmin-badge { color: var(--mvcc-success); font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px; }
+.xmax-badge { color: var(--mvcc-danger); font-weight: 700; background: rgba(239, 68, 68, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px; }
+.xmax-null { color: #475569; }
+
+.db-legend { padding: 0.8rem 2rem; background: #020617; border-top: 1px solid var(--glass-border); display: flex; gap: 2rem; font-size: 0.75rem; color: var(--text-secondary); font-family: 'Poppins', sans-serif; }
+.legend-item { display: flex; align-items: center; gap: 0.5rem; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; }
+.swatch.live { background: #f8fafc; }
+.swatch.dead { background: #64748b; text-decoration: line-through;}
+.swatch.uncommitted { background: var(--mvcc-warning); }
+
+@media (max-width: 1024px) {
+    .terminals-container { flex-direction: column; height: auto; }
+    .terminal-panel { min-height: 400px; border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .db-state-panel { height: 400px; }
+}

@@ -1,0 +1,345 @@
+/* ============================================================
+   MEMORY SCANNER — THEME-AWARE STYLES
+   Maps to global CSS variables defined in styles.css
+   Supports: Dark Mode (default) + Light Mode (.light-mode)
+   ============================================================ */
+
+.memory-scanner-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.memory-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.memory-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-family: "Orbitron", sans-serif;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.memory-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ── Session Notice ── */
+.session-notice {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.session-notice.authenticated {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.session-notice.guest {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.session-notice.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ── Main Section Cards ─────────────────────────────────────
+   ROOT FIX: was background: var(--card-bg, #fff)
+   --card-bg is NOT defined in styles.css → always fell back
+   to pure white #fff, breaking dark mode completely.
+   Now uses --dark-surface + --glass-border from styles.css
+   ─────────────────────────────────────────────────────────── */
+.add-topic-section,
+.due-section,
+.all-topics-section {
+  background: var(--dark-surface);          /* #1a1a3e in dark */
+  border: 1px solid var(--glass-border);   /* rgba(255,255,255,0.1) */
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-topic-section:hover,
+.due-section:hover,
+.all-topics-section:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+}
+
+.add-topic-section h2,
+.due-section h2,
+.all-topics-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: 700;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.6rem;
+}
+
+/* ── Log Form ── */
+.log-form .form-group {
+  margin-bottom: 1.1rem;
+}
+
+.log-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.log-form input,
+.log-form select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+
+  /* ── THE FIX ── */
+  background: var(--dark-card);      /* #252550 — proper dark bg */
+  color: var(--text-primary);        /* #ffffff */
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.log-form input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.log-form select option {
+  background: var(--dark-card);
+  color: var(--text-primary);
+}
+
+.log-form input:focus,
+.log-form select:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+/* ── Submit Button ── */
+.btn-primary {
+  background: var(--gradient-1);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.6rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Form Message ── */
+.form-message {
+  margin-top: 0.85rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.form-message.success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.form-message.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ── Topic Cards ── */
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topic-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  /* ── THE FIX ── */
+  background: var(--glass-bg);       /* rgba(255,255,255,0.05) */
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.topic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.topic-card .topic-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);        /* #ffffff in dark */
+}
+
+.topic-card .topic-meta {
+  font-size: 0.82rem;
+  color: var(--text-secondary);      /* #a1a1aa in dark */
+}
+
+/* Due = highlight red-left-border */
+.topic-card.due {
+  border-left: 4px solid #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* Upcoming = green-left-border */
+.topic-card.upcoming {
+  border-left: 4px solid #22c55e;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+/* ── Empty State ── */
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 1.25rem 0;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ── Revision Scheduler Badge (re-export from styles.css context) ── */
+.rev-badge {
+  padding: 0.4rem 0.9rem;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.rev-new {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+}
+
+.rev-waiting {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.rev-due {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  animation: schedulerPulseGlow 2s infinite alternate;
+}
+
+@keyframes schedulerPulseGlow {
+  from { box-shadow: 0 0 4px rgba(239, 68, 68, 0.2); }
+  to   { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES  (.light-mode class on <body>)
+   Mirrors the exact override pattern used in styles.css
+   ════════════════════════════════════════════════════════════ */
+body.light-mode .add-topic-section,
+body.light-mode .due-section,
+body.light-mode .all-topics-section {
+  background: var(--dark-surface);   /* remapped to #f8fafc in light */
+  border-color: var(--glass-border); /* rgba(0,0,0,0.1) in light */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .add-topic-section h2,
+body.light-mode .due-section h2,
+body.light-mode .all-topics-section h2 {
+  color: var(--primary);
+}
+
+body.light-mode .log-form input,
+body.light-mode .log-form select {
+  background: var(--dark-card);      /* #e2e8f0 in light mode */
+  color: var(--text-primary);        /* #1a202c */
+  border-color: var(--glass-border);
+}
+
+body.light-mode .log-form select option {
+  background: #e2e8f0;
+  color: #1a202c;
+}
+
+body.light-mode .topic-card {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: var(--glass-border);
+}
+
+body.light-mode .topic-card .topic-name {
+  color: var(--text-primary);
+}
+
+body.light-mode .topic-card .topic-meta {
+  color: var(--text-secondary);
+}
+
+body.light-mode .session-notice.authenticated { color: #15803d; }
+body.light-mode .session-notice.guest         { color: #92400e; }
+body.light-mode .session-notice.error         { color: #b91c1c; }
+
+body.light-mode .form-message.success { color: #15803d; }
+body.light-mode .form-message.error   { color: #b91c1c; }
+
+body.light-mode .empty-state {
+  color: var(--text-secondary);
+}
+
+/* ── Utility ── */
+.hidden {
+  display: none !important;
+}

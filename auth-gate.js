@@ -28,10 +28,10 @@
     // Update subtitle text if a context-specific message is provided
     if (subtitle && customMessage) {
       subtitle.textContent = customMessage;
-    } else if (subtitle) {
-      subtitle.textContent =
-        "Sign in to unlock this feature and track your progress.";
-    }
+      } else if (subtitle) {
+        subtitle.textContent =
+          "Continue as guest to explore, or sign in to save your progress.";
+      }
 
     // Build ?next= param so user lands back here after login
     const next = encodeURIComponent(currentPageUrl());
@@ -58,8 +58,41 @@
 
   const closeBtn = document.getElementById("authGateModalClose");
   const dismissBtn = document.getElementById("authGateDismiss");
+  const guestBtn = document.getElementById("authGateGuestBtn");
   if (closeBtn) closeBtn.addEventListener("click", closeAuthGate);
   if (dismissBtn) dismissBtn.addEventListener("click", closeAuthGate);
+  if (guestBtn) {
+    guestBtn.addEventListener("click", async () => {
+      guestBtn.disabled = true;
+      guestBtn.innerHTML = '<span class="btn-spinner"></span> Entering...';
+      try {
+        const response = await fetch("/api/guest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (response.ok) {
+          window.algoAuth = { authenticated: true, user: payload.user };
+          closeAuthGate();
+          if (lastMatchedProtected) {
+            lastMatchedProtected.click();
+            lastMatchedProtected = null;
+          }
+        } else {
+          const text = JSON.stringify(payload);
+          console.warn("Guest auth failed:", response.status, text);
+          console.warn("Alert:", "Guest login failed: " + (payload.error || text || response.status));
+        }
+      } catch (error) {
+        console.error("Guest auth error:", error);
+        console.warn("Alert:", "Guest login failed: " + (error.message || "network error"));
+      } finally {
+        guestBtn.disabled = false;
+        guestBtn.innerHTML = '<i class="fas fa-user-astronaut"></i> Continue as Guest';
+      }
+    });
+  }
   if (modal) {
     modal.addEventListener("click", function (e) {
       if (e.target === modal) closeAuthGate();
@@ -151,7 +184,7 @@
       message: "Login to access Technical Interview practice.",
     },
     {
-      selector: ".dashboard-card a[href='resume.html']",
+      selector: ".dashboard-card a[href='/pages/career/resume/resume.html']",
       message: "Login to view your coding resume.",
     },
   ];
@@ -192,6 +225,7 @@
   ];
 
   // Main click interceptor
+  let lastMatchedProtected = null;
 
   document.addEventListener(
     "click",
@@ -212,6 +246,7 @@
         if (matched) {
           e.preventDefault();
           e.stopImmediatePropagation();
+          lastMatchedProtected = matched;
           matched.classList.remove("auth-gate-shake");
           void matched.offsetWidth;
           matched.classList.add("auth-gate-shake");

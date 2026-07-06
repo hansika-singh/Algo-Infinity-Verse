@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anytime Algorithms Lab | Algo Infinity Verse</title>
+    <meta name="description" content="Watch Weighted A*, Simulated Annealing, and Genetic Algorithms solve TSP under a time budget — scrub through history to see what each algorithm would return if interrupted at any moment." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="anytime-algorithms-lab.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="anytime-algorithms-lab">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="aal-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="aal-hero-inner">
+        <div class="aal-hero-eyebrow">⏱️ Algorithms Under Time Pressure</div>
+        <h1 class="aal-hero-title">Anytime Algorithms Lab</h1>
+        <p class="aal-hero-sub">What if your algorithm gets interrupted? These ones don't panic.</p>
+        <p class="aal-hero-desc">Most algorithms in this repo run to completion or return nothing. Real systems — robots, real-time bidding, game AI — often need an answer NOW, with quality improving the longer they're allowed to run. Watch 3 anytime strategies solve the Traveling Salesman Problem, then scrub through time to see exactly what each one would have returned if stopped at any moment.</p>
+        <a href="#lab" class="btn btn-primary aal-btn-primary">
+          <i class="fas fa-route"></i> Open the Lab
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section aal-section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="aal-control-card">
+          <div class="aal-row">
+            <span class="aal-row-label">Cities</span>
+            <div class="aal-city-btns">
+              <button type="button" class="aal-city-btn active" data-cities="8">8 cities</button>
+              <button type="button" class="aal-city-btn" data-cities="9">9 cities</button>
+              <button type="button" class="aal-city-btn" data-cities="10">10 cities</button>
+            </div>
+            <button type="button" class="btn btn-secondary aal-shuffle-btn" id="aalShuffleBtn">
+              <i class="fas fa-shuffle"></i> New Random Cities
+            </button>
+          </div>
+          <div class="aal-row">
+            <button type="button" class="btn aal-btn-primary aal-run-btn" id="aalRunBtn">
+              <i class="fas fa-play"></i> Precompute All 3 Algorithms
+            </button>
+            <span class="aal-precompute-status" id="aalPrecomputeStatus"></span>
+          </div>
+        </div>
+
+        <!-- Time budget scrubber -->
+        <div class="aal-scrubber-card" id="aalScrubberCard">
+          <div class="aal-scrubber-header">
+            <span class="aal-card-title"><i class="fas fa-clock"></i> Time Budget — Drag to Interrupt at Any Moment</span>
+            <span class="aal-scrubber-pct" id="aalScrubberPct">0%</span>
+          </div>
+          <input type="range" id="aalScrubber" class="aal-scrubber-range" min="0" max="100" value="0" disabled aria-label="Time budget" />
+          <div class="aal-scrubber-labels">
+            <span>0% (instant)</span>
+            <span>50%</span>
+            <span>100% (full time)</span>
+          </div>
+          <button type="button" class="aal-interrupt-btn" id="aalInterruptBtn" disabled>
+            <i class="fas fa-bolt"></i> Interrupt at Random Moment
+          </button>
+        </div>
+
+        <!-- 3 algorithm panels -->
+        <div class="aal-algo-grid" id="aalAlgoGrid">
+
+          <div class="aal-algo-panel" data-algo="astar">
+            <div class="aal-algo-header" style="--ac:#06b6d4">
+              <span class="aal-algo-name">Weighted A*</span>
+              <span class="aal-algo-badge" id="aalBadgeAstar">—</span>
+            </div>
+            <div class="aal-map-wrap">
+              <canvas id="aalCanvasAstar" class="aal-canvas"></canvas>
+            </div>
+            <div class="aal-algo-stats">
+              <div class="aal-stat-row"><span>Tour cost</span><span id="aalCostAstar">—</span></div>
+              <div class="aal-stat-row"><span>vs optimal</span><span id="aalGapAstar">—</span></div>
+              <div class="aal-stat-row"><span>Weight (ε)</span><span id="aalWeightAstar">—</span></div>
+            </div>
+            <p class="aal-algo-note">Starts greedy with a high heuristic weight (fast, suboptimal), then progressively lowers it toward 1.0 (true A*, optimal) as time allows. <strong>Guarantees monotonic improvement.</strong></p>
+          </div>
+
+          <div class="aal-algo-panel" data-algo="annealing">
+            <div class="aal-algo-header" style="--ac:#f59e0b">
+              <span class="aal-algo-name">Simulated Annealing</span>
+              <span class="aal-algo-badge" id="aalBadgeAnnealing">—</span>
+            </div>
+            <div class="aal-map-wrap">
+              <canvas id="aalCanvasAnnealing" class="aal-canvas"></canvas>
+            </div>
+            <div class="aal-algo-stats">
+              <div class="aal-stat-row"><span>Tour cost</span><span id="aalCostAnnealing">—</span></div>
+              <div class="aal-stat-row"><span>vs optimal</span><span id="aalGapAnnealing">—</span></div>
+              <div class="aal-stat-row"><span>Temperature</span><span id="aalTempAnnealing">—</span></div>
+            </div>
+            <p class="aal-algo-note">Starts with a random tour. "Temperature" cools over time — early on it accepts worse moves to escape local optima, later it only accepts improvements. <strong>Can temporarily get worse.</strong></p>
+          </div>
+
+          <div class="aal-algo-panel" data-algo="genetic">
+            <div class="aal-algo-header" style="--ac:#a855f7">
+              <span class="aal-algo-name">Genetic Algorithm</span>
+              <span class="aal-algo-badge" id="aalBadgeGenetic">—</span>
+            </div>
+            <div class="aal-map-wrap">
+              <canvas id="aalCanvasGenetic" class="aal-canvas"></canvas>
+            </div>
+            <div class="aal-algo-stats">
+              <div class="aal-stat-row"><span>Tour cost</span><span id="aalCostGenetic">—</span></div>
+              <div class="aal-stat-row"><span>vs optimal</span><span id="aalGapGenetic">—</span></div>
+              <div class="aal-stat-row"><span>Generation</span><span id="aalGenGenetic">—</span></div>
+            </div>
+            <p class="aal-algo-note">A population of tours evolves via selection, crossover, and mutation. The best-of-generation is tracked. <strong>Best-so-far never gets worse</strong> (elitism), but population average can fluctuate.</p>
+          </div>
+
+        </div>
+
+        <!-- Quality over time chart -->
+        <div class="aal-chart-card">
+          <div class="aal-card-title"><i class="fas fa-chart-line"></i> Quality Over Time — Tour Cost vs Iteration</div>
+          <canvas id="aalChartCanvas" class="aal-chart-canvas"></canvas>
+          <div class="aal-chart-legend">
+            <span class="aal-cl-item"><span class="aal-cl-dot" style="background:#06b6d4"></span>Weighted A*</span>
+            <span class="aal-cl-item"><span class="aal-cl-dot" style="background:#f59e0b"></span>Simulated Annealing</span>
+            <span class="aal-cl-item"><span class="aal-cl-dot" style="background:#a855f7"></span>Genetic Algorithm</span>
+            <span class="aal-cl-item"><span class="aal-cl-dot" style="background:#22c55e;border-radius:0;width:14px;height:2px"></span>Optimal (brute force)</span>
+          </div>
+        </div>
+
+        <!-- Anytime guarantee panel -->
+        <div class="aal-guarantee-card">
+          <div class="aal-card-title"><i class="fas fa-shield-halved"></i> Anytime Guarantees — Not All Algorithms Promise the Same Thing</div>
+          <div class="aal-guarantee-grid">
+            <div class="aal-guarantee-item" style="--gc:#06b6d4">
+              <div class="aal-guarantee-name">Weighted A*</div>
+              <div class="aal-guarantee-badge aal-guarantee-yes">✅ Monotonic</div>
+              <p>Each time the weight ε decreases, the new solution is provably no worse. Quality curve never goes up. Strongest anytime guarantee of the three.</p>
+            </div>
+            <div class="aal-guarantee-item" style="--gc:#f59e0b">
+              <div class="aal-guarantee-name">Simulated Annealing</div>
+              <div class="aal-guarantee-badge aal-guarantee-no">⚠️ Best-tracked only</div>
+              <p>The CURRENT solution can get worse at any step (that's the point — escaping local optima). Only the separately tracked "best seen so far" is monotonic.</p>
+            </div>
+            <div class="aal-guarantee-item" style="--gc:#a855f7">
+              <div class="aal-guarantee-name">Genetic Algorithm</div>
+              <div class="aal-guarantee-badge aal-guarantee-partial">🟡 Elitism-dependent</div>
+              <p>With elitism (best individual always survives), best-of-generation is monotonic. Without it, even the best individual can be lost between generations.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="../../../script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="anytime-algorithms-lab.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

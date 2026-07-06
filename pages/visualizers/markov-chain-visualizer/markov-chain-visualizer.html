@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markov Chain Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Markov Chain probability matrix and text generation." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="markov-chain-visualizer.css" />
+    
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/pages/visualizers/visualizers.html"><i class="fas fa-shapes"></i> Visualizers</a>
+        </div>
+    </nav>
+
+    <main class="vis-workspace">
+        
+        <!-- Left Panel: Problem Context -->
+        <aside class="vis-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-project-diagram"></i> Markov Chain</h3>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="control-group">
+                    <label for="exampleSelect">Corpus Example:</label>
+                    <select id="exampleSelect">
+                        <option value="custom">Custom Text</option>
+                        <option value="weather">Weather Patterns</option>
+                        <option value="seuss">Dr. Seuss Style</option>
+                        <option value="shakespeare">Shakespeare Sonnet</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="corpusInput">Training Corpus:</label>
+                    <textarea id="corpusInput" rows="5" placeholder="Enter text to train the Markov chain...">I am Sam. Sam I am. I do not like green eggs and ham.</textarea>
+                </div>
+                
+                <div class="control-group split-group">
+                    <div>
+                        <label for="orderSelect">N-Gram Order:</label>
+                        <select id="orderSelect">
+                            <option value="1">1 (Single Word)</option>
+                            <option value="2">2 (Word Pairs)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" id="btnBuildChain" class="btn-primary" style="margin-top: 22px;">Build Model</button>
+                    </div>
+                </div>
+
+                <div class="legend-box">
+                    <h4>Generation Stats</h4>
+                    <div class="legend-item">Total States: <span id="statStates">0</span></div>
+                    <div class="legend-item">Current State: <span id="statCurrentState" class="highlight-text">-</span></div>
+                    <div class="legend-item">Next Probable: <span id="statNextProbable">-</span></div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="genLengthInput">Max Words to Generate:</label>
+                    <input type="number" id="genLengthInput" value="20" min="5" max="100">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Area: Visualization Canvas & HUD -->
+        <div class="canvas-wrapper">
+            
+            <div class="visualization-panels">
+                
+                <!-- Output Text Panel -->
+                <div class="panel text-panel">
+                    <h4>Generated Output</h4>
+                    <div id="outputContainer" class="output-container">
+                        <p class="placeholder">Click "Start Generation" to see text.</p>
+                    </div>
+                </div>
+
+                <!-- Matrix / Graph panels -->
+                <div class="graph-matrix-split">
+                    <!-- State Graph Panel -->
+                    <div class="panel graph-panel">
+                        <h4>Transition Graph</h4>
+                        <div id="graphContainer">
+                            <svg id="stateGraphSvg" width="100%" height="100%"></svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Probability Matrix -->
+                    <div class="panel matrix-panel">
+                        <h4>Transition Matrix</h4>
+                        <div class="table-container">
+                            <table id="probabilityMatrix">
+                                <thead>
+                                    <tr id="matrixHeader"></tr>
+                                </thead>
+                                <tbody id="matrixBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Floating Data Overlay -->
+            <div class="hud-overlay">
+                
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <button type="button" class="btn-control" id="btnReset" title="Reset"><i class="fas fa-undo"></i></button>
+                    <button type="button" class="btn-control" id="btnStepFwd" title="Step Forward"><i class="fas fa-step-forward"></i></button>
+                    <button type="button" class="btn-control play-btn" id="btnPlayPause" title="Play/Pause"><i class="fas fa-play"></i></button>
+                    
+                    <div class="speed-control">
+                        <label for="speedSlider"><i class="fas fa-tachometer-alt"></i> Speed</label>
+                        <input type="range" id="speedSlider" min="100" max="2000" value="800" dir="rtl">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="markov-chain-visualizer.js"></script>
+</body>
+</html>

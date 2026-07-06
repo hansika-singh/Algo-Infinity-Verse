@@ -7,3 +7,6 @@ export function initPrint() {
     });
   }
 }
+
+// Legacy global exports
+window.initPrint = initPrint;

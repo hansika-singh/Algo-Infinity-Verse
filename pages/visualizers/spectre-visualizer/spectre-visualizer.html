@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectre Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Step through the Spectre vulnerability: see how speculative execution, branch misprediction, and cache timing combine into a side-channel attack." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="spectre-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="spectre-visualizer">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="sv-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="sv-hero-inner">
+        <div class="sv-hero-eyebrow">⚠️ CPU Security Vulnerability — CVE-2017-5753</div>
+        <h1 class="sv-hero-title">Spectre Visualizer</h1>
+        <p class="sv-hero-sub">A performance optimization became the worst security bug in CPU history.</p>
+        <p class="sv-hero-desc">Spectre exploits speculative execution — the CPU's trick of guessing future branch outcomes and executing instructions before it knows if it should. A correct guess means zero wasted cycles. A wrong guess means rollback — but the CPU's cache doesn't roll back. That gap is Spectre.</p>
+        <a href="#walkthrough" class="btn btn-primary sv-btn-primary">
+          <i class="fas fa-play"></i> Start the Walkthrough
+        </a>
+      </div>
+    </section>
+
+    <!-- Walkthrough -->
+    <section id="walkthrough" class="sv-walkthrough-section">
+      <div class="container">
+
+        <!-- Stage navigator -->
+        <div class="sv-stage-nav">
+          <button type="button" class="sv-stage-btn active" data-stage="0">
+            <span class="sv-stage-num">01</span>
+            <span class="sv-stage-label">Speculative Execution</span>
+          </button>
+          <div class="sv-stage-connector"></div>
+          <button type="button" class="sv-stage-btn" data-stage="1">
+            <span class="sv-stage-num">02</span>
+            <span class="sv-stage-label">Train the Predictor</span>
+          </button>
+          <div class="sv-stage-connector"></div>
+          <button type="button" class="sv-stage-btn" data-stage="2">
+            <span class="sv-stage-num">03</span>
+            <span class="sv-stage-label">Speculative OOB Read</span>
+          </button>
+          <div class="sv-stage-connector"></div>
+          <button type="button" class="sv-stage-btn" data-stage="3">
+            <span class="sv-stage-num">04</span>
+            <span class="sv-stage-label">Cache Timing Leak</span>
+          </button>
+        </div>
+
+        <!-- Mitigation toggle (visible on stages 2–3) -->
+        <div class="sv-mitigation-bar" id="svMitigationBar">
+          <div class="sv-mit-left">
+            <i class="fas fa-shield-halved"></i>
+            <span class="sv-mit-label">Speculative Load Fence (LFENCE) mitigation:</span>
+          </div>
+          <label class="sv-mit-toggle-wrap" aria-label="Toggle mitigation">
+            <input type="checkbox" id="svMitigation" class="sv-mit-check" />
+            <span class="sv-mit-slider"></span>
+            <span class="sv-mit-state" id="svMitState">OFF — vulnerable</span>
+          </label>
+        </div>
+
+        <!-- Stage panels -->
+        <div class="sv-stage-panels">
+
+          <!-- Stage 0: Speculative Execution basics -->
+          <div class="sv-stage-panel active" id="svPanel0">
+            <div class="sv-panel-layout">
+
+              <div class="sv-explanation-panel">
+                <div class="sv-exp-title">What is Speculative Execution?</div>
+                <p class="sv-exp-text">Modern CPUs have a 15–20 stage pipeline. An <code>if</code> branch in the middle means the CPU doesn't know which instructions come next until the condition evaluates — but evaluation takes several cycles. Instead of stalling, the CPU <strong>guesses</strong> and executes speculatively.</p>
+                <div class="sv-exp-steps" id="svStep0Steps">
+                  <div class="sv-exp-step" data-step="0"><span class="sv-step-num">1</span> CPU fetches the branch instruction and sends it to the branch predictor</div>
+                  <div class="sv-exp-step" data-step="1"><span class="sv-step-num">2</span> Predictor says "Taken" — CPU speculatively executes the <em>if-body</em></div>
+                  <div class="sv-exp-step" data-step="2"><span class="sv-step-num">3</span> Branch condition finally resolves: prediction was correct → commit results</div>
+                  <div class="sv-exp-step" data-step="3"><span class="sv-step-num">4</span> If wrong: architectural state rolled back, cache NOT rolled back</div>
+                </div>
+              </div>
+
+              <div class="sv-visual-panel">
+                <div class="sv-visual-title">CPU Pipeline</div>
+                <canvas id="svCanvas0" class="sv-canvas"></canvas>
+                <div class="sv-playback-row">
+                  <button type="button" class="sv-pb-btn" id="svPrev0" disabled><i class="fas fa-backward-step"></i></button>
+                  <button type="button" class="sv-pb-btn sv-pb-play" id="svPlay0"><i class="fas fa-play"></i></button>
+                  <button type="button" class="sv-pb-btn" id="svNext0"><i class="fas fa-forward-step"></i></button>
+                  <span class="sv-pb-label" id="svLabel0">Click Play to begin</span>
+                </div>
+                <div class="sv-state-panel">
+                  <div class="sv-state-title">Architectural vs Microarchitectural State</div>
+                  <div class="sv-state-grid">
+                    <div class="sv-state-item">
+                      <div class="sv-state-name">Registers (architectural)</div>
+                      <div class="sv-state-val" id="svReg0">—</div>
+                      <div class="sv-state-hint">Rolled back on mispredict</div>
+                    </div>
+                    <div class="sv-state-item">
+                      <div class="sv-state-name">Cache (microarchitectural)</div>
+                      <div class="sv-state-val sv-cache-val" id="svCache0">—</div>
+                      <div class="sv-state-hint">NOT rolled back ← the problem</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Stage 1: Train the predictor -->
+          <div class="sv-stage-panel" id="svPanel1">
+            <div class="sv-panel-layout">
+
+              <div class="sv-explanation-panel">
+                <div class="sv-exp-title">Training the Branch Predictor</div>
+                <p class="sv-exp-text">Spectre v1 is a two-phase attack. Phase 1: the attacker trains the branch predictor to always predict "taken" for a specific branch — by calling the victim function repeatedly with <strong>in-bounds</strong> indices. The predictor builds up state that says "this branch is always taken".</p>
+
+                <div class="sv-code-block">
+                  <div class="sv-code-label">Victim function (C)</div>
+                  <pre class="sv-code">if (x &lt; array1_size) {          ← attacker trains this
+    y = array2[array1[x] * 512]; ← this is what matters
+}</pre>
+                </div>
+
+                <div class="sv-train-tracker">
+                  <div class="sv-train-title">Training Iterations</div>
+                  <div class="sv-train-boxes" id="svTrainBoxes"></div>
+                  <button type="button" class="btn sv-btn-primary sv-train-btn" id="svTrainBtn">
+                    <i class="fas fa-play"></i> Train Predictor (5 in-bounds calls)
+                  </button>
+                  <div class="sv-train-status" id="svTrainStatus">Predictor state: <span id="svPredState">Untrained (neutral)</span></div>
+                </div>
+              </div>
+
+              <div class="sv-visual-panel">
+                <div class="sv-visual-title">Predictor State Machine</div>
+                <canvas id="svCanvas1" class="sv-canvas"></canvas>
+                <div class="sv-mem-display">
+                  <div class="sv-mem-title"><i class="fas fa-memory"></i> Memory Layout</div>
+                  <div class="sv-mem-grid" id="svMemGrid1">
+                    <div class="sv-mem-region sv-mem-array1">array1[ ] — accessible data</div>
+                    <div class="sv-mem-region sv-mem-secret">SECRET MEMORY — process boundary</div>
+                    <div class="sv-mem-region sv-mem-array2">array2[256 × 512] — probe array</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Stage 2: Speculative OOB read -->
+          <div class="sv-stage-panel" id="svPanel2">
+            <div class="sv-panel-layout">
+
+              <div class="sv-explanation-panel">
+                <div class="sv-exp-title">Speculative Out-of-Bounds Read</div>
+                <p class="sv-exp-text">Phase 2: the attacker calls the victim with a <strong>malicious out-of-bounds index</strong> that points at secret memory. The bounds check (<code>x &lt; array1_size</code>) will fail — but the predictor, trained to always predict "taken", speculatively executes the body <em>before the bounds check resolves</em>.</p>
+
+                <div class="sv-oob-steps" id="svOobSteps">
+                  <div class="sv-oob-step pending" id="svOob0">
+                    <span class="sv-oob-icon">🔄</span>
+                    <span>Attacker passes malicious index x = <code>secret_addr - array1_base</code></span>
+                  </div>
+                  <div class="sv-oob-step pending" id="svOob1">
+                    <span class="sv-oob-icon">⚡</span>
+                    <span>Predictor says "taken" → CPU <em>speculatively reads</em> array1[x] = <code class="sv-secret-val">SECRET_BYTE</code></span>
+                  </div>
+                  <div class="sv-oob-step pending" id="svOob2">
+                    <span class="sv-oob-icon">🧮</span>
+                    <span>CPU computes <code>array2[SECRET_BYTE × 512]</code> — loads that cache line speculatively</span>
+                  </div>
+                  <div class="sv-oob-step pending" id="svOob3">
+                    <span class="sv-oob-icon">↩️</span>
+                    <span>Bounds check resolves: x is out of bounds → <em>rollback</em>. Registers cleared. Cache line stays.</span>
+                  </div>
+                </div>
+
+                <button type="button" class="btn sv-btn-primary sv-oob-btn" id="svOobBtn">
+                  <i class="fas fa-bolt"></i> Execute Attack Step
+                </button>
+
+                <div class="sv-mit-effect hidden" id="svMitEffect2">
+                  <i class="fas fa-shield-halved"></i>
+                  <strong>Mitigation ON:</strong> LFENCE inserted after bounds check. CPU stalls until check resolves before executing body speculatively. Cache footprint: none.
+                </div>
+              </div>
+
+              <div class="sv-visual-panel">
+                <div class="sv-visual-title">Cache State After Speculation</div>
+                <canvas id="svCanvas2" class="sv-canvas sv-canvas-tall"></canvas>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Stage 3: Cache timing -->
+          <div class="sv-stage-panel" id="svPanel3">
+            <div class="sv-panel-layout">
+
+              <div class="sv-explanation-panel">
+                <div class="sv-exp-title">Cache Timing Attack — Recovering the Secret Byte</div>
+                <p class="sv-exp-text">The attacker now has no architectural evidence of anything. But one cache line from array2 is hot. The attacker <strong>times</strong> access to <code>array2[i × 512]</code> for every possible byte value i=0..255. The one that hits the cache answers in ~5 cycles instead of ~200 cycles. That i is the secret byte.</p>
+
+                <div class="sv-timing-controls">
+                  <button type="button" class="btn sv-btn-primary sv-timing-btn" id="svTimingBtn">
+                    <i class="fas fa-stopwatch"></i> Measure All 256 Cache Lines
+                  </button>
+                  <div class="sv-secret-picker">
+                    <label class="sv-sp-label">Simulated secret byte:</label>
+                    <input type="number" id="svSecretByte" class="sv-secret-input" min="0" max="255" value="65" aria-label="Secret byte value" />
+                    <span class="sv-sp-hint">(65 = 'A')</span>
+                  </div>
+                </div>
+
+                <div class="sv-timing-result hidden" id="svTimingResult">
+                  <div class="sv-timing-verdict" id="svTimingVerdict"></div>
+                  <div class="sv-timing-detail" id="svTimingDetail"></div>
+                </div>
+
+                <div class="sv-mit-effect hidden" id="svMitEffect3">
+                  <i class="fas fa-shield-halved"></i>
+                  <strong>Mitigation ON:</strong> No speculative read occurred → no cache line was loaded → all 256 accesses measure ~200 cycles (cache miss). Secret byte cannot be determined.
+                </div>
+              </div>
+
+              <div class="sv-visual-panel">
+                <div class="sv-visual-title">Cache Timing Measurements (cycles per access)</div>
+                <canvas id="svCanvas3" class="sv-canvas sv-canvas-tall"></canvas>
+                <div class="sv-cache-hint" id="svCacheHint">Run the timing measurement to see which cache line was touched.</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Stage progress / prev-next -->
+        <div class="sv-nav-row">
+          <button type="button" class="btn btn-secondary sv-prev-btn" id="svPrevStage" disabled>
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+          <div class="sv-stage-dots">
+            <span class="sv-dot active" data-stage="0"></span>
+            <span class="sv-dot" data-stage="1"></span>
+            <span class="sv-dot" data-stage="2"></span>
+            <span class="sv-dot" data-stage="3"></span>
+          </div>
+          <button type="button" class="btn sv-btn-primary sv-next-btn" id="svNextStage">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔬</span> Understanding Spectre</h2>
+        <div class="sv-learn-grid">
+          <div class="sv-learn-card" style="--lc:#06b6d4">
+            <div class="sv-learn-icon">⚡</div>
+            <h3>Why CPUs Speculate</h3>
+            <p>A modern CPU pipeline takes 15–20 cycles to execute one instruction. A branch stall means 15+ wasted cycles per <code>if</code>. With speculative execution, those cycles are used productively. A correctly-predicted branch has zero stall cost — and most branches are predictable (loop counters, null checks, etc.).</p>
+          </div>
+          <div class="sv-learn-card" style="--lc:#ef4444">
+            <div class="sv-learn-icon">💀</div>
+            <h3>Why Rollback Isn't Enough</h3>
+            <p>The CPU's architectural state (registers, flags, memory writes) is indeed rolled back. But the cache is a physical reality — cache lines that were loaded during speculation remain loaded. This microarchitectural state leaks information that should never have been accessible.</p>
+          </div>
+          <div class="sv-learn-card" style="--lc:#f59e0b">
+            <div class="sv-learn-icon">🛡️</div>
+            <h3>Mitigations and Their Cost</h3>
+            <p>LFENCE serializes the pipeline — the CPU must wait for all preceding instructions to complete before speculating past it. This eliminates the attack window but costs 5–30% performance in affected workloads. Retpoline replaced indirect branches with return sequences. These mitigations are why your CPU is slower than it was in 2017.</p>
+          </div>
+          <div class="sv-learn-card" style="--lc:#a855f7">
+            <div class="sv-learn-icon">🌍</div>
+            <h3>Scope of Impact</h3>
+            <p>Spectre v1 affects every CPU with speculative execution — Intel, AMD, ARM, Apple Silicon. Virtually every modern processor. Unlike Meltdown (kernel/user boundary), Spectre attacks can cross process boundaries and is fundamentally harder to fix without hardware changes. Spectre variants are still being discovered in 2024.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="../../../script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="spectre-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

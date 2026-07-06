@@ -1,0 +1,547 @@
+/* ==========================================================================
+   ALGORITHM FAMILY TREE - STYLES
+   ========================================================================== */
+
+:root {
+  --ft-purple: #8b5cf6;
+  --ft-pink: #ec4899;
+  --ft-gold: #fbbf24;
+  --ft-teal: #06b6d4;
+  --ft-dark: #09090b;
+  --ft-border: rgba(255, 255, 255, 0.08);
+  --ft-node-bg: rgba(20, 20, 28, 0.85);
+  
+  /* Highlighter Glows */
+  --glow-ancestor: 0 0 15px rgba(251, 191, 36, 0.4);
+  --glow-descendant: 0 0 15px rgba(6, 182, 212, 0.4);
+  --glow-active: 0 0 20px rgba(139, 92, 246, 0.6);
+}
+
+/* Hero Section */
+.ft-hero {
+  position: relative;
+  padding: 6rem 2rem 3rem 2rem;
+  background: var(--ft-dark);
+  overflow: hidden;
+}
+
+.ft-aurora {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(80px);
+  z-index: 1;
+}
+
+.ft-gradient {
+  background: linear-gradient(135deg, var(--ft-purple) 0%, var(--ft-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Controls styling */
+.ft-controls-card {
+  background: rgba(18, 18, 24, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--ft-border);
+  border-radius: 12px;
+}
+
+.ft-search-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 2.5rem 0.5rem 2rem;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  width: 280px;
+  transition: all 0.3s ease;
+}
+
+.ft-search-input:focus {
+  outline: none;
+  border-color: var(--ft-purple);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #71717a;
+  font-size: 0.85rem;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #71717a;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.clear-search-btn:hover {
+  color: #fff;
+}
+
+/* Canvas styling */
+.canvas-card {
+  background: rgba(18, 18, 24, 0.5);
+  border-radius: 16px;
+  height: 650px;
+  overflow: hidden;
+}
+
+.tree-canvas-scroll {
+  width: 100%;
+  height: calc(650px - 58px);
+  overflow: auto;
+  background: radial-gradient(circle at center, #0f0f15 0%, #060609 100%);
+  cursor: grab;
+}
+
+.tree-canvas-scroll:active {
+  cursor: grabbing;
+}
+
+/* SVG Node / Edge Renderings */
+#svg-tree-canvas {
+  user-select: none;
+}
+
+.tree-edge-path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1.5;
+  transition: stroke 0.4s ease, stroke-width 0.4s ease;
+}
+
+.tree-edge-path.ancestor-path {
+  stroke: var(--ft-gold);
+  stroke-width: 3.5;
+}
+
+.tree-edge-path.descendant-path {
+  stroke: var(--ft-teal);
+  stroke-width: 3.5;
+}
+
+/* Node Rectangles */
+.node-g {
+  cursor: pointer;
+}
+
+.node-rect {
+  fill: var(--ft-node-bg);
+  stroke: rgba(255, 255, 255, 0.09);
+  stroke-width: 1.5;
+  rx: 8px;
+  ry: 8px;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.node-g:hover .node-rect {
+  fill: rgba(28, 28, 40, 0.95);
+  stroke: rgba(255, 255, 255, 0.25);
+  transform: translate(-2px, -2px);
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+
+/* Specific Node Highlighter States */
+.node-g.active-node .node-rect {
+  stroke: var(--ft-purple);
+  stroke-width: 2.5;
+  fill: rgba(139, 92, 246, 0.1);
+  filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));
+}
+
+.node-g.ancestor-node .node-rect {
+  stroke: var(--ft-gold);
+  stroke-width: 2.2;
+  fill: rgba(251, 191, 36, 0.06);
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.3));
+}
+
+.node-g.descendant-node .node-rect {
+  stroke: var(--ft-teal);
+  stroke-width: 2.2;
+  fill: rgba(6, 182, 212, 0.06);
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+}
+
+.node-text-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+.node-text-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px;
+  fill: #71717a;
+  pointer-events: none;
+}
+
+.node-badge-circle {
+  fill: var(--badge-color, var(--ft-purple));
+  pointer-events: none;
+}
+
+/* Node Inspector Sidebar */
+#node-inspector {
+  background: rgba(18, 18, 24, 0.7);
+  border: 1px solid var(--ft-border);
+  border-radius: 16px;
+  height: 650px;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  color: #3f3f46;
+  animation: float-pulse 3s ease-in-out infinite;
+}
+
+@keyframes float-pulse {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-8px); opacity: 0.9; }
+}
+
+.evolution-box {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid var(--ft-purple);
+  border-radius: 4px;
+}
+
+.evolution-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--ft-purple);
+  margin-bottom: 0.4rem;
+}
+
+.section-title-sm {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 1.5rem 0 0.5rem 0;
+  border-bottom: 1px solid var(--ft-border);
+  padding-bottom: 0.3rem;
+}
+
+.traits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.trait-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.trait-item label {
+  font-size: 0.7rem;
+  color: #71717a;
+  display: block;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+.trait-val {
+  font-family: 'Fira Code', sans-serif;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.text-red { color: #f87171; }
+.text-yellow { color: #fbbf24; }
+.text-cyan { color: #22d3ee; }
+
+.insp-code-pre {
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.75rem;
+  max-height: 180px;
+  overflow: auto;
+  margin: 0;
+}
+
+.insp-code-pre code {
+  font-family: 'Fira Code', sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #e4e4e7;
+}
+
+/* Reunion Compare Modal */
+.compare-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.compare-modal-content {
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: auto;
+  background: #0c0c12;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: #71717a;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: #fff;
+}
+
+.compare-vs {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--ft-purple);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  padding: 0 0.5rem;
+}
+
+.compare-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--ft-border);
+  border-radius: 8px;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ft-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare-table th {
+  background: rgba(255, 255, 255, 0.03);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--ft-purple);
+}
+
+.compare-table td {
+  color: #e4e4e7;
+}
+
+.compare-table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.compare-code-pre {
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  padding: 0.5rem;
+  max-height: 140px;
+  overflow: auto;
+  margin: 0;
+}
+
+.compare-code-pre code {
+  font-family: 'Fira Code', sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #a1a1aa;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid var(--ft-purple);
+  color: #c084fc;
+}
+
+/* Utilities */
+.wrap { flex-wrap: wrap; }
+.align-start { align-items: flex-start; }
+.block { display: block; }
+.w-100 { width: 100%; }
+
+.layout-row-gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Responsive adjustment */
+@media (max-width: 991px) {
+  .canvas-card,
+  #node-inspector {
+    height: 520px;
+  }
+  .tree-canvas-scroll {
+    height: calc(520px - 58px);
+  }
+  .layout-row-gap {
+    flex-direction: column;
+  }
+  .compare-modal-content {
+    max-height: 95vh;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME
+   ========================================================================== */
+
+html.light-mode .ft-hero {
+    background: #f8fafc;
+}
+
+html.light-mode .ft-controls-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+html.light-mode .canvas-card {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+}
+
+html.light-mode .tree-canvas-scroll {
+    background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+}
+
+html.light-mode #node-inspector {
+    background: rgba(255,255,255,0.95);
+    border-color: rgba(0,0,0,0.1);
+}
+
+html.light-mode .ft-search-input {
+    background: white;
+    color: #111827;
+    border-color: #d1d5db;
+}
+
+html.light-mode .ft-search-input::placeholder {
+    color: #6b7280;
+}
+
+html.light-mode .search-icon,
+html.light-mode .clear-search-btn {
+    color: #6b7280;
+}
+
+html.light-mode .node-rect {
+    fill: #ffffff;
+    stroke: #cbd5e1;
+}
+
+html.light-mode .node-g:hover .node-rect {
+    fill: #f8fafc;
+    stroke: #94a3b8;
+}
+
+html.light-mode .node-text-title {
+    fill: #111827;
+}
+
+html.light-mode .node-text-subtitle {
+    fill: #64748b;
+}
+
+html.light-mode .section-title-sm {
+    color: #111827;
+    border-bottom-color: #d1d5db;
+}
+
+html.light-mode .trait-item {
+    background: #f8fafc;
+    border-color: #e5e7eb;
+}
+
+html.light-mode .trait-item label {
+    color: #64748b;
+}
+
+html.light-mode .evolution-box {
+    background: #f8fafc;
+}
+
+html.light-mode .insp-code-pre,
+html.light-mode .compare-code-pre {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+html.light-mode .insp-code-pre code,
+html.light-mode .compare-code-pre code {
+    color: #1f2937;
+}
+
+html.light-mode .compare-modal-content {
+    background: #ffffff;
+}
+
+html.light-mode .compare-table th {
+    background: #f3f4f6;
+}
+
+html.light-mode .compare-table td {
+    color: #111827;
+}

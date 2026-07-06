@@ -1,0 +1,381 @@
+/* ─────────────────────────────────────────────
+   Bloom Filter Visualizer – Scoped Styles
+   ───────────────────────────────────────────── */
+
+:root {
+  --bf-bg: #090d16;
+  --bf-card-bg: rgba(15, 23, 42, 0.55);
+  --bf-cyan: #06b6d4;
+  --bf-purple: #a855f7;
+  --bf-green: #10b981;
+  --bf-danger: #ef4444;
+  --bf-border: #1e293b;
+}
+
+body.bf-body {
+  background-color: var(--bf-bg);
+  color: #f8fafc;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Gradients */
+.bf-gradient {
+  background: linear-gradient(135deg, var(--bf-cyan) 0%, var(--bf-purple) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.bf-cyan { color: var(--bf-cyan) !important; }
+.bf-purple { color: var(--bf-purple) !important; }
+.bf-green { color: var(--bf-green) !important; }
+.bf-danger { color: var(--bf-danger) !important; }
+
+/* Hero section adjustment */
+.bf-hero .section-subtitle {
+  max-width: 720px;
+  margin: 0.5rem auto 0;
+  color: #94a3b8;
+}
+
+/* Workspace Layout */
+.bf-workspace {
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+}
+
+.bf-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.5rem;
+}
+
+/* Cards */
+.bf-card {
+  background: var(--bf-card-bg);
+  border: 1px solid var(--bf-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(12px);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease;
+}
+
+.bf-card:hover {
+  border-color: rgba(6, 182, 212, 0.25);
+}
+
+.bf-card-header {
+  border-bottom: 1px solid var(--bf-border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.bf-card-header h3 {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bf-card-header h3 i {
+  color: var(--bf-cyan);
+}
+
+.bf-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bf-subtitle {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--bf-cyan);
+  background: rgba(6, 182, 212, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+}
+
+/* Controls & Inputs */
+.bf-control-group {
+  margin-bottom: 1rem;
+}
+
+.bf-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.bf-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bf-range {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: #1e293b;
+  outline: none;
+}
+
+.bf-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bf-cyan);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.bf-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.bf-slider-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: var(--bf-cyan);
+  min-width: 70px;
+  text-align: right;
+}
+
+.bf-input-wrap {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bf-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bf-border);
+  border-radius: 8px;
+  color: #fff;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.bf-input:focus {
+  border-color: var(--bf-cyan);
+}
+
+.bf-w100 {
+  width: 100%;
+}
+
+/* Statistics Grid */
+.bf-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.bf-stat-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--bf-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bf-stat-lbl {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.bf-stat-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+/* Formula Card */
+.bf-formula-card {
+  background: rgba(6, 182, 212, 0.03);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.bf-formula-title {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.bf-formula-latex {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--bf-cyan);
+}
+
+/* Bit Array Memory Layout */
+.bf-bit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.bf-bit-cell {
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid var(--bf-border);
+  border-radius: 10px;
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.bf-bit-cell-idx {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.bf-bit-cell-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+/* Active Glow States */
+.bf-bit-cell.active {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: var(--bf-green);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.bf-bit-cell.active .bf-bit-cell-idx {
+  color: var(--bf-green);
+}
+
+.bf-bit-cell.active .bf-bit-cell-val {
+  color: #fff;
+}
+
+/* Pulse / Highlight Animations */
+.bf-bit-cell.pulse {
+  animation: bfCellPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bf-bit-cell.highlight-match {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: var(--bf-green) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4) !important;
+}
+
+.bf-bit-cell.highlight-miss {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: var(--bf-danger) !important;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Solver display */
+.bf-solver-container {
+  background: #020617;
+  border: 1px solid var(--bf-border);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bf-solver-placeholder {
+  font-size: 0.8rem;
+  color: #475569;
+  text-align: center;
+  font-style: italic;
+}
+
+.bf-solver-step {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.bf-solver-step span.lbl { color: var(--bf-cyan); }
+.bf-solver-step span.val { color: var(--bf-purple); font-weight: 600; }
+.bf-solver-step span.res { color: var(--bf-green); font-weight: 700; }
+
+/* Log Container */
+.bf-log-container {
+  background: #000;
+  border: 1px solid var(--bf-border);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.76rem;
+  height: 120px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.bf-log-entry {
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+.bf-log-entry.sys { color: #64748b; }
+.bf-log-entry.add { color: var(--bf-green); }
+.bf-log-entry.query { color: var(--bf-cyan); }
+.bf-log-entry.fp { color: var(--bf-purple); }
+
+/* Animation Keyframes */
+@keyframes bfCellPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .bf-layout {
+    grid-template-columns: 1fr;
+  }
+}
