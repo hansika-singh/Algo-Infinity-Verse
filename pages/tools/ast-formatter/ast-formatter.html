@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AST Code Formatter - Algo Infinity Verse</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="ast-formatter.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main class="formatter-container">
+        <header class="formatter-header">
+            <div class="header-title">
+                <i class="fas fa-magic"></i> AST Code Formatter
+            </div>
+            <div class="formatter-controls">
+                <div class="control-group">
+                    <label for="indentStyle"><i class="fas fa-indent"></i> Indent:</label>
+                    <select id="indentStyle">
+                        <option value="4spaces">4 Spaces</option>
+                        <option value="2spaces">2 Spaces</option>
+                        <option value="tab">Tabs</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="quoteStyle"><i class="fas fa-quote-left"></i> Quotes:</label>
+                    <select id="quoteStyle">
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="semiStyle"><i class="fas fa-terminal"></i> Semicolons:</label>
+                    <select id="semiStyle">
+                        <option value="true">Include</option>
+                        <option value="false">Omit</option>
+                    </select>
+                </div>
+                <button type="button" id="btnFormat" class="btn btn-primary"><i class="fas fa-bolt"></i> Format Code</button>
+            </div>
+        </header>
+
+        <div class="editor-split-view">
+            <!-- Left Editor: Input -->
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <span><i class="fas fa-code"></i> Original Source Code</span>
+                    <button type="button" id="btnReset" class="btn-icon" title="Reset Code"><i class="fas fa-undo"></i></button>
+                </div>
+                <div id="inputEditorContainer" class="cm-wrapper"></div>
+                <div id="errorBanner" class="error-banner hidden"></div>
+            </div>
+
+            <!-- Right Editor: Output -->
+            <div class="editor-pane output-pane">
+                <div class="pane-header">
+                    <span><i class="fas fa-file-code"></i> Formatted Output</span>
+                    <div class="action-buttons">
+                        <button type="button" id="btnCopy" class="btn-icon" title="Copy to Clipboard"><i class="fas fa-copy"></i></button>
+                        <button type="button" id="btnReplace" class="btn-icon btn-action" title="Replace Original"><i class="fas fa-arrow-left"></i> Replace</button>
+                    </div>
+                </div>
+                <div id="outputEditorContainer" class="cm-wrapper"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
+    <!-- Custom Logic -->
+    <script src="../../../js/main.js"></script>
+    <script src="ast-formatter.js"></script>
+</body>
+</html>

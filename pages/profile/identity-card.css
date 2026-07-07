@@ -1,0 +1,516 @@
+/* pages/profile/identity-card.css */
+
+.identity-card-section {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    background: var(--dark-card);
+    border: 1px solid var(--glass-border);
+}
+
+.identity-card-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+}
+
+.identity-card-section h2 {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.identity-card-section h2 i {
+    color: var(--accent);
+}
+
+/* Theme Selector Styling */
+.theme-selector-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.theme-selector-container label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.theme-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.theme-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-btn:hover {
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-btn.active {
+    color: #ffffff;
+}
+
+/* Card Themes Definitions */
+.theme-btn[data-theme="cyberpunk"].active {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    border-color: #d946ef;
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+}
+
+.theme-btn[data-theme="cosmic"].active {
+    background: linear-gradient(135deg, #3b82f6, #22c55e);
+    border-color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.theme-btn[data-theme="obsidian"].active {
+    background: linear-gradient(135deg, #1f2937, #4b5563);
+    border-color: #9ca3af;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.theme-btn[data-theme="emerald"].active {
+    background: linear-gradient(135deg, #064e3b, #10b981);
+    border-color: #34d399;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+/* Card Layout Container */
+.card-display-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+    perspective: 1000px; /* For 3D Tilt Effect */
+}
+
+/* Identity Card Body */
+.coding-card {
+    position: relative;
+    width: 480px;
+    height: 300px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.5s ease, transform 0.1s ease;
+    transform-style: preserve-3d;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Card Glow Effect */
+.card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(circle at center, var(--card-glow-color) 0%, transparent 70%);
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+}
+
+/* Card Grid Overlay */
+.card-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.7;
+}
+
+/* Card Content Layering */
+.coding-card > * {
+    position: relative;
+    z-index: 3;
+}
+
+/* Header Area */
+.coding-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.75rem;
+}
+
+.coding-card .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.coding-card .logo-icon {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--card-accent), var(--card-accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+.coding-card .logo-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ffffff;
+}
+
+.coding-card .card-type {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--card-accent-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Card Body Layout */
+.coding-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+/* User Info Section */
+.coding-card .user-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.coding-card .card-avatar-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coding-card .card-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--card-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    box-shadow: 0 0 15px var(--card-glow-color);
+}
+
+.coding-card .card-chip {
+    position: absolute;
+    width: 22px;
+    height: 18px;
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    border-radius: 3px;
+    top: -5px;
+    right: -8px;
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.coding-card .card-chip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.coding-card .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.coding-card .user-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.coding-card .user-level-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--card-accent);
+    letter-spacing: 1px;
+}
+
+.coding-card .user-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
+
+/* Stats Area */
+.coding-card .stats-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    backdrop-filter: blur(4px);
+}
+
+.coding-card .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.coding-card .stat-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 0.15rem;
+}
+
+.coding-card .stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Card Footer Area: Skills & QR */
+.coding-card .footer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.6rem;
+}
+
+.coding-card .section-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+}
+
+.coding-card .skills-area {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+}
+
+.coding-card .skills-list {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.coding-card .skill-pill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--card-accent-secondary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    text-transform: capitalize;
+}
+
+.coding-card .qr-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.coding-card .qr-code {
+    width: 62px;
+    height: 62px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 2px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure generated canvas inside qr-code fills container */
+.coding-card .qr-code canvas,
+.coding-card .qr-code img {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.coding-card .qr-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.45rem;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Theme Coloring Hooks */
+.coding-card.theme-cyberpunk {
+    --card-bg: rgba(18, 12, 33, 0.92);
+    --card-glow-color: rgba(236, 72, 153, 0.25);
+    --card-accent: #f43f5e;
+    --card-accent-secondary: #a855f7;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(236, 72, 153, 0.1);
+    background-color: var(--card-bg);
+}
+
+.coding-card.theme-cosmic {
+    --card-bg: rgba(9, 17, 36, 0.92);
+    --card-glow-color: rgba(59, 130, 246, 0.25);
+    --card-accent: #00f2fe;
+    --card-accent-secondary: #4facfe;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(79, 172, 254, 0.1);
+    background-color: var(--card-bg);
+}
+
+.coding-card.theme-obsidian {
+    --card-bg: rgba(17, 24, 39, 0.95);
+    --card-glow-color: rgba(255, 255, 255, 0.05);
+    --card-accent: #f3f4f6;
+    --card-accent-secondary: #9ca3af;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    background-color: var(--card-bg);
+}
+
+.coding-card.theme-emerald {
+    --card-bg: rgba(4, 25, 18, 0.94);
+    --card-glow-color: rgba(16, 185, 129, 0.25);
+    --card-accent: #10b981;
+    --card-accent-secondary: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(16, 185, 129, 0.1);
+    background-color: var(--card-bg);
+}
+
+/* Download Actions Styling */
+.card-download-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.card-download-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.card-download-actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.card-download-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+}
+
+.card-download-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-light);
+}
+
+.card-download-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 520px) {
+    .coding-card {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 480/300;
+        padding: 1rem;
+    }
+    
+    .coding-card .card-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 1.6rem;
+    }
+    
+    .coding-card .user-name {
+        font-size: 1rem;
+    }
+    
+    .coding-card .stat-value {
+        font-size: 0.8rem;
+    }
+    
+    .coding-card .qr-code {
+        width: 48px;
+        height: 48px;
+    }
+}

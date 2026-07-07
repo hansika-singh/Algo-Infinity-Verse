@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Circuit Playground | Algo Infinity Verse</title>
+    <meta name="description" content="Build quantum circuits gate by gate. Watch superposition, entanglement, and Grover's algorithm play out on a live probability histogram." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="quantum-circuit-playground.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="quantum-circuit-playground">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="qc-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="qc-hero-inner">
+        <div class="qc-hero-eyebrow">⚛️ Quantum Computing · Grover's Algorithm</div>
+        <h1 class="qc-hero-title">Quantum Circuit Playground</h1>
+        <p class="qc-hero-sub">Build gates. Watch superposition collapse. Search quadratically faster.</p>
+        <p class="qc-hero-desc">Drag gates onto qubit wires and watch the state vector evolve in real time. Hadamard gates create superposition, CNOT creates entanglement, and Grover's algorithm demonstrates the quadratic speedup that makes quantum search genuinely different from anything classical.</p>
+        <a href="#lab" class="btn btn-primary qc-btn-primary"><i class="fas fa-atom"></i> Open Circuit Builder</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section qc-section">
+      <div class="container">
+
+        <div class="qc-control-card">
+          <div class="qc-row">
+            <span class="qc-row-label">Qubits</span>
+            <div class="qc-qubit-btns">
+              <button class="qc-qubit-btn active" data-qubits="2">2 qubits</button>
+              <button class="qc-qubit-btn" data-qubits="3">3 qubits</button>
+            </div>
+            <span class="qc-row-label" style="margin-left:0.75rem">Presets</span>
+            <div class="qc-preset-btns">
+              <button class="qc-preset-btn" data-preset="bell">Bell State</button>
+              <button class="qc-preset-btn" data-preset="grover">Grover's (2q)</button>
+              <button class="qc-preset-btn" data-preset="uniform">Uniform Superposition</button>
+            </div>
+          </div>
+          <div class="qc-row">
+            <button class="btn qc-btn-primary qc-run-btn" id="qcRunBtn"><i class="fas fa-play"></i> Run Circuit</button>
+            <button class="btn btn-secondary qc-step-btn" id="qcStepBtn"><i class="fas fa-step-forward"></i> Step Column</button>
+            <button class="btn btn-secondary qc-reset-btn" id="qcResetBtn"><i class="fas fa-undo"></i> Reset Circuit</button>
+            <div class="qc-step-ctr">Column <span id="qcColNum">0</span>/<span id="qcColTotal">0</span></div>
+          </div>
+        </div>
+
+        <div class="qc-status" id="qcStatus">Drag a gate from the palette onto a qubit wire, or load a preset above.</div>
+
+        <div class="qc-main-layout">
+
+          <div class="qc-builder-col">
+
+            <div class="qc-gate-palette" id="qcGatePalette">
+              <div class="qc-gate-tile" draggable="true" data-gate="H" title="Hadamard — creates superposition">H</div>
+              <div class="qc-gate-tile" draggable="true" data-gate="X" title="Pauli-X — bit flip">X</div>
+              <div class="qc-gate-tile" draggable="true" data-gate="Y" title="Pauli-Y">Y</div>
+              <div class="qc-gate-tile" draggable="true" data-gate="Z" title="Pauli-Z — phase flip">Z</div>
+              <div class="qc-gate-tile qc-gate-cnot" draggable="true" data-gate="CNOT" title="CNOT — click control then target">CNOT</div>
+              <div class="qc-gate-tile qc-gate-cz" draggable="true" data-gate="CZ" title="Controlled-Z">CZ</div>
+              <div class="qc-gate-tile qc-gate-erase" data-gate="ERASE" title="Click a placed gate to remove it">Erase Mode</div>
+            </div>
+
+            <div class="qc-circuit-wrap">
+              <div class="qc-circuit-grid" id="qcCircuitGrid"></div>
+            </div>
+
+            <div class="qc-multi-hint" id="qcMultiHint">For CNOT/CZ: click the tile, then click control qubit cell, then target qubit cell in the same column.</div>
+
+          </div>
+
+          <div class="qc-state-col">
+
+            <div class="qc-panel-card">
+              <div class="qc-panel-title"><i class="fas fa-chart-bar"></i> Probability Histogram</div>
+              <canvas id="qcHistCanvas" class="qc-hist-canvas"></canvas>
+            </div>
+
+            <div class="qc-panel-card">
+              <div class="qc-panel-title"><i class="fas fa-list"></i> Amplitudes</div>
+              <div class="qc-amp-table" id="qcAmpTable"></div>
+            </div>
+
+            <div class="qc-panel-card">
+              <div class="qc-panel-title"><i class="fas fa-link"></i> Entanglement</div>
+              <div class="qc-entangle-indicator" id="qcEntangleIndicator">Run circuit to check</div>
+            </div>
+
+            <div class="qc-panel-card">
+              <div class="qc-panel-title"><i class="fas fa-dice"></i> Measure</div>
+              <button class="btn btn-secondary qc-measure-btn" id="qcMeasureBtn"><i class="fas fa-bolt"></i> Measure All Qubits</button>
+              <div class="qc-measure-result" id="qcMeasureResult"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="qc-puzzle-card">
+          <div class="qc-puzzle-header"><i class="fas fa-puzzle-piece"></i> Circuit Puzzles</div>
+          <div class="qc-puzzle-btns">
+            <button class="qc-puzzle-btn active" data-puzzle="0">Bell State (2 gates)</button>
+            <button class="qc-puzzle-btn" data-puzzle="1">Controlled Flip (1 gate)</button>
+            <button class="qc-puzzle-btn" data-puzzle="2">Uniform Superposition (1 gate/qubit)</button>
+          </div>
+          <div class="qc-puzzle-desc" id="qcPuzzleDesc"></div>
+          <button class="btn qc-btn-primary qc-check-puzzle-btn" id="qcCheckPuzzleBtn"><i class="fas fa-check"></i> Check My Circuit</button>
+          <div class="qc-puzzle-result hidden" id="qcPuzzleResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">⚛️</span> Understanding Grover's Speedup</h2>
+        <div class="qc-learn-grid">
+          <div class="qc-learn-card" style="--lc:#a855f7">
+            <div class="qc-learn-icon">🔍</div>
+            <h3>Classical Search: O(N)</h3>
+            <p>Searching an unsorted list of N items classically requires checking up to N items in the worst case — no way around it without extra structure.</p>
+          </div>
+          <div class="qc-learn-card" style="--lc:#06b6d4">
+            <div class="qc-learn-icon">⚡</div>
+            <h3>Grover's Search: O(√N)</h3>
+            <p>Grover's algorithm finds the marked item in roughly √N oracle calls by amplifying the marked state's amplitude each iteration via the diffusion operator — a quadratic, not exponential, speedup, but the best possible for unstructured search.</p>
+          </div>
+          <div class="qc-learn-card" style="--lc:#22c55e">
+            <div class="qc-learn-icon">🎯</div>
+            <h3>The Oracle + Diffusion Cycle</h3>
+            <p>Each Grover iteration: the oracle flips the phase of the target state, then the diffusion operator reflects all amplitudes about their average — geometrically rotating the state vector toward the target.</p>
+          </div>
+          <div class="qc-learn-card" style="--lc:#f59e0b">
+            <div class="qc-learn-icon">🔗</div>
+            <h3>Entanglement</h3>
+            <p>A CNOT gate applied to a qubit in superposition creates entanglement — a state that cannot be described as independent qubits. Measuring one instantly determines the other, regardless of distance.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="quantum-circuit-playground.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

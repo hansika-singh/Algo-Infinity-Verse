@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Median of Two Sorted Arrays | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="median-sorted-arrays.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="median-sorted-arrays.js" defer></script>
+</head>
+<body data-page="median-arrays">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Search Optimization: Median of Two Sorted Arrays</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Arrays Initialized</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Arrays"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-keyboard"></i> Arrays (Comma Separated)</h3>
+                
+                <div class="param-grid" style="margin-bottom: 1rem;">
+                    <label>Array A (Length M)</label>
+                    <input type="text" id="input-a" class="glass-input" value="1, 3, 8, 9, 15" style="grid-column: 1 / 3;">
+                    
+                    <label>Array B (Length N)</label>
+                    <input type="text" id="input-b" class="glass-input" value="7, 11, 18, 19, 21, 25" style="grid-column: 1 / 3;">
+                    
+                    <button type="button" id="btn-generate" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-random"></i> Load Arrays</button>
+                </div>
+            </div>
+
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                <div class="pseudocode" id="pseudocode-block">
+                    <div id="md-1" class="code-line">1. Ensure A is smaller: M &le; N</div>
+                    <div id="md-2" class="code-line">2. low = 0, high = M</div>
+                    <div id="md-3" class="code-line">3. While low &le; high:</div>
+                    <div id="md-4" class="code-line indent">4. partA = floor((low + high) / 2)</div>
+                    <div id="md-5" class="code-line indent">5. partB = floor((M + N + 1) / 2) - partA</div>
+                    <div id="md-6" class="code-line indent">6. Fetch L_A, R_A, L_B, R_B</div>
+                    <div id="md-7" class="code-line indent">7. If (L_A &le; R_B) AND (L_B &le; R_A):</div>
+                    <div id="md-8" class="code-line indent-2">Partition Found! Calculate Median.</div>
+                    <div id="md-9" class="code-line indent">8. Else if (L_A > R_B):</div>
+                    <div id="md-10" class="code-line indent-2">high = partA - 1 (Move Left)</div>
+                    <div id="md-11" class="code-line indent">9. Else:</div>
+                    <div id="md-12" class="code-line indent-2">low = partA + 1 (Move Right)</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <h4 class="stage-label">Dual-Array Logarithmic Partitioning</h4>
+                
+                <div class="arrays-wrapper">
+                    <div class="array-row">
+                        <span class="array-title" style="color: var(--accent-cyan);">Arr A (M)</span>
+                        <div id="array-a-container" class="array-container"></div>
+                    </div>
+                    
+                    <div class="array-row" style="margin-top: 3rem;">
+                        <span class="array-title" style="color: var(--accent-purple);">Arr B (N)</span>
+                        <div id="array-b-container" class="array-container"></div>
+                    </div>
+                </div>
+
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Cross-Evaluation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text">Instead of merging the arrays, we find a <strong>Partition Line</strong> that splits both arrays such that the total number of elements on the left equals the total on the right.</p>
+                <ul class="edu-list">
+                    <li><span class="badge part-a">Part A</span> Binary search cuts the smaller array.</li>
+                    <li><span class="badge part-b">Part B</span> The cut for B is mathematically forced: `(M+N+1)/2 - PartA`.</li>
+                    <li><span class="badge cross-check">Cross Check</span> Valid if `MaxLeftA <= MinRightB` AND `MaxLeftB <= MinRightA`.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Telemetry</h3>
+                <div class="telemetry-grid">
+                    <div class="metric"><span class="label">Binary Bounds (A)</span><span id="stat-bounds" class="value" style="color: var(--text-muted);">[0, 0]</span></div>
+                    <div class="metric"><span class="label">Partition A Idx</span><span id="stat-parta" class="value" style="color: var(--accent-cyan);">—</span></div>
+                    <div class="metric"><span class="label">Partition B Idx</span><span id="stat-partb" class="value" style="color: var(--accent-purple);">—</span></div>
+                    <div class="metric"><span class="label">Final Median</span><span id="stat-median" class="value highlight-val">—</span></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

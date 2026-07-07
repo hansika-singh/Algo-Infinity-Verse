@@ -1,0 +1,639 @@
+/* ─────────────────────────────────────────────
+   DSA Detective Mode
+   ───────────────────────────────────────────── */
+
+.dd-gradient {
+  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Stats bar */
+.dd-stats-bar {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 1rem 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.dd-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 70px;
+}
+
+.dd-stat span {
+  font-family: Orbitron, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dd-stat label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dd-accuracy span { color: #22c55e; }
+.dd-clue-level span { color: #f59e0b; }
+
+/* Layout */
+.dd-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Case file card */
+.dd-case-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--glass-shadow);
+}
+
+.dd-case-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dd-case-num {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.dd-diff-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+.dd-diff-badge.easy   { background: rgba(34,197,94,0.12);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3);  }
+.dd-diff-badge.medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.dd-diff-badge.hard   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3);  }
+
+.dd-case-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Clue area */
+.dd-clues-area {
+  margin-bottom: 1.5rem;
+}
+
+.dd-clues-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dd-clue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dd-clue-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.15);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  animation: dd-clue-in 0.35s ease;
+  line-height: 1.5;
+}
+
+.dd-clue-item.locked {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--glass-border);
+  user-select: none;
+  cursor: default;
+  font-style: italic;
+}
+
+.dd-clue-item.locked .dd-clue-text {
+  color: var(--text-secondary);
+  filter: blur(4px);
+  opacity: 0.6;
+}
+
+.dd-clue-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+
+.dd-clue-item.locked .dd-clue-icon { opacity: 0.2; }
+
+@keyframes dd-clue-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Reveal button */
+.dd-reveal-btn {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dd-reveal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Guess input area */
+.dd-guess-area {
+  margin-bottom: 1.25rem;
+}
+
+.dd-guess-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dd-guess-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.dd-guess-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-family: Poppins, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.dd-guess-btn:hover:not(:disabled) {
+  border-color: #8b5cf6;
+  background: rgba(139,92,246,0.08);
+  transform: translateY(-2px);
+}
+
+.dd-guess-btn.correct {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.12);
+  color: #22c55e;
+}
+
+.dd-guess-btn.wrong {
+  border-color: #ef4444;
+  background: rgba(239,68,68,0.1);
+  color: #ef4444;
+}
+
+.dd-guess-btn.reveal {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.08);
+  color: #22c55e;
+}
+
+.dd-guess-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.dd-guess-icon { font-size: 1rem; flex-shrink: 0; }
+
+/* Feedback */
+.dd-feedback {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  align-items: flex-start;
+}
+
+.dd-feedback.correct { background: rgba(34,197,94,0.08);  border: 1px solid rgba(34,197,94,0.25); }
+.dd-feedback.wrong   { background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.25); }
+
+.dd-feedback-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+.dd-feedback-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.dd-feedback.correct .dd-feedback-title { color: #22c55e; }
+.dd-feedback.wrong   .dd-feedback-title { color: #ef4444; }
+
+.dd-feedback-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.dd-next-btn { width: 100%; justify-content: center; }
+
+/* Sidebar */
+.dd-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+.dd-sidebar-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.dd-sidebar-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Clue categories reference */
+.dd-category-list { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.dd-category-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.dd-category-item:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+.dd-category-item .dd-c-icon { font-size: 0.9rem; width: 20px; text-align: center; }
+.dd-category-item .dd-c-name { font-weight: 600; }
+.dd-category-item .dd-c-level {
+  margin-left: auto;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.dd-category-item .dd-c-level.easy   { background: rgba(34,197,94,0.12); color: #22c55e; }
+.dd-category-item .dd-c-level.medium { background: rgba(245,158,11,0.12); color: #f59e0b; }
+.dd-category-item .dd-c-level.hard   { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+/* Difficulty breakdown */
+.dd-breakdown { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.dd-bd-row { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.dd-bd-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.dd-bd-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dd-bd-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--gradient-3);
+  transition: width 0.4s ease;
+}
+
+/* Buttons */
+.dd-full-btn { width: 100%; justify-content: center; }
+
+/* Hint chip */
+.dd-hint-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Result modal */
+.dd-result-modal {
+  max-width: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(139,92,246,0.2);
+  margin-top: 5rem;
+}
+
+.dd-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.dd-modal-close:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+.dd-result-modal .modal-header {
+  position: relative;
+  background: linear-gradient(135deg, rgba(6,182,212,0.08), rgba(139,92,246,0.08));
+  border-bottom: 1px solid var(--glass-border);
+  text-align: center;
+  padding: 1.25rem 1.5rem;
+}
+
+.dd-result-modal .modal-header h3 {
+  font-family: Orbitron, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.04em;
+  padding-right: 1.6rem;
+}
+
+.dd-result-modal .dd-result-badge {
+  padding-right: 1.6rem;
+}
+
+.dd-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(139,92,246,0.12));
+  border: 1px solid rgba(139,92,246,0.25);
+  color: #c4b5fd;
+  margin-bottom: 0.75rem;
+}
+
+.dd-result-body {
+  text-align: center;
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.dd-result-score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dd-result-score {
+  font-family: Orbitron, sans-serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin: 0.25rem 0;
+}
+
+.dd-result-score-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.dd-result-grade {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+}
+
+.dd-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.dd-result-stat {
+  background: var(--dark-card);
+  border-radius: 12px;
+  padding: 0.7rem 0.5rem;
+  text-align: center;
+  border: 1px solid var(--glass-border);
+}
+
+.dd-result-stat-icon {
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+
+.dd-result-stat span { display: block; font-size: 1.3rem; font-weight: 700; color: var(--accent); font-family: Orbitron, sans-serif; }
+.dd-result-stat label { font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+
+.dd-result-breakdown-wrap {
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 0 -0.5rem;
+  padding: 0 0.5rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.dd-result-breakdown-wrap::-webkit-scrollbar { display: none; }
+
+.dd-result-breakdown {
+  text-align: left;
+}
+
+.dd-result-breakdown h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dd-result-breakdown h4 span {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+.dd-result-case {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.dd-result-case:hover { background: rgba(255,255,255,0.03); }
+
+.dd-result-case:last-child { border-bottom: none; }
+
+.dd-result-case .dd-rc-icon { font-size: 0.85rem; flex-shrink: 0; }
+.dd-result-case .dd-rc-name { font-weight: 600; color: var(--text-primary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dd-result-case .dd-rc-diff {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.dd-result-case .dd-rc-diff.easy   { background: rgba(34,197,94,0.1); color: #22c55e; }
+.dd-result-case .dd-rc-diff.medium { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.dd-result-case .dd-rc-diff.hard   { background: rgba(239,68,68,0.1); color: #ef4444; }
+.dd-result-case .dd-rc-pts { font-family: Orbitron, sans-serif; font-weight: 700; color: var(--accent); font-size: 0.75rem; flex-shrink: 0; }
+
+.hidden { display: none !important; }
+
+/* Case count selector */
+.dd-count-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.dd-count-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.dd-count-options {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.dd-count-btn {
+  font-family: Poppins, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dd-count-btn:hover {
+  border-color: #8b5cf6;
+  color: var(--text-primary);
+}
+
+.dd-count-btn.active {
+  background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(139,92,246,0.15));
+  border-color: #8b5cf6;
+  color: #c4b5fd;
+}
+
+/* Responsive */
+@media (max-width: 1024px) { .dd-layout { grid-template-columns: 1fr; } }
+@media (max-width: 640px)  { .dd-guess-options { grid-template-columns: 1fr; } }
+@media (max-width: 480px)  { .dd-stats-bar { gap: 0.6rem; } .dd-stat span { font-size: 1.2rem; } }

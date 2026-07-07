@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSA Cryptography Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Public Key Cryptography (RSA) math and modular exponentiation." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="rsa-visualizer.css" />
+    
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="vis-body">
+
+    <nav class="navbar vis-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/pages/visualizers/visualizers.html"><i class="fas fa-shapes"></i> Visualizers</a>
+        </div>
+    </nav>
+
+    <main class="vis-workspace">
+        
+        <!-- Key Generation Panel -->
+        <aside class="vis-sidebar rsa-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-key"></i> Key Generation</h3>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="control-group split-group">
+                    <div>
+                        <label for="primeP">Prime P:</label>
+                        <input type="number" id="primeP" value="61" min="2">
+                    </div>
+                    <div>
+                        <label for="primeQ">Prime Q:</label>
+                        <input type="number" id="primeQ" value="53" min="2">
+                    </div>
+                </div>
+                
+                <button type="button" id="btnGeneratePrimes" class="btn-secondary" style="width: 100%; margin-bottom: 15px;">Random Small Primes</button>
+
+                <div class="math-step" id="stepN">
+                    <div class="step-title">1. Modulus (N)</div>
+                    <div class="step-math">N = P × Q</div>
+                    <div class="step-result" id="resN">-</div>
+                </div>
+
+                <div class="math-step" id="stepPhi">
+                    <div class="step-title">2. Totient φ(N)</div>
+                    <div class="step-math">φ(N) = (P-1) × (Q-1)</div>
+                    <div class="step-result" id="resPhi">-</div>
+                </div>
+
+                <div class="math-step" id="stepE">
+                    <div class="step-title">3. Public Exponent (E)</div>
+                    <div class="step-math">1 < E < φ(N), gcd(E, φ(N)) = 1</div>
+                    <div class="control-group" style="margin-top:5px;">
+                        <input type="number" id="inputE" value="17" min="3">
+                    </div>
+                    <button type="button" id="btnFindE" class="btn-secondary btn-sm" style="width: 100%;">Find Valid E</button>
+                    <div class="step-result error-text" id="errE"></div>
+                </div>
+
+                <div class="math-step" id="stepD">
+                    <div class="step-title">4. Private Exponent (D)</div>
+                    <div class="step-math">D ≡ E⁻¹ mod φ(N)</div>
+                    <div class="step-result" id="resD">-</div>
+                </div>
+                
+                <button type="button" id="btnCalculateKeys" class="btn-primary" style="width: 100%; margin-top: 10px;">Calculate Keys</button>
+            </div>
+        </aside>
+
+        <!-- Main Visualizer Area -->
+        <div class="canvas-wrapper rsa-canvas">
+            
+            <div class="key-display-area">
+                <div class="key-card public-key">
+                    <h4><i class="fas fa-lock"></i> Public Key</h4>
+                    <div class="key-val">(E: <span id="pubE">-</span>, N: <span id="pubN">-</span>)</div>
+                    <small>Used for Encryption</small>
+                </div>
+                <div class="key-card private-key">
+                    <h4><i class="fas fa-unlock"></i> Private Key</h4>
+                    <div class="key-val">(D: <span id="privD">-</span>, N: <span id="privN">-</span>)</div>
+                    <small>Used for Decryption</small>
+                </div>
+            </div>
+
+            <div class="action-panels">
+                
+                <!-- Encryption Panel -->
+                <div class="action-panel">
+                    <h3><i class="fas fa-shield-alt"></i> Encryption</h3>
+                    
+                    <div class="control-group">
+                        <label>Message (M) Integer:</label>
+                        <input type="number" id="msgInput" value="65" min="1">
+                        <small>E.g. ASCII 'A' = 65. Ensure M < N.</small>
+                    </div>
+
+                    <button type="button" id="btnEncrypt" class="btn-primary" style="width: 100%;">Encrypt Message</button>
+
+                    <div class="calculation-box" id="calcEncrypt">
+                        <h4>Modular Exponentiation</h4>
+                        <div class="formula">C = M<sup>E</sup> mod N</div>
+                        <div class="breakdown" id="encBreakdown">Waiting for input...</div>
+                        <div class="final-result">Ciphertext (C): <span id="encResult">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Decryption Panel -->
+                <div class="action-panel">
+                    <h3><i class="fas fa-key"></i> Decryption</h3>
+                    
+                    <div class="control-group">
+                        <label>Ciphertext (C) Integer:</label>
+                        <input type="number" id="cipherInput" value="0" min="0">
+                    </div>
+
+                    <button type="button" id="btnDecrypt" class="btn-primary" style="width: 100%;">Decrypt Ciphertext</button>
+
+                    <div class="calculation-box" id="calcDecrypt">
+                        <h4>Modular Exponentiation</h4>
+                        <div class="formula">M = C<sup>D</sup> mod N</div>
+                        <div class="breakdown" id="decBreakdown">Waiting for input...</div>
+                        <div class="final-result">Message (M): <span id="decResult">-</span></div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+
+    </main>
+    
+    <script src="rsa-visualizer.js"></script>
+</body>
+</html>

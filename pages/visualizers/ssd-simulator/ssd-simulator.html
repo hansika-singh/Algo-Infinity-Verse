@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SSD FTL & Wear Leveling Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Visualize Solid State Drive hardware mechanics: Flash Translation Layer, Garbage Collection, and Write Amplification." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for Write Amplification Graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="ssd-simulator.css" />
+</head>
+<body class="ssd-body">
+
+    <nav class="navbar ssd-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> SSD Controller: Active
+        </div>
+    </nav>
+
+    <main class="ssd-workspace">
+        
+        <!-- Left Panel: I/O Controls & L2P Table -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-hdd"></i> I/O Controller</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    SSDs cannot overwrite data in place. Updating a Logical Block Address (LBA) writes to a <em>new</em> physical page and marks the old one as <strong>Stale</strong>.
+                </p>
+
+                <div class="action-grid">
+                    <button type="button" class="btn btn-primary w-100" id="btnRandomWrite">
+                        <i class="fas fa-pen"></i> Write Random LBA
+                    </button>
+                    <button type="button" class="btn btn-warning w-100" id="btnForceGC">
+                        <i class="fas fa-broom"></i> Force GC
+                    </button>
+                </div>
+
+                <div class="sim-controls mt-3">
+                    <button type="button" class="btn btn-outline-danger w-100" id="btnSimulateWorkload">
+                        <i class="fas fa-bolt"></i> Simulate Heavy Workload
+                    </button>
+                </div>
+            </div>
+
+            <!-- L2P Mapping Table -->
+            <div class="l2p-section">
+                <div class="section-title">
+                    <h4><i class="fas fa-table"></i> Flash Translation Layer (L2P)</h4>
+                    <span class="lba-count" id="lbaCount">0 / 64 LBA Used</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="l2p-table">
+                        <thead>
+                            <tr>
+                                <th>Logical Address (LBA)</th>
+                                <th>Physical Page (PBA)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="l2pTableBody">
+                            <!-- Populated by JS -->
+                            <tr id="emptyL2P"><td colspan="2" class="text-center text-muted">No data written yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="l2p-info">
+                    <i class="fas fa-info-circle"></i> The OS sees LBAs. The SSD maps them to internal physical pages.
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: NAND Flash Grid -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <div class="header-info">
+                    <i class="fas fa-memory"></i> NAND Flash Physical Memory
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="box box-empty"></span> Empty</span>
+                    <span class="legend-item"><span class="box box-valid"></span> Valid Data</span>
+                    <span class="legend-item"><span class="box box-stale"></span> Stale (Garbage)</span>
+                </div>
+            </div>
+            
+            <div class="nand-arena" id="nandArena">
+                <!-- Blocks injected via JS -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Telemetry & WAF Graph -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-tachometer-alt"></i> SSD Telemetry</h3>
+            </div>
+            
+            <div class="telemetry-dashboard">
+                
+                <div class="stat-card primary-stat">
+                    <div class="stat-label" title="Write Amplification Factor">Write Amplification (WAF)</div>
+                    <div class="stat-value" id="wafDisplay">1.00x</div>
+                    <div class="stat-desc">Target: 1.0x (Lower is better)</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="box-label">User Writes (OS)</span>
+                        <span class="box-value text-accent" id="statUserWrites">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="box-label">Flash Writes (NAND)</span>
+                        <span class="box-value text-danger" id="statFlashWrites">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="box-label">GC Cycles</span>
+                        <span class="box-value text-warning" id="statGCCycles">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="box-label">Max P/E Wear</span>
+                        <span class="box-value" id="statMaxPE">0 Cycles</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WAF Chart -->
+            <div class="chart-section">
+                <h4>WAF Over Time</h4>
+                <div class="chart-container">
+                    <canvas id="wafChart"></canvas>
+                </div>
+                <div class="chart-explanation">
+                    <i class="fas fa-fire"></i> When Garbage Collection moves valid pages to clear a block, it causes additional "hidden" writes, amplifying wear on the SSD.
+                </div>
+            </div>
+
+            <!-- Event Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Controller Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> FTL initialized. 128 Physical Pages mapped.</div>
+                    <div class="log-entry sys">> Over-provisioning active: 64 Logical sectors available.</div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="ssd-simulator.js"></script>
+</body>
+</html>

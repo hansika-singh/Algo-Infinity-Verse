@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fast & Slow Pointer Simulator | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive simulator and mathematical explorer for the Fast and Slow Pointer (Tortoise and Hare) technique on linked lists."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="fast-slow-pointer-simulator.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item">
+          <a href="index.html#home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button type="button" class="nav-link dropdown-toggle"
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <span>Learn</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
+            <a href="index.html#practice" class="dropdown-item" role="menuitem">Practice Problems</a>
+            <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
+            <a href="array-learning.html" class="dropdown-item" role="menuitem">Learn Arrays</a>
+            <a href="linkedlist-learning.html" class="dropdown-item" role="menuitem">Learn Linked Lists</a>
+            <a href="stack-learning.html" class="dropdown-item" role="menuitem">Learn Stacks</a>
+            <a href="tree-traversal.html" class="dropdown-item" role="menuitem">Tree Traversal</a>
+            <a href="sorting-visualizer.html" class="dropdown-item" role="menuitem">Sorting Visualizer</a>
+            <a href="fast-slow-pointer-simulator.html" class="dropdown-item active" role="menuitem">Fast/Slow Pointer Simulator</a>
+            <a href="graph-visualizer.html" class="dropdown-item" role="menuitem">Graph Visualizer</a>
+            <a href="pathfinding-visualizer.html" class="dropdown-item" role="menuitem">Pathfinding Visualizer</a>
+            <a href="recursion-tree-visualizer.html" class="dropdown-item" role="menuitem">Recursion Tree Visualizer</a>
+          </div>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button type="button" class="nav-link dropdown-toggle"
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <span>Interview</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#interview" class="dropdown-item" role="menuitem">Interview Prep</a>
+            <a href="cheat-sheets.html" class="dropdown-item" role="menuitem">DSA Cheat Sheets</a>
+            <a href="system-design.html" class="dropdown-item" role="menuitem">System Design</a>
+          </div>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button type="button" class="nav-link dropdown-toggle"
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <span>Community</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="community.html" class="dropdown-item" role="menuitem">Discussions</a>
+            <a href="index.html#dashboard" class="dropdown-item" role="menuitem">Leaderboard</a>
+          </div>
+        </li>
+        <li class="nav-item has-dropdown nav-profile-dropdown">
+          <button type="button" class="nav-link dropdown-toggle"
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <span>Profile</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" role="menu">
+            <a href="index.html#dashboard" class="dropdown-item" role="menuitem">Dashboard</a>
+            <a href="login.html" class="dropdown-item nav-auth-link" role="menuitem">Sign In</a>
+          </div>
+        </li>
+      </ul>
+      <div class="nav-buttons">
+        <button type="button" id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button type="button" id="menuToggle" class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Fast & Slow Pointer</span>
+          <span class="subtitle">Tortoise and Hare Simulator & Mathematical Explorer</span>
+        </h1>
+        <div class="typing-container">
+          <span class="typing-text_visualizer" id="typingTextSimulator"></span>
+          <span class="typing-cursor">|</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Simulator Dashboard -->
+    <section class="section" id="simulator-section">
+      <div class="container">
+        <div class="visualizer-container">
+          <!-- LEFT / MAIN CONTENT: Visualizer canvas and Maths -->
+          <div class="visualizer-main-panel">
+            
+            <!-- Linked List Canvas -->
+            <div class="visualizer-card" style="position: relative; min-height: 400px; display: flex; flex-direction: column;">
+              <h3 style="margin-bottom: 1rem;"><i class="fas fa-project-diagram" style="color: var(--accent); margin-right: 0.5rem;"></i> Linked List Canvas</h3>
+              <div class="canvas-wrapper" id="linkedListCanvas" style="flex: 1; position: relative; overflow: hidden; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <!-- SVG layer for arrows -->
+                <svg id="arrowLayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></svg>
+                <!-- Nodes will be inserted here dynamically -->
+                <div id="nodesContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; padding: 20px;"></div>
+              </div>
+            </div>
+
+            <!-- Mathematical Dashboard -->
+            <div class="visualizer-card" style="position: relative; margin-top: 20px;">
+              <h3 style="margin-bottom: 1rem;"><i class="fas fa-square-root-alt" style="color: var(--accent); margin-right: 0.5rem;"></i> Mathematical Dashboard</h3>
+              <div class="math-dashboard-content" id="mathDashboard">
+                <div class="math-panel-grid">
+                  <div class="math-box">
+                    <h5>Pointer Distances</h5>
+                    <p>Slow Distance (x): <span id="slowDist">0</span></p>
+                    <p>Fast Distance (2x): <span id="fastDist">0</span></p>
+                  </div>
+                  <div class="math-box">
+                    <h5>Cycle Proof</h5>
+                    <div id="cycleProofText">
+                      <p>Waiting for simulation...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT / SIDEBAR CONTENT: Controls, Stats -->
+          <div class="visualizer-sidebar">
+            
+            <!-- Controls Card -->
+            <div class="visualizer-card" style="position: relative">
+              <h3 style="margin-bottom: 1rem">
+                <i class="fas fa-sliders-h" style="color: var(--accent); margin-right: 0.5rem"></i>Controls
+              </h3>
+
+              <!-- Algorithm Select -->
+              <div class="control-group">
+                <label for="algoSelect">Goal</label>
+                <select id="algoSelect" class="control-input">
+                  <option value="detect-cycle">Detect Cycle</option>
+                  <option value="find-middle">Find Middle Node</option>
+                  <option value="find-entry">Find Cycle Entry</option>
+                  <option value="cycle-length">Find Cycle Length</option>
+                </select>
+              </div>
+
+              <!-- List Setup Controls -->
+              <div class="control-group">
+                <label>List Type</label>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                  <button type="button" id="btnCyclic" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;">Cyclic</button>
+                  <button type="button" id="btnLinear" class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;">Linear</button>
+                </div>
+              </div>
+
+              <!-- List Size -->
+              <div class="control-group">
+                <label for="listSizeRange">List Size: <span class="val-display" id="listSizeDisplay">7</span></label>
+                <input type="range" id="listSizeRange" min="3" max="15" value="7" class="slider-custom" />
+              </div>
+
+              <!-- Speed/Delay -->
+              <div class="control-group">
+                <label for="speedRange">Animation Speed</label>
+                <input type="range" id="speedRange" min="1" max="10" value="5" class="slider-custom" />
+              </div>
+
+              <!-- Control Buttons -->
+              <div class="btn-control-row" style="margin-top: 15px;">
+                <button type="button" id="startBtn" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Play
+                </button>
+                <button type="button" id="pauseBtn" class="btn btn-secondary btn-control" disabled>
+                  <i class="fas fa-pause"></i> Pause
+                </button>
+              </div>
+              <div class="btn-control-row" style="margin-top: 10px;">
+                <button type="button" id="stepPrevBtn" class="btn btn-secondary btn-control" disabled>
+                  <i class="fas fa-step-backward"></i> Prev
+                </button>
+                <button type="button" id="stepNextBtn" class="btn btn-secondary btn-control" disabled>
+                  <i class="fas fa-step-forward"></i> Next
+                </button>
+                <button type="button" id="resetBtn" class="btn btn-secondary btn-control">
+                  <i class="fas fa-undo"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Pointer Dashboard -->
+            <div class="visualizer-card" style="position: relative">
+              <h3 style="margin-bottom: 1rem">
+                <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 0.5rem"></i>Status Panel
+              </h3>
+
+              <div class="complexity-grid">
+                <div class="complexity-card-mini">
+                  <h5>Slow Pointer (Tortoise)</h5>
+                  <p id="slowNodeStatus">Node: --</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Fast Pointer (Hare)</h5>
+                  <p id="fastNodeStatus">Node: --</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Time Complexity</h5>
+                  <p>O(n)</p>
+                </div>
+                <div class="complexity-card-mini">
+                  <h5>Space Complexity</h5>
+                  <p>O(1)</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Section -->
+    <section class="section" style="background-color: var(--bg-secondary);">
+      <div class="container">
+        <h2 class="section-title">Understanding the Tortoise and Hare</h2>
+        <div class="content-text" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
+          <p>The Fast and Slow pointer technique, also known as Floyd's Cycle-Finding Algorithm, uses two pointers moving at different speeds to detect cycles or find middle elements in a linked list or sequence.</p>
+          
+          <h3>Why does it work for Cycle Detection?</h3>
+          <p>Imagine two runners on a track. If the track is a straight line, the faster runner will reach the end. But if the track has a loop, the faster runner will eventually lap the slower runner. Mathematically, the relative speed between the fast pointer (2 steps) and slow pointer (1 step) is 1 step per iteration. Therefore, the distance between them decreases by 1 each step, guaranteeing they will eventually meet if a cycle exists.</p>
+
+          <h3>Finding the Cycle Entry Point</h3>
+          <p>Once the pointers meet, if you move one pointer back to the head of the list and keep both moving at 1 step per iteration, they will meet exactly at the cycle's entry point.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2024 Algo Infinity Verse.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="theme.js"></script>
+    <script src="fast-slow-pointer-simulator.js"></script>
+  </body>
+</html>

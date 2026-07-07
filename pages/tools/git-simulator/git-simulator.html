@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Simulator - Algo Infinity Verse</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="git-simulator.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main class="simulator-layout">
+        <!-- Terminal Panel -->
+        <section class="terminal-panel">
+            <div class="terminal-header">
+                <i class="fas fa-terminal"></i> Git Terminal
+                <span class="terminal-controls">
+                    <button type="button" id="btnHelp" title="Show Commands"><i class="fas fa-question-circle"></i></button>
+                    <button type="button" id="btnReset" title="Reset Repository"><i class="fas fa-trash-alt"></i></button>
+                </span>
+            </div>
+            <div class="terminal-body" id="terminalBody">
+                <div class="terminal-line welcome-text">Welcome to the Git Simulator!</div>
+                <div class="terminal-line welcome-text">Type <span class="highlight">git init</span> to create a new repository.</div>
+                <div class="terminal-line welcome-text">Type <span class="highlight">help</span> for a list of available commands.</div>
+                <div class="terminal-prompt-wrapper" id="promptWrapper">
+                    <span class="prompt-symbol">$</span>
+                    <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visualization Panel -->
+        <section class="graph-panel">
+            <div class="panel-header">
+                <i class="fas fa-project-diagram"></i> Git Commit Graph
+                <div class="repo-status" id="repoStatus">
+                    <span class="status-badge detached hidden" id="detachedBadge">Detached HEAD</span>
+                    <span class="status-badge" id="headLabel">No Repository</span>
+                </div>
+            </div>
+            <div class="graph-container" id="graphContainer">
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-code-branch empty-icon"></i>
+                    <p>Repository is empty or not initialized.</p>
+                </div>
+                <svg id="d3GraphSvg"></svg>
+            </div>
+            
+            <!-- Context Pane -->
+            <div class="context-pane" id="contextPane">
+                <div class="context-col">
+                    <h4><i class="fas fa-folder-open"></i> Working Directory</h4>
+                    <ul id="workingDirList" class="file-list">
+                        <li class="empty-text">No files</li>
+                    </ul>
+                </div>
+                <div class="context-col">
+                    <h4><i class="fas fa-box"></i> Staging Area</h4>
+                    <ul id="stagingAreaList" class="file-list">
+                        <li class="empty-text">Empty</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- D3 Tooltip -->
+    <div class="d3-tooltip hidden" id="commitTooltip">
+        <div class="tt-header">Commit <span id="ttHash" class="highlight"></span></div>
+        <div class="tt-body" id="ttMsg"></div>
+        <div class="tt-footer" id="ttParents"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../../js/main.js"></script>
+    <script src="git-simulator.js"></script>
+</body>
+</html>

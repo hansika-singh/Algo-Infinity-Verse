@@ -1,0 +1,122 @@
+/* FCFS Visualizer Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* OS Scheduler Theme (Violet / Fuchsia) */
+    --os-primary: #8b5cf6; /* Violet */
+    --os-primary-hover: #7c3aed;
+    --os-accent: #d946ef; /* Fuchsia */
+    --os-success: #10b981;
+    --os-danger: #ef4444;
+    --panel-bg: #0b1121;
+}
+
+body.fcfs-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.navbar { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--os-primary); }
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #cbd5e1; background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.engine-badge.active { color: var(--os-primary); background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); }
+
+/* Buttons & Inputs */
+.btn { padding: 0.8rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--os-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--os-primary-hover); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+.btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; }
+.btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--os-primary); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--os-danger); border: 1px solid var(--os-danger); }
+.btn-danger:hover { background: var(--os-danger); color: #fff; }
+.btn-sm-danger { background: transparent; color: var(--os-danger); border: none; cursor: pointer; font-size: 1rem; padding: 0.2rem; transition: color 0.2s; }
+.btn-sm-danger:hover { color: #f87171; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.w-100 { width: 100%; }
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-secondary); }
+.text-accent { color: var(--os-accent); }
+.text-primary { color: var(--os-primary); }
+.text-success { color: var(--os-success); }
+
+/* Workspace Layout */
+.fcfs-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel */
+.panel-left { width: 380px; display: flex; flex-direction: column; background: var(--panel-bg); border-right: 1px solid var(--glass-border); z-index: 10; overflow-y: auto; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.control-section { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+.desc-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.input-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.input-group input { background: #020617; border: 1px solid #334155; color: #fff; padding: 0.6rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.input-group input:focus { border-color: var(--os-primary); }
+
+.action-row { display: flex; gap: 0.8rem; margin-top: 1rem; }
+
+/* Data Tables */
+.table-wrapper { background: #020617; border: 1px solid var(--glass-border); border-radius: 8px; overflow: hidden; }
+.data-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.85rem; }
+.data-table th { background: #1e293b; color: #f8fafc; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; border-bottom: 1px solid #334155; }
+.data-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Right Panel (Visualization) */
+.panel-right { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.05) 0%, #020617 70%); position: relative; overflow-y: auto; }
+.visualization-content { padding: 2rem; display: flex; flex-direction: column; gap: 2.5rem; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+.visualization-content h4 { margin: 0 0 1rem; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #fff; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; }
+
+/* Gantt Chart */
+.gantt-container { display: flex; width: 100%; height: 80px; background: #0f172a; border: 1px solid var(--glass-border); border-radius: 8px; position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+.empty-gantt { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #475569; }
+.empty-gantt i { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5; }
+
+.gantt-block { position: relative; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; border-right: 1px solid rgba(0,0,0,0.5); box-sizing: border-box; overflow: hidden; animation: slideInLeft 0.5s ease forwards; opacity: 0; transform-origin: left; }
+.gantt-block:last-child { border-right: none; }
+
+.gantt-process { background: linear-gradient(135deg, var(--os-primary) 0%, var(--os-accent) 100%); box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+.gantt-idle { background: repeating-linear-gradient(45deg, #1e293b, #1e293b 10px, #0f172a 10px, #0f172a 20px); color: #64748b; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 0.85rem; }
+
+.gantt-time { position: absolute; bottom: 2px; font-family: 'Fira Code', monospace; font-size: 0.7rem; color: #cbd5e1; font-weight: 400; background: rgba(0,0,0,0.5); padding: 0 4px; border-radius: 2px; }
+.time-start { left: 2px; }
+.time-end { right: 2px; }
+
+@keyframes slideInLeft { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+
+/* Metrics Dashboard */
+.metrics-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; animation: fadeIn 0.5s ease 0.5s forwards; opacity: 0; }
+.metric-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 12px; text-align: center; }
+.metric-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; margin-bottom: 0.5rem; }
+.metric-value { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700; }
+
+.formula-legend { display: flex; gap: 1.5rem; margin-top: 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: var(--text-secondary); }
+.formula-legend strong { color: var(--os-primary); }
+
+.results-section { animation: fadeIn 0.5s ease 0.8s forwards; opacity: 0; }
+.results-table th { color: var(--os-accent); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) {
+    .fcfs-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left { width: 100%; border-right: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .metrics-dashboard { grid-template-columns: 1fr; gap: 1rem; }
+}

@@ -1,0 +1,93 @@
+/* AI Body Language Analyst Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Analyst Theme (Cyan/Teal) */
+    --cv-primary: #06b6d4; /* Cyan */
+    --cv-primary-hover: #0891b2;
+    --cv-success: #10b981; /* Emerald */
+    --cv-warning: #f59e0b; /* Amber */
+    --cv-danger: #ef4444; /* Red */
+}
+
+body.analyst-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.navbar { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--cv-primary); }
+.nav-badge { font-size: 0.8rem; background: rgba(6, 182, 212, 0.1); color: var(--cv-primary); padding: 0.4rem 0.8rem; border-radius: 99px; border: 1px solid rgba(6, 182, 212, 0.3); font-family: 'Fira Code', monospace; }
+.nav-badge.ready { background: rgba(16, 185, 129, 0.1); color: var(--cv-success); border-color: rgba(16, 185, 129, 0.3); }
+
+/* Workspace */
+.analyst-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel */
+.panel-left { width: 40%; display: flex; flex-direction: column; background: var(--glass-bg); border-right: 1px solid var(--glass-border); padding: 2rem; overflow-y: auto; }
+.panel-header h3 { font-family: 'Orbitron', sans-serif; color: #fff; margin: 0 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+
+.interview-prompt { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; position: relative; }
+.prompt-speaker { font-size: 0.85rem; font-family: 'Fira Code', monospace; color: var(--cv-primary); margin-bottom: 0.5rem; font-weight: 600; }
+.interview-prompt p { margin: 0; font-size: 1rem; color: #cbd5e1; line-height: 1.6; font-style: italic; }
+.prompt-timer { position: absolute; top: 1.5rem; right: 1.5rem; font-family: 'Fira Code', monospace; font-size: 1.2rem; color: var(--text-secondary); }
+
+.telemetry-dashboard { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
+.section-title { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.metric-card { display: flex; flex-direction: column; gap: 0.5rem; }
+.metric-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 500; color: #cbd5e1; }
+.metric-value { font-family: 'Fira Code', monospace; font-weight: 700; }
+.progress-bg { width: 100%; height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; transition: width 0.3s ease, background-color 0.3s ease; }
+.progress-fill.success { background: var(--cv-success); }
+.progress-fill.warning { background: var(--cv-warning); }
+.progress-fill.danger { background: var(--cv-danger); }
+
+.status-alert { padding: 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s; }
+.status-alert.success { background: rgba(16, 185, 129, 0.1); color: var(--cv-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-alert.warning { background: rgba(245, 158, 11, 0.1); color: var(--cv-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.status-alert.danger { background: rgba(239, 68, 68, 0.1); color: var(--cv-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+.control-actions { margin-top: auto; }
+.btn { width: 100%; padding: 1rem; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 0.5rem; font-size: 1rem; }
+.btn-primary { background: var(--cv-primary); color: #000; }
+.btn-primary:hover:not(:disabled) { background: var(--cv-primary-hover); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); }
+.btn-primary:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+/* Right Panel (Camera) */
+.panel-right { width: 60%; display: flex; flex-direction: column; padding: 2rem; align-items: center; justify-content: center; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); }
+
+.camera-container { width: 100%; max-width: 640px; background: #000; border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.camera-header { background: #1e293b; padding: 0.75rem 1rem; display: flex; justify-content: space-between; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #cbd5e1; }
+.fps-counter { color: var(--cv-primary); font-weight: 700; }
+
+.video-wrapper { position: relative; width: 100%; aspect-ratio: 4/3; background: #000; display: flex; justify-content: center; align-items: center; }
+#outputCanvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); /* Mirror effect */ }
+
+.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); color: var(--text-secondary); z-index: 10; }
+.video-overlay i { font-size: 3rem; margin-bottom: 1rem; color: #334155; }
+.video-overlay.hidden { display: none; }
+
+.debug-panel { background: #0f172a; border-top: 1px solid #1e293b; padding: 1rem; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #94a3b8; }
+.debug-panel strong { color: #fff; margin-bottom: 0.5rem; display: block; }
+.debug-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.debug-grid span { color: var(--cv-primary); }
+
+@media (max-width: 900px) {
+    .analyst-workspace { flex-direction: column; }
+    .panel-left, .panel-right { width: 100%; }
+    .panel-left { border-right: none; border-bottom: 1px solid var(--glass-border); }
+}

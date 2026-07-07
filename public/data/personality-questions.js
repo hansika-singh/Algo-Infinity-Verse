@@ -1,0 +1,7 @@
+// Personality Questions Data
+window.personalityQuestions = [
+  { id: 1, question: "When solving a new problem, what's your first instinct?", options: [{ text: "Start coding immediately with a brute-force approach", type: "brute-force" }, { text: "Think through all edge cases carefully first", type: "slow-accurate" }, { text: "Look for a greedy choice that seems optimal", type: "greedy" }, { text: "Optimize the theoretical approach before touching code", type: "over-optimizer" }] },
+  { id: 2, question: "How do you handle time pressure during interviews?", options: [{ text: "Code fast and iterate", type: "brute-force" }, { text: "Stay calm and thorough", type: "slow-accurate" }, { text: "Find quick greedy solution", type: "greedy" }, { text: "Overthink edge cases", type: "over-optimizer" }] },
+  { id: 3, question: "When debugging, you prefer to:", options: [{ text: "Add more test cases and run", type: "brute-force" }, { text: "Trace through logic carefully", type: "slow-accurate" }, { text: "Try a different greedy approach", type: "greedy" }, { text: "Rethink the entire algorithm", type: "over-optimizer" }] },
+  { id: 4, question: "Your approach to optimization:", options: [{ text: "Optimize later if needed", type: "brute-force" }, { text: "Ensure correctness first", type: "slow-accurate" }, { text: "Find best local choice", type: "greedy" }, { text: "Pre-optimize everything", type: "over-optimizer" }] }
+];

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Branch Predictor Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Watch 4 real CPU branch prediction strategies race on the same instruction stream — static, 1-bit, 2-bit saturating counter, and two-level adaptive." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="branch-predictor-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="branch-predictor-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="bp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="bp-hero-inner">
+        <div class="bp-hero-eyebrow">🧠 Computer Architecture</div>
+        <h1 class="bp-hero-title">Branch Predictor Simulator</h1>
+        <p class="bp-hero-sub">Your CPU guesses the future. Watch it get better — or worse — at it.</p>
+        <p class="bp-hero-desc">Every <code>if</code> statement in compiled code is a branch — and your CPU pipeline guesses which way it goes before it actually knows, to avoid stalling. Compare 4 real prediction strategies on the same branch sequence and see exactly why sorted data runs dramatically faster than unsorted data in branch-heavy loops.</p>
+        <a href="#lab" class="btn btn-primary bp-btn-primary">
+          <i class="fas fa-microchip"></i> Open the Lab
+        </a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section bp-section">
+      <div class="container">
+
+        <!-- Controls -->
+        <div class="bp-control-card">
+
+          <div class="bp-row">
+            <span class="bp-row-label">Sequence Source</span>
+            <div class="bp-source-btns">
+              <button type="button" class="bp-source-btn active" data-source="pattern">Pattern Generator</button>
+              <button type="button" class="bp-source-btn" data-source="random">Random</button>
+              <button type="button" class="bp-source-btn" data-source="sorted">Sorted Array Demo</button>
+              <button type="button" class="bp-source-btn" data-source="unsorted">Unsorted Array Demo</button>
+            </div>
+          </div>
+
+          <div class="bp-row" id="bpPatternRow">
+            <span class="bp-row-label">Pattern</span>
+            <div class="bp-pattern-presets">
+              <button type="button" class="bp-pattern-btn active" data-pattern="TTTTTTTTTT">Always Taken</button>
+              <button type="button" class="bp-pattern-btn" data-pattern="NNNNNNNNNN">Never Taken</button>
+              <button type="button" class="bp-pattern-btn" data-pattern="TNTNTNTNTN">Alternating</button>
+              <button type="button" class="bp-pattern-btn" data-pattern="TTNTTNTTNT">Loop (2T1N)</button>
+              <button type="button" class="bp-pattern-btn" data-pattern="TTTTTNNNNN">Phase Change</button>
+            </div>
+          </div>
+
+          <div class="bp-row" id="bpLengthRow">
+            <span class="bp-row-label">Sequence Length</span>
+            <input type="range" id="bpLength" class="bp-range" min="8" max="40" value="20" aria-label="Sequence length" />
+            <span class="bp-length-val" id="bpLengthVal">20</span>
+          </div>
+
+          <div class="bp-row">
+            <button type="button" class="btn bp-btn-primary bp-run-btn" id="bpRunBtn">
+              <i class="fas fa-play"></i> Run All Predictors
+            </button>
+            <button type="button" class="btn btn-secondary bp-step-btn" id="bpStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button type="button" class="btn btn-secondary bp-reset-btn" id="bpResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="bp-step-ctr">Branch <span id="bpStepNum">0</span>/<span id="bpStepTotal">0</span></div>
+          </div>
+
+        </div>
+
+        <!-- Branch sequence display -->
+        <div class="bp-sequence-card">
+          <div class="bp-card-title"><i class="fas fa-stream"></i> Branch Outcome Sequence</div>
+          <div class="bp-sequence-row" id="bpSequenceRow"></div>
+        </div>
+
+        <!-- Predictors grid -->
+        <div class="bp-predictors-grid" id="bpPredictorsGrid">
+
+          <!-- Static -->
+          <div class="bp-pred-card" data-pred="static">
+            <div class="bp-pred-header" style="--pc:#94a3b8">
+              <span class="bp-pred-name">Static (Backward-Taken)</span>
+              <span class="bp-pred-acc" id="bpAccStatic">—</span>
+            </div>
+            <p class="bp-pred-desc">Always predicts "taken" for backward branches (loops), "not taken" for forward branches (ifs). No history tracking — the simplest possible strategy.</p>
+            <div class="bp-pred-track" id="bpTrackStatic"></div>
+            <div class="bp-pred-stats">
+              <span>Hits: <strong id="bpHitsStatic">0</strong></span>
+              <span>Misses: <strong id="bpMissesStatic">0</strong></span>
+              <span>Stall cycles: <strong id="bpStallStatic">0</strong></span>
+            </div>
+          </div>
+
+          <!-- 1-bit -->
+          <div class="bp-pred-card" data-pred="onebit">
+            <div class="bp-pred-header" style="--pc:#06b6d4">
+              <span class="bp-pred-name">1-Bit Predictor</span>
+              <span class="bp-pred-acc" id="bpAccOnebit">—</span>
+            </div>
+            <p class="bp-pred-desc">Remembers only the last outcome and predicts the same again. Fast to adapt, but flips on every single mispredict — punished hard by alternating patterns.</p>
+            <div class="bp-pred-track" id="bpTrackOnebit"></div>
+            <div class="bp-pred-stats">
+              <span>Hits: <strong id="bpHitsOnebit">0</strong></span>
+              <span>Misses: <strong id="bpMissesOnebit">0</strong></span>
+              <span>Stall cycles: <strong id="bpStallOnebit">0</strong></span>
+            </div>
+          </div>
+
+          <!-- 2-bit -->
+          <div class="bp-pred-card" data-pred="twobit">
+            <div class="bp-pred-header" style="--pc:#22c55e">
+              <span class="bp-pred-name">2-Bit Saturating Counter</span>
+              <span class="bp-pred-acc" id="bpAccTwobit">—</span>
+            </div>
+            <p class="bp-pred-desc">The classic — used in real CPUs since the 1990s. Needs <em>two</em> consecutive wrong guesses before flipping its prediction, tolerating one-off anomalies.</p>
+            <div class="bp-pred-track" id="bpTrackTwobit"></div>
+            <div class="bp-fsm-wrap" id="bpFsmTwobit">
+              <svg id="bpFsmSvg" class="bp-fsm-svg" viewBox="0 0 320 110"></svg>
+            </div>
+            <div class="bp-pred-stats">
+              <span>Hits: <strong id="bpHitsTwobit">0</strong></span>
+              <span>Misses: <strong id="bpMissesTwobit">0</strong></span>
+              <span>Stall cycles: <strong id="bpStallTwobit">0</strong></span>
+            </div>
+          </div>
+
+          <!-- Two-level adaptive -->
+          <div class="bp-pred-card" data-pred="twolevel">
+            <div class="bp-pred-header" style="--pc:#a855f7">
+              <span class="bp-pred-name">Two-Level Adaptive</span>
+              <span class="bp-pred-acc" id="bpAccTwolevel">—</span>
+            </div>
+            <p class="bp-pred-desc">Tracks the last N outcomes as a "history pattern", then uses a 2-bit counter <em>per pattern</em> in a Pattern History Table. Learns repeating cycles that simpler predictors can't see.</p>
+            <div class="bp-pred-track" id="bpTrackTwolevel"></div>
+            <div class="bp-pht-wrap" id="bpPhtWrap"></div>
+            <div class="bp-pred-stats">
+              <span>Hits: <strong id="bpHitsTwolevel">0</strong></span>
+              <span>Misses: <strong id="bpMissesTwolevel">0</strong></span>
+              <span>Stall cycles: <strong id="bpStallTwolevel">0</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pipeline visualization -->
+        <div class="bp-pipeline-card">
+          <div class="bp-card-title"><i class="fas fa-water"></i> Pipeline Impact — 2-Bit Predictor</div>
+          <p class="bp-pipeline-desc">Each branch flows through the pipeline. A correct prediction keeps it flowing. A misprediction flushes the pipeline — wasted cycles shown in red.</p>
+          <div class="bp-pipeline-track" id="bpPipelineTrack"></div>
+          <div class="bp-pipeline-legend">
+            <span class="bp-pl-item"><span class="bp-pl-dot bp-pl-hit"></span>Correct prediction — no stall</span>
+            <span class="bp-pl-item"><span class="bp-pl-dot bp-pl-miss"></span>Misprediction — pipeline flush (3 cycle penalty)</span>
+          </div>
+        </div>
+
+        <!-- Sorted vs Unsorted real-world demo -->
+        <div class="bp-demo-card">
+          <div class="bp-card-title"><i class="fas fa-bolt"></i> The Famous "Sorted Array" Speedup</div>
+          <p class="bp-demo-desc">This is the real-world case that made branch prediction famous on Stack Overflow. A loop filters an array with <code>if (arr[i] &gt;= threshold)</code>. Run it on sorted vs unsorted data — same data, same comparisons, wildly different branch predictability.</p>
+          <button type="button" class="btn bp-btn-primary bp-demo-run-btn" id="bpDemoRunBtn">
+            <i class="fas fa-flask"></i> Run Sorted vs Unsorted Comparison
+          </button>
+          <div class="bp-demo-results hidden" id="bpDemoResults">
+            <div class="bp-demo-col">
+              <div class="bp-demo-col-title" style="color:#22c55e">Sorted Array</div>
+              <div class="bp-demo-stat"><span>Mispredictions</span><strong id="bpSortedMiss">—</strong></div>
+              <div class="bp-demo-stat"><span>Accuracy</span><strong id="bpSortedAcc">—</strong></div>
+              <div class="bp-demo-stat"><span>Est. stall cycles</span><strong id="bpSortedStall">—</strong></div>
+            </div>
+            <div class="bp-demo-vs">VS</div>
+            <div class="bp-demo-col">
+              <div class="bp-demo-col-title" style="color:#ef4444">Unsorted Array</div>
+              <div class="bp-demo-stat"><span>Mispredictions</span><strong id="bpUnsortedMiss">—</strong></div>
+              <div class="bp-demo-stat"><span>Accuracy</span><strong id="bpUnsortedAcc">—</strong></div>
+              <div class="bp-demo-stat"><span>Est. stall cycles</span><strong id="bpUnsortedStall">—</strong></div>
+            </div>
+          </div>
+          <div class="bp-demo-verdict hidden" id="bpDemoVerdict"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="../../../script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="branch-predictor-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

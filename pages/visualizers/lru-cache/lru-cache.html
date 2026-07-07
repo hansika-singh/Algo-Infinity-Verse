@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU Cache Engine | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="lru-cache.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="lru-cache.js" defer></script>
+</head>
+<body data-page="lru-cache">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>System Design: LRU Cache (Least Recently Used)</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Cache Initialized | Capacity: 4</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Cache"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-database"></i> Operations</h3>
+                
+                <div class="param-grid" style="margin-bottom: 1rem;">
+                    <label>Put(Key, Value)</label>
+                    <input type="number" id="input-put-k" class="glass-input" placeholder="Key (1-9)" min="1" max="9">
+                    <input type="number" id="input-put-v" class="glass-input" placeholder="Val (1-99)" min="1" max="99">
+                    <button type="button" id="btn-put" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-download"></i> Put</button>
+                </div>
+
+                <div class="param-grid" style="margin-bottom: 1.5rem;">
+                    <label>Get(Key)</label>
+                    <input type="number" id="input-get-k" class="glass-input" placeholder="Key (1-9)" min="1" max="9" style="grid-column: 1 / 3;">
+                    <button type="button" id="btn-get" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-search"></i> Get</button>
+                </div>
+
+                <div class="param-grid">
+                    <label>Set Capacity</label>
+                    <input type="number" id="input-cap" class="glass-input" value="4" min="2" max="6" style="grid-column: 1 / 3;">
+                </div>
+            </div>
+
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode hidden" id="pseudo-put">
+                    <div id="pt-1" class="code-line">1. If key exists in Map:</div>
+                    <div id="pt-2" class="code-line indent">Update node.value</div>
+                    <div id="pt-3" class="code-line indent">Move node to Head (MRU)</div>
+                    <div id="pt-4" class="code-line">2. Else:</div>
+                    <div id="pt-5" class="code-line indent">If Cache is Full (Size == Cap):</div>
+                    <div id="pt-6" class="code-line indent-2">Evict Tail.prev (LRU)</div>
+                    <div id="pt-7" class="code-line indent-2">Delete from Map</div>
+                    <div id="pt-8" class="code-line indent">Create new Node</div>
+                    <div id="pt-9" class="code-line indent">Insert after Head (MRU)</div>
+                    <div id="pt-10" class="code-line indent">Add to Map</div>
+                </div>
+
+                <div class="pseudocode hidden" id="pseudo-get">
+                    <div id="gt-1" class="code-line">1. If key NOT in Map:</div>
+                    <div id="gt-2" class="code-line indent">Return -1 (Cache Miss)</div>
+                    <div id="gt-3" class="code-line">2. Else (Cache Hit):</div>
+                    <div id="gt-4" class="code-line indent">node = Map[key]</div>
+                    <div id="gt-5" class="code-line indent">Unlink node from current pos</div>
+                    <div id="gt-6" class="code-line indent">Insert node after Head (MRU)</div>
+                    <div id="gt-7" class="code-line indent">Return node.value</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <div class="hash-map-panel">
+                    <h4 class="stage-label">O(1) Hash Map</h4>
+                    <div class="map-table" id="hash-map-table">
+                        </div>
+                </div>
+
+                <div class="dll-stage">
+                    <h4 class="stage-label" style="text-align: center; width: 100%; margin-bottom: 2rem;">O(1) Doubly Linked List (Temporal Order)</h4>
+                    
+                    <div id="dll-container" class="dll-container" role="region" aria-label="Doubly Linked List">
+                        <svg id="pointer-svg" class="pointer-svg"></svg>
+                        </div>
+                    
+                    <div class="dll-labels">
+                        <span class="mru-label">MRU (Most Recently Used)</span>
+                        <span class="lru-label">LRU (Least Recently Used)</span>
+                    </div>
+                </div>
+
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Current Operation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text">An <strong>LRU Cache</strong> evicts the least recently used item when it reaches capacity. It achieves exactly <strong>O(1)</strong> time complexity for all operations by combining two structures:</p>
+                <ul class="edu-list">
+                    <li><span class="badge map-badge">Hash Map</span> Provides O(1) lookups pointing directly to memory addresses.</li>
+                    <li><span class="badge dll-badge">Linked List</span> A Doubly Linked List allows O(1) removals and insertions to maintain usage order without shifting arrays.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Telemetry</h3>
+                <div class="complexity-stat">
+                    <span class="label">Cache Size</span>
+                    <span class="value" id="stat-size">0 / 4</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Cache Hits</span>
+                    <span class="value" style="color: var(--accent-emerald);" id="stat-hits">0</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Cache Misses</span>
+                    <span class="value" style="color: var(--danger);" id="stat-misses">0</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

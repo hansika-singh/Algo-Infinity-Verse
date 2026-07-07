@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Design Sandbox | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="canvas-body">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="sandbox-container">
+        <!-- Component Sidebar -->
+        <aside class="sidebar">
+            <h2 class="sidebar-title"><i class="fas fa-cubes"></i> Components</h2>
+            <p class="sidebar-desc">Drag nodes to the canvas to build your architecture.</p>
+            
+            <div class="component-list">
+                <div class="component-item" draggable="true" data-type="client">
+                    <i class="fas fa-mobile-alt"></i> Client
+                </div>
+                <div class="component-item" draggable="true" data-type="dns">
+                    <i class="fas fa-globe"></i> DNS
+                </div>
+                <div class="component-item" draggable="true" data-type="lb">
+                    <i class="fas fa-network-wired"></i> Load Balancer
+                </div>
+                <div class="component-item" draggable="true" data-type="api">
+                    <i class="fas fa-door-open"></i> API Gateway
+                </div>
+                <div class="component-item" draggable="true" data-type="service">
+                    <i class="fas fa-server"></i> Microservice
+                </div>
+                <div class="component-item" draggable="true" data-type="db-primary">
+                    <i class="fas fa-database"></i> DB (Primary)
+                </div>
+                <div class="component-item" draggable="true" data-type="db-replica">
+                    <i class="fas fa-database" style="color: #94a3b8;"></i> DB (Replica)
+                </div>
+                <div class="component-item" draggable="true" data-type="cache">
+                    <i class="fas fa-bolt"></i> Cache
+                </div>
+                <div class="component-item" draggable="true" data-type="mq">
+                    <i class="fas fa-envelope"></i> Message Queue
+                </div>
+            </div>
+
+            <div class="controls">
+                <h3 class="controls-title">Controls</h3>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem;">
+                    <strong>To Connect:</strong> Click a node, then click another to link them. <br>
+                    <strong>To Fail Node:</strong> Double-click a node to toggle Offline/Online.
+                </p>
+                <button id="simulateBtn" class="btn primary-btn"><i class="fas fa-play"></i> Simulate Traffic</button>
+                <button id="stopBtn" class="btn secondary-btn" style="display: none;"><i class="fas fa-stop"></i> Stop Simulation</button>
+                <button id="clearBtn" class="btn outline-btn"><i class="fas fa-trash"></i> Clear Canvas</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="workspace" id="workspace">
+            <canvas id="connectionCanvas"></canvas>
+            <div id="nodesContainer"></div>
+            
+            <div class="workspace-instructions" id="workspaceEmptyMsg">
+                <h1>Drag & Drop Components Here</h1>
+                <p>Build scalable architectures and simulate data flow.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="app.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+    </script>
+</body>
+</html>

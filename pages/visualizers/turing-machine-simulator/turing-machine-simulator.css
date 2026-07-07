@@ -1,0 +1,238 @@
+/* turing-machine-simulator.css */
+
+.visualization-panels {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+.tape-panel {
+    flex: 0 0 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.tape-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.tape-cell {
+    width: 50px;
+    height: 60px;
+    border: 2px solid var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Fira Code', monospace;
+    background-color: var(--bg-primary);
+    margin: 0 2px;
+    flex-shrink: 0;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.tape-cell.active {
+    background-color: var(--accent-color, #007bff);
+    color: var(--bg-primary, #ffffff);
+    border-color: var(--accent-hover, #0056b3);
+    box-shadow: 0 0 10px var(--accent-color, #007bff);
+}
+
+.head-pointer {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: var(--accent-color);
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateX(-50%) translateY(0); }
+    to { transform: translateX(-50%) translateY(-5px); }
+}
+
+.graph-panel {
+    flex: 1;
+    position: relative;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    min-height: 300px;
+    overflow: hidden;
+}
+
+#graphContainer {
+    width: 100%;
+    height: calc(100% - 30px);
+}
+
+/* D3 SVG Styles (Matching Markov Chain Look) */
+#graphContainer {
+    width: 100%;
+    height: calc(100% - 30px);
+    overflow: visible; /* Prevent clipping of self loops */
+}
+.graph-controls {
+    display: none; /* Hide zoom controls if not needed, or style them dark */
+}
+
+.node circle {
+    fill: var(--bg-secondary, #2c3e50);
+    stroke: var(--border-color, #4a5568);
+    stroke-width: 2.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.node.active circle {
+    fill: var(--accent-color);
+    stroke: #ffffff;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 12px var(--accent-color));
+}
+
+.node.accept circle {
+    fill: #2ecc71;
+    stroke: #27ae60;
+}
+.node.accept circle.inner-border {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2px;
+}
+
+.node.halt circle {
+    fill: #e74c3c;
+    stroke: #c0392b;
+}
+
+.node text {
+    font-family: Orbitron, sans-serif;
+    font-size: 14px;
+    fill: #ffffff;
+    stroke: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.link {
+    fill: none;
+    stroke: var(--text-muted, #718096);
+    stroke-width: 2px;
+    transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.link.active-transition {
+    stroke: var(--accent-color, #3182ce);
+    stroke-width: 4px;
+}
+
+.transition-label-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    fill: var(--text-color, #ecf0f1);
+    paint-order: stroke;
+    stroke: var(--bg-primary, #1a202c);
+    stroke-width: 4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+.transition-label-rect {
+    display: none; /* Removed background boxes to match Markov chain */
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+#transitionRulesText {
+    width: 100%;
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    resize: vertical;
+}
+
+.playback-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-secondary);
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-control {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-control:hover:not(:disabled) {
+    color: var(--accent-color);
+    background: rgba(255,255,255,0.1);
+}
+
+.btn-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.play-btn {
+    background: var(--accent-color);
+    color: #fff;
+}
+
+.play-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+    border-left: 1px solid var(--border-color);
+    padding-left: 15px;
+}

@@ -7,3 +7,5 @@ export function initLoader() {
     }
   }, 1000);
 }
+// Legacy global exports
+window.initLoader = initLoader;

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OS Virtual Memory & Paging Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualization of CPU virtual addressing, TLB caching, Page Tables, and LRU Page Faults." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="os-paging.css" />
+</head>
+<body class="paging-body">
+
+    <nav class="navbar paging-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-microchip"></i> OS Memory Manager: Active
+        </div>
+    </nav>
+
+    <main class="paging-workspace">
+        
+        <!-- Left Panel: CPU & Logs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-laptop-code"></i> CPU Process</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    The CPU requests a 16-bit <strong>Virtual Address</strong>. Watch the Memory Management Unit (MMU) translate it to a <strong>Physical Address</strong>.
+                </p>
+
+                <div class="input-group">
+                    <label>Virtual Address (Hex)</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="addressInput" value="0x1A2B" maxlength="6" />
+                        <button type="button" class="btn btn-secondary" id="btnRandom" title="Generate Random Address">
+                            <i class="fas fa-dice"></i>
+                        </button>
+                    </div>
+                    <small class="help-text">Valid range: 0x0000 to 0xFFFF</small>
+                </div>
+
+                <!-- Bit Breakdown Visualization -->
+                <div class="address-breakdown">
+                    <div class="breakdown-header">16-bit Address Breakdown</div>
+                    <div class="binary-display" id="binaryDisplay">0001 1010 0010 1011</div>
+                    <div class="split-display">
+                        <div class="split-vpn">
+                            <span class="split-label">VPN (6 bits)</span>
+                            <strong id="vpnDisplay">0x06</strong>
+                        </div>
+                        <div class="split-offset">
+                            <span class="split-label">Offset (10 bits)</span>
+                            <strong id="offsetDisplay">0x22B</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-grid mt-3">
+                    <button type="button" class="btn btn-primary w-100" id="btnFetch">
+                        <i class="fas fa-bolt"></i> Fetch Memory
+                    </button>
+                    <button type="button" class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reboot OS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Execution Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Kernel Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Boot sequence complete. Physical RAM allocated (4 Frames).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: The MMU Architecture Diagram -->
+        <div class="panel-center">
+            <div class="canvas-header">
+                <div class="header-title">
+                    <i class="fas fa-network-wired"></i> Memory Management Unit (MMU)
+                </div>
+            </div>
+            
+            <div class="mmu-arena">
+                <div class="mmu-flow">
+                    <!-- CPU Node -->
+                    <div class="flow-node cpu-node" id="nodeCPU">
+                        <i class="fas fa-microchip"></i> CPU
+                    </div>
+                    
+                    <div class="flow-arrow" id="arrowCPU-TLB"><i class="fas fa-chevron-down"></i></div>
+                    
+                    <!-- TLB Node -->
+                    <div class="flow-node cache-node" id="nodeTLB">
+                        <i class="fas fa-bolt"></i> TLB Check
+                    </div>
+
+                    <div class="flow-split">
+                        <div class="split-path">
+                            <div class="path-label success" id="labelTLBHit">TLB Hit</div>
+                            <div class="flow-arrow" id="arrowTLB-RAM"><i class="fas fa-long-arrow-alt-down"></i></div>
+                        </div>
+                        <div class="split-path">
+                            <div class="path-label error" id="labelTLBMiss">TLB Miss</div>
+                            <div class="flow-arrow right-arrow" id="arrowTLB-PT"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Page Table Node -->
+                    <div class="flow-node pt-node" id="nodePT">
+                        <i class="fas fa-table"></i> Page Table Walk
+                    </div>
+
+                    <div class="flow-split">
+                        <div class="split-path">
+                            <div class="path-label success" id="labelPTHit">Valid (Hit)</div>
+                            <div class="flow-arrow" id="arrowPT-RAM"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="split-path">
+                            <div class="path-label error" id="labelPTMiss">Invalid (Page Fault)</div>
+                            <div class="flow-arrow right-arrow" id="arrowPT-Disk"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Disk Node (Page Fault Handling) -->
+                    <div class="flow-node disk-node" id="nodeDisk">
+                        <i class="fas fa-hdd"></i> Disk / Swap
+                        <span class="subtext">LRU Eviction & Load</span>
+                    </div>
+                    
+                    <div class="flow-arrow up-arrow" id="arrowDisk-RAM"><i class="fas fa-level-up-alt"></i></div>
+
+                    <!-- RAM Node -->
+                    <div class="flow-node ram-node" id="nodeRAM">
+                        <i class="fas fa-memory"></i> Physical RAM
+                        <span class="subtext" id="finalAddressDisplay">Physical Address: ----</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Data Structures (Tables) -->
+        <div class="panel-right">
+            
+            <!-- TLB Section -->
+            <div class="table-section tlb-section">
+                <div class="section-header">
+                    <h4>Translation Lookaside Buffer (TLB)</h4>
+                    <span class="badge">SRAM</span>
+                </div>
+                <p class="section-desc">Hardware cache for fast translation. Max 2 entries.</p>
+                <div class="table-wrapper">
+                    <table class="os-table">
+                        <thead><tr><th>VPN</th><th>PFN</th><th>LRU Clock</th></tr></thead>
+                        <tbody id="tlbBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Page Table Section -->
+            <div class="table-section pt-section">
+                <div class="section-header">
+                    <h4>Page Table</h4>
+                    <span class="badge">Main Memory</span>
+                </div>
+                <p class="section-desc">Maps Virtual Page Numbers (VPN 0-63) to Frames.</p>
+                <div class="table-wrapper pt-wrapper">
+                    <table class="os-table">
+                        <thead><tr><th>VPN</th><th>Valid</th><th>Frame/Disk</th></tr></thead>
+                        <tbody id="ptBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Physical Memory Section -->
+            <div class="table-section ram-section">
+                <div class="section-header">
+                    <h4>Physical RAM</h4>
+                    <span class="badge">4 Frames Max</span>
+                </div>
+                <p class="section-desc">Extremely limited RAM forces Page Faults & LRU evictions.</p>
+                <div class="table-wrapper">
+                    <table class="os-table">
+                        <thead><tr><th>PFN</th><th>Allocated VPN</th><th>LRU Clock</th></tr></thead>
+                        <tbody id="ramBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="os-paging.js"></script>
+</body>
+</html>
