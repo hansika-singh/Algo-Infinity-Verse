@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L-System Fractal Generator | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="l-system-fractal.css" />
+</head>
+<body class="fractal-body">
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="workspace">
+        <!-- Left Panel: Controls & Grammar Inputs -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-leaf"></i> L-System Generator</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Explore formal grammars! Define an <strong>Axiom</strong> and <strong>Rules</strong>, then watch it expand recursively into a fractal using Turtle Graphics.
+                </p>
+
+                <!-- Presets -->
+                <div class="input-group">
+                    <label for="presetSelect">Presets</label>
+                    <select id="presetSelect" class="styled-select">
+                        <option value="fractalTree">Fractal Plant (Tree)</option>
+                        <option value="kochSnowflake">Koch Snowflake</option>
+                        <option value="sierpinskiTriangle">Sierpiński Triangle</option>
+                        <option value="dragonCurve">Dragon Curve</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+
+                <!-- Grammar -->
+                <div class="input-group">
+                    <label for="axiomInput">Axiom (Start String)</label>
+                    <input type="text" id="axiomInput" class="styled-input" value="X">
+                </div>
+
+                <div class="input-group">
+                    <label>Production Rules</label>
+                    <div id="rulesContainer">
+                        <!-- Rules injected here -->
+                    </div>
+                    <button type="button" id="addRuleBtn" class="btn btn-secondary btn-sm mt-1"><i class="fas fa-plus"></i> Add Rule</button>
+                </div>
+
+                <!-- Parameters -->
+                <div class="sliders-container">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <label for="iterationsSlider">Iterations</label>
+                            <span id="iterationsVal" class="val-badge">6</span>
+                        </div>
+                        <input type="range" id="iterationsSlider" min="1" max="9" value="6">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <label for="angleSlider">Turn Angle (θ)</label>
+                            <span id="angleVal" class="val-badge">25°</span>
+                        </div>
+                        <input type="range" id="angleSlider" min="1" max="180" value="25">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="action-buttons">
+                    <button type="button" id="drawInstantBtn" class="btn btn-primary"><i class="fas fa-bolt"></i> Draw Instant</button>
+                    <button type="button" id="animateBtn" class="btn btn-accent"><i class="fas fa-play"></i> Animate</button>
+                </div>
+
+                <!-- Stats / Legend -->
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span>String Length:</span>
+                        <strong id="strLengthStat">0</strong>
+                    </div>
+                    <div class="legend-hint">
+                        <small><strong>F, G:</strong> Draw Forward | <strong>f:</strong> Move Forward</small><br>
+                        <small><strong>+:</strong> Turn Right | <strong>-:</strong> Turn Left</small><br>
+                        <small><strong>[:</strong> Save State | <strong>]:</strong> Restore State</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas -->
+        <div class="panel-right">
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="fractalCanvas"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="l-system-fractal.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lock-Free Data Structure Playground | Algo Infinity Verse</title>
+    <meta name="description" content="Watch Treiber Stack and Michael-Scott Queue use Compare-And-Swap across concurrent threads. Trigger ABA bugs and see hazard pointers fix them." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="lock-free-playground.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="lock-free-playground">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="lf-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="lf-hero-inner">
+        <div class="lf-hero-eyebrow">⚛️ Concurrent Systems — No Locks Required</div>
+        <h1 class="lf-hero-title">Lock-Free Playground</h1>
+        <p class="lf-hero-sub">Multiple threads. One shared structure. Zero mutexes.</p>
+        <p class="lf-hero-desc">Lock-free data structures use Compare-And-Swap (CAS) instead of mutexes — "if the value is still what I read, swap it atomically; otherwise retry." This eliminates deadlock, reduces contention, and powers Java's <code>ConcurrentLinkedQueue</code> and Rust's <code>crossbeam</code>. Step through thread interleavings manually to trigger races, watch CAS succeed or fail, and see the ABA bug happen in real time.</p>
+        <a href="#lab" class="btn btn-primary lf-btn-primary"><i class="fas fa-atom"></i> Open Lab</a>
+      </div>
+    </section>
+
+    <!-- Lab -->
+    <section id="lab" class="section lf-section">
+      <div class="container">
+
+        <!-- Top controls -->
+        <div class="lf-control-card">
+          <div class="lf-ctrl-row">
+            <span class="lf-ctrl-label">Structure</span>
+            <div class="lf-struct-btns">
+              <button type="button" class="lf-struct-btn active" data-struct="stack">Treiber Stack</button>
+              <button type="button" class="lf-struct-btn" data-struct="queue">Michael-Scott Queue</button>
+            </div>
+
+            <span class="lf-ctrl-label" style="margin-left:0.75rem">Threads</span>
+            <select id="lfThreadCount" class="lf-select" aria-label="Thread count">
+              <option value="2">2 threads</option>
+              <option value="3" selected>3 threads</option>
+              <option value="4">4 threads</option>
+            </select>
+
+            <button type="button" class="lf-ctrl-btn" id="lfInitBtn"><i class="fas fa-play"></i> Initialize</button>
+            <button type="button" class="lf-ctrl-btn lf-reset-btn" id="lfResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+
+          <div class="lf-ctrl-row">
+            <span class="lf-ctrl-label">Hazard Pointers</span>
+            <label class="lf-toggle-wrap">
+              <input type="checkbox" id="lfHazardOn" class="lf-check" />
+              <span class="lf-toggle-slider"></span>
+              <span class="lf-toggle-state" id="lfHazardState">OFF — ABA possible</span>
+            </label>
+            <button type="button" class="lf-ctrl-btn lf-aba-btn" id="lfAbaBtn"><i class="fas fa-bug"></i> Trigger ABA Demo</button>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="lf-status" id="lfStatus">Initialize the structure to begin. Use thread panels to enqueue operations, then step through interleavings.</div>
+
+        <!-- Main 3-panel layout -->
+        <div class="lf-main-layout">
+
+          <!-- Left: Thread panels -->
+          <div class="lf-threads-col" id="lfThreadsCol"></div>
+
+          <!-- Center: DS visualization -->
+          <div class="lf-ds-col">
+            <div class="lf-ds-header">
+              <span class="lf-ds-title" id="lfDsTitle">Treiber Stack</span>
+              <div class="lf-ds-stats">
+                <span>Size: <strong id="lfDsSize">0</strong></span>
+                <span>CAS attempts: <strong id="lfCasAttempts">0</strong></span>
+                <span>CAS failures: <strong id="lfCasFailures" style="color:#ef4444">0</strong></span>
+              </div>
+            </div>
+            <div class="lf-ds-canvas-wrap" id="lfDsCanvasWrap">
+              <canvas id="lfDsCanvas" class="lf-ds-canvas"></canvas>
+            </div>
+            <div class="lf-ds-footer">
+              <div class="lf-cas-legend">
+                <span class="lf-cl-item"><span class="lf-cl-dot" style="background:#22c55e"></span>CAS success</span>
+                <span class="lf-cl-item"><span class="lf-cl-dot" style="background:#ef4444"></span>CAS failure (retry)</span>
+                <span class="lf-cl-item"><span class="lf-cl-dot" style="background:#f59e0b"></span>Thread reading</span>
+                <span class="lf-cl-item"><span class="lf-cl-dot" style="background:#a855f7"></span>Hazard protected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: CAS log + hazard table -->
+          <div class="lf-right-col">
+
+            <div class="lf-panel-card">
+              <div class="lf-panel-title"><i class="fas fa-list-check"></i> CAS Operation Log</div>
+              <div class="lf-cas-log" id="lfCasLog">
+                <div class="lf-log-empty">No operations yet.</div>
+              </div>
+            </div>
+
+            <div class="lf-panel-card">
+              <div class="lf-panel-title"><i class="fas fa-shield-halved"></i> Hazard Pointer Table</div>
+              <div class="lf-hazard-table-wrap" id="lfHazardTableWrap">
+                <table class="lf-hazard-table">
+                  <thead><tr><th>Thread</th><th>Hazard Ptr</th><th>Protected Node</th></tr></thead>
+                  <tbody id="lfHazardBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="lf-panel-card">
+              <div class="lf-panel-title"><i class="fas fa-hourglass-half"></i> Limbo List (awaiting reclaim)</div>
+              <div class="lf-limbo-list" id="lfLimboList">
+                <div class="lf-log-empty">No nodes in limbo.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ABA Demo section -->
+        <div class="lf-aba-card" id="lfAbaCard">
+          <div class="lf-aba-header">
+            <i class="fas fa-bug"></i>
+            <span class="lf-aba-title">ABA Problem Demonstration</span>
+            <span class="lf-hazard-badge" id="lfAbaHazardBadge">Hazard Pointers: OFF</span>
+          </div>
+          <div class="lf-aba-layout">
+            <div class="lf-aba-steps" id="lfAbaSteps">
+              <div class="lf-aba-step pending" id="lfAba0"><span class="lf-aba-num">1</span><span>Thread T1 reads head → sees node A (value=10)</span></div>
+              <div class="lf-aba-step pending" id="lfAba1"><span class="lf-aba-num">2</span><span>T1 is preempted. T2 pops A and B. T2 pushes A back (same pointer, new context).</span></div>
+              <div class="lf-aba-step pending" id="lfAba2"><span class="lf-aba-num">3</span><span>T1 resumes. CAS checks head == A → still true! T1 "succeeds" but B is now dangling.</span></div>
+              <div class="lf-aba-step pending" id="lfAba3"><span class="lf-aba-num">4</span><span id="lfAbaStep4Text">WITHOUT hazard pointers: B was freed → accessing it is use-after-free. 💥</span></div>
+            </div>
+            <div class="lf-aba-canvas-wrap">
+              <canvas id="lfAbaCanvas" class="lf-aba-canvas"></canvas>
+            </div>
+          </div>
+          <div class="lf-aba-controls">
+            <button type="button" class="lf-aba-ctrl-btn" id="lfAbaStepBtn"><i class="fas fa-step-forward"></i> Step ABA Demo</button>
+            <button type="button" class="lf-aba-ctrl-btn" id="lfAbaResetBtn"><i class="fas fa-undo"></i> Reset ABA</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="../../../script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="lock-free-playground.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kinetic Heap Playground | Algo Infinity Verse</title>
+    <meta name="description" content="Watch a kinetic heap track the maximum-priority moving object over continuous time using certificates instead of re-sorting every frame." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="kinetic-heap-playground.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="kinetic-heap-playground">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="kh-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="kh-hero-inner">
+        <div class="kh-hero-eyebrow">🎮 Computational Geometry · Game Engines · Robotics</div>
+        <h1 class="kh-hero-title">Kinetic Heap Playground</h1>
+        <p class="kh-hero-sub">Objects move continuously. The heap never re-sorts — it only reacts when the order actually changes.</p>
+        <p class="kh-hero-desc">Every structure elsewhere in this repo assumes static data. A Kinetic Heap tracks the maximum-priority object as ALL priorities change continuously over time, using "certificates" — proofs that the current ordering holds, each with a known expiry time. This is how game engines track the nearest enemy without re-sorting every frame.</p>
+        <a href="#lab" class="btn btn-primary kh-btn-primary"><i class="fas fa-clock-rotate-left"></i> Open Playground</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section kh-section">
+      <div class="container">
+
+        <div class="kh-control-card">
+          <div class="kh-row">
+            <button class="btn kh-btn-primary kh-play-btn" id="khPlayBtn"><i class="fas fa-play"></i> Play Time</button>
+            <button class="btn btn-secondary kh-add-btn" id="khAddBtn"><i class="fas fa-plus"></i> Add Object</button>
+            <button class="btn btn-secondary kh-reset-btn" id="khResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <span class="kh-row-label" style="margin-left:0.75rem">Time Speed</span>
+            <input type="range" id="khSpeedSlider" class="kh-range" min="0.25" max="4" step="0.25" value="1" aria-label="Time speed" />
+            <span class="kh-speed-val" id="khSpeedVal">1.0×</span>
+            <div class="kh-time-display">t = <strong id="khTimeVal">0.00</strong>s</div>
+          </div>
+        </div>
+
+        <div class="kh-status" id="khStatus">Click Play Time to start the simulation. Objects move; the heap repairs itself only when needed.</div>
+
+        <div class="kh-main-layout">
+
+          <div class="kh-canvas-section">
+            <div class="kh-canvas-header">
+              <span class="kh-canvas-title"><i class="fas fa-arrows-up-down-left-right"></i> Moving Objects — Priority = X-Position</span>
+              <div class="kh-max-badge">Max priority: <strong id="khMaxLabel">—</strong></div>
+            </div>
+            <div class="kh-canvas-wrap" id="khCanvasWrap">
+              <canvas id="khMainCanvas" class="kh-main-canvas"></canvas>
+            </div>
+            <div class="kh-canvas-footer">Click any object to inspect its priority function p(t) = a·t + b</div>
+          </div>
+
+          <div class="kh-right-panel">
+
+            <div class="kh-panel-card">
+              <div class="kh-panel-title"><i class="fas fa-sitemap"></i> Heap Structure</div>
+              <div class="kh-heap-tree-wrap"><svg id="khHeapSvg" class="kh-heap-svg"></svg></div>
+            </div>
+
+            <div class="kh-panel-card">
+              <div class="kh-panel-title"><i class="fas fa-hourglass-half"></i> Certificate Queue</div>
+              <div class="kh-cert-list" id="khCertList">
+                <div class="kh-empty">No certificates yet.</div>
+              </div>
+            </div>
+
+            <div class="kh-panel-card">
+              <div class="kh-panel-title"><i class="fas fa-list-ul"></i> Event Log</div>
+              <div class="kh-event-log" id="khEventLog">
+                <div class="kh-empty">No events yet.</div>
+              </div>
+            </div>
+
+            <div class="kh-panel-card kh-inspector-card hidden" id="khInspectorCard">
+              <div class="kh-panel-title"><i class="fas fa-chart-line"></i> Priority Function <span id="khInspectorObjName"></span></div>
+              <canvas id="khInspectorCanvas" class="kh-inspector-canvas"></canvas>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">⏱️</span> Why Kinetic Data Structures Exist</h2>
+        <div class="kh-learn-grid">
+          <div class="kh-learn-card" style="--lc:#06b6d4">
+            <div class="kh-learn-icon">🎯</div>
+            <h3>The Certificate Idea</h3>
+            <p>Instead of re-checking every ordering every frame, a kinetic structure maintains "certificates" — small proofs that the current structure is valid. Each certificate has a known future expiry time, computed exactly from the objects' motion equations. The structure does nothing until the very next certificate fails.</p>
+          </div>
+          <div class="kh-learn-card" style="--lc:#a855f7">
+            <div class="kh-learn-icon">🔧</div>
+            <h3>Event-Driven Repair</h3>
+            <p>When a certificate expires, exactly one local repair happens — a heap swap, in this case — and only the certificates touching that repair are recomputed. This is why kinetic structures can be far cheaper than re-sorting: work is proportional to actual order changes, not elapsed time.</p>
+          </div>
+          <div class="kh-learn-card" style="--lc:#22c55e">
+            <div class="kh-learn-icon">🎮</div>
+            <h3>Game Engines</h3>
+            <p>Tracking "the nearest enemy" or "the highest-threat target" as dozens of entities move every frame is exactly this problem. A kinetic heap answers it in O(log n) per actual order change instead of O(n log n) every single frame.</p>
+          </div>
+          <div class="kh-learn-card" style="--lc:#f59e0b">
+            <div class="kh-learn-icon">📐</div>
+            <h3>Where It Came From</h3>
+            <p>Kinetic data structures were introduced by Basch, Guibas, and Hershberger at Stanford in 1997 for computational geometry problems — tracking convex hulls, closest pairs, and collision detection for continuously moving points, long before it found its way into modern game engines.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="kinetic-heap-playground.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

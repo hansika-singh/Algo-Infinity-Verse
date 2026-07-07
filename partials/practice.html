@@ -1,0 +1,110 @@
+    <section id="practice" class="section practice-section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🧩</span>
+          Practice Problems
+        </h2>
+        <div class="practice-controls">
+
+          <!-- Search with Autocomplete -->
+
+          <div class="search-wrapper">
+            <div class="search-bar">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search problems by name, topic, or tag..."
+                autocomplete="off"
+                aria-label="Search problems"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="searchSuggestions"
+                aria-activedescendant=""
+              />
+              <button
+                id="clearSearchBtn"
+                type="button"
+                class="clear-search-btn"
+                aria-label="Clear search"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div id="searchSuggestions" class="search-suggestions" role="listbox" aria-label="Search suggestions">
+            </div>
+          </div>
+          
+          <div class="filter-buttons">
+            <button type="button" class="filter-btn active" data-filter="all">All</button>
+            <button type="button" class="filter-btn" data-filter="easy">Easy</button>
+            <button type="button" class="filter-btn" data-filter="medium">Medium</button>
+            <button type="button" class="filter-btn" data-filter="hard">Hard</button>
+            <button type="button" class="filter-btn" data-filter="favorites">
+              <i class="fas fa-heart"></i>
+              Favorites
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Problem Counter Container -->
+
+        <div class="problem-counter-container" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <div class="problem-stats">
+            <span class="problem-count-display">
+              Showing <strong id="visible-count">0</strong> 
+              <span id="problem-label">problems</span>
+              <span class="total-count-display">
+                (Total: <span id="total-count">0</span>)
+              </span>
+            </span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.05); padding: 0.25rem 0.5rem; border-radius: 6px; border: 1px solid var(--glass-border);">
+              <label style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.25rem; cursor: pointer; user-select: none;">
+                <input type="checkbox" id="ai-recommend-disable-toggle" style="cursor: pointer; accent-color: var(--primary);">
+                Disable button
+              </label>
+              <span style="color: var(--glass-border); font-size: 0.75rem;">|</span>
+              <label style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.25rem;">
+                Delay:
+                <input type="number" id="ai-recommend-debounce-input" value="500" min="0" max="5000" step="100" style="width: 55px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.75rem; text-align: center;">
+                ms
+              </label>
+            </div>
+            <span id="ai-recommend-status-msg" style="font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.2s, color 0.2s; white-space: nowrap;"></span>
+            <button type="button" id="ai-recommend-btn" class="submit-btn" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9rem;">
+              <i class="fas fa-magic"></i> AI Recommend Next
+            </button>
+          </div>
+          <p id="ai-recommend-status" class="sr-only" aria-live="polite"></p>
+        </div>
+
+
+        <!-- Problems Grid - Tags will be rendered with .tag class for clickability -->
+
+        <div class="problems-grid"></div>
+
+        <div id="emptyState" class="empty-state hidden">
+            <i class="fas fa-search"></i>
+            <h3>No problems found</h3>
+            <p>Try adjusting your filters or search terms</p>
+            <button type="button" class="btn btn-secondary" id="clearFiltersBtn">
+                <i class="fas fa-undo"></i> Clear Filters
+            </button>
+        </div>
+
+        <div class="pagination-controls" id="paginationControls">
+         <button type="button" class="pagination-btn" id="prevPageBtn" disabled>
+          <i class="fas fa-chevron-left"></i> Previous
+         </button>
+          <span class="pagination-info" id="paginationInfo">Page 1 of 1</span>
+          <button type="button" class="pagination-btn" id="nextPageBtn">
+           Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kademlia DHT & XOR Routing Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate a live P2P network using Kademlia's XOR metric and k-bucket routing tables." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- D3.js for Force-Directed Network Graph -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+        <link rel="stylesheet" href="dht-xor-visualizer.css" />
+</head>
+<body class="dht-body">
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-project-diagram"></i> P2P Network: Offline
+        </div>
+    </nav>
+
+    <main class="dht-workspace">
+        
+        <!-- Left Panel -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-server"></i> Kademlia Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Observe <strong>O(log N)</strong> routing. Kademlia locates nodes using the mathematical <strong>XOR Distance</strong> metric, firing concurrent RPCs to narrow down the search space.
+                </p>
+
+                <div class="param-grid">
+                    <div class="param-item">
+                        <span class="param-val">100</span>
+                        <span class="param-lbl">Nodes (N)</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-val">160</span>
+                        <span class="param-lbl">Bit Space</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-val">5</span>
+                        <span class="param-lbl">Bucket Size (K)</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-val" style="color: var(--dht-alpha);">3</span>
+                        <span class="param-lbl">Concurrency (α)</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary w-100" id="btnSpawn">
+                    <i class="fas fa-network-wired"></i> Spawn P2P Network
+                </button>
+
+                <div class="lookup-controls" id="lookupControls" style="display: none; margin-top: 1.5rem; border-top: 1px solid #1e293b; padding-top: 1.5rem;">
+                    <div class="input-group">
+                        <label>Source Node (Initiator)</label>
+                        <select id="sourceSelect"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Target Node (Destination)</label>
+                        <select id="targetSelect"></select>
+                    </div>
+                    <button type="button" class="btn btn-success w-100 mt-3" id="btnFindNode" style="background: var(--dht-source); color: #fff;">
+                        <i class="fas fa-search"></i> Execute FIND_NODE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Logs -->
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Routing Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Network offline. Click 'Spawn' to boot nodes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span><i class="fas fa-globe"></i> Kademlia Mesh Topology</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch swatch-base"></span> Peer</span>
+                    <span class="legend-item"><span class="node-swatch swatch-source"></span> Initiator</span>
+                    <span class="legend-item"><span class="node-swatch swatch-target"></span> Target</span>
+                    <span class="legend-item"><span class="node-swatch swatch-queried"></span> Queried (RPC)</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div id="d3Container"></div>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-sitemap"></i>
+                    <p>Mesh empty. Spawn network to generate nodes.</p>
+                </div>
+
+                <!-- Node Inspector -->
+                <div class="inspector-overlay" id="inspectorPanel">
+                    <div class="insp-header">
+                        <h4>Node Inspector</h4>
+                        <button type="button" class="btn-close-insp" id="btnCloseInsp"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="insp-data">
+                        <div style="margin-bottom: 1rem;">
+                            <strong>ID:</strong> <span class="hex-id" id="inspId">...</span>
+                        </div>
+                        <strong>Active K-Buckets:</strong>
+                        <div id="inspBuckets" style="margin-top: 0.5rem; max-height: 150px; overflow-y: auto;">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="dht-xor-visualizer.js"></script>
+</body>
+</html>

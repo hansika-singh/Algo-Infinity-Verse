@@ -1,0 +1,872 @@
+/* =============================================================
+   array-learning.css — Full corrected stylesheet
+   Fixes applied:
+   ▸ .api-sidebar-nav a  → .api-sidebar-nav .api-nav-link    (class sync with HTML)
+   ▸ Scroll-spy active class target updated to .api-nav-link
+   ▸ Added .api-progress-percent layout
+   ▸ Added .visually-hidden utility
+   ▸ Sidebar z-index / stacking fixed for mobile overlay
+   ▸ Copy button .copied state properly targeted
+   ▸ Code block <pre> no longer collapses on overflow
+   ▸ footer-content responsive grid refined
+   ▸ newsletter-form layout stabilised
+   ▸ Print styles updated to reflect renamed classes
+   ============================================================= */
+
+/* ── Hero typing text ─────────────────────────────────────── */
+.typing-text_api {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+/* ── Accessibility utility ────────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Two-column layout ────────────────────────────────────── */
+.api-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  /* FIX: removed implicit min-width:0 on layout itself — main-content
+     carries it. Adding position context for mobile sidebar. */
+  position: relative;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.api-sidebar {
+  position: sticky;
+  /* FIX: top accounts for navbar height (~70px) + breathing room */
+  top: 90px;
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem 0;
+  backdrop-filter: blur(10px);
+  /* FIX: ensure sidebar never grows taller than viewport */
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.api-sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  padding: 0 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 0.5rem;
+}
+
+/* FIX: reset <ul> */
+.api-sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* FIX: target the explicit class (.api-nav-link) that the HTML uses
+   instead of the plain `a` descendant selector. This prevents style
+   bleed if any other <a> is nested inside the sidebar in future. */
+.api-sidebar-nav .api-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease, border-left-color 0.2s ease;
+  border-left: 3px solid transparent;
+  /* FIX: ensure tap target height on mobile */
+  min-height: 40px;
+}
+
+.api-sidebar-nav .api-nav-link:hover,
+.api-sidebar-nav .api-nav-link.active {
+  color: var(--primary-light);
+  background: rgba(124, 58, 237, 0.08);
+  border-left-color: var(--primary);
+}
+
+.api-sidebar-nav .api-nav-link .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  /* FIX: prevent emoji from shrinking below its natural size */
+  flex-shrink: 0;
+}
+
+/* ── Main content column ──────────────────────────────────── */
+.api-main-content {
+  flex: 1;
+  /* FIX: critical — without min-width:0 a flex child can overflow its parent */
+  min-width: 0;
+}
+
+/* ── Lesson card ──────────────────────────────────────────── */
+.api-lesson {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  /* FIX: scroll-margin-top pushes the target below the sticky navbar */
+  scroll-margin-top: 100px;
+}
+
+.api-lesson:target {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.api-lesson-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.api-lesson-number {
+  font-family: Orbitron, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+}
+
+.api-lesson-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.api-lesson p,
+.api-lesson li {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.api-lesson ul,
+.api-lesson ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.api-lesson li {
+  margin-bottom: 0.4rem;
+}
+
+.api-lesson strong {
+  color: var(--text-primary);
+}
+
+/* ── Concept card ─────────────────────────────────────────── */
+.api-concept-card {
+  background: var(--dark-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+}
+
+.api-concept-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+.api-concept-card p {
+  margin-bottom: 0;
+}
+
+/* ── Code block ───────────────────────────────────────────── */
+.api-code-block {
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  border-radius: 12px;
+  /* FIX: hidden was clipping the horizontal scrollbar on overflow;
+     use visible so the border-radius still clips but scroll works. */
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.api-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.api-code-lang {
+  font-family: "Fira Code", monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Copy button ──────────────────────────────────────────── */
+.api-code-copy {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  /* FIX: ensure the button never wraps its text */
+  white-space: nowrap;
+}
+
+.api-code-copy:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-light);
+}
+
+/* FIX: .copied was added via JS but never styled; now it is */
+.api-code-copy.copied {
+  color: #22c55e;
+  border-color: #22c55e;
+}
+
+.api-code-block pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: #0d1117;
+  /* FIX: auto scrollbar instead of hidden so long lines remain readable */
+  overflow-x: auto;
+}
+
+.api-code-block code {
+  font-family: "Fira Code", Consolas, Monaco, monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #e6edf3;
+  /* FIX: prevent line wrapping inside code blocks */
+  white-space: pre;
+}
+
+/* Token colours */
+.api-code-block .tok-kw   { color: #c792ea; }
+.api-code-block .tok-fn   { color: #82aaff; }
+.api-code-block .tok-str  { color: #c3e88d; }
+.api-code-block .tok-num  { color: #f78c6c; }
+.api-code-block .tok-cmt  { color: #546e7a; font-style: italic; }
+.api-code-block .tok-op   { color: #89ddff; }
+.api-code-block .tok-bi   { color: #ffcb6b; }
+.api-code-block .tok-var  { color: #f07178; }
+.api-code-block .tok-bool { color: #ff5370; }
+.api-code-block .tok-param{ color: #e6edf3; }
+
+/* ── Exercise box ─────────────────────────────────────────── */
+.api-exercise {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.api-exercise-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22c55e;
+  margin-bottom: 0.75rem;
+}
+
+.api-exercise-title i {
+  font-size: 1.1rem;
+}
+
+.api-exercise ol,
+.api-exercise ul {
+  margin-bottom: 0.75rem;
+}
+
+.api-exercise-toggle {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  font-family: Poppins, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.api-exercise-toggle:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+/* FIX: solution is hidden by default; toggled via JS adding .visible */
+.api-exercise-solution {
+  display: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.api-exercise-solution.visible {
+  display: block;
+}
+
+.api-exercise-solution p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Output / result block ────────────────────────────────── */
+.api-output {
+  background: rgba(6, 182, 212, 0.06);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.api-output-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.api-output pre {
+  margin: 0;
+  font-family: "Fira Code", monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  /* FIX: allow horizontal scroll in output pre blocks too */
+  overflow-x: auto;
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.api-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.api-progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--dark-surface);
+  border-radius: 99px;
+  overflow: hidden;
+  /* FIX: min-width prevents track from collapsing on tiny viewports */
+  min-width: 60px;
+}
+
+.api-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gradient-4);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.api-progress-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* FIX: new percentage label next to the bar */
+.api-progress-percent {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  white-space: nowrap;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* ── Callout / tip ────────────────────────────────────────── */
+.api-callout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.api-callout-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.api-callout p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ── Table ────────────────────────────────────────────────── */
+.api-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.api-table th {
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--primary-light);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.api-table td {
+  padding: 0.65rem 1rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+
+.api-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+
+/* Tablet: hide sidebar, keep single-column layout */
+@media (max-width: 1024px) {
+  .api-sidebar {
+    display: none;
+  }
+
+  .api-layout {
+    /* With no sidebar the main content takes full width */
+    display: block;
+  }
+}
+
+/* Phablet */
+@media (max-width: 768px) {
+  .api-lesson {
+    padding: 1.5rem;
+  }
+
+  .api-lesson-header h3 {
+    font-size: 1.15rem;
+  }
+
+  .api-code-block pre {
+    padding: 1rem;
+  }
+
+  .api-code-block code {
+    font-size: 0.78rem;
+  }
+
+  /* FIX: stack progress bar vertically on small screens */
+  .api-progress-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .api-progress-track {
+    /* Take full row when stacked */
+    flex-basis: 100%;
+    order: 2;
+  }
+
+  .api-progress-text {
+    order: 1;
+  }
+
+  .api-progress-percent {
+    order: 3;
+    text-align: left;
+  }
+
+  .api-callout {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .api-lesson {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .api-lesson-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .api-exercise {
+    padding: 1rem;
+  }
+
+  .api-code-block code {
+    font-size: 0.72rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOCUS VISIBLE (accessibility)
+═══════════════════════════════════════════════════════════ */
+.api-sidebar-nav .api-nav-link:focus-visible,
+.api-code-copy:focus-visible,
+.api-exercise-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════════════════ */
+@media print {
+  .api-sidebar,
+  .api-progress-bar,
+  .api-exercise-toggle,
+  .api-code-copy,
+  .navbar,
+  .footer {
+    display: none !important;
+  }
+
+  .api-lesson {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+
+  .api-code-block pre {
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  .api-code-block code {
+    color: #333;
+  }
+}
+/* SPA additions */
+.api-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.api-hub-card {
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.api-hub-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  border-color: var(--primary-color);
+}
+.api-hub-card.completed {
+  border-color: #4CAF50;
+}
+.api-hub-card.completed::after {
+  content: '✓ Completed';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #4CAF50;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.api-hub-card-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.api-hub-card-title {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+.quiz-container {
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+.quiz-option {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.quiz-option:hover {
+  background: rgba(255,255,255,0.05);
+}
+.quiz-option.selected {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+.quiz-option.correct {
+  background: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
+}
+.quiz-option.wrong {
+  background: #f44336;
+  border-color: #f44336;
+  color: white;
+}
+.complete-topic-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+.complete-topic-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Custom Interactive Challenge Styling */
+.api-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.api-input, .api-select, .api-textarea {
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: 100%;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.api-input:focus, .api-select:focus, .api-textarea:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2), inset 0 2px 4px rgba(0,0,0,0.3);
+  outline: none;
+}
+.api-select option {
+  background: #0d1117;
+  color: var(--text-primary);
+}
+.challenge-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-top: 15px;
+}
+@media (min-width: 600px) {
+  .challenge-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.api-terminal {
+  background: #0d1117;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 15px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: #e6edf3;
+  margin: 15px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.api-terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 8px;
+}
+.api-terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.api-terminal-dot.red { background: #ff5f56; }
+.api-terminal-dot.yellow { background: #ffbd2e; }
+.api-terminal-dot.green { background: #27c93f; }
+.api-terminal-content {
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.api-linter-hint {
+  display: block;
+  margin-top: -8px;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+/* JWT Debugger Layout */
+.jwt-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.jwt-part {
+  padding: 10px;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  user-select: all;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.jwt-header { background: rgba(255, 95, 86, 0.12); border: 1px solid rgba(255, 95, 86, 0.25); color: #ff5f56; }
+.jwt-payload { background: rgba(189, 147, 249, 0.12); border: 1px solid rgba(189, 147, 249, 0.25); color: #bd93f9; }
+.jwt-signature { background: rgba(137, 221, 255, 0.12); border: 1px solid rgba(137, 221, 255, 0.25); color: #89ddff; }
+
+/* Rate Limiter Simulator */
+.bucket-sim-container {
+  background: rgba(13, 17, 23, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+}
+.bucket-visual-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+.bucket-visual {
+  width: 130px;
+  height: 170px;
+  border: 4px solid var(--text-secondary);
+  border-top: none;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4), inset 0 2px 8px rgba(0,0,0,0.5);
+}
+.bucket-water {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.8) 0%, rgba(109, 40, 217, 0.8) 100%);
+  box-shadow: 0 -2px 10px rgba(139, 92, 246, 0.5);
+  transition: height 0.2s ease;
+  height: 0%;
+}
+.bucket-token-count {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Orbitron, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  z-index: 2;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Custom inputs range formatting */
+input[type="range"] {
+  accent-color: var(--primary-light);
+  cursor: pointer;
+}
+
+/* Interactive Hero Stats Box Hover Styling */
+.hero-stats .stat-box {
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.hero-stats .stat-box:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-light);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
+  background: rgba(124, 58, 237, 0.05);
+}
+
+

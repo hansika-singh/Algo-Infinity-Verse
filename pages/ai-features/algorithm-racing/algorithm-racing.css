@@ -1,0 +1,652 @@
+/* Algorithm Racing Specific Styles */
+:root {
+  --glass-bg: #0f172a;
+  --glass-border: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --dark-surface: #020617;
+
+  /* Racing Theme */
+  --race-primary: #f59e0b; /* Amber */
+  --my-color: #3b82f6; /* Blue */
+  --my-success: #10b981; /* Emerald */
+  --opp-color: #ef4444; /* Red */
+  --opp-success: #f97316; /* Orange */
+}
+
+body.race-body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--dark-surface);
+  color: var(--text-primary);
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Navbar */
+.race-nav {
+  height: 60px;
+  padding: 0 1.5rem;
+  background: #020617;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--race-primary);
+}
+.race-status {
+  font-family: "Fira Code", monospace;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  border: 1px solid var(--glass-border);
+}
+.race-status.live {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Race Header */
+.race-header {
+  padding: 1rem 2rem;
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.problem-info h2 {
+  margin: 0 0 0.2rem;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2rem;
+  color: #fff;
+}
+.problem-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Buttons */
+
+.btn{
+    padding:14px 22px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.2px;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.btn-primary {
+  background: var(--race-primary);
+  color: #000;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #fbbf24;
+  transform: translateY(-1px);
+}
+.btn-success {
+  background: var(--my-success);
+  color: #fff;
+}
+.btn-success:hover:not(:disabled) {
+  background: #059669;
+}
+.btn-icon {
+  background: #1f2937;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  width:36px;
+    height:36px;
+    border-radius:50%;
+}
+.btn-icon:hover {
+  color: #374151;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.w-100 {
+  width: 100%;
+}
+.hidden {
+  display: none !important;
+}
+
+/* Split Workspace */
+.race-workspace {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: #000;
+}
+.player-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.my-panel {
+  border-right: 2px solid #1e293b;
+}
+
+.panel-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.my-header {
+  background: rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+.opp-header {
+  background: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.player-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 1rem;
+}
+.my-avatar {
+  background: var(--my-color);
+}
+.opp-avatar {
+  background: var(--opp-color);
+}
+.player-name {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+/* Progress Bars */
+.test-progress-container {
+  flex: 1;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 99px;
+}
+.my-fill {
+  background: var(--my-success);
+  box-shadow: 0 0 10px var(--my-success);
+}
+.opp-fill {
+  background: var(--opp-success);
+  box-shadow: 0 0 10px var(--opp-success);
+}
+.progress-text {
+  font-family: "Fira Code", monospace;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  align-self: flex-end;
+}
+
+/* Editors */
+.editor-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.opp-editor-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 10;
+} /* Subtle tint for read-only */
+.CodeMirror {
+  height: 100% !important;
+  font-family: "Fira Code", monospace !important;
+  font-size: 14px;
+}
+.my-panel .CodeMirror {
+  background: #272822 !important;
+} /* Monokai */
+.opp-panel .CodeMirror {
+  background: #2e3440 !important;
+} /* Nord */
+
+/* Footer & Console */
+.panel-footer {
+  padding: 1rem;
+  background: #0f172a;
+  border-top: 1px solid var(--glass-border);
+}
+.opp-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Fira Code", monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+}
+.pulse-dot.live {
+  background: var(--opp-color);
+  box-shadow: 0 0 10px var(--opp-color);
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.console-output {
+  height: 120px;
+  background: #020617;
+  padding: 0.8rem;
+  font-family: "Fira Code", monospace;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  overflow-y: auto;
+  border-top: 1px solid #1e293b;
+}
+.opp-console {
+  color: #475569;
+  font-style: italic;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+.log-success {
+  color: var(--my-success);
+}
+.log-error {
+  color: #ef4444;
+}
+
+/* Lobby Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding:30px;
+    overflow-y:auto;
+}
+.modal-content {
+  background: var(--glass-bg);
+  border: 1px solid #334155;
+  border-radius: 18px;
+  width: 95%;
+  max-width: 720px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+}
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #020617;
+}
+.modal-header h2 {
+  margin: 0;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.25rem;
+  color: var(--race-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.modal-desc {
+  padding: 1.5rem 1.5rem 0;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.tabs{
+    display:flex;
+    gap:1rem;
+    margin:1.5rem;
+}
+
+.tab-btn{
+    flex:1;
+    padding:.9rem;
+    border-radius:10px;
+    border:1px solid #334155;
+    box-shadow:
+0 10px 25px rgba(0,0,0,.35);
+
+transition:
+transform .25s,
+box-shadow .25s,
+border-color .25s;
+    color:#cbd5e1;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.tab-btn:hover{
+    background:#1f2937;
+}
+
+.tab-btn.active{
+    background:var(--race-primary);
+    color:#000;
+    border-color:var(--race-primary);
+}
+
+.tab-content {
+  padding: 1.5rem;
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* Connection Status */
+.connection-status{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    margin:1rem 1.5rem;
+    padding:.8rem 1rem;
+    border-radius:8px;
+    background:rgba(255,255,255,.05);
+    border:1px solid #334155;
+    color:#cbd5e1;
+    font-weight:600;
+}
+
+.connection-status i{
+    color:#f59e0b;
+}
+
+.wait-state{
+    margin-top:1rem;
+    padding:.8rem 1rem;
+    border-radius:8px;
+    background:rgba(59,130,246,.12);
+    color:#93c5fd;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+}
+.step-card{
+    padding:1.5rem;
+    border-radius:12px;
+    margin-bottom:1.5rem;
+    background:#111827;
+    border:1px solid #334155;
+}
+.step-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+.step-card h4 {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: #fff;
+  font-family: "Orbitron", sans-serif;
+}
+
+/* Step description */
+.step-description{
+    margin:.5rem 0 1rem;
+    color:var(--text-secondary);
+    font-size:.9rem;
+    line-height:1.6;
+}
+
+/* Labels */
+.step-card label{
+    display:block;
+    margin-bottom:.5rem;
+    font-weight:600;
+    color:#fff;
+    margin-top: 18px;
+}
+.step-card .btn{
+    width:100%;
+}
+.token-box {
+  width: 100%;
+  min-height: 110px;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #475569;
+  background: #020617;
+  color: var(--race-primary);
+  font-family: "Fira Code", monospace;
+  font-size: 0.78rem;
+  resize: none;
+  transition: 0.3s;
+   margin-top:.5rem;
+    margin-bottom:1rem;
+}
+.token-box:focus {
+  border-color: var(--race-primary);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+.wait-text {
+  font-size: 0.85rem;
+  color: #38bdf8;
+  text-align: center;
+  margin: 1rem 0 0;
+}
+
+#btnGenerateOffer,
+#btnConnectHost,
+#btnAcceptOffer{
+    margin-top:1rem;
+    padding:1rem;
+    font-size:1rem;
+    font-weight:700;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fullscreen Overlay (Countdown & Winner) */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 3000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.countdown-text {
+  font-family: "Orbitron", sans-serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
+  animation: popScale 1s ease-in-out infinite;
+}
+@keyframes popScale {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.winner-panel {
+  text-align: center;
+  animation: slideDown 0.5s ease;
+}
+.winner-panel h1 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 4rem;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+.winner-panel.win h1 {
+  color: var(--my-success);
+  text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+}
+.winner-panel.lose h1 {
+  color: var(--opp-color);
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+}
+.winner-panel p {
+  color: #cbd5e1;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+  .race-workspace {
+    flex-direction: column;
+  }
+  .my-panel {
+    border-right: none;
+    border-bottom: 2px solid #1e293b;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 96%;
+    max-height: 92vh;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab-btn {
+    width: 100%;
+  }
+
+  .step-card {
+    padding: 1rem;
+  }
+
+  .token-box {
+    min-height: 80px;
+  }
+}
+
+.modal-content::-webkit-scrollbar{
+    width:8px;
+}
+
+.modal-content::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:20px;
+}
+
+.modal-content::-webkit-scrollbar-track{
+    background:#111827;
+}

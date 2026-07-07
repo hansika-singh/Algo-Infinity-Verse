@@ -1,0 +1,89 @@
+:root {
+    --bg-color: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent: #0284c7; 
+    --accent-hover: #0369a1;
+    --danger: #dc2626;
+    --danger-hover: #b91c1c;
+    --node-color: #38bdf8;
+    --path-color: rgba(248, 250, 252, 0.2);
+    --best-path-color: #10b981;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 70%);
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.header-info h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.025em; }
+.header-info p.status { font-size: 0.85rem; color: #38bdf8; margin-top: 0.25rem; }
+.controls { display: flex; gap: 0.75rem; }
+
+.btn {
+    padding: 0.5rem 1.25rem; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+}
+
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn.danger { background: var(--danger); color: #fff; }
+.btn.danger:hover { background: var(--danger-hover); transform: translateY(-1px); }
+.btn.outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+.btn.outline:hover { background: rgba(255, 255, 255, 0.05); }
+
+/* Floating Telemetry Panel */
+.telemetry-panel {
+    position: absolute;
+    top: 100px;
+    right: 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.metric { display: flex; flex-direction: column; }
+.metric .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+.metric .value { font-size: 1.5rem; font-weight: 700; color: var(--text-main); font-variant-numeric: tabular-nums; }
+
+.canvas-container { flex-grow: 1; width: 100%; position: relative; cursor: crosshair; }
+.instruction-overlay { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); padding: 0.5rem 1.5rem; border-radius: 20px; font-size: 0.9rem; color: var(--text-muted); pointer-events: none; }
+
+canvas { width: 100%; height: 100%; display: block; }

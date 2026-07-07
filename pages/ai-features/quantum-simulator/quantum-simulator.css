@@ -1,0 +1,121 @@
+/* Quantum Circuit Simulator Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* Quantum Theme (Neon Purple, Cyan, Pink) */
+    --q-primary: #c084fc; /* Purple */
+    --q-secondary: #2dd4bf; /* Teal */
+    --q-accent: #f472b6; /* Pink */
+    
+    --gate-h: #3b82f6; /* Blue */
+    --gate-x: #10b981; /* Green */
+    --gate-y: #f59e0b; /* Amber */
+    --gate-z: #ec4899; /* Pink */
+}
+
+body.quantum-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.quantum-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--q-primary); }
+
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; }
+.engine-badge.ready { color: var(--q-secondary); background: rgba(45, 212, 191, 0.1); border-color: rgba(45, 212, 191, 0.3); box-shadow: 0 0 10px rgba(45, 212, 191, 0.2); }
+.engine-badge.fallback { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); }
+
+/* Buttons */
+.btn { padding: 0.6rem 1.2rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; }
+.btn-primary { background: var(--q-primary); color: #020617; }
+.btn-primary:hover { background: #d8b4fe; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(192, 132, 252, 0.4); }
+.btn-danger { background: transparent; border: 1px solid #ef4444; color: #ef4444; }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
+.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+.w-100 { width: 100%; }
+
+/* Workspace */
+.quantum-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* Left Panel: Palette */
+.panel-left { width: 280px; display: flex; flex-direction: column; background: #0b1121; border-right: 1px solid var(--glass-border); z-index: 10; }
+.panel-header { padding: 1.2rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+
+.palette-container { padding: 1.5rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+.desc-text { font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 1rem; line-height: 1.5; }
+.gate-category { font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-family: 'Fira Code', monospace; margin-top: 0.5rem; border-bottom: 1px dashed #334155; padding-bottom: 0.3rem; }
+
+.gate-node { background: #1e293b; border: 2px solid; border-radius: 6px; padding: 0.6rem 1rem; cursor: grab; display: flex; align-items: center; gap: 1rem; color: #fff; transition: transform 0.2s; user-select: none; }
+.gate-node:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.gate-node strong { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; width: 24px; text-align: center; }
+.gate-node span { font-size: 0.8rem; color: #cbd5e1; }
+
+.gate-h { border-color: var(--gate-h); background: rgba(59, 130, 246, 0.1); color: var(--gate-h); }
+.gate-x { border-color: var(--gate-x); background: rgba(16, 185, 129, 0.1); color: var(--gate-x); }
+.gate-y { border-color: var(--gate-y); background: rgba(245, 158, 11, 0.1); color: var(--gate-y); }
+.gate-z { border-color: var(--gate-z); background: rgba(236, 72, 153, 0.1); color: var(--gate-z); }
+
+.panel-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--glass-border); }
+
+/* Center Panel: 3D & Circuit */
+.panel-center { flex: 1; display: flex; flex-direction: column; position: relative; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); }
+
+/* 3D Bloch Arena */
+.bloch-arena { flex: 1; position: relative; overflow: hidden; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; }
+.camera-hint { position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.6); border: 1px solid #334155; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; color: #94a3b8; pointer-events: none; z-index: 10; }
+
+/* Circuit Composer */
+.circuit-composer { height: 250px; background: #0b1121; display: flex; flex-direction: column; }
+.composer-header { padding: 0.8rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+.composer-header h4 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 0.95rem; color: #fff; }
+
+.circuit-grid { flex: 1; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; overflow-x: auto; }
+.qubit-row { display: flex; align-items: center; gap: 1rem; }
+.qubit-label { font-family: 'Fira Code', monospace; font-size: 1.1rem; color: var(--q-primary); font-weight: 700; width: 40px; }
+.wire { flex: 1; display: flex; align-items: center; gap: 2rem; position: relative; }
+.wire::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #334155; z-index: 1; }
+
+.drop-zone { width: 50px; height: 50px; background: #020617; border: 2px dashed #475569; border-radius: 6px; position: relative; z-index: 2; transition: all 0.2s; display: flex; justify-content: center; align-items: center; }
+.drop-zone.drag-over { background: rgba(192, 132, 252, 0.1); border-color: var(--q-primary); transform: scale(1.1); }
+
+/* Placed Gate in Circuit */
+.placed-gate { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; border-radius: 4px; border: 2px solid; cursor: pointer; animation: popIn 0.2s ease; }
+.placed-gate.gate-H { border-color: var(--gate-h); background: rgba(59, 130, 246, 0.2); color: var(--gate-h); }
+.placed-gate.gate-X { border-color: var(--gate-x); background: rgba(16, 185, 129, 0.2); color: var(--gate-x); }
+.placed-gate.gate-Y { border-color: var(--gate-y); background: rgba(245, 158, 11, 0.2); color: var(--gate-y); }
+.placed-gate.gate-Z { border-color: var(--gate-z); background: rgba(236, 72, 153, 0.2); color: var(--gate-z); }
+
+@keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Right Panel: Metrics */
+.panel-right { width: 350px; display: flex; flex-direction: column; background: var(--glass-bg); border-left: 1px solid var(--glass-border); z-index: 10; }
+.metrics-content { padding: 1.5rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2rem; }
+.metrics-content h4 { margin: 0 0 1rem; font-size: 0.85rem; font-family: 'Orbitron', sans-serif; color: #cbd5e1; border-bottom: 1px dashed #334155; padding-bottom: 0.5rem; }
+
+.vec-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+.q-id { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: var(--q-primary); }
+.vec-row code { background: #020617; border: 1px solid #334155; padding: 0.5rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #fff; flex: 1; }
+
+.chart-wrapper { width: 100%; height: 180px; background: #020617; border: 1px solid #334155; border-radius: 8px; padding: 0.5rem; box-sizing: border-box; }
+
+.log-container { background: #000; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--q-secondary); height: 150px; overflow-y: auto; line-height: 1.5; }
+.log-container .error { color: #ef4444; }
+
+@media (max-width: 1100px) {
+    .quantum-workspace { flex-direction: column; overflow-y: auto; }
+    .panel-left, .panel-right { width: 100%; height: auto; border: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .bloch-arena { min-height: 400px; }
+}

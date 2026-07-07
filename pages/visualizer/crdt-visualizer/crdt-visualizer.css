@@ -1,0 +1,116 @@
+/* Collaborative Text CRDT Styles */
+:root {
+    --glass-bg: #0f172a;
+    --glass-border: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --dark-surface: #020617;
+    
+    /* CRDT Theme Colors */
+    --crdt-primary: #8b5cf6; /* Violet */
+    --site-a: #0ea5e9; /* Sky Blue */
+    --site-b: #ec4899; /* Pink */
+    --net-color: #eab308; /* Amber */
+    
+    --panel-bg: #0b1121;
+}
+
+body.crdt-body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-surface);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Navbar */
+.crdt-nav { height: 60px; padding: 0 1.5rem; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--crdt-primary); }
+.engine-badge { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 99px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 0.5rem; }
+
+/* Buttons & Inputs */
+.btn { padding: 0.6rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem; }
+.btn-primary { background: var(--crdt-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #a855f7; transform: translateY(-1px); }
+.btn-warning { background: rgba(234, 179, 8, 0.1); color: var(--net-color); border: 1px solid var(--net-color); }
+.btn-warning:hover { background: var(--net-color); color: #000; }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+.btn-danger:hover { background: #ef4444; color: #fff; }
+.w-100 { width: 100%; }
+.hidden { display: none !important; }
+
+/* Header */
+.workspace-header { padding: 1.5rem 2rem; background: var(--panel-bg); border-bottom: 1px solid var(--glass-border); display: flex; flex-shrink: 0; }
+.header-info h2 { margin: 0 0 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: #fff; }
+.header-info p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); max-width: 900px; line-height: 1.5; }
+
+/* Workspace Layout */
+.crdt-workspace { flex: 1; display: flex; overflow: hidden; background: #020617; }
+
+/* User Panels (Site A & B) */
+.user-panel { width: 350px; display: flex; flex-direction: column; background: var(--panel-bg); z-index: 10; }
+#panelA { border-right: 1px solid var(--glass-border); }
+#panelB { border-left: 1px solid var(--glass-border); }
+
+.panel-header { padding: 1rem 1.5rem; background: #020617; border-bottom: 1px solid var(--glass-border); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.user-a-theme h3 { color: var(--site-a); }
+.user-b-theme h3 { color: var(--site-b); }
+
+.panel-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1.5rem; overflow: hidden; }
+.editor-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-family: 'Fira Code', monospace; }
+.crdt-editor { width: 100%; height: 120px; background: #020617; border: 1px solid #334155; color: #f8fafc; padding: 1rem; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 1rem; outline: none; resize: none; transition: border-color 0.2s; box-sizing: border-box;}
+#panelA .crdt-editor:focus { border-color: var(--site-a); box-shadow: 0 0 10px rgba(14, 165, 233, 0.2); }
+#panelB .crdt-editor:focus { border-color: var(--site-b); box-shadow: 0 0 10px rgba(236, 72, 153, 0.2); }
+
+/* Data Structure Tables */
+.data-structure-view { flex: 1; display: flex; flex-direction: column; min-height: 200px; }
+.data-structure-view h4 { margin: 0 0 0.8rem; font-size: 0.85rem; color: #fff; font-family: 'Fira Code', monospace; }
+.table-wrapper { flex: 1; overflow-y: auto; background: #000; border: 1px solid var(--glass-border); border-radius: 8px; }
+.crdt-table { width: 100%; border-collapse: collapse; font-family: 'Fira Code', monospace; font-size: 0.75rem; text-align: left; }
+.crdt-table th { background: #1e293b; color: #cbd5e1; padding: 0.6rem 0.8rem; position: sticky; top: 0; z-index: 2; border-bottom: 1px solid #334155; font-weight: 600; }
+.crdt-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid #1e293b; color: #f8fafc; word-break: break-all; }
+.crdt-table tr:hover td { background: rgba(255,255,255,0.05); }
+
+/* Fractional Keys Styling */
+.key-val { color: var(--crdt-primary); font-weight: bold; }
+.char-val { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 4px; background: rgba(255,255,255,0.1); font-weight: 700;}
+
+/* Network Simulator (Center Panel) */
+.network-panel { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); position: relative; }
+.network-header { padding: 1rem 1.5rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; }
+.network-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #cbd5e1; display: flex; align-items: center; gap: 0.5rem; }
+
+.network-controls { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+.delay-control { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.delay-control label { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;}
+.delay-control input[type=range] { width: 100%; accent-color: var(--net-color); cursor: pointer; height: 6px; background: #334155; border-radius: 3px; outline: none; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+.network-arena { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 3rem; justify-content: center; }
+.queue-lane { background: rgba(0,0,0,0.4); border: 1px solid #1e293b; height: 80px; border-radius: 12px; position: relative; display: flex; align-items: center; }
+.lane-label { position: absolute; top: -25px; left: 10px; font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: bold; color: var(--text-secondary); }
+.packet-track { width: 100%; height: 100%; position: relative; overflow: hidden; display: flex; align-items: center; padding: 0 10px; box-sizing: border-box; }
+
+/* Packet Styling */
+.net-packet { position: absolute; padding: 0.4rem 0.8rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: bold; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; white-space: nowrap; border: 1px solid; }
+.packet-insert { background: rgba(16, 185, 129, 0.2); border-color: #10b981; }
+.packet-delete { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; text-decoration: line-through; }
+.packet.frozen { transition: none !important; }
+
+/* Dynamic Animations */
+@keyframes slideRight { from { left: 0%; transform: translateX(0); } to { left: 100%; transform: translateX(-100%); } }
+@keyframes slideLeft { from { left: 100%; transform: translateX(-100%); } to { left: 0%; transform: translateX(0); } }
+
+.network-explanation { padding: 1.5rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; border-top: 1px solid var(--glass-border); display: flex; gap: 0.8rem; align-items: flex-start; }
+.network-explanation i { margin-top: 0.2rem; color: var(--crdt-primary); }
+
+@media (max-width: 1100px) {
+    .crdt-workspace { flex-direction: column; overflow-y: auto; }
+    .user-panel { width: 100%; border: none; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+    .network-panel { min-height: 400px; flex: none; }
+}

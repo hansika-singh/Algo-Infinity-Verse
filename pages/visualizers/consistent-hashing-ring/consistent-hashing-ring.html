@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consistent Hashing Ring | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive consistent hashing ring with virtual nodes — see how DynamoDB and Chord distribute load evenly and migrate only affected keys when servers join or leave." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="consistent-hashing-ring.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="consistent-hashing-ring">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="ch-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ch-hero-inner">
+        <div class="ch-hero-eyebrow">🔄 DynamoDB · Cassandra · Chord DHT</div>
+        <h1 class="ch-hero-title">Consistent Hashing Ring</h1>
+        <p class="ch-hero-sub">One server dies. Only its keys move. Nothing else changes.</p>
+        <p class="ch-hero-desc">Basic consistent hashing solves cache-migration on add/remove — but with only a few physical servers, load lands wildly unevenly. Virtual nodes fix this: each physical server claims dozens of positions on the ring, smoothing load to near-perfect balance. Watch the difference live.</p>
+        <a href="#lab" class="btn btn-primary ch-btn-primary"><i class="fas fa-circle-notch"></i> Open the Ring</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section ch-section">
+      <div class="container">
+
+        <div class="ch-control-card">
+          <div class="ch-row">
+            <span class="ch-row-label">Physical Servers</span>
+            <div class="ch-server-btns">
+              <button class="ch-server-btn active" data-servers="3">3</button>
+              <button class="ch-server-btn" data-servers="5">5</button>
+              <button class="ch-server-btn" data-servers="8">8</button>
+            </div>
+
+            <span class="ch-row-label" style="margin-left:0.85rem">Virtual Nodes per Server (V)</span>
+            <input type="range" id="chVSlider" class="ch-range" min="1" max="50" value="12" aria-label="Virtual nodes per server" />
+            <span class="ch-v-val" id="chVVal">12</span>
+          </div>
+
+          <div class="ch-row">
+            <button class="btn ch-btn-primary ch-add-btn" id="chAddServerBtn"><i class="fas fa-plus"></i> Add Server</button>
+            <button class="btn btn-secondary ch-remove-btn" id="chRemoveServerBtn"><i class="fas fa-minus"></i> Remove Server</button>
+            <button class="btn btn-secondary ch-reset-btn" id="chResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <div class="ch-key-hash-row">
+              <input type="text" id="chKeyInput" class="ch-text-input" placeholder="type a key to hash" aria-label="Key to hash" />
+              <button class="btn btn-secondary ch-hash-btn" id="chHashBtn"><i class="fas fa-magnifying-glass"></i> Locate Key</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ch-status" id="chStatus">3 servers, V=12 virtual nodes each. Click Add/Remove Server or drag the V slider to see load rebalance.</div>
+
+        <div class="ch-main-layout">
+
+          <div class="ch-ring-section">
+            <div class="ch-ring-header">
+              <span class="ch-ring-title"><i class="fas fa-circle-dot"></i> Hash Ring (16-bit keyspace, 0–65535)</span>
+              <div class="ch-ring-legend" id="chRingLegend"></div>
+            </div>
+            <div class="ch-ring-wrap" id="chRingWrap">
+              <canvas id="chRingCanvas" class="ch-ring-canvas"></canvas>
+            </div>
+          </div>
+
+          <div class="ch-right-panel">
+
+            <div class="ch-panel-card">
+              <div class="ch-panel-title"><i class="fas fa-scale-balanced"></i> Load Balance per Server</div>
+              <div class="ch-load-bars" id="chLoadBars"></div>
+            </div>
+
+            <div class="ch-panel-card">
+              <div class="ch-panel-title"><i class="fas fa-arrows-turn-to-dots"></i> Migration Log</div>
+              <div class="ch-migration-log" id="chMigrationLog">
+                <div class="ch-log-empty">No changes yet.</div>
+              </div>
+            </div>
+
+            <div class="ch-panel-card">
+              <div class="ch-panel-title"><i class="fas fa-gauge-high"></i> Balance Stats</div>
+              <div class="ch-stat-rows">
+                <div class="ch-stat-row"><span>Std deviation of load</span><span id="chStdDev">—</span></div>
+                <div class="ch-stat-row"><span>Max server load</span><span id="chMaxLoad">—</span></div>
+                <div class="ch-stat-row"><span>Min server load</span><span id="chMinLoad">—</span></div>
+                <div class="ch-stat-row"><span>Ideal load per server</span><span id="chIdealLoad">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="ch-teach-card">
+          <div class="ch-teach-title"><i class="fas fa-lightbulb"></i> The Teachable Moment</div>
+          <div class="ch-teach-grid">
+            <button class="ch-teach-btn" id="chTeachV1"><strong>Set V=1</strong> — then Add Server. Watch one server claim 40%+ of keyspace.</button>
+            <button class="ch-teach-btn" id="chTeachV50"><strong>Set V=50</strong> — then Add Server. Watch load stay within a few % of ideal.</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔄</span> Why Virtual Nodes Matter</h2>
+        <div class="ch-learn-grid">
+          <div class="ch-learn-card" style="--lc:#06b6d4">
+            <div class="ch-learn-icon">🎯</div>
+            <h3>Without Virtual Nodes</h3>
+            <p>With 1 position per physical server, ring gaps are essentially random. One server might own 5% of keyspace, another 40%. Adding a new server helps only its immediate clockwise neighbor — everyone else's load is untouched, so imbalance can persist indefinitely.</p>
+          </div>
+          <div class="ch-learn-card" style="--lc:#22c55e">
+            <div class="ch-learn-icon">📊</div>
+            <h3>With Virtual Nodes</h3>
+            <p>Each physical server claims V random positions. With V=20+, the law of large numbers smooths ownership to within a few percent of 1/N per server — regardless of how the random hash positions happen to land.</p>
+          </div>
+          <div class="ch-learn-card" style="--lc:#a855f7">
+            <div class="ch-learn-icon">🔀</div>
+            <h3>The Migration Guarantee</h3>
+            <p>Consistent hashing's core promise: adding or removing 1 of N servers moves only ~K/N keys (K = total keys), regardless of virtual node count. Virtual nodes fix the LOAD BALANCE problem without breaking this migration guarantee — moved keys still come only from immediate ring neighbors.</p>
+          </div>
+          <div class="ch-learn-card" style="--lc:#f59e0b">
+            <div class="ch-learn-icon">🏗️</div>
+            <h3>Real Systems</h3>
+            <p>DynamoDB uses 100-200+ virtual nodes per physical partition. Cassandra historically used 256 tokens per node by default. Chord DHT assigns each node's virtual identifiers via consistent hashing of its IP+port, forming the basis of BitTorrent's distributed tracker.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="consistent-hashing-ring.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

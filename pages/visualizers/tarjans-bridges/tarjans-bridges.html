@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjan's Algorithm (Bridges) | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="tarjans-bridges.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="tarjans-bridges.js" defer></script>
+</head>
+<body data-page="tarjans-bridges">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Graph Vulnerabilities: Tarjan's Algorithm (Bridges)</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Graph Initialized</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-random" class="btn outline" aria-label="Randomize Graph"><i class="fas fa-random"></i> Randomize</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward"><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm"><i class="fas fa-play"></i> Auto Run</button>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset State"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode" id="pseudocode-block">
+                    <div id="tj-1" class="code-line">1. timer = 0</div>
+                    <div id="tj-2" class="code-line">2. DFS(u, parent):</div>
+                    <div id="tj-3" class="code-line indent">3. visited[u] = true</div>
+                    <div id="tj-4" class="code-line indent">4. disc[u] = low[u] = ++timer</div>
+                    <div id="tj-5" class="code-line indent">5. For each neighbor v of u:</div>
+                    <div id="tj-6" class="code-line indent-2">6. If v == parent: continue</div>
+                    <div id="tj-7" class="code-line indent-2">7. If visited[v]:</div>
+                    <div id="tj-8" class="code-line indent-3">low[u] = min(low[u], disc[v]) // Back Edge</div>
+                    <div id="tj-9" class="code-line indent-2">8. Else:</div>
+                    <div id="tj-10" class="code-line indent-3">DFS(v, u) // Tree Edge</div>
+                    <div id="tj-11" class="code-line indent-3">low[u] = min(low[u], low[v]) // Backtrack</div>
+                    <div id="tj-12" class="code-line indent-3">If low[v] > disc[u]:</div>
+                    <div id="tj-13" class="code-line indent-4">Add (u, v) to Bridges</div>
+                </div>
+            </div>
+            
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Live Telemetry</h3>
+                <div class="telemetry-grid">
+                    <div class="metric"><span class="label">Current Node (u)</span><span id="stat-u" class="value">—</span></div>
+                    <div class="metric"><span class="label">Global Timer</span><span id="stat-timer" class="value" style="color: var(--accent-purple);">0</span></div>
+                    <div class="metric"><span class="label">Bridges Found</span><span id="stat-bridges" class="value highlight-val">0</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Current Operation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+
+                <div class="graph-wrapper">
+                    <canvas id="viz-canvas" role="img" aria-label="Undirected Graph Visualizer for Tarjan's Algorithm"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text"><strong>Tarjan's Algorithm</strong> finds "Critical Connections" (Bridges). A bridge is an edge whose removal disconnects the graph. It uses a single DFS pass to track discovery times and cycle closures.</p>
+                <ul class="edu-list">
+                    <li><span class="badge forward">Tree Edge</span> Forward traversal building the DFS Spanning Tree.</li>
+                    <li><span class="badge back">Back Edge</span> Connects a node to an already visited ancestor, proving a cycle exists (Not a bridge).</li>
+                    <li><span class="badge bridge">Bridge</span> An edge where the child node has NO back-edge to an ancestor (`low[child] > disc[parent]`).</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-chart-line"></i> Complexity</h3>
+                <div class="complexity-stat">
+                    <span class="label">Time Complexity</span>
+                    <span class="value">O(V + E)</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Space Complexity</span>
+                    <span class="value">O(V)</span>
+                </div>
+                <p class="edu-text sub-text" style="margin-top: 1rem;">Visits every vertex and traverses every edge exactly once. `disc` and `low` arrays take O(V) space.</p>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

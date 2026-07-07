@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORAM Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Path ORAM simulator — watch how Oblivious RAM hides memory access patterns from adversaries by fetching entire tree paths on every access." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="oram-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="oram-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="or-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="or-hero-inner">
+        <div class="or-hero-eyebrow">🔐 Cryptographic Protocols · Intel SGX · Secure Computation</div>
+        <h1 class="or-hero-title">Oblivious RAM Simulator</h1>
+        <p class="or-hero-sub">Encryption hides what you store. ORAM hides what you access.</p>
+        <p class="or-hero-desc">An adversary watching your memory doesn't need to read the data — access patterns alone reveal which operation you performed. Path ORAM fixes this by fetching an entire root-to-leaf path on every single access, making all access patterns indistinguishable. Every access looks identical to the observer. This is how Signal, Intel SGX enclaves, and privacy-preserving databases prevent pattern-based leakage.</p>
+        <div class="or-hero-btns">
+          <a href="#naive" class="btn btn-secondary or-btn-secondary"><i class="fas fa-eye"></i> See the Problem</a>
+          <a href="#oram" class="btn btn-primary or-btn-primary"><i class="fas fa-eye-slash"></i> See the Solution</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 1: The Problem -->
+    <section id="naive" class="section or-section">
+      <div class="container">
+        <div class="or-section-header">
+          <div class="or-section-badge or-badge-danger">Part 1 — The Problem</div>
+          <h2 class="or-section-title">Naive Memory — Patterns Leak Everything</h2>
+          <p class="or-section-desc">Click data blocks below to "read" them. Watch how the adversary immediately learns which block you accessed — even without reading the encrypted contents.</p>
+        </div>
+
+        <div class="or-naive-layout">
+
+          <div class="or-naive-mem-panel">
+            <div class="or-panel-title"><i class="fas fa-memory"></i> Encrypted Memory (8 blocks)</div>
+            <div class="or-naive-blocks" id="orNaiveBlocks"></div>
+            <div class="or-naive-hint">Click any block to read it</div>
+          </div>
+
+          <div class="or-adversary-panel or-adversary-bad">
+            <div class="or-panel-title"><i class="fas fa-user-secret"></i> Adversary Observation Log</div>
+            <div class="or-adv-subtitle">Watching memory bus — sees addresses only</div>
+            <div class="or-adv-log" id="orNaiveAdvLog">
+              <div class="or-adv-empty">No accesses yet. Click a block.</div>
+            </div>
+            <div class="or-adv-score-row">
+              <span>Blocks identified:</span>
+              <span class="or-adv-score-bad" id="orNaiveIdentified">0 / 8</span>
+            </div>
+            <div class="or-adv-verdict" id="orNaiveVerdict">
+              Watching...
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 2: Path ORAM -->
+    <section id="oram" class="section or-section or-section-dark">
+      <div class="container">
+        <div class="or-section-header">
+          <div class="or-section-badge or-badge-good">Part 2 — The Solution</div>
+          <h2 class="or-section-title">Path ORAM — Every Access Looks Identical</h2>
+          <p class="or-section-desc">Click the data blocks below to read them through ORAM. The adversary now sees only full root-to-leaf path accesses — every read is indistinguishable from every other read.</p>
+        </div>
+
+        <div class="or-oram-layout">
+
+          <!-- Left column: data blocks + controls -->
+          <div class="or-oram-left">
+
+            <div class="or-oram-data-panel">
+              <div class="or-panel-title"><i class="fas fa-database"></i> Data Blocks (8 logical blocks)</div>
+              <div class="or-data-blocks" id="orOramBlocks"></div>
+            </div>
+
+            <div class="or-oram-posmap-panel">
+              <div class="or-panel-title"><i class="fas fa-map"></i> Position Map</div>
+              <div class="or-posmap-desc">Maps each block ID to its current randomly assigned leaf. Re-randomized after every access.</div>
+              <div class="or-posmap-grid" id="orPosMapGrid"></div>
+            </div>
+
+            <div class="or-oram-stash-panel">
+              <div class="or-panel-title">
+                <i class="fas fa-box-archive"></i> Stash
+                <span class="or-stash-count" id="orStashCount">0 blocks</span>
+              </div>
+              <div class="or-stash-desc">Blocks displaced during path traversal — evicted back to the tree after each access.</div>
+              <div class="or-stash-blocks" id="orStashBlocks">
+                <div class="or-stash-empty">Stash is empty.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Center: ORAM tree -->
+          <div class="or-oram-center">
+            <div class="or-panel-title" style="padding:0.6rem 0 0.4rem"><i class="fas fa-diagram-project"></i> Path ORAM Binary Tree</div>
+            <div class="or-tree-wrap" id="orTreeWrap">
+              <canvas id="orTreeCanvas" class="or-tree-canvas"></canvas>
+            </div>
+            <div class="or-tree-legend">
+              <span class="or-tl-item"><span class="or-tl-dot or-tl-path"></span>Active path (fetched)</span>
+              <span class="or-tl-item"><span class="or-tl-dot or-tl-target"></span>Target block found</span>
+              <span class="or-tl-item"><span class="or-tl-dot or-tl-normal"></span>Not on path</span>
+            </div>
+          </div>
+
+          <!-- Right column: adversary + access log -->
+          <div class="or-oram-right">
+
+            <div class="or-adversary-panel or-adversary-good">
+              <div class="or-panel-title"><i class="fas fa-user-secret"></i> Adversary Observation Log</div>
+              <div class="or-adv-subtitle">Sees only path node addresses</div>
+              <div class="or-adv-log" id="orOramAdvLog">
+                <div class="or-adv-empty">No accesses yet. Click a block.</div>
+              </div>
+              <div class="or-adv-score-row">
+                <span>Blocks identified:</span>
+                <span class="or-adv-score-good" id="orOramIdentified">0 / 8</span>
+              </div>
+              <div class="or-adv-verdict or-verdict-good" id="orOramVerdict">
+                Adversary learns nothing ✅
+              </div>
+            </div>
+
+            <div class="or-access-log-panel">
+              <div class="or-panel-title"><i class="fas fa-list-ul"></i> Access Log</div>
+              <div class="or-access-log" id="orAccessLog">
+                <div class="or-adv-empty">No accesses yet.</div>
+              </div>
+            </div>
+
+            <div class="or-stats-panel">
+              <div class="or-panel-title"><i class="fas fa-gauge-high"></i> ORAM Stats</div>
+              <div class="or-stats-rows">
+                <div class="or-stat-row"><span>Total accesses</span><span id="orStatAccesses">0</span></div>
+                <div class="or-stat-row"><span>Nodes fetched per access</span><span id="orStatFetched">4</span></div>
+                <div class="or-stat-row"><span>Overhead vs naive</span><span id="orStatOverhead">4×</span></div>
+                <div class="or-stat-row"><span>Max stash size seen</span><span id="orStatMaxStash">0</span></div>
+                <div class="or-stat-row"><span>Adversary advantage</span><span class="or-stat-zero">0 bits</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Part 3: Learn -->
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🔐</span> Why ORAM Matters</h2>
+        <div class="or-learn-grid">
+          <div class="or-learn-card" style="--lc:#ef4444">
+            <div class="or-learn-icon">👁️</div>
+            <h3>The Pattern Leakage Problem</h3>
+            <p>Imagine your health records are encrypted in a cloud database. An adversary can't read them — but if they watch which records you access after visiting a doctor, they can infer your diagnosis. The ACCESS PATTERN leaks information even when the data is perfectly encrypted. ORAM closes this gap.</p>
+          </div>
+          <div class="or-learn-card" style="--lc:#a855f7">
+            <div class="or-learn-icon">🌲</div>
+            <h3>Why a Tree Structure?</h3>
+            <p>Path ORAM stores blocks in a binary tree where every block is assigned to a random leaf. Fetching the root-to-leaf path always reads O(log N) buckets — a fixed, predictable cost. The block can be anywhere on its assigned path, and after every access, its path assignment is re-randomized, making future accesses to the same block look completely different.</p>
+          </div>
+          <div class="or-learn-card" style="--lc:#06b6d4">
+            <div class="or-learn-icon">🔒</div>
+            <h3>Intel SGX Uses This</h3>
+            <p>Intel SGX enclaves run code in a hardware-protected region, but memory accesses outside the enclave are still visible. Oblivious RAM is used inside SGX applications to prevent the untrusted OS from learning which data the enclave is processing, even though it can watch every memory bus transaction.</p>
+          </div>
+          <div class="or-learn-card" style="--lc:#22c55e">
+            <div class="or-learn-icon">⚖️</div>
+            <h3>The Cost of Obliviousness</h3>
+            <p>Path ORAM has O(log N) overhead per access — a 4-level tree touches 4 buckets, each holding Z=4 blocks. For N=2^20 blocks, each access touches 20 buckets instead of 1. This is a 20× bandwidth overhead. In practice, recursive ORAM and optimized variants like RingORAM reduce this to near-constant overhead.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="oram-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

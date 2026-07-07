@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Epidemic Protocol Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Watch gossip protocols spread data across a distributed cluster. Simulate Push, Pull, and Push-Pull modes with node failures and SIR convergence curves." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="epidemic-protocol-simulator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="epidemic-protocol-simulator">
+
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="ep-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ep-hero-inner">
+        <div class="ep-hero-eyebrow">🦠 Distributed Systems · Cassandra · DynamoDB · CockroachDB</div>
+        <h1 class="ep-hero-title">Epidemic Protocol Simulator</h1>
+        <p class="ep-hero-sub">No coordinator. No leader. Just nodes whispering to each other.</p>
+        <p class="ep-hero-desc">Gossip protocols spread information through a cluster exactly like a biological epidemic — each infected node randomly infects K neighbors per round. The math is identical to the SIR epidemiological model. Cassandra uses gossip for membership and failure detection. Watch a single infected node bring the entire cluster to convergence, even with 40% node failure.</p>
+        <a href="#lab" class="btn btn-primary ep-btn-primary"><i class="fas fa-viruses"></i> Open Lab</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section ep-section">
+      <div class="container">
+
+        <div class="ep-control-card">
+          <div class="ep-ctrl-row">
+            <span class="ep-ctrl-label">Nodes</span>
+            <input type="range" id="epNodeCount" class="ep-range" min="8" max="30" value="16" aria-label="Node count" />
+            <span class="ep-range-val" id="epNodeCountVal">16</span>
+
+            <span class="ep-ctrl-label" style="margin-left:0.85rem">Fanout (K)</span>
+            <input type="range" id="epFanout" class="ep-range" min="1" max="6" value="3" aria-label="Fanout" />
+            <span class="ep-range-val" id="epFanoutVal">3</span>
+
+            <span class="ep-ctrl-label" style="margin-left:0.85rem">Mode</span>
+            <div class="ep-mode-btns">
+              <button class="ep-mode-btn active" data-mode="push">Push</button>
+              <button class="ep-mode-btn" data-mode="pull">Pull</button>
+              <button class="ep-mode-btn" data-mode="pushpull">Push-Pull</button>
+            </div>
+          </div>
+
+          <div class="ep-ctrl-row">
+            <span class="ep-ctrl-label">Round Speed</span>
+            <input type="range" id="epSpeed" class="ep-range" min="1" max="5" value="3" aria-label="Speed" />
+            <span class="ep-range-val" id="epSpeedVal">Normal</span>
+
+            <span class="ep-ctrl-label" style="margin-left:0.85rem">Failure Rate</span>
+            <input type="range" id="epFailRate" class="ep-range" min="0" max="50" step="5" value="0" aria-label="Failure rate" />
+            <span class="ep-range-val" id="epFailRateVal">0%</span>
+          </div>
+
+          <div class="ep-ctrl-row">
+            <button class="btn ep-btn-primary ep-run-btn" id="epRunBtn"><i class="fas fa-play"></i> Run Gossip</button>
+            <button class="btn btn-secondary ep-step-btn" id="epStepBtn" disabled><i class="fas fa-step-forward"></i> Step Round</button>
+            <button class="btn btn-secondary ep-reset-btn" id="epResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <label class="ep-toggle-label">
+              <input type="checkbox" id="epShowEdges" class="ep-check" checked />
+              <span>Show gossip edges</span>
+            </label>
+            <label class="ep-toggle-label">
+              <input type="checkbox" id="epAntiEntropy" class="ep-check" />
+              <span>Anti-entropy after convergence</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="ep-status" id="epStatus">Generate a cluster and click a node to infect it, then click Run Gossip.</div>
+
+        <div class="ep-main-layout">
+
+          <div class="ep-canvas-section">
+            <div class="ep-canvas-header">
+              <span class="ep-canvas-title"><i class="fas fa-circle-nodes"></i> Cluster — Click a Node to Infect It</span>
+              <div class="ep-canvas-legend">
+                <span class="ep-leg"><span class="ep-leg-dot ep-leg-s"></span>Susceptible</span>
+                <span class="ep-leg"><span class="ep-leg-dot ep-leg-i"></span>Infected</span>
+                <span class="ep-leg"><span class="ep-leg-dot ep-leg-r"></span>Recovered</span>
+                <span class="ep-leg"><span class="ep-leg-dot ep-leg-d"></span>Dead (failed)</span>
+              </div>
+            </div>
+            <div class="ep-canvas-wrap" id="epCanvasWrap">
+              <canvas id="epCanvas" class="ep-canvas"></canvas>
+            </div>
+            <div class="ep-canvas-footer">
+              <div class="ep-sir-counters">
+                <span class="ep-sir-s">S: <strong id="epCountS">0</strong></span>
+                <span class="ep-sir-i">I: <strong id="epCountI">0</strong></span>
+                <span class="ep-sir-r">R: <strong id="epCountR">0</strong></span>
+                <span class="ep-sir-d">D: <strong id="epCountD">0</strong></span>
+              </div>
+              <span class="ep-round-ctr">Round <strong id="epRound">0</strong></span>
+            </div>
+          </div>
+
+          <div class="ep-right-panel">
+
+            <div class="ep-panel-card">
+              <div class="ep-panel-title"><i class="fas fa-chart-area"></i> SIR Curve</div>
+              <canvas id="epSirCanvas" class="ep-sir-canvas"></canvas>
+              <div class="ep-sir-legend">
+                <span class="ep-sl"><span class="ep-sl-dot" style="background:#94a3b8"></span>S</span>
+                <span class="ep-sl"><span class="ep-sl-dot" style="background:#ef4444"></span>I</span>
+                <span class="ep-sl"><span class="ep-sl-dot" style="background:#22c55e"></span>R</span>
+              </div>
+            </div>
+
+            <div class="ep-panel-card">
+              <div class="ep-panel-title"><i class="fas fa-gauge-high"></i> Convergence Stats</div>
+              <div class="ep-stat-rows">
+                <div class="ep-stat-row"><span>Total rounds</span><span id="epStatRounds">—</span></div>
+                <div class="ep-stat-row"><span>Convergence round</span><span id="epStatConverge">—</span></div>
+                <div class="ep-stat-row"><span>Messages sent</span><span id="epStatMessages">0</span></div>
+                <div class="ep-stat-row"><span>Alive nodes</span><span id="epStatAlive">—</span></div>
+                <div class="ep-stat-row"><span>Infection spread</span><span id="epStatSpread">—</span></div>
+              </div>
+            </div>
+
+            <div class="ep-panel-card">
+              <div class="ep-panel-title"><i class="fas fa-book-open"></i> Round Log</div>
+              <div class="ep-round-log" id="epRoundLog">
+                <div class="ep-log-empty">No rounds yet.</div>
+              </div>
+            </div>
+
+            <div class="ep-panel-card ep-mode-info-card">
+              <div class="ep-panel-title"><i class="fas fa-info-circle"></i> Protocol Mode</div>
+              <div class="ep-mode-info" id="epModeInfo">
+                <strong>Push:</strong> Each infected node picks K random neighbors and sends its state to them. Simple, low overhead. Converges in O(log n) rounds with high probability.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🦠</span> Gossip Protocols in the Wild</h2>
+        <div class="ep-learn-grid">
+          <div class="ep-learn-card" style="--lc:#ef4444">
+            <div class="ep-learn-icon">🗣️</div>
+            <h3>Apache Cassandra</h3>
+            <p>Cassandra uses gossip every second — each node contacts up to 3 random peers to exchange cluster state (who's alive, who's dead, what ring positions exist). No coordinator needed. A new node joining the cluster propagates its existence to all nodes within O(log n) gossip rounds.</p>
+          </div>
+          <div class="ep-learn-card" style="--lc:#f59e0b">
+            <div class="ep-learn-icon">🧮</div>
+            <h3>The SIR Model</h3>
+            <p>Susceptible → Infected → Recovered. Each round, an infected node contacts K random neighbors (fanout). If a susceptible neighbor receives the message, it becomes infected. After spreading its data, a node becomes "recovered" (still functional, just done spreading). The math governing convergence speed is identical to epidemic spread equations.</p>
+          </div>
+          <div class="ep-learn-card" style="--lc:#06b6d4">
+            <div class="ep-learn-icon">🔄</div>
+            <h3>Anti-Entropy Repair</h3>
+            <p>After convergence, Cassandra still runs gossip — not for new data, but for "anti-entropy repair." Nodes periodically exchange Merkle tree digests to find which data is inconsistent and sync it. This is why Cassandra can heal from network partitions automatically, without any operator intervention.</p>
+          </div>
+          <div class="ep-learn-card" style="--lc:#a855f7">
+            <div class="ep-learn-icon">📡</div>
+            <h3>Push vs Pull vs Push-Pull</h3>
+            <p>Push: sender actively contacts neighbors (fast early spread). Pull: susceptible nodes ask peers (slower early spread, better late convergence). Push-Pull: both simultaneously — each exchange is bidirectional. Amazon Dynamo and CockroachDB use Push-Pull because it converges in half as many rounds as pure Push for the last few susceptible nodes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="../../../script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="epidemic-protocol-simulator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

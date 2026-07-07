@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doubly Linked List Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive visualizer for Advanced Doubly Linked List Operations." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="doubly-linked-list-visualizer.css" />
+</head>
+<body class="dll-body">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="dll-workspace" style="margin-top: 80px;">
+        
+        <!-- Left Panel: Controls & Operations -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> DLL Operations</h3>
+            </div>
+            
+            <div class="control-section">
+                <div class="action-row">
+                    <button type="button" class="btn btn-outline w-100" id="btnRandomize">
+                        <i class="fas fa-random"></i> Random List
+                    </button>
+                    <button type="button" class="btn btn-outline w-100 mt-2" id="btnReset">
+                        <i class="fas fa-trash-alt"></i> Clear List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Insertion Controls -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-plus-circle"></i> Insertion</h4>
+                <div class="input-group">
+                    <input type="number" id="insertVal" placeholder="Node Value (e.g., 42)" />
+                </div>
+                <div class="input-group">
+                    <input type="number" id="insertPos" placeholder="Index (Optional)" min="0" />
+                </div>
+                <div class="action-grid">
+                    <button type="button" class="btn btn-primary" id="btnInsertHead">Insert Head</button>
+                    <button type="button" class="btn btn-primary" id="btnInsertTail">Insert Tail</button>
+                    <button type="button" class="btn btn-secondary w-100" style="grid-column: span 2;" id="btnInsertAt">Insert at Index</button>
+                </div>
+            </div>
+
+            <!-- Deletion Controls -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-minus-circle"></i> Deletion</h4>
+                <div class="input-group">
+                    <input type="number" id="deleteVal" placeholder="Node Value or Index" />
+                </div>
+                <div class="action-grid">
+                    <button type="button" class="btn btn-danger" id="btnDeleteHead">Del Head</button>
+                    <button type="button" class="btn btn-danger" id="btnDeleteTail">Del Tail</button>
+                    <button type="button" class="btn btn-outline-danger w-100" id="btnDeletePos">Del by Index</button>
+                    <button type="button" class="btn btn-outline-danger w-100" id="btnDeleteVal">Del by Value</button>
+                </div>
+            </div>
+
+            <!-- Search & Traversal -->
+            <div class="operation-panel">
+                <h4><i class="fas fa-search"></i> Search & Traverse</h4>
+                <div class="input-group">
+                    <input type="number" id="searchVal" placeholder="Value to search..." />
+                </div>
+                <div class="action-grid">
+                    <button type="button" class="btn btn-accent w-100" style="grid-column: span 2;" id="btnSearch">Search Value</button>
+                    <button type="button" class="btn btn-outline w-100" id="btnTraverseFwd">Traverse Fwd</button>
+                    <button type="button" class="btn btn-outline w-100" id="btnTraverseBwd">Traverse Bwd</button>
+                    <button type="button" class="btn btn-outline w-100" style="grid-column: span 2;" id="btnReverse">Reverse List</button>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-terminal"></i> Operation Logs</h4>
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry sys">> Visualizer initialized.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Area -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <div class="stats-bar">
+                    <span class="stat-item"><i class="fas fa-cubes"></i> Size: <span id="statSize">0</span></span>
+                    <span class="stat-item"><i class="fas fa-exchange-alt"></i> Pointer Updates: <span id="statPtrs">0</span></span>
+                    <span class="stat-item"><i class="fas fa-clock"></i> Complexity: <span id="statTime">O(1)</span></span>
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="node-swatch head-ptr"></span> HEAD</span>
+                    <span class="legend-item"><span class="node-swatch tail-ptr"></span> TAIL</span>
+                    <span class="legend-item"><span class="node-swatch active"></span> CURR</span>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="animSpeed" min="100" max="2000" value="800" style="direction: rtl;">
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <!-- SVG Layer for Pointers (Arrows) -->
+                <svg id="svgLayer" class="svg-layer">
+                    <defs>
+                        <!-- Forward Arrowhead -->
+                        <marker id="arrowhead-fwd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+                        </marker>
+                        <!-- Backward Arrowhead -->
+                        <marker id="arrowhead-bwd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                        </marker>
+                        <!-- Active Arrowhead -->
+                        <marker id="arrowhead-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                        </marker>
+                    </defs>
+                    <g id="arrowsGroup"></g>
+                </svg>
+                
+                <!-- HTML Layer for Memory Nodes -->
+                <div id="nodesLayer" class="nodes-layer"></div>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-link"></i>
+                    <p>Doubly Linked List is empty.<br/>Insert a node to begin.</p>
+                </div>
+            </div>
+            
+            <!-- Pseudocode Panel -->
+            <div class="pseudo-panel" id="pseudoPanel">
+                <div class="pseudo-header">
+                    <h4><i class="fas fa-code"></i> Pseudocode Execution</h4>
+                </div>
+                <pre id="pseudoCodeContent" class="language-pseudo">
+// Operation pseudocode will appear here
+                </pre>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/components/navbar.js"></script>
+    <script src="/components/footer.js"></script>
+    <script src="doubly-linked-list-visualizer.js"></script>
+</body>
+</html>
