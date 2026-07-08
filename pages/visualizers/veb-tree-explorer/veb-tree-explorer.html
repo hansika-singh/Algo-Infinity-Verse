@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Van Emde Boas Tree Explorer | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Van Emde Boas tree for a 16-element universe — insert, delete, and find successors in O(log log U), beating any comparison-based tree for integer keys." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="veb-tree-explorer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="veb-tree-explorer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="vb-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="vb-hero-inner">
+        <div class="vb-hero-eyebrow">📡 Network Routing · Real-Time Scheduling · Integer Data Structures</div>
+        <h1 class="vb-hero-title">Van Emde Boas Tree Explorer</h1>
+        <p class="vb-hero-sub">Not O(log n). O(log log U). A genuinely different kind of tree.</p>
+        <p class="vb-hero-desc">Every comparison-based tree — BST, AVL, Red-Black, B+ — pays O(log n) per operation. A vEB tree exploits the fact that keys are bounded integers, recursively splitting the universe into √U clusters. For a 16-element universe, that's just 2 levels of recursion instead of 4 comparisons.</p>
+        <a href="#lab" class="btn btn-primary vb-btn-primary"><i class="fas fa-layer-group"></i> Open Explorer</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section vb-section">
+      <div class="container">
+
+        <div class="vb-control-card">
+          <div class="vb-row">
+            <span class="vb-row-label">Value (0–15)</span>
+            <input type="number" id="vbValueInput" class="vb-num-input" min="0" max="15" value="7" aria-label="Value" />
+            <button class="btn vb-btn-primary vb-op-btn" id="vbInsertBtn"><i class="fas fa-plus"></i> Insert</button>
+            <button class="btn btn-secondary vb-op-btn" id="vbDeleteBtn"><i class="fas fa-minus"></i> Delete</button>
+            <button class="btn btn-secondary vb-op-btn" id="vbSuccBtn"><i class="fas fa-forward"></i> Successor</button>
+            <button class="btn btn-secondary vb-op-btn" id="vbMemberBtn"><i class="fas fa-magnifying-glass"></i> Member?</button>
+            <button class="btn btn-secondary vb-reset-btn" id="vbResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+          <div class="vb-row">
+            <span class="vb-row-label">Quick load</span>
+            <div class="vb-preset-btns">
+              <button class="vb-preset-btn" data-set="2,3,4,5,7,14,15">Spread</button>
+              <button class="vb-preset-btn" data-set="0,1,2,3,4,5,6,7">Low half</button>
+              <button class="vb-preset-btn" data-set="1,9,3,11,5,13">Alternating</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vb-status" id="vbStatus">Insert values to build the vEB(16) tree. Click any cluster box to drill into its recursive structure.</div>
+
+        <div class="vb-main-layout">
+
+          <div class="vb-tree-section">
+            <div class="vb-panel-title"><i class="fas fa-sitemap"></i> vEB(16) Structure</div>
+            <div class="vb-tree-canvas" id="vbTreeCanvas"></div>
+          </div>
+
+          <div class="vb-right-panel">
+
+            <div class="vb-panel-card">
+              <div class="vb-panel-title"><i class="fas fa-list-ol"></i> Operation Trace</div>
+              <div class="vb-trace-log" id="vbTraceLog"><div class="vb-empty">No operations yet.</div></div>
+            </div>
+
+            <div class="vb-panel-card">
+              <div class="vb-panel-title"><i class="fas fa-gauge-high"></i> Operation Counter Comparison</div>
+              <div class="vb-compare-rows">
+                <div class="vb-compare-row"><span>vEB (this run)</span><span id="vbCompVeb">0</span></div>
+                <div class="vb-compare-row"><span>BST (simulated, same ops)</span><span id="vbCompBst">0</span></div>
+                <div class="vb-compare-row"><span>Hash table (simulated)</span><span id="vbCompHash">0</span></div>
+              </div>
+              <button class="btn btn-secondary vb-run-compare-btn" id="vbRunCompareBtn"><i class="fas fa-play"></i> Run 20 Random Ops on All 3</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="vb-challenge-card">
+          <div class="vb-challenge-header"><i class="fas fa-puzzle-piece"></i> Trace the Successor</div>
+          <p class="vb-challenge-desc">Given the current tree state, what is <code>successor(<span id="vbChallengeVal">6</span>)</code>? Type your answer.</p>
+          <div class="vb-challenge-row">
+            <input type="number" id="vbChallengeInput" class="vb-num-input" placeholder="answer" aria-label="Your answer" />
+            <button class="btn vb-btn-primary vb-challenge-check-btn" id="vbChallengeCheckBtn"><i class="fas fa-check"></i> Check</button>
+            <button class="btn btn-secondary vb-challenge-new-btn" id="vbChallengeNewBtn"><i class="fas fa-shuffle"></i> New Question</button>
+          </div>
+          <div class="vb-challenge-result hidden" id="vbChallengeResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📡</span> How O(log log U) Actually Works</h2>
+        <div class="vb-learn-grid">
+          <div class="vb-learn-card" style="--lc:#06b6d4">
+            <div class="vb-learn-icon">🔀</div>
+            <h3>Splitting the Universe</h3>
+            <p>A vEB tree of universe size u recursively splits into √u clusters, each handling √u values, plus a "summary" tracking which clusters are non-empty. high(x)=⌊x/√u⌋ picks the cluster; low(x)=x mod √u picks the position within it.</p>
+          </div>
+          <div class="vb-learn-card" style="--lc:#a855f7">
+            <div class="vb-learn-icon">⚡</div>
+            <h3>The Lazy Min/Max Trick</h3>
+            <p>Every node caches its own min and max directly — they are NOT stored recursively inside clusters. Insert first checks: "is this the new min?" If a cluster was empty, only its summary needs a single recursive insert — the value becomes that cluster's min/max without recursing further.</p>
+          </div>
+          <div class="vb-learn-card" style="--lc:#22c55e">
+            <div class="vb-learn-icon">🎯</div>
+            <h3>Successor via Summary</h3>
+            <p>To find the next element after x: first check if x's own cluster has anything larger. If not, ask the summary structure for the next non-empty cluster — a single recursive call — then return that cluster's min.</p>
+          </div>
+          <div class="vb-learn-card" style="--lc:#f59e0b">
+            <div class="vb-learn-icon">🌐</div>
+            <h3>Real-World Use</h3>
+            <p>IP routing tables use vEB-like structures for longest-prefix matching over 32-bit address spaces. Real-time schedulers use them to find the next deadline in O(log log U) instead of O(log n), critical when U is fixed (like a 32-bit timestamp) regardless of how many events are scheduled.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="veb-tree-explorer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

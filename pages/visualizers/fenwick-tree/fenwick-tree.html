@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fenwick Tree (BIT) | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="fenwick-tree.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="fenwick-tree.js" defer></script>
+</head>
+<body data-page="fenwick-tree">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Advanced Arrays: Fenwick Tree (Binary Indexed Tree)</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Array Initialized | N = 16</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Array"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-terminal"></i> Operations</h3>
+                
+                <div class="param-grid" style="margin-bottom: 1rem;">
+                    <label>Add(index, delta)</label>
+                    <input type="number" id="input-add-idx" class="glass-input" placeholder="Idx (1-16)" min="1" max="16">
+                    <input type="number" id="input-add-val" class="glass-input" placeholder="Val" value="5">
+                    <button type="button" id="btn-add" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-plus"></i> Add</button>
+                </div>
+
+                <div class="param-grid" style="margin-bottom: 1.5rem;">
+                    <label>PrefixSum(index)</label>
+                    <input type="number" id="input-query-idx" class="glass-input" placeholder="Idx (1-16)" min="1" max="16" style="grid-column: 1 / 3;">
+                    <button type="button" id="btn-query" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-search"></i> Query Sum</button>
+                </div>
+            </div>
+
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode hidden" id="pseudo-add">
+                    <div id="ad-1" class="code-line">1. While index &le; N:</div>
+                    <div id="ad-2" class="code-line indent">2. tree[index] += delta</div>
+                    <div id="ad-3" class="code-line indent">3. Extract LSB: lsb = index & (-index)</div>
+                    <div id="ad-4" class="code-line indent">4. Advance: index += lsb</div>
+                </div>
+
+                <div class="pseudocode hidden" id="pseudo-query">
+                    <div id="qr-1" class="code-line">1. sum = 0</div>
+                    <div id="qr-2" class="code-line">2. While index > 0:</div>
+                    <div id="qr-3" class="code-line indent">3. sum += tree[index]</div>
+                    <div id="qr-4" class="code-line indent">4. Extract LSB: lsb = index & (-index)</div>
+                    <div id="qr-5" class="code-line indent">5. Fallback: index -= lsb</div>
+                    <div id="qr-6" class="code-line">6. Return sum</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Bitwise Evaluation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+
+                <div class="tree-stage">
+                    <h4 class="stage-label">Implicit Tree Structure (Coverage Ranges)</h4>
+                    <canvas id="viz-canvas" role="img" aria-label="Fenwick Tree Coverage Visualization"></canvas>
+                </div>
+
+                <div class="array-stage">
+                    <h4 class="stage-label">1D Array Memory (1-Indexed)</h4>
+                    <div id="bit-array-container" class="array-container">
+                        </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text">A <strong>Fenwick Tree</strong> computes prefix sums and updates elements in logarithmic time. Instead of a standard tree structure with left/right pointers, it cleverly uses the binary representation of array indices.</p>
+                <ul class="edu-list">
+                    <li><span class="badge lsb-badge">LSB (i & -i)</span> The Least Significant Bit determines the size of the range a node is responsible for.</li>
+                    <li><span class="badge update-jump">Update Jump</span> Moving <strong>forward</strong> by adding the LSB `i += LSB` cascades the update to all parent intervals.</li>
+                    <li><span class="badge query-jump">Query Jump</span> Moving <strong>backward</strong> by subtracting the LSB `i -= LSB` aggregates non-overlapping sub-ranges.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Telemetry</h3>
+                <div class="telemetry-grid">
+                    <div class="metric"><span class="label">Current Index</span><span id="stat-idx" class="value">—</span></div>
+                    <div class="metric"><span class="label">Running Sum</span><span id="stat-sum" class="value" style="color: var(--accent-purple);">0</span></div>
+                    <div class="complexity-stat" style="margin-top: 1rem;">
+                        <span class="label">Time Complexity</span>
+                        <span class="value">O(log N)</span>
+                    </div>
+                    <div class="complexity-stat">
+                        <span class="label">Space Complexity</span>
+                        <span class="value">O(N)</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

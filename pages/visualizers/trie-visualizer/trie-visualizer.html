@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trie Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive Trie visualizer for character-by-character insertion and search with step playback." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="trie-visualizer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="trie-visualizer">
+  <div id="navbar-placeholder"></div>
+  <section class="hero trie-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Interactive Prefix Tree Explorer</span>
+        <span class="main-title trie-gradient">Trie Visualizer</span>
+        <span class="subtitle">Insert words, search paths, and watch nodes appear step by step</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_visualizer" id="typingTextVisualizer"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+    </div>
+  </section>
+  <section class="section trie-section">
+    <div class="container trie-layout">
+      <aside class="trie-panel">
+        <h2 class="panel-title"><i class="fas fa-sliders-h"></i> Controls</h2>
+        <div class="control-group">
+          <label for="wordInput">Word Input</label>
+          <input id="wordInput" type="text" autocomplete="off" placeholder="apple" />
+        </div>
+        <div class="button-grid trie-action-grid">
+          <button type="button" class="btn-vis btn-insert" id="insertBtn"><i class="fas fa-plus"></i> Insert</button>
+          <button type="button" class="btn-vis btn-search" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <div class="button-grid trie-playback-grid">
+          <button type="button" class="btn-vis" id="previousBtn"><i class="fas fa-step-backward"></i> Previous</button>
+          <button type="button" class="btn-vis" id="playPauseBtn"><i class="fas fa-play"></i> Play</button>
+          <button type="button" class="btn-vis" id="nextBtn"><i class="fas fa-step-forward"></i> Next</button>
+          <button type="button" class="btn-vis btn-danger" id="resetBtn"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+        <div class="status-box" id="statusBox">Insert a word or search an existing one to begin.</div>
+        <div class="explanation-box">
+          <div class="panel-subtitle">Status / Explanation</div>
+          <p id="explanationBox">Created steps will appear here as the Trie changes.</p>
+        </div>
+        <div class="history-card">
+          <div class="panel-subtitle">Step History</div>
+          <div class="step-counter" id="stepCounter">Step 0 / 0</div>
+        </div>
+      </aside>
+      <main class="trie-canvas-card">
+        <div class="trie-canvas-header">
+          <div class="panel-title"><i class="fas fa-sitemap"></i> Trie Structure</div>
+          <div class="trie-legend">
+            <span><i class="legend-dot legend-current"></i> Current</span>
+            <span><i class="legend-dot legend-created"></i> Created</span>
+            <span><i class="legend-dot legend-failed"></i> Failed</span>
+            <span><i class="legend-dot legend-terminal"></i> Terminal</span>
+          </div>
+        </div>
+        <div class="trie-tree-wrap">
+          <svg id="trieLinesSvg" class="trie-lines-svg" aria-hidden="true" focusable="false"></svg>
+          <div
+            id="trieTreeArea"
+            class="trie-tree-area"
+            role="region"
+            aria-label="Trie visualization"
+            aria-describedby="statusBox explanationBox stepCounter"
+          ></div>
+        </div>
+      </main>
+    </div>
+  </section>
+  <div id="footer-placeholder"></div>
+  <script src="/bootstrap-legacy.js"></script>
+
+  <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/auth.js"></script>
+  <script src="/theme.js"></script>
+  <script src="trie-visualizer.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

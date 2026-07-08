@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Union-Find (Disjoint Set) | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="union-find.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="union-find.js" defer></script>
+</head>
+<body data-page="union-find">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Graph Connectivity: Union-Find (Disjoint Set)</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Forest Initialized | Components: 10</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Sets"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-keyboard"></i> Operations</h3>
+                
+                <div class="param-grid" style="margin-bottom: 1.5rem;">
+                    <label>Union(u, v)</label>
+                    <input type="number" id="input-u" class="glass-input" placeholder="u (0-9)" min="0" max="9">
+                    <input type="number" id="input-v" class="glass-input" placeholder="v (0-9)" min="0" max="9">
+                    <button type="button" id="btn-union" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-link"></i> Union Sets</button>
+                </div>
+
+                <div class="param-grid">
+                    <label>Find(x)</label>
+                    <input type="number" id="input-find" class="glass-input" placeholder="x (0-9)" min="0" max="9" style="grid-column: 1 / 3;">
+                    <button type="button" id="btn-find" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-search"></i> Find Root</button>
+                </div>
+            </div>
+
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode" id="pseudo-union">
+                    <div id="un-1" class="code-line">1. rootU = Find(u)</div>
+                    <div id="un-2" class="code-line">2. rootV = Find(v)</div>
+                    <div id="un-3" class="code-line">3. If rootU == rootV: Return (Already merged)</div>
+                    <div id="un-4" class="code-line">4. If rank[rootU] > rank[rootV]:</div>
+                    <div id="un-5" class="code-line indent">parent[rootV] = rootU</div>
+                    <div id="un-6" class="code-line">5. Else if rank[rootU] < rank[rootV]:</div>
+                    <div id="un-7" class="code-line indent">parent[rootU] = rootV</div>
+                    <div id="un-8" class="code-line">6. Else:</div>
+                    <div id="un-9" class="code-line indent">parent[rootV] = rootU</div>
+                    <div id="un-10" class="code-line indent">rank[rootU]++</div>
+                </div>
+
+                <div class="pseudocode hidden" id="pseudo-find">
+                    <div id="fd-1" class="code-line">1. If parent[x] == x:</div>
+                    <div id="fd-2" class="code-line indent">Return x (Root found)</div>
+                    <div id="fd-3" class="code-line">2. Else:</div>
+                    <div id="fd-4" class="code-line indent">root = Find(parent[x])</div>
+                    <div id="fd-5" class="code-line indent">parent[x] = root // PATH COMPRESSION</div>
+                    <div id="fd-6" class="code-line indent">Return root</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <div class="stage-section" style="flex: 1; width: 100%; position: relative;">
+                    <h4 class="stage-label">Disjoint Set Forest (Conceptual View)</h4>
+                    <canvas id="viz-canvas" role="img" aria-label="Union-Find Tree Visualization"></canvas>
+                    
+                    <div id="math-overlay" class="glass-panel math-panel hidden">
+                        <h4 id="math-title">Current Evaluation</h4>
+                        <div id="math-equation" class="equation">...</div>
+                    </div>
+                </div>
+
+                <div class="stage-section arrays-section">
+                    <h4 class="stage-label">Underlying Data Structure (Memory View)</h4>
+                    <div class="array-row">
+                        <span class="array-title">Index (v):</span>
+                        <div id="index-array" class="array-container"></div>
+                    </div>
+                    <div class="array-row">
+                        <span class="array-title">parent[v]:</span>
+                        <div id="parent-array" class="array-container"></div>
+                    </div>
+                    <div class="array-row">
+                        <span class="array-title">rank[v]:</span>
+                        <div id="rank-array" class="array-container"></div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text"><strong>Union-Find</strong> efficiently tracks elements partitioned into disjoint (non-overlapping) subsets. It answers two queries: Are two elements in the same set? Merge two sets together.</p>
+                <ul class="edu-list">
+                    <li><span class="badge path-comp">Path Compression</span> Flattens the structure during `Find()` by making every node on the path point directly to the root.</li>
+                    <li><span class="badge union-rank">Union by Rank</span> Always attaches the smaller tree to the root of the larger tree, keeping the depth strictly logarithmic.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Complexity</h3>
+                <div class="complexity-stat">
+                    <span class="label">Time (Amortized)</span>
+                    <span class="value">O(α(N))</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Space</span>
+                    <span class="value">O(N)</span>
+                </div>
+                <p class="edu-text sub-text" style="margin-top: 1rem;"><strong>α(N)</strong> is the Inverse Ackermann function. Thanks to Path Compression and Union by Rank, operations are effectively <strong>O(1)</strong> in the real world.</p>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

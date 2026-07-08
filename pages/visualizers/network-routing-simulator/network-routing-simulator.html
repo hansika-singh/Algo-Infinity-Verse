@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Routing Simulator (OSPF/BGP) | Algo Infinity Verse</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="network-routing-simulator.css" />
+</head>
+<body class="network-body">
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="workspace">
+        <!-- Left Panel: Controls & Telemetry -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-network-wired"></i> Topology Editor</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Build a network topology and watch <strong>Dijkstra's Algorithm</strong> dynamically compute shortest paths when links break or change cost.
+                </p>
+
+                <div class="action-tools">
+                    <button type="button" class="tool-btn active" data-tool="select" title="Select & Drag nodes"><i class="fas fa-mouse-pointer"></i> Select</button>
+                    <button type="button" class="tool-btn" data-tool="add-node" title="Click empty space to add a router"><i class="fas fa-server"></i> Add Router</button>
+                    <button type="button" class="tool-btn" data-tool="add-link" title="Click two routers to connect them"><i class="fas fa-project-diagram"></i> Add Link</button>
+                    <button type="button" class="tool-btn danger" data-tool="delete" title="Click node or link to delete"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+
+                <div class="packet-controls">
+                    <h4><i class="fas fa-envelope"></i> Send Packet</h4>
+                    <div class="send-row">
+                        <select id="sourceSelect" aria-label="Source router"><option value="">Source</option></select>
+                        <i class="fas fa-arrow-right"></i>
+                        <select id="destSelect" aria-label="Destination router"><option value="">Destination</option></select>
+                        <button type="button" id="sendPacketBtn" class="btn btn-primary btn-sm" disabled>Send</button>
+                    </div>
+                </div>
+
+                <div class="global-actions">
+                    <button type="button" id="randomizeWeightsBtn" class="btn btn-secondary btn-sm"><i class="fas fa-dice"></i> Randomize Costs</button>
+                    <button type="button" id="clearNetBtn" class="btn btn-secondary btn-sm"><i class="fas fa-broom"></i> Clear</button>
+                </div>
+            </div>
+
+            <!-- Routing Table Display -->
+            <div class="routing-table-section">
+                <h4><i class="fas fa-table"></i> Routing Table <span id="selectedRouterName"></span></h4>
+                <div class="table-container">
+                    <table id="routingTable">
+                        <thead>
+                            <tr>
+                                <th>Dest</th>
+                                <th>Cost</th>
+                                <th>Next Hop</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="3" class="empty-state">Select a router to view its OSPF table</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: SVG Visualizer -->
+        <div class="panel-right">
+            <div class="canvas-header">
+                <span id="networkStatus"><i class="fas fa-check-circle text-accent"></i> Network Stable</span>
+                <div class="legend">
+                    <span class="legend-item"><span class="dot router"></span> Router</span>
+                    <span class="legend-item"><span class="line-sample"></span> Link (Cost)</span>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <svg id="networkSvg" width="100%" height="100%"></svg>
+            </div>
+            
+            <!-- Context Menu for editing links -->
+            <div id="linkContextMenu" class="context-menu" style="display: none;">
+                <label for="linkCostInput">Set Link Cost:</label>
+                <input type="number" id="linkCostInput" min="1" max="999" value="10">
+                <div class="ctx-buttons">
+                    <button type="button" id="ctxSaveBtn" class="btn btn-primary btn-sm">Save</button>
+                    <button type="button" id="ctxCancelBtn" class="btn btn-secondary btn-sm">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="network-routing-simulator.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

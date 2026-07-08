@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Learning Hub</title>
+    <!-- Tailwind CSS via CDN (For Hub Interface) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="bootstrap-learning.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white shadow-xl transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b flex justify-between items-center bg-purple-600 text-white">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-brands fa-bootstrap"></i> Bootstrap Hub
+            </h1>
+            <button id="close-sidebar" class="lg:hidden text-white hover:text-gray-200">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="p-5 border-b bg-gray-50">
+            <div class="flex justify-between text-sm mb-1 font-semibold text-gray-700">
+                <span>Overall Progress</span>
+                <span id="progress-text">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-purple-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+            <ul id="module-list" class="space-y-2">
+                <!-- Dynamically injected sidebar items go here -->
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="open-sidebar" class="lg:hidden text-gray-600 hover:text-gray-900">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <h2 id="active-module-title" class="text-lg md:text-xl font-bold text-gray-800">Module Title</h2>
+            </div>
+            
+            <!-- Tabs Navigation -->
+            <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <button data-tab="lesson" class="tab-btn active px-4 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-purple-600 transition-colors">
+                    <i class="fa-solid fa-book-open mr-1"></i> <span class="hidden sm:inline">Lesson Viewer</span>
+                </button>
+                <button data-tab="playground" class="tab-btn px-4 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-purple-600 transition-colors">
+                    <i class="fa-solid fa-code mr-1"></i> <span class="hidden sm:inline">Interactive Playground</span>
+                </button>
+                <button data-tab="quiz" class="tab-btn px-4 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-purple-600 transition-colors">
+                    <i class="fa-solid fa-list-check mr-1"></i> <span class="hidden sm:inline">Quiz</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-hidden bg-gray-50 p-4 md:p-6 relative">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 w-full h-full overflow-hidden relative">
+                
+                <!-- Lesson Viewer Wrapper -->
+                <div id="tab-lesson" class="tab-content h-full overflow-y-auto p-6 md:p-10 active">
+                    <!-- Dynamically injected lesson text -->
+                </div>
+
+                <!-- Interactive Playground Wrapper -->
+                <div id="tab-playground" class="tab-content h-full hidden flex-col md:flex-row">
+                    <!-- Left: Code Editor -->
+                    <div class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col border-b md:border-b-0 md:border-r border-gray-300">
+                        <div class="bg-gray-800 text-gray-200 text-xs py-2 px-4 flex justify-between items-center font-mono border-b border-gray-700">
+                            <span>index.html (Body Content)</span>
+                            <button id="run-code-btn" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded shadow text-xs font-sans transition-colors">
+                                <i class="fa-solid fa-play mr-1"></i> Run Code
+                            </button>
+                        </div>
+                        <textarea id="code-editor" class="flex-1 w-full bg-gray-900 text-gray-100 p-4 focus:outline-none" spellcheck="false"></textarea>
+                    </div>
+                    
+                    <!-- Right: Live Preview -->
+                    <div class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col bg-white">
+                        <div class="bg-gray-100 text-gray-600 text-xs py-2 px-4 border-b border-gray-300 flex items-center font-mono">
+                            <i class="fa-solid fa-globe mr-2"></i> Live Preview (Bootstrap 5 Active)
+                        </div>
+                        <iframe id="preview-frame" class="flex-1 w-full border-none"></iframe>
+                    </div>
+                </div>
+
+                <!-- Quiz Interface Wrapper -->
+                <div id="tab-quiz" class="tab-content h-full overflow-y-auto p-6 md:p-10 hidden">
+                    <!-- Dynamically injected quiz UI -->
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="bootstrap-learning.js"></script>
+</body>
+</html>

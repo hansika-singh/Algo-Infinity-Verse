@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Big Data Probabilistic Structures | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate high-speed data streams and visualize Bloom Filters & HyperLogLog algorithms." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Chart.js for Telemetry -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="probabilistic-structures.css" />
+</head>
+<body class="prob-body">
+
+    <nav class="navbar prob-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge" id="engineBadge">
+            <i class="fas fa-database"></i> Data Stream: Offline
+        </div>
+    </nav>
+
+    <main class="prob-workspace">
+        
+        <!-- Left Panel: Stream Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-water"></i> Firehose Configuration</h3>
+            </div>
+            
+            <div class="control-section">
+                <p class="desc-text">
+                    Simulate a massive stream of events (e.g., Website Visitors). Exact storage (Sets) consumes infinite RAM. Probabilistic structures trade perfect accuracy for immense memory savings.
+                </p>
+
+                <div class="input-group">
+                    <label>Data Stream Type</label>
+                    <select id="streamType">
+                        <option value="ip">IP Addresses (192.168.x.x)</option>
+                        <option value="user">Usernames (User_XYZ)</option>
+                    </select>
+                </div>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Stream Speed</label>
+                        <input type="range" id="speedSlider" min="10" max="1000" value="500" />
+                        <span class="slider-val" id="speedVal">500 msgs/sec</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Duplicate Rate</label>
+                        <input type="range" id="dupSlider" min="0" max="80" value="30" />
+                        <span class="slider-val" id="dupVal">30%</span>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="btn btn-primary w-100" id="btnStartStream">
+                        <i class="fas fa-play"></i> Start Stream
+                    </button>
+                    <button type="button" class="btn btn-danger w-100 hidden" id="btnStopStream">
+                        <i class="fas fa-stop"></i> Halt Stream
+                    </button>
+                    <button type="button" class="btn btn-outline w-100" id="btnReset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memory Telemetry -->
+            <div class="memory-section">
+                <h4><i class="fas fa-memory"></i> Live RAM Consumption</h4>
+                <div class="memory-grid">
+                    <div class="mem-card bad">
+                        <span class="mem-label">Exact Set (100% Acc)</span>
+                        <strong class="mem-value" id="ramExact">0 B</strong>
+                    </div>
+                    <div class="mem-card good">
+                        <span class="mem-label">Bloom Filter</span>
+                        <strong class="mem-value" id="ramBloom">0 B</strong>
+                    </div>
+                    <div class="mem-card excellent">
+                        <span class="mem-label">HyperLogLog</span>
+                        <strong class="mem-value" id="ramHLL">0 B</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logs-section">
+                <h4><i class="fas fa-stream"></i> Event Firehose</h4>
+                <div class="stream-container" id="streamContainer">
+                    <!-- Events injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: The Structures -->
+        <div class="panel-center">
+            
+            <!-- Bloom Filter -->
+            <div class="structure-box" id="bloomBox">
+                <div class="struct-header">
+                    <div class="struct-title">
+                        <i class="fas fa-filter"></i> Bloom Filter (Existence)
+                    </div>
+                    <div class="struct-stats">
+                        <span>Bits: 256</span> | <span>Hashes: 3</span>
+                    </div>
+                </div>
+                <p class="struct-desc">Checks if an element has been seen. <strong>No false negatives, but possible false positives.</strong></p>
+                
+                <div class="bloom-grid" id="bloomGrid">
+                    <!-- Bit Array Injected -->
+                </div>
+                
+                <div class="struct-metrics">
+                    <div class="metric">Elements Inserted: <strong id="bloomCount">0</strong></div>
+                    <div class="metric">False Positives: <strong id="bloomFalsePos" class="text-danger">0</strong></div>
+                    <div class="metric">Current Error Rate: <strong id="bloomErrorRate" class="text-warning">0.00%</strong></div>
+                </div>
+            </div>
+
+            <!-- HyperLogLog -->
+            <div class="structure-box" id="hllBox">
+                <div class="struct-header">
+                    <div class="struct-title">
+                        <i class="fas fa-calculator"></i> HyperLogLog (Cardinality)
+                    </div>
+                    <div class="struct-stats">
+                        <span>Registers: 64</span>
+                    </div>
+                </div>
+                <p class="struct-desc">Estimates the count of unique elements by hashing data and counting the maximum number of leading zeros.</p>
+                
+                <div class="hll-grid" id="hllGrid">
+                    <!-- Registers Injected -->
+                </div>
+                
+                <div class="struct-metrics">
+                    <div class="metric">Exact Unique Count: <strong id="exactCount">0</strong></div>
+                    <div class="metric">HLL Estimate: <strong id="hllEstimate" class="text-primary">0</strong></div>
+                    <div class="metric">Margin of Error: <strong id="hllErrorMargin" class="text-warning">0.00%</strong></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Charts -->
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3><i class="fas fa-chart-line"></i> Analytics Dashboard</h3>
+            </div>
+            
+            <div class="chart-wrapper">
+                <h4 class="chart-title">Cardinality: Exact vs HyperLogLog</h4>
+                <div class="chart-container">
+                    <canvas id="cardinalityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h4 class="chart-title">Bloom Filter False Positive Accumulation</h4>
+                <div class="chart-container">
+                    <canvas id="fpChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="math-explainer">
+                <h4><i class="fas fa-superscript"></i> The Mathematics</h4>
+                <div class="math-card">
+                    <strong>HyperLogLog Estimate:</strong>
+                    <code>E = α_m * m² / Σ(2^-M[j])</code>
+                    <p>Uses harmonic mean to prevent large outliers from skewing the estimate.</p>
+                </div>
+                <div class="math-card">
+                    <strong>Bloom Filter Opt. Hashes:</strong>
+                    <code>k = (m / n) * ln(2)</code>
+                    <p>Probability of false positive increases as bits fill up.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="probabilistic-structures.js"></script>
+</body>
+</html>

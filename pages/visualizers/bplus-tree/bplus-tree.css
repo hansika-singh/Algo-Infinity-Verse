@@ -1,0 +1,77 @@
+:root {
+    --bg-color: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent: #0284c7; /* WCAG AA Compliant Blue */
+    --accent-hover: #0369a1;
+    --leaf-color: #059669; /* WCAG AA Compliant Emerald */
+    --danger: #dc2626;
+    --text-main: #f8fafc;
+    --node-bg: #1e293b;
+    --link-color: #475569;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 70%);
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.header-info h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.025em; }
+.header-info p.status { font-size: 0.85rem; color: #38bdf8; margin-top: 0.25rem; }
+.controls { display: flex; gap: 0.75rem; }
+
+input {
+    padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.3); color: var(--text-main); font-size: 0.95rem; outline: none; width: 180px; transition: border-color 0.2s;
+}
+input:focus { border-color: var(--accent); }
+
+.btn {
+    padding: 0.5rem 1.25rem; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+}
+
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn.outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+.btn.outline:hover { background: rgba(255, 255, 255, 0.05); }
+
+.canvas-container { flex-grow: 1; width: 100%; position: relative; }
+svg { width: 100%; height: 100%; }
+
+/* D3 Geometry Styling for Variable-Width Nodes */
+.node rect { fill: var(--node-bg); stroke-width: 2px; transition: all 0.3s ease; }
+.node.internal rect { stroke: var(--accent); }
+.node.leaf rect { stroke: var(--leaf-color); }
+.node text { fill: var(--text-main); font-size: 14px; font-weight: 500; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+
+.tree-link { fill: none; stroke: var(--link-color); stroke-width: 2px; }
+.leaf-link { fill: none; stroke: var(--leaf-color); stroke-width: 2px; stroke-dasharray: 4; }

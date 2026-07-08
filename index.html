@@ -1,449 +1,964 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Algo Infinity Verse - Master DSA &amp; Crack Interviews</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="rust-learning.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
-      integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
-  <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-      <div class="loader">
-        <div class="infinity-loader">∞</div>
-        <h2>Algo Infinity Verse</h2>
-        <div class="loading-bar">
-          <div class="loading-progress"></div>
-        </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algo Infinity Verse - Master DSA &amp; Crack Interviews</title>
+
+  <!-- SEO / Social metadata -->
+  <meta name="description"
+    content="Algo Infinity Verse is an interactive DSA learning platform — master data structures and algorithms and crack technical interviews with hands-on visualizers, quizzes, and coding practice." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Algo Infinity Verse" />
+  <meta property="og:title" content="Algo Infinity Verse - Master DSA &amp; Crack Interviews" />
+  <meta property="og:description"
+    content="Master DSA and crack interviews with interactive visualizers, quizzes, and coding practice." />
+  <meta property="og:image" content="/images/banner.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Algo Infinity Verse - Master DSA &amp; Crack Interviews" />
+  <meta name="twitter:description"
+    content="Master DSA and crack interviews with interactive visualizers, quizzes, and coding practice." />
+  <meta name="twitter:image" content="/images/banner.png" />
+
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#38bdf8" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="pages/learning/rust-learning.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Fira+Code:wght@400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="pages/index/index.css" />
+  <script src="error-boundary.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
+      }
+    }
+    </script>
+
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <style>
+
+      /* Activity Feed Styles */
+      .card-header-with-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .btn-clear-activity {
+      /* Search Autocomplete Styles */
+      .search-wrapper {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-bar {
+        display: flex;
+        align-items: center;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      .search-bar:focus-within {
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+      }
+
+      .search-bar i {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        transition: color 0.3s ease;
+      }
+
+      .search-bar:focus-within i {
+        color: #7c3aed;
+      }
+
+      .search-bar input {
+        flex: 1;
+        padding: 12px 12px;
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        outline: none;
+        width: 100%;
+      }
+
+      .search-bar input::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+
+      .clear-search-btn {
+
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+      }
+
+      .btn-clear-activity:hover {
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .clear-search-btn.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .clear-search-btn:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+
+      .activity-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .activity-feed::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .activity-feed::-webkit-scrollbar-track {
+
+      .search-suggestions {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        max-height: 320px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+        padding: 8px 0;
+      }
+
+      .search-suggestions::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .search-suggestions::-webkit-scrollbar-track {
+
+        background: var(--bg-primary);
+        border-radius: 2px;
+      }
+
+
+      .activity-feed::-webkit-scrollbar-thumb {
+      .search-suggestions::-webkit-scrollbar-thumb {
+
+        background: var(--border-color);
+        border-radius: 2px;
+      }
+
+
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+        animation: activitySlideIn 0.3s ease;
+      }
+
+      .activity-item:hover {
+        border-color: var(--primary);
+        transform: translateX(4px);
+      }
+
+      .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 16px;
+      }
+
+      .activity-icon.solved {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+
+      .activity-icon.quiz {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+
+      .activity-icon.badge {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+
+      .activity-icon.streak {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .activity-icon.level {
+
+      .search-suggestions.visible {
+        display: block;
+        animation: suggestionsSlideIn 0.2s ease;
+      }
+
+      @keyframes suggestionsSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .suggestion-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        color: var(--text-primary);
+        text-decoration: none;
+      }
+
+      .suggestion-item:hover,
+      .suggestion-item:focus {
+        background: rgba(124, 58, 237, 0.08);
+      }
+
+      .suggestion-item.active {
+        background: rgba(124, 58, 237, 0.12);
+        border-left: 3px solid #7c3aed;
+      }
+
+      .suggestion-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        width: 24px;
+        text-align: center;
+      }
+
+      .suggestion-text {
+        flex: 1;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .suggestion-text .highlight {
+        background-color: #fbbf24;
+        color: #1e293b;
+        padding: 0 2px;
+        border-radius: 2px;
+        font-weight: 600;
+      }
+
+      .suggestion-type {
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+
+      .suggestion-type.title {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+      }
+
+      .suggestion-type.tag {
+
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+      }
+
+
+      .activity-icon.xp {
+      .suggestion-type.topic {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+
+      .suggestion-type.description {
+        background: rgba(251, 191, 36, 0.15);
+        color: #f59e0b;
+      }
+
+
+      .activity-icon.practice {
+        background: rgba(6, 182, 212, 0.15);
+        color: #06b6d4;
+      }
+
+      .activity-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .activity-content .activity-message {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin: 0 0 2px 0;
+        line-height: 1.4;
+      }
+
+      .activity-content .activity-detail {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .activity-time {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .activity-empty {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--text-secondary);
+      }
+
+      .activity-empty i {
+        font-size: 32px;
+        color: var(--border-color);
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .activity-empty p {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .activity-feed-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        margin-top: 12px;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .btn-view-all {
+        background: none;
+        border: none;
+        color: var(--primary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.8rem;
+        transition: color 0.2s ease;
+      }
+
+      .btn-view-all:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+
+      @keyframes activitySlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .activity-item.new {
+        border-left: 3px solid var(--primary);
+      }
+
+      .dark .activity-item {
+        background: #0f172a;
+        border-color: #334155;
+      }
+
+      .dark .activity-item:hover {
+        border-color: #7c3aed;
+      }
+
+      .dark .activity-empty i {
+        color: #334155;
+      }
+
+      .dark .activity-feed-footer {
+      .suggestion-group-header {
+        padding: 6px 16px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 4px;
+      }
+
+      .suggestion-no-results {
+        padding: 16px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .suggestion-no-results i {
+        display: block;
+        font-size: 24px;
+        margin-bottom: 8px;
+        color: var(--border-color);
+      }
+
+
+      /* Tag Clickable Styles */
+      .tag {
+        cursor: pointer;
+        transition: all 0.25s ease;
+        user-select: none;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+      }
+
+      .tag:hover {
+
+      /* ===== KEYBOARD SHORTCUTS STYLES ===== */
+      
+      .shortcuts-toggle-btn {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        z-index: 998;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        color: var(--text-primary);
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        font-family: 'Poppins', sans-serif;
+      }
+
+      .shortcuts-toggle-btn:hover {
+
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+      }
+
+      .tag:active {
+        transform: scale(0.95);
+      }
+
+      .tag:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .tag::after {
+        content: ' 🔍';
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        font-size: 0.6rem;
+      }
+
+      .tag:hover::after {
+        opacity: 1;
+      }
+
+      .dark .tag {
+        background: #1e293b;
+        border-color: #334155;
+        color: #94a3b8;
+      }
+
+      .dark .tag:hover {
+        background: #7c3aed;
+        color: white;
+        border-color: #7c3aed;
+      }
+
+      @media (max-width: 768px) {
+        .tag {
+          padding: 6px 14px;
+          font-size: 0.8rem;
+          min-height: 32px;
+        }
+        .tag::after {
+          content: '';
+
+        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+      }
+
+      .shortcuts-toggle-btn i {
+        font-size: 1rem;
+      }
+
+      .shortcuts-toggle-btn .shortcut-hint {
+        font-size: 0.7rem;
+        opacity: 0.6;
+        font-weight: 400;
+      }
+
+      .shortcuts-modal .modal-content {
+        max-width: 700px;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+
+      .shortcuts-modal-content {
+        padding: 0 !important;
+      }
+
+      .shortcuts-modal .modal-header {
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .shortcuts-modal .modal-header h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .shortcuts-modal .modal-header h3 i {
+        color: var(--primary);
+      }
+
+      .shortcuts-modal .modal-body {
+        padding: 20px 24px 16px;
+      }
+
+      .shortcuts-intro {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .shortcuts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+
+  <!-- Theme Initialization Script -->
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) { }
+    })();
+  </script>
+
+
+      .dark .suggestion-type.description {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fcd34d;
+      }
+
+      .dark .suggestion-group-header {
+        color: #94a3b8;
+
+        border-color: #334155;
+      }
+
+      @media (max-width: 768px) {
+
+        .activity-item {
+          padding: 8px 10px;
+          gap: 10px;
+        }
+        
+        .activity-icon {
+          width: 30px;
+          height: 30px;
+          font-size: 13px;
+        }
+        
+        .activity-content .activity-message {
+          font-size: 0.85rem;
+        }
+        
+        .activity-time {
+          font-size: 0.65rem;
+
+        .search-wrapper {
+          min-width: 150px;
+        }
+        
+        .search-bar input {
+          font-size: 0.85rem;
+          padding: 10px 10px;
+        }
+        
+        .search-suggestions {
+          max-height: 260px;
+          border-radius: 10px;
+        }
+        
+        .suggestion-item {
+          padding: 8px 14px;
+          font-size: 0.85rem;
+        }
+        
+        .suggestion-icon {
+          font-size: 0.85rem;
+          width: 20px;
+
+        }
+      }
+
+      @media (max-width: 480px) {
+
+        .activity-item {
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        
+        .activity-time {
+          width: 100%;
+          margin-left: 42px;
+
+        .search-wrapper {
+          min-width: 120px;
+          width: 100%;
+        }
+        
+        .search-suggestions {
+          max-height: 220px;
+          margin-top: 2px;
+        }
+        
+        .suggestion-item {
+          padding: 6px 12px;
+          font-size: 0.8rem;
+          gap: 8px;
+        }
+        
+        .suggestion-type {
+          font-size: 0.55rem;
+          padding: 1px 6px;
+
+        }
+      }
+    </style>
+
+</head>
+
+<body data-page="index">
+  <!-- Offline Status Banner -->
+  <div id="offline-banner" class="offline-banner hidden" aria-live="polite">
+    <i class="fas fa-wifi-slash"></i> You are currently offline. Some features may be limited, but cached content is
+    available.
+  </div>
+
+  <!-- PWA Storage Usage -->
+  <div id="pwa-storage-usage"
+    style="position: fixed; bottom: 10px; left: 30px; background: rgba(16, 23, 42, 0.8); border: 1px solid var(--primary); padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; color: #cbd5e1; z-index: 9999; backdrop-filter: blur(5px);">
+    Checking storage...
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
       </div>
     </div>
+  </div>
 
-    <!-- Scroll to Top Button -->
-    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
-      <i class="fas fa-circle-chevron-up"></i>
-    </button>
+  <!-- Scroll to Top Button -->
+  <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="nav-logo">
-        <span class="logo-text">∞</span>
-        <span class="logo-title">Algo Infinity Verse</span>
-      </div>
-      <ul class="nav-links" id="navLinks">
-        <li class="nav-item">
-          <a href="#home" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item has-dropdown">
-          <button class="nav-link dropdown-toggle"
-            aria-haspopup="menu"
-            aria-expanded="false"
-          >
-            <span>Learn</span>
-            <i class="fas fa-chevron-down dropdown-icon"></i>
-          </button>
-          <div class="dropdown-menu" role="menu">
-    <!-- Core Learning -->
-    <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
-    <a href="index.html#practice" class="dropdown-item" role="menuitem">Practice Problems</a>
-    <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
-    <a href="index.html#roadmap" class="dropdown-item" role="menuitem">Learning Roadmap</a>
+  <!-- Back to Top Button -->
+  <button type="button" id="backToTop" class="back-to-top" aria-label="Back to top" title="Scroll back to top">
+    <svg class="progress-ring" viewBox="0 0 44 44" aria-hidden="true">
+      <circle class="progress-ring-bg" cx="22" cy="22" r="20" />
+      <circle class="progress-ring-fill" cx="22" cy="22" r="20" />
+    </svg>
+    <i class="fas fa-arrow-up"></i>
+  </button>
 
-    <!-- AI Learning Features -->
-    <a href="concept-bridge.html" class="dropdown-item" role="menuitem">Concept Bridge Trainer</a>
-    <a href="think-aloud-judge.html" class="dropdown-item" role="menuitem">Think-Aloud AI Judge</a>
-    <a href="reverse-interview.html" class="dropdown-item" role="menuitem">Reverse Interview Mode</a>
-    <a href="cognitive-load-analyzer.html" class="dropdown-item" role="menuitem">Cognitive Load Analyzer</a>
-    <a href="memory-scanner.html" class="dropdown-item" role="menuitem">AI Code Memory Scanner</a>
-    <a href="intent-detector.html" class="dropdown-item" role="menuitem">AI Intent Detection Assistant</a>
-    <a href="problem-deconstructor.html" class="dropdown-item" role="menuitem">Problem Deconstructor</a>
-            
+  <!-- ===== KEYBOARD SHORTCUTS BUTTON ===== -->
+  <button type="button" id="shortcutsToggle" class="shortcuts-toggle-btn" aria-label="Keyboard shortcuts"
+    title="Keyboard Shortcuts (Press ?)">
+    <i class="fas fa-keyboard"></i>
+    <span>Shortcuts</span>
+    <span class="shortcut-hint">(?)</span>
+  </button>
 
-    <!-- Programming Languages -->
-    <a href="c-learning.html" class="dropdown-item" role="menuitem">Learn C</a>
-    <a href="cplusplus-learning.html" class="dropdown-item" role="menuitem">Learn C++</a>
-    <a href="java-learning.html" class="dropdown-item" role="menuitem">Learn Java</a>
-    <a href="python-learning.html" class="dropdown-item" role="menuitem">Learn Python</a>
-    <a href="javascript-learning.html" class="dropdown-item" role="menuitem">Learn JavaScript</a>
-    <a href="php-learning.html" class="dropdown-item" role="menuitem">Learn PHP</a>
-    <a href="sql-learning.html" class="dropdown-item" role="menuitem">Learn SQL</a>
-    <a href="rust-learning.html" class="dropdown-item" role="menuitem">Learn Rust</a>
-    <a href="powerbi-learning.html" class="dropdown-item" role="menuitem">Learn Power BI</a>
-
-    <!-- Core CS Subjects -->
-    <a href="dbms-learning.html" class="dropdown-item" role="menuitem">Learn DBMS</a>
-    <a href="os-learning.html" class="dropdown-item" role="menuitem">Learn Operating Systems</a>
-    <a href="computer-architecture.html" class="dropdown-item" role="menuitem">Learn Computer Architecture</a>
-    <a href="oop-learning.html" class="dropdown-item" role="menuitem">Learn OOP</a>
-    <a href="system-design.html" class="dropdown-item" role="menuitem">Learn System Design</a>
-
-    <!-- Data Structures -->
-    <a href="array-learning.html" class="dropdown-item" role="menuitem">Learn Arrays</a>
-    <a href="linkedlist-learning.html" class="dropdown-item" role="menuitem">Learn Linked Lists</a>
-    <a href="stack-learning.html" class="dropdown-item" role="menuitem">Learn Stacks</a>
-    <a href="trees-learning.html" class="dropdown-item" role="menuitem">Learn Trees</a>
-    <a href="graph-learning.html" class="dropdown-item" role="menuitem">Learn Graphs</a>
-    <a href="matrix-learning.html" class="dropdown-item" role="menuitem">Learn Matrix</a>
-    <a href="prefix-sum-learning.html" class="dropdown-item" role="menuitem">Learn Prefix Sum</a>
-
-    <!-- Algorithms -->
-    <a href="binary-search.html" class="dropdown-item" role="menuitem">Learn Binary Search</a>
-    <a href="sliding-window-learning.html" class="dropdown-item" role="menuitem">Learn Sliding Window</a>
-    <a href="recursion-learning.html" class="dropdown-item" role="menuitem">Learn Recursion</a>
-    <a href="divide-and-conquer-learning.html" class="dropdown-item" role="menuitem">Learn Divide &amp; Conquer</a>
-    <a href="bit-manipulation-learning.html" class="dropdown-item" role="menuitem">Learn Bit Manipulation</a>
-    <a href="tree-traversal.html" class="dropdown-item" role="menuitem">Tree Traversal</a>
-    <a href="shortest-path-learning.html" class="dropdown-item" role="menuitem">Learn Shortest Path Algorithms</a>
-    <a href="wrong-turn-replay.html " class="dropdown-item" role="menuitem">Wrong Turn Replay</a>
-    <a href="compare.html" class="dropdown-item" role="menuitem">Compare Code</a>
-
-    <!-- Visualizers -->
-    <a href="sorting-visualizer.html" class="dropdown-item" role="menuitem">Sorting Visualizer</a>
-    <a href="pathfinding-visualizer.html" class="dropdown-item" role="menuitem">Pathfinding Visualizer</a>
-    <a href="graph-visualizer.html" class="dropdown-item" role="menuitem">Graph Visualizer</a>
-    <a href="tree-visualizer.html" class="dropdown-item" role="menuitem">Tree Visualizer</a>
-    <a href="recursion-tree-visualizer.html" class="dropdown-item" role="menuitem">Recursion Tree Visualizer</a>
-
-    <!-- Simulators & Tools -->
-    <a href="dry-run-simulator.html" class="dropdown-item" role="menuitem">Dry Run Simulator</a>
-    <a href="solution-evolution.html" class="dropdown-item" role="menuitem">Solution Evolution Simulator</a>
-    <a href="pattern-trainer.html" class="dropdown-item" role="menuitem">Pattern Recognition Trainer</a>
-    <a href="complexity-calculator.html" class="dropdown-item" role="menuitem">Complexity Calculator</a>
-    <a href="algorithm-timeline.html" class="dropdown-item" role="menuitem">Algorithm Timeline</a>
-
-    <!-- Code Editors -->
-    <a href="python-editor.html" class="dropdown-item" role="menuitem">Python Editor</a>
-    <a href="c-editor.html" class="dropdown-item" role="menuitem">C Editor</a>
-    <a href="cpp-editor.html" class="dropdown-item" role="menuitem">C++ Editor</a>
-    <a href="java-editor.html" class="dropdown-item" role="menuitem">Java Editor</a>
-    <a href="php-editor.html" class="dropdown-item" role="menuitem">PHP Editor</a>
-    <a href="ruby-editor.html" class="dropdown-item" role="menuitem">Ruby Editor</a>
-    <a href="scala-editor.html" class="dropdown-item" role="menuitem">Scala Editor</a>
-    <a href="sql-editor.html" class="dropdown-item" role="menuitem">SQL Editor</a>
-    <a href="perl.html" class="dropdown-item" role="menuitem">Perl Editor</a>
-    <a href="go-editor.html" class="dropdown-item" role="menuitem">Go Editor</a>
-
-    <!-- Playgrounds -->
-    <a href="react-playground.html" class="dropdown-item" role="menuitem">React Playground</a>
-    <a href="Playground/playground.html" class="dropdown-item" role="menuitem">Code Playground</a>
-
-    <!-- Career & Skill Development -->
-    <a href="resume.html" class="dropdown-item" role="menuitem">AI Resume Analyzer</a>
-    <a href="resume-tips.html" class="dropdown-item" role="menuitem">Resume Tips</a>
-    <a href="job-preparation-hub.html" class="dropdown-item" role="menuitem">Job & Internship Preparation Hub</a>
-          </div>
-        </li>
-        <li class="nav-item has-dropdown">
-          <button class="nav-link dropdown-toggle"
-            aria-haspopup="menu"
-            aria-expanded="false"
-          >
-            <span>Interview</span>
-            <i class="fas fa-chevron-down dropdown-icon"></i>
-          </button>
-          <div class="dropdown-menu" role="menu">
-            <a href="#interview" class="dropdown-item" role="menuitem">Interview Prep</a>
-            <a href="cheat-sheets.html" class="dropdown-item"
-               role="menuitem">DSA Cheat Sheets</a
-            >
-            <a href="system-design.html" class="dropdown-item" role="menuitem">System Design</a>
-            <a href="behavioral-questions.html" class="dropdown-item"
-               role="menuitem">Behavioral Questions</a
-            >
-            <a href="company-interview.html" class="dropdown-item" role="menuitem">Company Question Bank</a>
-            <a href="interview-experience.html" class="dropdown-item" role="menuitem">Interview Experiences</a>
-            <a href="interview-mistakes.html" class="dropdown-item" role="menuitem">Mistakes Library</a>
-            <a href="leetcode.html" class="dropdown-item" role="menuitem">LeetCode Sync Engine</a>
-            <a href="interview-heatmap.html" class="dropdown-item" role="menuitem">Interview Heatmap</a>
-            <a href="future-self-simulator.html" class="dropdown-item" role="menuitem">Future self Simulator</a>
-            <a href="edge-case-generator.html" class="dropdown-item" role="menuitem">Edge Case Generator</a>
-          </div>
-        </li>
-        <li class="nav-item has-dropdown">
-          <button class="nav-link dropdown-toggle"
-            aria-haspopup="menu"
-            aria-expanded="false"
-          >
-            <span>Community</span>
-            <i class="fas fa-chevron-down dropdown-icon"></i>
-          </button>
-          <div class="dropdown-menu" role="menu">
-            <a href="community.html" class="dropdown-item" role="menuitem">Discussions</a>
-            <a href="#dashboard" class="dropdown-item" role="menuitem">Leaderboard</a>
-            <a href="support-page/index.html" class="dropdown-item" role="menuitem">Support</a>
-            <a href="feedback.html" class="dropdown-item" role="menuitem">Feedback</a>
-            <a href="faq.html" class="dropdown-item" role="menuitem">FAQ</a>
-          </div>
-        </li>
-        <li class="nav-item has-dropdown nav-profile-dropdown">
-          <button class="nav-link dropdown-toggle"
-            aria-haspopup="menu"
-            aria-expanded="false"
-          >
-            <span>Profile</span>
-            <i class="fas fa-chevron-down dropdown-icon"></i>
-          </button>
-          <div class="dropdown-menu dropdown-menu-end" role="menu">
-            <a href="#dashboard" class="dropdown-item" role="menuitem">
-              <i class="fas fa-tachometer-alt"></i>
-              Dashboard
-            </a>
-            <a href="#profile" class="dropdown-item" role="menuitem">
-              <i class="fas fa-user"></i>
-              My Profile
-            </a>
-            <a href="resume.html" class="dropdown-item" role="menuitem">
-              <i class="fas fa-file-alt"></i>
-              Coding Resume
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="login.html"
-              class="dropdown-item nav-auth-link"
-              id="navLoginBtn"
-             role="menuitem">
-              <i class="fas fa-sign-in-alt"></i>
-              Sign In
-            </a>
-            <a href="signup.html"
-              class="dropdown-item nav-auth-link"
-              id="navSignupBtn"
-             role="menuitem">
-              <i class="fas fa-user-plus"></i>
-              Sign Up
-            </a>
-          </div>
-        </li>
-        <li class="nav-item nav-cta desktop-only">
-          <a href="#practice" class="btn btn-primary nav-cta-btn" aria-label="Start learning practice problems">
-            <i class="fas fa-rocket"></i>
-            Start Learning
-          </a>
-        </li>
-      </ul>
-      <div class="nav-buttons">
-        <button
-          id="darkModeToggle"
-          class="dark-mode-btn"
-          aria-label="Toggle dark mode"
-        >
-          <i class="fas fa-moon"></i>
-        </button>
-        <button
-          id="menuToggle"
-          class="menu-toggle"
-          aria-label="Toggle navigation menu"
-          aria-expanded="false"
-        >
-          <i class="fas fa-bars"></i>
+  <!-- ===== KEYBOARD SHORTCUTS MODAL ===== -->
+  <div id="shortcutsModal" class="modal shortcuts-modal" role="dialog" aria-modal="true"
+    aria-labelledby="shortcutsModalTitle" style="display: none;">
+    <div class="modal-content shortcuts-modal-content">
+      <div class="modal-header">
+        <h3 id="shortcutsModalTitle">
+          <i class="fas fa-keyboard"></i> Keyboard Shortcuts
+        </h3>
+        <button type="button" class="modal-close" id="shortcutsModalClose" aria-label="Close shortcuts">
+          <i class="fas fa-times"></i>
         </button>
       </div>
-    </nav>
+      <div class="modal-body">
+        <p class="shortcuts-intro">
+          Use these keyboard shortcuts to navigate faster and boost your productivity.
+        </p>
 
+        <div class="shortcuts-grid">
+          <!-- Navigation Shortcuts -->
+          <div class="shortcuts-section">
+            <h4><i class="fas fa-compass"></i> Navigation</h4>
+            <table class="shortcuts-table">
+              <tbody>
+                <tr>
+                  <td><kbd>Alt</kbd> + <kbd>H</kbd></td>
+                  <td>Go to Home</td>
+                </tr>
+                <tr>
+                  <td><kbd>Alt</kbd> + <kbd>T</kbd></td>
+                  <td>Go to Topics</td>
+                </tr>
+                <tr>
+                  <td><kbd>Alt</kbd> + <kbd>P</kbd></td>
+                  <td>Go to Practice</td>
+                </tr>
+                <tr>
+                  <td><kbd>Alt</kbd> + <kbd>Q</kbd></td>
+                  <td>Go to Quiz</td>
+                </tr>
+                <tr>
+                  <td><kbd>Alt</kbd> + <kbd>D</kbd></td>
+                  <td>Go to Dashboard</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Search Shortcuts -->
+          <div class="shortcuts-section">
+            <h4><i class="fas fa-search"></i> Search</h4>
+            <table class="shortcuts-table">
+              <tbody>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>K</kbd></td>
+                  <td>Focus Search</td>
+                </tr>
+                <tr>
+                  <td><kbd>Esc</kbd></td>
+                  <td>Clear Search / Close Modal</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Editor Shortcuts -->
+          <div class="shortcuts-section">
+            <h4><i class="fas fa-code"></i> Code Editor</h4>
+            <table class="shortcuts-table">
+              <tbody>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
+                  <td>Run Code</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>S</kbd></td>
+                  <td>Save/Submit Code</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>/</kbd></td>
+                  <td>Toggle Comment</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
+                  <td>Undo</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>Y</kbd></td>
+                  <td>Redo</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>F</kbd></td>
+                  <td>Find</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>H</kbd></td>
+                  <td>Replace</td>
+                </tr>
+                <tr>
+                  <td><kbd>Ctrl</kbd> + <kbd>G</kbd></td>
+                  <td>Go to Line</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- General Shortcuts -->
+          <div class="shortcuts-section">
+            <h4><i class="fas fa-globe"></i> General</h4>
+            <table class="shortcuts-table">
+              <tbody>
+                <tr>
+                  <td><kbd>?</kbd></td>
+                  <td>Open Shortcuts Help</td>
+                </tr>
+                <tr>
+                  <td><kbd>Esc</kbd></td>
+                  <td>Close Modal / Dialog</td>
+                </tr>
+                <tr>
+                  <td><kbd>Tab</kbd></td>
+                  <td>Navigate to Next Element</td>
+                </tr>
+                <tr>
+                  <td><kbd>Shift</kbd> + <kbd>Tab</kbd></td>
+                  <td>Navigate to Previous Element</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="shortcuts-footer">
+          <span class="shortcuts-tip">
+            <i class="fas fa-lightbulb"></i>
+            Tip: Press <kbd>?</kbd> anytime to open this modal
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="shortcutsModalCloseBtn">
+          Close <kbd>Esc</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar (loaded from partial) -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Main content landmark -->
+  <main id="main" tabindex="-1">
     <!-- Hero Section -->
-    <section id="home" class="hero">
-      <div class="hero-background">
-        <div class="stars"></div>
-        <div class="stars2"></div>
-        <div class="stars3"></div>
-      </div>
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span class="title-line">Welcome to</span>
-          <span class="main-title gradient-text">Algo Infinity Verse</span>
-          <span class="subtitle">Master DSA &amp; Crack Interviews</span>
-        </h1>
-        <div class="typing-container">
-          <span class="typing-text" id="typingText"></span>
-          <span class="typing-cursor">|</span>
-        </div>
-        <div class="hero-buttons">
-          <a href="#practice" class="btn btn-primary">
-            <i class="fas fa-rocket"></i> Start Practice
-          </a>
-          <a href="#roadmap" class="btn btn-secondary">
-            <i class="fas fa-map"></i> Explore Roadmap
-          </a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat-box big-box">
-            <span class="stat-number" data-target="22">0</span>
-            <span class="stat-label">Problems</span>
-          </div>
-          <div class="stat-box big-box">
-            <span class="stat-number" data-target="6">0</span>
-            <span class="stat-label">DSA Topics</span>
-          </div>
-          <div class="stat-box big-box">
-            <span class="stat-number" data-target="60">0</span>
-            <span class="stat-label">Quiz Questions</span>
-          </div>
-        </div>
-      </div>
-      <div class="scroll-indicator">
-        <i class="fas fa-chevron-down"></i>
-      </div>
-    </section>
+    <div id="hero-placeholder"></div>
 
     <!-- Topic of the Day Section -->
-    <section id="topic-of-the-day" class="section totd-section">
-      <div class="container">
-        <div class="totd-card glass-card big-box">
-          <div class="totd-badge">
-            <i class="fas fa-calendar-day"></i>
-            Topic of the Day
-          </div>
-          <div class="totd-content">
-            <div class="totd-icon" id="totdIcon"></div>
-            <div class="totd-info">
-              <h2 class="totd-title" id="totdTitle"></h2>
-              <p class="totd-desc" id="totdDesc"></p>
-              <div class="totd-meta">
-                <span class="totd-difficulty" id="totdDifficulty"></span>
-                <span class="totd-problems" id="totdProblems"></span>
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-primary totd-btn" id="totdBtn">
-            <i class="fas fa-book-open"></i> Learn Now
-          </button>
-        </div>
-      </div>
-    </section>
+    <div id="topic-of-the-day-placeholder"></div>
 
     <!-- DSA Topics Section -->
-    <section id="topics" class="section topics-section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="title-icon">🧠</span>
-          DSA Topics
-        </h2>
-        <p class="section-subtitle">
-          Master core data structures and algorithms
-        </p>
-        <div class="topics-grid">
-          <!-- Topics will be generated by JavaScript -->
-        </div>
-      </div>
-    </section>
+    <div id="topics-placeholder"></div>
 
     <!-- Practice Problems Section -->
-    <section id="practice" class="section practice-section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="title-icon">🧩</span>
-          Practice Problems
-        </h2>
-        <div class="practice-controls">
-          <div class="search-bar">
-            <i class="fas fa-search"></i>
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Search problems..."
-            />
-            <button
-              id="clearSearchBtn"
-              class="clear-search-btn"
-              aria-label="Clear search"
-            >
-              &times;
-            </button>
-          </div>
-          <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="easy">Easy</button>
-            <button class="filter-btn" data-filter="medium">Medium</button>
-            <button class="filter-btn" data-filter="hard">Hard</button>
-            <button class="filter-btn" data-filter="favorites">
-              <i class="fas fa-heart"></i>
-              Favorites
-            </button>
-          </div>
-        </div>
-        <div class="problem-counter-container">
-          Showing <span id="visible-count">0</span> of
-          <span id="total-count">0</span> Problems
-        </div>
-        <div class="problems-grid">
-          <!-- Problems will be generated by JavaScript -->
-        </div>
-      </div>
-    </section>
+    <div id="practice-placeholder"></div>
+
+    <!-- DSA Flashcards Revision Section -->
+    <div id="flashcards-placeholder"></div>
+
     <!-- Rust Playground Section -->
-    <section id="rust-playground" class="section rust-playground-section">
-      <div class="container">
-        <div class="rust-hero">
-          <h2 class="section-title">
-            <span class="title-icon">🦀</span>
-            Rust Code Playground
-          </h2>
-          <p class="section-subtitle">
-            Write, compile, and run Rust programs directly in the browser using
-            a sandboxed execution API.
-          </p>
-        </div>
-
-        <div class="rust-playground">
-          <div class="rust-editor-panel">
-            <div class="panel-header">
-              <h2>Editor</h2>
-              <label for="rustExampleSelect" class="visually-hidden">Choose a Rust example</label>
-              <select id="rustExampleSelect">
-                <option value="hello">Hello World</option>
-                <option value="ownership">Ownership & Borrowing</option>
-                <option value="structs">Structs & Enums</option>
-                <option value="concurrency">Basic Concurrency</option>
-              </select>
-            </div>
-
-            <label for="rustEditor" class="visually-hidden">Rust code editor</label>
-            <textarea id="rustEditor" spellcheck="false"></textarea>
-
-            <div class="rust-actions">
-              <button id="runRustBtn">Run Code</button>
-              <button id="resetRustBtn">Reset</button>
-              <button id="clearRustOutputBtn">Clear Output</button>
-            </div>
-          </div>
-
-          <div class="rust-output-panel">
-            <h2>Output Console</h2>
-            <pre id="rustOutput">Output will appear here...</pre>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div id="rust-playground-placeholder"></div>
 
     <!-- Quiz Section -->
-    <section id="quiz" class="section quiz-section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="title-icon">📝</span>
-          Topic Quizzes
-        </h2>
-        <p class="section-subtitle">
-          Test your knowledge with 10 questions per topic
-        </p>
-        <div class="quiz-grid">
-          <!-- Quiz cards will be generated by JavaScript -->
-        </div>
-      </div>
-    </section>
+    <div id="quiz-placeholder"></div>
 
     <!-- Roadmap Section -->
     <section id="roadmap" class="section roadmap-section">
@@ -520,6 +1035,7 @@
             id="roadmapAdvancedTab"
           >
             <i class="fas fa-fire"></i> Advanced Roadmap
+            <i class="fas fa-crown"></i> Advanced Roadmap
           </button>
           <button
             class="roadmap-tab"
@@ -600,123 +1116,13 @@
         </div>
       </div>
     </section>
+    <div id="roadmap-placeholder"></div>
 
     <!-- Interview Prep Section -->
-    <section id="interview" class="section interview-section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="title-icon">🎯</span>
-          Interview Preparation
-        </h2>
-        <div class="interview-grid">
-          <div class="interview-card">
-            <div class="card-icon">
-              <i class="fas fa-brain"></i>
-            </div>
-            <h3>Behavioral Questions</h3>
-            <p>
-              Master the STAR method and answer behavioral questions confidently
-            </p>
-            <a
-              href="behavioral-questions.html" class="card-btn" aria-label="Start learning behavioral questions"
-              style="
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              Start Learning
-            </a>
-          </div>
-          <div class="interview-card">
-            <div class="card-icon">
-              <i class="fas fa-code"></i>
-            </div>
-            <h3>Technical Interviews</h3>
-            <p>Whiteboard coding practice and problem-solving strategies</p>
-            <button class="card-btn" data-category="technical" aria-label="Start learning technical interviews">
-              Start Learning
-            </button>
-          </div>
-          <div class="interview-card">
-            <div class="card-icon">
-              <i class="fas fa-file-alt"></i>
-            </div>
-            <h3>Coding Resume</h3>
-            <p>
-              View your coding journey in a beautiful, structured resume layout
-            </p>
-            <a
-              href="resume.html"
-              class="card-btn"
-              style="
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              View Resume
-            </a>
-          </div>
-          <div class="interview-card">
-            <div class="card-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <h3>System Design</h3>
-            <p>Learn to design scalable systems and architecture</p>
-            <a
-              href="system-design.html" class="card-btn" aria-label="Start learning system design"
-              style="
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              Start Learning
-            </a>
-          </div>
-          <div class="interview-card">
-            <div class="card-icon">
-              <i class="fas fa-file-pdf"></i>
-            </div>
-            <h3>DSA Cheat Sheets</h3>
-            <p>
-              Quick reference guides with complexity tables and code templates
-            </p>
-            <a
-              href="cheat-sheets.html" class="card-btn" aria-label="Start learning DSA cheat sheets"
-              style="
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              Start Learning
-            </a>
-          </div>
-          <div class="interview-card">
-            <div class="card-icon">
-                <i class="fas fa-file-alt"></i>
-             </div>
-
-                   <h3>Resume Tips</h3>
-
-                  <p> Learn resume structure, ATS-friendly formatting, project presentation, and placement preparation.</p>
-
-                  <a href="resume-tips.html" class="card-btn" aria-label="Start learning resume tips"
-                  style="
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-              ">
-                    Start Learning
-                    </a>
-              </div>
-        </div>
-      </div>
-    </section>
+    <div id="interview-placeholder"></div>
 
     <!-- Dashboard Section -->
+
     <section id="dashboard" class="section dashboard-section">
       <div class="container">
         <h2 class="section-title">
@@ -744,7 +1150,9 @@
               </div>
               <button
                 class="profile-edit-btn"
-                id="profileEditBtn" title="Edit Profile" aria-label="Edit Profile"
+                id="profileEditBtn"
+                title="Edit Profile"
+                aria-label="Edit Profile"
               >
                 <i class="fas fa-pen"></i>
               </button>
@@ -814,6 +1222,7 @@
               </div>
             </div>
               href="resume.html"
+              href="/pages/career/resume/resume.html"
               class="btn btn-secondary"
               style="
                 width: 100%;
@@ -850,14 +1259,44 @@
               </div>
             </div>
           </div>
-          <div class="dashboard-card">
-            <h3>Recent Activity</h3>
-            <div class="activity-list" id="activityList">
-              <p class="empty-state">
-                No recent activity. Start solving problems!
-              </p>
+          
+
+          <!-- Smart Review Queue Widget -->
+          <div class="dashboard-card review-queue-card">
+            <div class="card-header-with-actions">
+              <h3><i class="fas fa-brain"></i> Smart Review Queue</h3>
+            </div>
+            <div style="text-align: center; padding: 15px;">
+              <h1 id="reviewQueueCount" style="font-size: 3rem; margin: 0; color: var(--accent);">0</h1>
+              <p>concepts due for review today</p>
+              <a href="#problems" class="btn primary-btn" style="margin-top: 10px; display: inline-block;">Review Now</a>
             </div>
           </div>
+
+          <!-- UPDATED: Recent Activity Card with Activity Feed -->
+
+          <div class="dashboard-card activity-feed-card">
+            <div class="card-header-with-actions">
+              <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+              <button id="clearActivityBtn" class="btn-clear-activity" title="Clear all activity">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            <div class="activity-feed" id="activityFeed">
+
+              <!-- Activities will be rendered here -->
+
+              <div class="activity-empty">
+                <i class="fas fa-inbox"></i>
+                <p>No recent activity yet. Start solving problems!</p>
+              </div>
+            </div>
+            <div class="activity-feed-footer">
+              <span id="activityCount">0 activities</span>
+              <button id="viewAllActivityBtn" class="btn-view-all">View All</button>
+            </div>
+          </div>
+
           <div class="dashboard-card heatmap-card">
             <h3>Activity Heatmap</h3>
             <div class="heatmap-legend">
@@ -907,6 +1346,12 @@
         </div>
       </div>
     </section>
+
+    <div id="dashboard-placeholder"></div>
+
+
+    <!-- Did You Know? Section -->
+    <div id="did-you-know-placeholder"></div>
 
     <!-- Gamification Section -->
     <section id="gamification" class="section gamification-section">
@@ -1043,704 +1488,226 @@
                 <h4>Complexity Guesser</h4>
                 <p>Guess the Big O of code snippets</p>
                 <span class="game-xp-reward">+15 XP per correct</span>
+            </div>
+            <div class="xp-stats">
+              <div class="xp-stat-item">
+                <span class="xp-stat-value" id="totalProblemsCount">0</span>
+                <span class="xp-stat-label">Problems Solved</span>
               </div>
-              <div class="game-type-card" onclick="startGame('memory')">
-                <div class="game-type-icon">🧠</div>
-                <h4>Memory Game</h4>
-                <p>Match DSA concepts with definitions</p>
-                <span class="game-xp-reward">+25 XP per match</span>
+              <div class="xp-stat-item">
+                <span class="xp-stat-value" id="streakCount">0🔥</span>
+                <span class="xp-stat-label">Day Streak</span>
               </div>
-              <div class="game-type-card" onclick="startGame('code')">
-                <div class="game-type-icon">✍️</div>
-                <h4>Code Completion</h4>
-                <p>Fill in the missing code from options</p>
-                <span class="game-xp-reward">+30 XP per correct</span>
-              </div>
-            </div>
-
-            <!-- Topic & Difficulty Info -->
-            <div class="game-level-info" id="gameLevelInfo">
-              <span id="gameLevelTopic">📚 Topic: Arrays</span>
-              <span id="gameLevelDifficulty">⚡ Difficulty: Easy</span>
-            </div>
-          </div>
-
-          <!-- Memory Game Area -->
-          <div id="memoryGameArea" style="display:none">
-            <div class="game-stats-bar">
-              <span class="game-stat">⏱️ <span id="memoryTimer">60</span>s</span>
-              <span class="game-stat">✅ Matches: <span id="memoryMatches">0</span></span>
-              <span class="game-stat">🎯 Moves: <span id="memoryMoves">0</span></span>
-            </div>
-            <div class="memory-grid" id="memoryGrid"></div>
-          </div>
-
-          <!-- Code Completion Area -->
-          <div id="codeGameArea" style="display:none">
-            <div class="game-stats-bar">
-              <span class="game-stat">⏱️ <span id="codeTimer">30</span>s</span>
-              <span class="game-stat">✅ Score: <span id="codeScore">0</span></span>
-              <span class="game-stat">❓ Q: <span id="codeQuestion">1</span>/5</span>
-            </div>
-            <div class="code-game-area">
-              <div class="code-snippet" id="codeSnippet"></div>
-              <div class="code-options-grid" id="codeOptionsGrid"></div>
-            </div>
-            <div class="game-explanation" id="codeExplanation" style="display:none"></div>
-          </div>
-
-          <!-- Game Play Area -->
-          <div id="gamePlayArea" style="display:none">
-            <div class="game-stats-bar">
-              <span class="game-stat">⏱️ <span id="gameTimer">30</span>s</span>
-              <span class="game-stat">✅ Score: <span id="gameScore">0</span></span>
-              <span class="game-stat">❓ Q: <span id="gameQuestion">1</span>/10</span>
-            </div>
-            <div class="game-question-area">
-              <div class="game-question-text" id="gameQuestionText"></div>
-              <div class="game-options-grid" id="gameOptionsGrid"></div>
-            </div>
-            <div class="game-explanation" id="gameExplanation" style="display:none"></div>
-          </div>
-
-          <!-- Game Results -->
-          <div id="gameResults" style="display:none">
-            <div class="game-results-content">
-              <div class="game-results-icon">🏆</div>
-              <h3 id="gameResultsTitle">Game Complete!</h3>
-              <div class="game-results-stats">
-                <div class="result-stat">
-                  <span class="result-stat-value" id="resultScore">0</span>
-                  <span class="result-stat-label">Score</span>
-                </div>
-                <div class="result-stat">
-                  <span class="result-stat-value" id="resultXP">0</span>
-                  <span class="result-stat-label">XP Earned</span>
-                </div>
-                <div class="result-stat">
-                  <span class="result-stat-value" id="resultAccuracy">0%</span>
-                  <span class="result-stat-label">Accuracy</span>
-                </div>
-              </div>
-              <div class="game-results-buttons">
-                <button class="btn btn-primary" onclick="restartGame()">🔄 Play Again</button>
-                <button class="btn btn-secondary" onclick="showGameTypeSelector()">🎮 Change Mode</button>
-                <button class="btn btn-outline" onclick="closeGameModal()">✖ Close</button>
+              <div class="xp-stat-item">
+                <span class="xp-stat-value" id="totalXPCount">0</span>
+                <span class="xp-stat-label">Total XP</span>
               </div>
             </div>
           </div>
+
+          <!-- Badges Card -->
+          <div class="badges-showcase big-box">
+            <div class="badges-header">
+              <h3>🏆 Badges</h3>
+              <span class="badges-earned-count" id="badgesEarnedCount">0/6 earned</span>
+            </div>
+            <div class="badges-grid" id="badgesGrid">
+              <!-- Badges will be generated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Streak Card -->
+          <div class="streak-card big-box">
+            <h3>🔥 Daily Streak</h3>
+            <div class="streak-display">
+              <div class="streak-number" id="streakNumber">0</div>
+              <div class="streak-label">day streak</div>
+            </div>
+            <div class="streak-week" id="streakWeek">
+              <!-- Generated by JS -->
+            </div>
+            <div class="streak-best">
+              🏅 Best Streak: <span id="bestStreak">0</span> days
+            </div>
+          </div>
+
+          <!-- Recent Activity Card -->
+          <div class="activity-card big-box">
+            <h3>📊 Recent Activity</h3>
+            <div class="activity-list" id="activityList">
+              <p class="activity-empty">No activity yet. Start solving problems! 🚀</p>
+            </div>
+          </div>
+
         </div>
-      </div>
-    </div>
+    </section>
+    <div id="gamification-placeholder"></div>
 
-    <!-- Chatbot Widget -->
+    <!-- Game Modal -->
+    <div id="game-modal-placeholder"></div>
 
     <!-- Code Editor Shortcuts Panel -->
-    <div class="shortcuts-panel" id="shortcutsPanel">
-      <div class="shortcuts-title">Keyboard Shortcuts</div>
-      <ul class="shortcuts-list">
-        <li>
-          <span>Run Code</span><span class="shortcut-key">Ctrl+Enter</span>
-        </li>
-        <li><span>Submit</span><span class="shortcut-key">Ctrl+S</span></li>
-        <li>
-          <span>Format Code</span><span class="shortcut-key">Ctrl+Shift+F</span>
-        </li>
-        <li>
-          <span>Toggle Comment</span><span class="shortcut-key">Ctrl+/</span>
-        </li>
-        <li><span>Find</span><span class="shortcut-key">Ctrl+F</span></li>
-        <li><span>Replace</span><span class="shortcut-key">Ctrl+H</span></li>
-        <li><span>Go to Line</span><span class="shortcut-key">Ctrl+G</span></li>
-        <li><span>Undo</span><span class="shortcut-key">Ctrl+Z</span></li>
-        <li><span>Redo</span><span class="shortcut-key">Ctrl+Y</span></li>
-      </ul>
-    </div>
+    <div id="shortcuts-panel-placeholder"></div>
 
     <!-- Topic Modal -->
-    <div class="modal" id="topicModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="modalTitle"></h3>
-          <button class="modal-close" id="modalClose">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="topic-theory">
-            <h4>Theory</h4>
-            <div id="modalTheory"></div>
-          </div>
-          <div class="topic-problems">
-            <h4>Sample Problems</h4>
-            <ul id="modalProblems"></ul>
-          </div>
-          <div class="topic-difficulty">
-            <h4>Difficulty Level</h4>
-            <div id="modalDifficulty"></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="startPracticeBtn">
-            Start Practicing
-          </button>
-        </div>
-      </div>
-    </div>
+    <div id="topic-modal-placeholder"></div>
 
     <!-- Roadmap Step Details Modal -->
-    <div class="modal" id="roadmapStepModal">
-      <div class="modal-content roadmap-modal-content">
-        <div class="modal-header">
-          <div class="step-badge-tag" id="roadmapStepBadge">Step 1</div>
-          <h3 id="roadmapStepModalTitle">Introduction to DSA</h3>
-          <button class="modal-close" id="roadmapStepModalClose" aria-label="Close roadmap step modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="roadmap-step-theory">
-            <h4><i class="fas fa-book-open"></i> Theory & Key Concepts</h4>
-            <div id="roadmapStepTheoryContent" class="theory-text"></div>
-          </div>
-
-          <div
-            id="roadmapStepComplexitySection"
-            class="roadmap-step-complexity hidden"
-          >
-            <h4><i class="fas fa-table"></i> Complexity Reference</h4>
-            <div class="table-responsive">
-              <table class="complexity-table">
-                <thead>
-                  <tr>
-                    <th>Operation</th>
-                    <th>Time Complexity</th>
-                    <th>Space Complexity</th>
-                  </tr>
-                </thead>
-                <tbody id="roadmapStepComplexityBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div id="roadmapStepQuizSection" class="roadmap-step-quiz hidden">
-            <h4>
-              <i class="fas fa-graduation-cap"></i> Concept Verification Quiz
-            </h4>
-            <p class="quiz-instruction-text">
-              Answer the questions below correctly to complete this step and
-              earn +50 XP!
-            </p>
-            <div id="roadmapStepQuizContent"></div>
-            <button class="btn btn-primary" id="roadmapStepSubmitQuizBtn">
-              Submit Quiz
-            </button>
-          </div>
-
-          <div
-            id="roadmapStepProblemsSection"
-            class="roadmap-step-problems hidden"
-          >
-            <h4><i class="fas fa-code"></i> Curated Coding Practice</h4>
-            <p class="problems-instruction-text">
-              Solve at least one of the coding problems below to complete this
-              step!
-            </p>
-            <ul class="roadmap-problems-list" id="roadmapStepProblemsList"></ul>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" id="roadmapStepModalCloseBtn">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
+    <div id="roadmap-step-modal-placeholder"></div>
 
     <!-- Quiz Editor Modal -->
-    <div class="modal quiz-modal" id="quizEditorModal">
-      <div class="quiz-modal-content">
-        <div id="quizLoadingScreen" class="quiz-loading hidden">
-          <div class="quiz-spinner"></div>
-          <h3 class="loading-text">Vectoring Challenge...</h3>
-          <p id="loadingTopicName"></p>
-        </div>
-        <div class="quiz-modal-header">
-          <div class="quiz-problem-info">
-            <span class="quiz-topic-badge" id="quizTopicBadge"></span>
-            <span class="quiz-difficulty" id="quizDifficulty"></span>
-          </div>
-          <h3 id="quizTitle">Problem Title</h3>
-          <button class="modal-close" id="quizModalClose">&times;</button>
-        </div>
-        <div class="quiz-modal-body">
-          <div class="quiz-layout">
-            <div class="quiz-problem-panel">
-              <div class="problem-description">
-                <h4>Problem Description</h4>
-                <p id="quizDescription"></p>
-                <div class="problem-examples">
-                  <h5>Examples</h5>
-                  <div id="quizExamples"></div>
-                </div>
-              </div>
-            </div>
-            <div class="quiz-editor-panel">
-              <div class="code-editor-container">
-                <div class="editor-header">
-                  <div class="problem-details">
-                    <select id="languageSelect" class="language-select">
-                      <option value="javascript">JavaScript</option>
-                      <option value="python">Python</option>
-                      <option value="java">Java</option>
-                      <option value="cpp">C++</option>
-                      <option value="c">C</option>
-                      <option value="swift">Swift</option>
-                    </select>
-                  </div>
-                  <div class="editor-actions">
-                    <button
-                      class="editor-btn"
-                      onclick="insertSnippet('function')"
-                      title="Insert function"
-                    >
-                      <i class="fas fa-code"></i> Function
-                    </button>
-                    <button
-                      class="editor-btn"
-                      onclick="formatCode()"
-                      title="Format code"
-                    >
-                      <i class="fas fa-indent"></i> Format
-                    </button>
-                    <button
-                      class="editor-btn"
-                      onclick="toggleLineComment()"
-                      title="Toggle comment"
-                    >
-                      <i class="fas fa-comment"></i> //
-                    </button>
-                  </div>
-                </div>
-                <div class="editor-tabs">
-                  <div class="editor-tab active" data-tab="code">
-                    <i class="fas fa-code"></i> Code
-                  </div>
-                </div>
-                <div class="code-editor">
-                  <div class="line-numbers" id="lineNumbers"></div>
-                  <textarea
-                    id="codeEditor"
-                    class="code-textarea"
-                    placeholder="// Write your solution here...&#10;&#10;function twoSum(nums, target) {&#10;    // Your code here&#10;}"
-                  ></textarea>
-                  <div class="syntax-highlight" id="syntaxHighlight"></div>
-                </div>
-                <div class="editor-shortcuts">
-                  <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run Code</span>
-                  <span><kbd>Ctrl</kbd>+<kbd>S</kbd> Submit</span>
-                </div>
-                <div class="output-panel" id="outputPanel">
-                  <div class="output-header" onclick="toggleOutputPanel()">
-                    <span>Output</span>
-                    <i class="fas fa-chevron-down" id="outputToggleIcon"></i>
-                  </div>
-                  <div class="output-content" id="quizOutputContent">
-                    <p class="output-placeholder">
-                      Run your code to see output...
-                    </p>
-                  </div>
-                  <div
-                    class="test-cases-container"
-                    id="quizTestCasesContainer"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="quiz-modal-footer">
-            <div class="quiz-actions">
-              <button class="btn btn-secondary" onclick="closeQuizEditor()">
-                Close
-              </button>
-              <button class="btn btn-outline" onclick="runQuizCode()">
-                <i class="fas fa-play"></i> Run
-              </button>
-              <button class="btn btn-primary" onclick="submitQuizCode()">
-                <i class="fas fa-paper-plane"></i> Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="quiz-editor-modal-placeholder"></div>
 
     <!-- Quiz Modal -->
-    <div class="modal quiz-modal" id="quizModal">
-      <div class="quiz-modal-content">
-        <div class="quiz-modal-header">
-          <div class="quiz-problem-info">
-            <span class="quiz-topic-badge" id="topicQuizBadge">Arrays</span>
-            <span class="quiz-difficulty" id="topicQuizDifficulty">Medium</span>
-          </div>
-          <h3 id="topicQuizTitle">Topic Quiz</h3>
-          <button class="modal-close" id="topicQuizModalClose" aria-label="Close quiz modal">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="quiz-modal-body">
-          <div class="quiz-layout">
-            <!-- Quiz Panel -->
-            <div class="quiz-problem-panel">
-              <div class="quiz-container">
-                <div class="quiz-progress-bar-container">
-                  <div class="quiz-progress-bar" id="topicQuizProgress"></div>
-                </div>
-                <div class="quiz-counter" id="topicQuizCounter">1 / 10</div>
-                <div class="quiz-question" id="topicQuizQuestionText">
-                  Question will appear here
-                </div>
-                <div class="quiz-options" id="topicQuizOptions">
-                  <!-- Options generated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Quiz Info Panel -->
-            <div class="quiz-editor-panel">
-              <div class="quiz-info-panel">
-                <h4>Quiz Instructions</h4>
-                <ul>
-                  <li>Select the correct answer for each question</li>
-                  <li>You earn 10 XP per correct answer</li>
-                  <li>Your best score is saved</li>
-                  <li>Retake to improve your score</li>
-                </ul>
-                <div class="quiz-xp-display">
-                  <i class="fas fa-star"></i> 10 XP per correct answer
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="quiz-modal-footer">
-          <div class="quiz-result hidden" id="topicQuizResult"></div>
-          <div class="quiz-actions">
-            <button class="btn btn-secondary" onclick="closeQuizModal()">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="quiz-modal-placeholder"></div>
 
     <!-- Profile Edit Modal -->
-    <div class="modal" id="profileEditModal">
-      <div class="modal-content profile-edit-modal">
-        <div class="modal-header">
-          <h3>Edit Profile</h3>
-          <button class="modal-close" id="profileModalClose" aria-label="Close edit profile modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="profile-edit-form">
-            <div class="avatar-selector">
-              <h4>Choose Avatar</h4>
-              <div class="avatar-options" id="avatarOptions"></div>
-            </div>
-            <div class="name-editor">
-              <label for="profileNameInput">Display Name</label>
-              <input
-                type="text"
-                id="profileNameInput"
-                placeholder="Enter your name"
-                maxlength="20"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" onclick="closeProfileModal()">
-            Cancel
-          </button>
-          <button class="btn btn-primary" onclick="saveProfileChanges()">
-            <i class="fas fa-save"></i> Save Changes
-          </button>
-        </div>
-      </div>
-    </div>
+    <div id="profile-edit-modal-placeholder"></div>
 
     <!-- Profile Section -->
-    <section id="profile" class="section profile-section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="title-icon">👤</span>
-          Profile
-        </h2>
-        <div class="profile-container">
-          <!-- Profile Header -->
-          <div class="profile-header">
-            <div class="profile-avatar">
-              <span class="avatar-icon">🚀</span>
-            </div>
-            <div class="profile-info">
-              <h3 id="profileSectionName">Learner</h3>
-              <p class="profile-level" id="profileLevelSection">
-                Level 1 - Beginner
-              </p>
-              <p class="profile-join">
-                Joined: <span id="joinDateSection">Today</span>
-              </p>
-            </div>
-            <button
-              class="profile-edit-btn"
-              id="profileSectionEditBtn" title="Edit Profile" aria-label="Edit Profile"
-            >
-              <i class="fas fa-pen"></i>
-            </button>
-          </div>
-          <div class="profile-stats">
-            <div class="profile-stat big-box">
-              <span class="profile-stat-value" id="profileTotalXPSection"
-                >0</span
-              >
-              <span class="profile-stat-label">Total XP</span>
-            </div>
-            <div class="profile-stat big-box">
-              <span class="profile-stat-value" id="profileProblemsSection"
-                >0</span
-              >
-              <span class="profile-stat-label">Problems</span>
-            </div>
-            <div class="profile-stat big-box">
-              <span class="profile-stat-value" id="profileStreakSection"
-                >0</span
-              >
-              <span class="profile-stat-label">Day Streak</span>
-            </div>
-            <div class="profile-stat big-box">
-              <span class="profile-stat-value" id="profileBadgesSection"
-                >0</span
-              >
-              <span class="profile-stat-label">Badges</span>
-            </div>
-          </div>
-          <div class="profile-progress">
-            <div class="progress-bar-container big-box">
-              <div class="progress-label">
-                <span>Level Progress</span>
-                <span id="profileLevelProgress">0%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" id="profileProgressBar"></div>
-              </div>
-            </div>
-          </div>
+    <div id="profile-placeholder"></div>
+
+    <!-- Notes Modal -->
+    <div id="notes-modal-placeholder"></div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal-placeholder"></div>
+
+    <!-- Study Timer Section -->
+    <div id="study-timer-placeholder"></div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Auth Gate Modal -->
+  <div class="modal" id="authGateModal" role="dialog" aria-modal="true" aria-labelledby="authGateTitle">
+    <div class="modal-content auth-gate-modal-content">
+      <button type="button" class="modal-close" id="authGateModalClose" aria-label="Close">
+        &times;
+      </button>
+      <div class="auth-gate-icon">
+        <div class="auth-gate-lock-ring">
+          <i class="fas fa-lock"></i>
         </div>
       </div>
-    </section>
-
-    <div
-      class="modal"
-      id="notesModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="notesModalTitle"
-    >
-      <div class="modal-content notes-modal-content">
-        <div class="modal-header">
-          <h3 id="notesModalTitle">Problem Notes</h3>
-
-          <button class="modal-close" id="notesModalClose" aria-label="Close notes modal">
-            <i class="fas fa-times"></i>
-          </button>
+      <h2 class="auth-gate-title" id="authGateTitle">Sign in to track progress</h2>
+      <p class="auth-gate-subtitle" id="authGateSubtitle">
+        Continue as guest to explore, or sign in to save your progress.
+      </p>
+      <div class="auth-gate-perks">
+        <div class="auth-gate-perk">
+          <i class="fas fa-chart-line"></i> Track your progress &amp; streaks
         </div>
-
-        <div class="modal-body">
-          <label for="problemNotesInput">Problem notes</label>
-
-          <textarea
-            id="problemNotesInput"
-            class="notes-textarea"
-            placeholder="Write your notes, hints, observations, or edge cases here..."
-          ></textarea>
+        <div class="auth-gate-perk">
+          <i class="fas fa-trophy"></i> Earn XP &amp; unlock badges
         </div>
-
-        <div class="modal-footer">
-          <button class="btn btn-secondary" id="closeNotesBtn">Close</button>
-
-          <button class="btn btn-primary" id="saveNotesBtn">
-            <i class="fas fa-save"></i>
-            Save Notes
-          </button>
+        <div class="auth-gate-perk">
+          <i class="fas fa-users"></i> Join the leaderboard
         </div>
       </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>∞ Algo Infinity Verse</h3>
-            <p>
-              Your ultimate destination for mastering Data Structures &amp;
-              Algorithms and acing technical interviews.
-            </p>
-            <div class="social-links">
-              <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-              <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-              <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-              <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-            </div>
-          </div>
-          <div class="footer-section">
-            <h4>Quick Links</h4>
-            <ul>
-              <li><a href="#topics">DSA Topics</a></li>
-              <li><a href="binary-search.html">Learn Binary Search</a></li>
-              <li><a href="#practice">Practice Problems</a></li>
-              <li><a href="#roadmap">Learning Roadmap</a></li>
-              <li><a href="#interview">Interview Prep</a></li>
-              <li><a href="#rust-learning">Rust Playground</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>Resources</h4>
-            <ul>
-              <li><a href="#">Documentation</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="community.html">Community</a></li>
-              <li><a href="support-page/index.html">Support</a></li>
-              <li><a href="feedback.html">Feedback</a></li>
-              <li><a href="about-us.html">About us</a></li>
-              <li><a href="privacy-policy.html">Privacy</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>Quick Questions</h4>
-            <div class="footer-questions">
-              <button
-                class="footer-question"
-                data-question="What is the time complexity of this problem?"
-              >
-                Time Complexity
-              </button>
-              <button
-                class="footer-question"
-                data-question="Can you give me a hint for this problem?"
-              >
-                Hint
-              </button>
-              <button
-                class="footer-question"
-                data-question="What approach should I use?"
-              >
-                Approach
-              </button>
-              <button
-                class="footer-question"
-                data-question="Are there any edge cases I should consider?"
-              >
-                Edge Cases
-              </button>
-            </div>
-          </div>
-          <div class="footer-section">
-            <h4>Newsletter</h4>
-            <p>Subscribe to get weekly problem sets and tips</p>
-            <form class="newsletter-form">
-              <label class="sr-only" for="newsletterEmail">Email address</label>
-              <input
-                type="email"
-                id="newsletterEmail"
-                placeholder="Your email"
-                autocomplete="email"
-                aria-describedby="newsletter-error"
-                aria-invalid="false"
-              />
-              <button type="submit" aria-label="Subscribe to newsletter"><i class="fas fa-paper-plane"></i></button>
-              <span
-                class="newsletter-error"
-                id="newsletter-error"
-                role="alert"
-                aria-live="polite"
-              ></span>
-            </form>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>
-            <span
-              >&copy; <span id="footer-current-year"></span> Algo Infinity
-              Verse. Crafted with 💜 for learners worldwide.</span
-            >
-            <br />
-            <span class="footer-current-date" id="footer-current-date"></span>
-          </p>
-        </div>
-      </div>
-    </footer>
-    <!-- Back To Top Button -->
-    <button id="backToTopBtn" class="back-to-top" aria-label="Back to Top">
-      <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Auth Gate Modal -->
-    <div
-      class="modal"
-      id="authGateModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="authGateTitle"
-    >
-      <div class="modal-content auth-gate-modal-content">
-        <button class="modal-close" id="authGateModalClose" aria-label="Close">
-          &times;
+      <div class="auth-gate-actions">
+        <a href="login.html" id="authGateLoginBtn" class="btn btn-primary auth-gate-btn">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="signup.html" id="authGateSignupBtn" class="btn btn-secondary auth-gate-btn">
+          <i class="fas fa-user-plus"></i> Sign Up Free
+        </a>
+        <button type="button" id="authGateGuestBtn" class="btn btn-secondary auth-gate-btn">
+          <i class="fas fa-user-astronaut"></i> Continue as Guest
         </button>
-        <div class="auth-gate-icon">
-          <div class="auth-gate-lock-ring">
-            <i class="fas fa-lock"></i>
-          </div>
-        </div>
-        <h2 class="auth-gate-title" id="authGateTitle">Login Required</h2>
-        <p class="auth-gate-subtitle" id="authGateSubtitle">
-          Sign in to unlock this feature and track your progress.
-        </p>
-        <div class="auth-gate-perks">
-          <div class="auth-gate-perk">
-            <i class="fas fa-chart-line"></i> Track your progress &amp; streaks
-          </div>
-          <div class="auth-gate-perk">
-            <i class="fas fa-trophy"></i> Earn XP &amp; unlock badges
-          </div>
-          <div class="auth-gate-perk">
-            <i class="fas fa-users"></i> Join the leaderboard
-          </div>
-        </div>
-        <div class="auth-gate-actions">
-          <a
-            href="/login"
-            id="authGateLoginBtn"
-            class="btn btn-primary auth-gate-btn"
-          >
-            <i class="fas fa-sign-in-alt"></i> Login
-          </a>
-          <a
-            href="/signup"
-            id="authGateSignupBtn"
-            class="btn btn-secondary auth-gate-btn"
-          >
-            <i class="fas fa-user-plus"></i> Sign Up Free
-          </a>
-        </div>
-        <p class="auth-gate-dismiss">
-          <button class="auth-gate-dismiss-btn" id="authGateDismiss">
-            Maybe later
-          </button>
-        </p>
       </div>
+      <p class="auth-gate-dismiss">
+        <button type="button" class="auth-gate-dismiss-btn" id="authGateDismiss">
+          Maybe later
+        </button>
+      </p>
     </div>
+  </div>
 
-    <script src="rust-learning.js"></script>
-    <script src="auth.js"></script>
-    <script src="script.js?v=20260601"></script>
-    <script src="theme.js"></script>
-    <script src="auth-gate.js"></script>
+  <!-- Data files (plain scripts, globals) -->
+  <script src="data/quiz-questions.js"></script>
+  <script src="data/dsa-topics.js"></script>
+  <script src="data/practice-problems.js"></script>
+  <script src="data/daily-challenges.js"></script>
+  <script src="data/chatbot-responses.js"></script>
+  <script src="data/roadmap-steps.js"></script>
+  <script src="data/profile-avatars.js"></script>
+  <script src="data/facts.js"></script>
+  <script src="data/personality-questions.js"></script>
+  <script src="data/revision-intervals.js"></script>
+  <script src="data/filters.js"></script>
+  <script src="data/levels.js"></script>
+
+  <!-- Utility modules (plain scripts, globals) -->
+  <script src="modules/abortManager.js"></script>
+  <script src="modules/cacheManager.js"></script>
+  <script src="modules/userProgress.js"></script>
+  <script src="modules/spaced-repetition.js"></script>
+  <script src="modules/utils.js"></script>
+
+  <script type="module" src="./modules/firebase-client.js"></script>
+  <script src="interceptors.js"></script>
+  <script src="auth.js"></script>
+  <script src="utils/virtualList.js"></script>
+  <script src="utils/navigationManager.js"></script>
+  <script src="timer.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="utils/searchEngine.js"></script>
+  <script src="utils/spacedRepetition.js"></script>
+  <script type="module" src="modules/domSanitizer.js"></script>
+  <script src="theme.js"></script>
+  <script src="auth-gate.js"></script>
+  <script src="/scripts/lazy-load.js" defer></script>
+
+  <!-- Feature modules orchestrator (ES module) -->
+  <script type="module" src="modules/init.js"></script>
+
+  <script>
+    (async function() {
+      const partials = [
+        loadPartial("navbar-placeholder", "/partials/navbar.html"),
+        loadPartial("hero-placeholder", "/partials/hero.html"),
+        loadPartial("topic-of-the-day-placeholder", "/partials/topic-of-the-day.html"),
+        loadPartial("topics-placeholder", "/partials/topics.html"),
+        loadPartial("practice-placeholder", "/partials/practice.html"),
+        loadPartial("flashcards-placeholder", "/partials/flashcards.html"),
+        loadPartial("rust-playground-placeholder", "/partials/rust-playground.html"),
+        loadPartial("quiz-placeholder", "/partials/quiz.html"),
+        loadPartial("roadmap-placeholder", "/partials/roadmap.html"),
+        loadPartial("interview-placeholder", "/partials/interview.html"),
+        loadPartial("dashboard-placeholder", "/partials/dashboard.html"),
+        loadPartial("did-you-know-placeholder", "/partials/did-you-know.html"),
+        loadPartial("gamification-placeholder", "/partials/gamification.html"),
+        loadPartial("game-modal-placeholder", "/partials/game-modal.html"),
+        loadPartial("shortcuts-panel-placeholder", "/partials/shortcuts-panel.html"),
+        loadPartial("topic-modal-placeholder", "/partials/topic-modal.html"),
+        loadPartial("roadmap-step-modal-placeholder", "/partials/roadmap-step-modal.html"),
+        loadPartial("quiz-editor-modal-placeholder", "/partials/quiz-editor-modal.html"),
+        loadPartial("quiz-modal-placeholder", "/partials/quiz-modal.html"),
+        loadPartial("profile-edit-modal-placeholder", "/partials/profile-edit-modal.html"),
+        loadPartial("profile-placeholder", "/partials/profile.html"),
+        loadPartial("notes-modal-placeholder", "/partials/notes-modal.html"),
+        loadPartial("change-password-modal-placeholder", "/partials/change-password-modal.html"),
+        loadPartial("study-timer-placeholder", "/partials/study-timer.html"),
+        loadPartial("footer-placeholder", "/partials/footer.html")
+      ];
+      await Promise.all(partials);
+      window.partialsLoadedFlag = true;
+      document.dispatchEvent(new Event('partialsLoaded'));
+    })();
+  </script>
+
+
+</body>
+
+
+    <!-- Footer Shortcut Trigger -->
+    <footer>
+      <button onclick="openShortcutModal()" style="background:none; border:none; color:#6b7280; cursor:pointer; text-decoration:underline;">
+        ⌨️ Keyboard Shortcuts
+      </button>
+    </footer>
+    <script type="module" src="./modules/aiHintsBootstrap.js"></script>
   </body>
 </html>

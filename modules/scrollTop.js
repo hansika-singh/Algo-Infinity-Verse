@@ -18,3 +18,6 @@ export function initScrollTop() {
     });
   });
 }
+
+// Legacy global exports
+window.initScrollTop = initScrollTop;

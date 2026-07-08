@@ -1,0 +1,325 @@
+/* ===== Suffix Array Visualizer Styles ===== */
+
+/* Layout */
+.visualizer-container {
+  display: grid;
+  grid-template-columns: 3fr 1.2fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.visualizer-main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.visualizer-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Glass Card */
+.visualizer-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.visualizer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gradient-1);
+}
+
+/* Headings */
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Controls (reuse global button/inputs look) */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.control-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-group label span.val-display {
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+}
+
+.control-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 0.65rem 0.8rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.control-input:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+}
+
+.control-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.round-slider-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -0.3rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.fira {
+  font-family: 'Fira Code', monospace;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.dot {
+  opacity: 0.6;
+}
+
+.sa-btn-row {
+  margin-top: 0.5rem;
+}
+
+.btn-control {
+  flex: 1;
+}
+
+.btn-control-icon {
+  width: 48px;
+}
+
+.status-box {
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 0.85rem 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+/* Rank Table */
+.rank-table-wrap {
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+  background: rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 1;
+}
+
+.rank-table-header {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 1.2fr 0.9fr;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.75rem 0.75rem;
+  font-weight: 900;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.rank-col {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-table-body {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.sa-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 1.2fr 0.9fr;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  align-items: center;
+  font-family: 'Fira Code', monospace;
+}
+
+.sa-row:last-child {
+  border-bottom: none;
+}
+
+.sa-cell {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.sa-cell.suffix-cell {
+  color: var(--accent);
+  font-weight: 900;
+}
+
+/* Highlighting */
+.sa-active-row {
+  background: rgba(250, 204, 21, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(250, 204, 21, 0.35);
+}
+
+.sa-updated-row {
+  background: rgba(16, 185, 129, 0.10);
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.32);
+}
+
+/* Round explainer */
+.round-explainer {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.explain-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.explain-label {
+  min-width: 160px;
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.explain-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Theory card */
+.theory-text {
+  margin-top: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.complexity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.complexity-card-mini {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.complexity-card-mini h5 {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.complexity-card-mini p {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.final-order {
+  margin-top: 0.75rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 1rem;
+  color: var(--accent);
+  font-weight: 900;
+  background: rgba(167, 139, 250, 0.10);
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.final-order-sub {
+  margin-top: 0.45rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .visualizer-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .rank-table-header,
+  .sa-row {
+    grid-template-columns: 1.2fr 0.6fr 1fr 0.8fr;
+  }
+}
+
