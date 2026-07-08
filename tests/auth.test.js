@@ -42,9 +42,9 @@ describe('Auth Helper Functions', () => {
         hash: '',
         href: ''
       },
-      __firebaseClient: {
+      __supabaseClient: {
         isConfigured: jest.fn(() => true),
-        getRedirectUser: jest.fn().mockResolvedValue(null)
+        getSessionToken: jest.fn().mockResolvedValue(null)
       }
     };
 

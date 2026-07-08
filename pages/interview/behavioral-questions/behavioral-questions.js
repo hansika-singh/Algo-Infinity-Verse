@@ -1053,7 +1053,20 @@ questionsContainer.addEventListener("click", (e) => {
   }
 
 });
-//Connect Buttons
+function getDifficultyIcon(difficulty) {
+  switch (String(difficulty).toLowerCase()) {
+    case "easy": return "\u2705";
+    case "medium": return "\u26A1";
+    case "hard": return "\uD83D\uDD25";
+    default: return "";
+  }
+}
+
+function getDifficultyBadge(difficulty) {
+  const cls = String(difficulty).toLowerCase();
+  return `<span class="difficulty-badge difficulty-${cls}"><span class="difficulty-icon">${getDifficultyIcon(difficulty)}</span> ${difficulty}</span>`;
+}
+
 function renderQuestions(questions) {
 
   questionsContainer.innerHTML = "";
@@ -1088,9 +1101,8 @@ function renderQuestions(questions) {
 
  <span class="
   difficulty-badge
-  difficulty-${question.difficulty.toLowerCase()}
-">
-  ${question.difficulty}
+  difficulty-${question.difficulty.toLowerCase()}">
+  <span class="difficulty-icon">${getDifficultyIcon(question.difficulty)}</span> ${question.difficulty}
 </span>
 
 </div>

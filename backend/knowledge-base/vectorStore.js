@@ -13,16 +13,16 @@ if (fs.existsSync(STORE_PATH)) {
   try { store = JSON.parse(fs.readFileSync(STORE_PATH, 'utf-8')); } catch (_) { store = { documents: [] }; }
 }
 
-function saveStore() {
-  fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+async function saveStore() {
+  await fs.promises.writeFile(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
 }
 
-function addDocument(topic, content, embedding) {
+async function addDocument(topic, content, embedding) {
   const doc = { topic, content, embedding };
   // Replace existing topic
   store.documents = store.documents.filter(d => d.topic !== topic);
   store.documents.push(doc);
-  saveStore();
+  await saveStore();
 }
 
 function cosineSimilarity(a, b) {

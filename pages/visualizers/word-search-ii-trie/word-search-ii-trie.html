@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Search II (Trie + DFS) Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="word-search-ii-trie.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-spider logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Word Search II <span class="badge badge-algo">Trie + DFS Pruning</span></h1>
+        <p>Synchronized Data Structures & Backtracking Optimization</p>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-keyboard"></i> Target Words</h2>
+          <div class="input-group">
+            <input type="text" id="input-words" placeholder="oath, pea, eat, rain" value="oath, pea, eat, rain">
+            <button id="btn-build" class="btn btn-secondary">Build Trie</button>
+          </div>
+          <p class="desc-text mt-2">These words are pre-loaded into the Prefix Tree to prune the 2D DFS search space in O(1) time.</p>
+        </section>
+
+        <section class="glass-panel control-panel mt-3">
+          <h2><i class="fa-solid fa-microchip"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Auto Play
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+          <div class="slider-control">
+            <label for="speed-slider">Engine Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="4.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel telemetry-panel mt-3">
+          <h2><i class="fa-solid fa-chart-line"></i> Optimization Telemetry</h2>
+          
+          <div class="metric-grid">
+             <div class="metric-box box-prune">
+                <span class="metric-title">DFS Branches Pruned</span>
+                <span class="metric-value" id="val-pruned">0</span>
+                <span class="metric-sub">Trie Null Hits</span>
+             </div>
+             
+             <div class="metric-box box-found">
+                <span class="metric-title">Words Found</span>
+                <span class="metric-value" id="val-found">0</span>
+                <span class="metric-sub">Valid Paths</span>
+             </div>
+          </div>
+        </section>
+
+        <section class="glass-panel legend-panel mt-3">
+          <h2><i class="fa-solid fa-layer-group"></i> Backtracking State</h2>
+          <ul class="phase-list">
+            <li class="phase-item" id="phase-explore">
+              <span class="color-box explore-color"></span>
+              <div class="phase-info">
+                <strong>Forward DFS (Cyan)</strong>
+                <p>Exploring grid and advancing Trie pointer.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-prune">
+              <span class="color-box prune-color"></span>
+              <div class="phase-info">
+                <strong>Pruned / Backtrack (Red)</strong>
+                <p>Prefix does not exist. Reverting state.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-found">
+              <span class="color-box found-color"></span>
+              <div class="phase-info">
+                <strong>Word Found (Emerald)</strong>
+                <p>Reached end of word in Trie. Success!</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Engine Log:</span>
+            <span id="status-text" class="status-message">Awaiting Trie Generation...</span>
+          </div>
+        </div>
+
+        <div class="split-view">
+           <div class="grid-container-wrapper">
+               <h3 class="panel-title"><i class="fa-solid fa-table-cells"></i> 2D Boggle Matrix</h3>
+               <div id="grid-container" class="matrix-grid"></div>
+           </div>
+
+           <div class="trie-container-wrapper">
+               <h3 class="panel-title"><i class="fa-solid fa-network-wired"></i> Prefix Tree (Trie)</h3>
+               <canvas id="trie-canvas"></canvas>
+           </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="word-search-ii-trie.js"></script>
+</body>
+</html>

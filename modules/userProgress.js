@@ -204,17 +204,54 @@ async function getAuthenticatedSession() {
   return cachedSession;
 }
 
-function saveUserData() {
-  try { userProgress.lastActive = new Date().toISOString(); localStorage.setItem("algoInfinityVerse", JSON.stringify(userProgress)); queueProgressSync(); }
+async function saveUserData() {
+  try { 
+      userProgress.lastActive = new Date().toISOString(); 
+      if (window.StorageDB && window.DB_STORES) {
+          await window.StorageDB.set(window.DB_STORES.USER_DATA, "algoInfinityVerse", userProgress);
+      } else {
+          localStorage.setItem("algoInfinityVerse", JSON.stringify(userProgress)); 
+      }
+      queueProgressSync(); 
+  }
   catch (e) { void 0; }
 }
 
-function loadUserData() {
+async function loadUserData() {
   try {
-    const saved = localStorage.getItem("algoInfinityVerse");
-    if (saved) { const data = JSON.parse(saved); Object.assign(userProgress, data); if (!userProgress.quizScores) userProgress.quizScores = {}; if (!userProgress.completedRoadmapSteps) userProgress.completedRoadmapSteps = []; if (!userProgress.activityData) userProgress.activityData = {}; if (!userProgress.xpHistory) userProgress.xpHistory = []; if (!userProgress.quizAttempts) userProgress.quizAttempts = []; if (!userProgress.practiceEvents) userProgress.practiceEvents = []; if (!userProgress.codingPersonality) userProgress.codingPersonality = { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }; if (!userProgress.mistakeDna) userProgress.mistakeDna = { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }; if (!userProgress.dailyGoals) userProgress.dailyGoals = {}; backfillActivityData(); }
-    else { Object.assign(userProgress, { name: "Learner", avatar: "🚀", completedProblems: [], completedDailyChallenges: [], codingPersonality: { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }, favoriteProblems: [], recentProblems: [], problemNotes: {}, xp: 0, level: 1, streak: 0, freezes: 0, freezeHistory: [], badges: [], completedRoadmapSteps: [], lastActive: null, quizScores: {}, bestQuizTimes: {}, dailyGoals: {}, activityData: {}, xpHistory: [], quizAttempts: [], practiceEvents: [], mistakeDna: { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }, revisionSchedule: { arrays: { currentStage: 0, nextReviewDate: null, history: [] }, strings: { currentStage: 0, nextReviewDate: null, history: [] }, linkedlist: { currentStage: 0, nextReviewDate: null, history: [] }, trees: { currentStage: 0, nextReviewDate: null, history: [] }, graphs: { currentStage: 0, nextReviewDate: null, history: [] }, dp: { currentStage: 0, nextReviewDate: null, history: [] } } }); saveUserData(); }
-  } catch (e) { console.error("Error loading user data:", e); Object.assign(userProgress, { name: "Learner", avatar: "🚀", completedProblems: [], completedDailyChallenges: [], codingPersonality: { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }, favoriteProblems: [], recentProblems: [], problemNotes: {}, xp: 0, level: 1, streak: 0, freezes: 0, freezeHistory: [], badges: [], completedRoadmapSteps: [], lastActive: null, quizScores: {}, bestQuizTimes: {}, dailyGoals: {}, activityData: {}, xpHistory: [], quizAttempts: [], practiceEvents: [], mistakeDna: { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }, revisionSchedule: { arrays: { currentStage: 0, nextReviewDate: null, history: [] }, strings: { currentStage: 0, nextReviewDate: null, history: [] }, linkedlist: { currentStage: 0, nextReviewDate: null, history: [] }, trees: { currentStage: 0, nextReviewDate: null, history: [] }, graphs: { currentStage: 0, nextReviewDate: null, history: [] }, dp: { currentStage: 0, nextReviewDate: null, history: [] } } }); saveUserData(); }
+    if (window.StorageDB) {
+        await window.StorageDB.migrateFromLocalStorage();
+    }
+    
+    let saved = null;
+    if (window.StorageDB && window.DB_STORES) {
+        saved = await window.StorageDB.get(window.DB_STORES.USER_DATA, "algoInfinityVerse");
+    } else {
+        const lsSaved = localStorage.getItem("algoInfinityVerse");
+        if (lsSaved) saved = JSON.parse(lsSaved);
+    }
+    
+    if (saved) { 
+        Object.assign(userProgress, saved); 
+        if (!userProgress.quizScores) userProgress.quizScores = {}; 
+        if (!userProgress.completedRoadmapSteps) userProgress.completedRoadmapSteps = []; 
+        if (!userProgress.activityData) userProgress.activityData = {}; 
+        if (!userProgress.xpHistory) userProgress.xpHistory = []; 
+        if (!userProgress.quizAttempts) userProgress.quizAttempts = []; 
+        if (!userProgress.practiceEvents) userProgress.practiceEvents = []; 
+        if (!userProgress.codingPersonality) userProgress.codingPersonality = { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }; 
+        if (!userProgress.mistakeDna) userProgress.mistakeDna = { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }; 
+        if (!userProgress.dailyGoals) userProgress.dailyGoals = {}; 
+        backfillActivityData(); 
+    } else { 
+        Object.assign(userProgress, { name: "Learner", avatar: "🚀", completedProblems: [], completedDailyChallenges: [], codingPersonality: { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }, favoriteProblems: [], recentProblems: [], problemNotes: {}, xp: 0, level: 1, streak: 0, freezes: 0, freezeHistory: [], badges: [], completedRoadmapSteps: [], lastActive: null, quizScores: {}, bestQuizTimes: {}, dailyGoals: {}, activityData: {}, xpHistory: [], quizAttempts: [], practiceEvents: [], mistakeDna: { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }, revisionSchedule: { arrays: { currentStage: 0, nextReviewDate: null, history: [] }, strings: { currentStage: 0, nextReviewDate: null, history: [] }, linkedlist: { currentStage: 0, nextReviewDate: null, history: [] }, trees: { currentStage: 0, nextReviewDate: null, history: [] }, graphs: { currentStage: 0, nextReviewDate: null, history: [] }, dp: { currentStage: 0, nextReviewDate: null, history: [] } } }); 
+        saveUserData(); 
+    }
+  } catch (e) { 
+      console.error("Error loading user data:", e); 
+      Object.assign(userProgress, { name: "Learner", avatar: "🚀", completedProblems: [], completedDailyChallenges: [], codingPersonality: { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 }, favoriteProblems: [], recentProblems: [], problemNotes: {}, xp: 0, level: 1, streak: 0, freezes: 0, freezeHistory: [], badges: [], completedRoadmapSteps: [], lastActive: null, quizScores: {}, bestQuizTimes: {}, dailyGoals: {}, activityData: {}, xpHistory: [], quizAttempts: [], practiceEvents: [], mistakeDna: { offByOneCount: 0, recursionBaseCaseCount: 0, wrongLogicCount: 0, recentLogs: [] }, revisionSchedule: { arrays: { currentStage: 0, nextReviewDate: null, history: [] }, strings: { currentStage: 0, nextReviewDate: null, history: [] }, linkedlist: { currentStage: 0, nextReviewDate: null, history: [] }, trees: { currentStage: 0, nextReviewDate: null, history: [] }, graphs: { currentStage: 0, nextReviewDate: null, history: [] }, dp: { currentStage: 0, nextReviewDate: null, history: [] } } }); 
+      saveUserData(); 
+  }
   updateProfile();
   getAuthenticatedSession().then(session => { if (session?.user?.name) { userProgress.name = session.user.name; updateProfile(); saveUserData(); } else { userProgress.name = "Learner"; updateProfile(); saveUserData();   }
   if (typeof window !== 'undefined' && typeof window.initProfile === 'function') {

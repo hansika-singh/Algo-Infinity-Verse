@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dinic's Algorithm Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="dinics-algorithm.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-infinity logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Dinic's Maximum Flow <span class="badge badge-algo">O(V²E)</span></h1>
+        <p>Level Graphs, Blocking Flows & Search Space Pruning</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel" aria-labelledby="controls-heading">
+          <h2 id="controls-heading"><i class="fa-solid fa-microchip"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Auto Play
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset Graph">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+          
+          <div class="slider-control">
+            <label for="speed-slider">Engine Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="5.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel tracker-panel" aria-labelledby="tracker-heading">
+          <h2 id="tracker-heading"><i class="fa-solid fa-water"></i> Flow Analytics</h2>
+          <div class="metric-box">
+            <div class="metric-header">
+              <span>Total Maximum Flow</span>
+              <span class="tag tag-blue">Sink Reached</span>
+            </div>
+            <div class="metric-value"><span id="val-max-flow">0</span> <small>units</small></div>
+            <div class="progress-bar">
+              <div id="flow-bar" class="progress fill-blue" style="width: 0%;"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass-panel legend-panel" aria-labelledby="legend-heading">
+          <h2 id="legend-heading"><i class="fa-solid fa-network-wired"></i> Algorithm Phases</h2>
+          <ul class="phase-list">
+            <li class="phase-item" id="phase-1-indicator">
+              <span class="color-box phase-1-color"></span>
+              <div class="phase-info">
+                <strong>Phase 1: BFS Level Graph</strong>
+                <p>Stratify nodes by shortest path distance from Source.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-2-indicator">
+              <span class="color-box phase-2-color"></span>
+              <div class="phase-info">
+                <strong>Phase 2: DFS Blocking Flow</strong>
+                <p>Push max possible flow along shortest paths.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-3-indicator">
+              <span class="color-box phase-3-color"></span>
+              <div class="phase-info">
+                <strong>Dead-End Pruning</strong>
+                <p>Lock nodes that cannot reach the Sink to optimize DFS.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel" aria-label="Visualizer Stage">
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Engine Status:</span>
+            <span id="status-text" class="status-message">Ready. Press "Step" or "Auto Play" to begin Dinic's Algorithm.</span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="graph-canvas"></canvas>
+        </div>
+
+        <div class="output-panel">
+          <h3><i class="fa-solid fa-terminal"></i> Event Log</h3>
+          <div id="output-stream" class="stream-box">
+            <div class="log-entry">System initialized. Graph loaded.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="dinics-algorithm.js"></script>
+</body>
+</html>

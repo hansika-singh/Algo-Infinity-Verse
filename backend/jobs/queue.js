@@ -74,7 +74,7 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
       await bulkAuditQueue.addBulk(jobs);
       return;
     } catch (err) {
-      void 0;
+      console.error(`Failed to enqueue bulk audit for batch ${batchId}:`, err);
     }
   }
 

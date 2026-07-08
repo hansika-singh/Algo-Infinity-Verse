@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suffix Array & LCP Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="suffix-array-lcp.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-infinity logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Suffix Array & LCP Matrix <span class="badge badge-algo">O(N log N) / O(N)</span></h1>
+        <p>Kasai's Algorithm, Cyclic Sorts & Substring Indexing</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-keyboard"></i> Data Input</h2>
+          <div class="input-group">
+            <input type="text" id="input-string" placeholder="Enter word (max 15 chars)" value="banana" maxlength="15">
+            <button id="btn-generate" class="btn btn-secondary">Generate Suffixes</button>
+          </div>
+
+          <h2 class="mt-4"><i class="fa-solid fa-microchip"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Auto Play
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+          
+          <div class="slider-control">
+            <label for="speed-slider">Animation Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="3.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel search-panel">
+          <h2><i class="fa-solid fa-magnifying-glass"></i> O(M log N) Search</h2>
+          <p class="desc-text">Binary search a substring pattern against the built Suffix Array bounds.</p>
+          <div class="input-group mt-2">
+            <input type="text" id="input-search" placeholder="Pattern (e.g. 'ana')">
+            <button id="btn-search" class="btn btn-accent"><i class="fa-solid fa-search"></i></button>
+          </div>
+          <div id="search-result" class="search-result-box">Ready to search.</div>
+        </section>
+
+        <section class="glass-panel legend-panel">
+          <h2><i class="fa-solid fa-layer-group"></i> Algorithm Phases</h2>
+          <ul class="phase-list">
+            <li class="phase-item" id="phase-1-indicator">
+              <span class="color-box phase-1-color"></span>
+              <div class="phase-info">
+                <strong>Phase 1: Cyclic Sort (Prefix Doubling)</strong>
+                <p>Sorts string prefixes of lengths 1, 2, 4, 8...</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-2-indicator">
+              <span class="color-box phase-2-color"></span>
+              <div class="phase-info">
+                <strong>Phase 2: Kasai's LCP Algorithm</strong>
+                <p>Computes longest common prefixes in linear O(N) time.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Engine Status:</span>
+            <span id="status-text" class="status-message">Input a string to begin...</span>
+          </div>
+        </div>
+
+        <div class="dom-wrapper">
+          <div class="matrix-header">
+            <div class="col-idx">#</div>
+            <div class="col-sa">SA[i]</div>
+            <div class="col-lcp">LCP</div>
+            <div class="col-suffix">Suffix String</div>
+          </div>
+          <div id="matrix-container" class="matrix-container"></div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="suffix-array-lcp.js"></script>
+</body>
+</html>

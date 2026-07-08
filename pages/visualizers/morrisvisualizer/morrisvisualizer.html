@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morris Traversal O(1) Space Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="morrisvisualizer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-infinity logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Morris Inorder Traversal <span class="badge badge-space">O(1) Space</span></h1>
+        <p>Dynamic Threading & Pointer Manipulation Visualizer</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-sliders"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-generate" class="btn btn-secondary">
+              <i class="fa-solid fa-rotate"></i> New Tree
+            </button>
+            <button id="btn-play" class="btn btn-primary">
+              <i class="fa-solid fa-play"></i> Auto Play
+            </button>
+            <button id="btn-step" class="btn btn-accent">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+          
+          <div class="slider-control">
+            <label for="speed-slider">Animation Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.2" max="3.0" step="0.2" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel tracker-panel">
+          <h2><i class="fa-solid fa-memory"></i> Space Complexity Tracker</h2>
+          
+          <div class="metric-comparison">
+            <div class="metric-box standard-stack">
+              <div class="metric-header">
+                <span>Standard Recursion</span>
+                <span class="tag tag-red">O(N) Stack</span>
+              </div>
+              <div class="metric-value"><span id="val-stack">0</span> <small>frames</small></div>
+              <div class="progress-bar">
+                <div id="bar-stack" class="progress fill-red" style="width: 0%;"></div>
+              </div>
+              <p class="metric-desc">Call stack depth proportional to tree height.</p>
+            </div>
+
+            <div class="metric-box morris-stack">
+              <div class="metric-header">
+                <span>Morris Traversal</span>
+                <span class="tag tag-green">O(1) Constant</span>
+              </div>
+              <div class="metric-value">2 <small>pointers</small></div>
+              <div class="progress-bar">
+                <div class="progress fill-green" style="width: 15%;"></div>
+              </div>
+              <p class="metric-desc">Fixed memory using only <code>curr</code> and <code>pred</code>.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass-panel legend-panel">
+          <h2><i class="fa-solid fa-layer-group"></i> Algorithm Phases</h2>
+          <ul class="phase-list">
+            <li class="phase-item" id="phase-1-indicator">
+              <span class="color-box phase-1-color"></span>
+              <div class="phase-info">
+                <strong>Phase 1: Thread Creation</strong>
+                <p>Link predecessor's right child to current root.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-2-indicator">
+              <span class="color-box phase-2-color"></span>
+              <div class="phase-info">
+                <strong>Phase 2: Traversal & Extract</strong>
+                <p>Process node data and advance to right child.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-3-indicator">
+              <span class="color-box phase-3-color"></span>
+              <div class="phase-info">
+                <strong>Phase 3: Un-threading</strong>
+                <p>Restore tree structure by removing temporary link.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Current Action:</span>
+            <span id="status-text" class="status-message">Press "Step" or "Auto Play" to begin traversal.</span>
+          </div>
+          <div class="pointer-display">
+            <span class="ptr badge-curr">curr: <strong id="ptr-curr">null</strong></span>
+            <span class="ptr badge-pred">pred: <strong id="ptr-pred">null</strong></span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="tree-canvas"></canvas>
+        </div>
+
+        <div class="output-panel">
+          <h3><i class="fa-solid fa-terminal"></i> Inorder Output Stream</h3>
+          <div id="output-stream" class="stream-box">
+            <span class="empty-stream">No nodes processed yet...</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="morrisvisualizer.js"></script>
+</body>
+</html>

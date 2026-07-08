@@ -1,6 +1,5 @@
 import '../modules/activity-feed.js';
 import '../modules/back-to-top.js';
-import '../modules/cacheEngine.js';
 import '../modules/chartUtils.js';
 import '../modules/chatbot.js';
 import '../modules/code-executor.js';
@@ -12,7 +11,6 @@ import '../modules/editor.js';
 import '../modules/error-boundary.js';
 import '../modules/executeCode.js';
 import '../modules/executionHistory.js';
-import '../modules/firebase-errors.js';
 import '../modules/flashcards.js';
 import '../modules/gamification.js';
 import '../modules/hash-router.js';

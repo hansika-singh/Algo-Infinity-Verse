@@ -1,4 +1,10 @@
+import { h, createRenderer } from '../../../utils/vdom.js';
+import { PerformanceMonitor } from '../../../utils/perf-monitor.js';
+
 // ===== GLOBAL STATE =====
+let barStates = [];
+let vdomRenderer = null;
+let perfMonitor = null;
 let array = [];
 let originalArrayCopy = [];
 let isSorting = false;
@@ -122,62 +128,65 @@ async function checkPause(runId) {
 function generateNewArray() {
   if (isSorting) return;
   array = [];
+  barStates = [];
   for (let i = 0; i < size; i++) {
     // Height as a percentage from 5% to 95%
     array.push(Math.floor(Math.random() * 90) + 5);
+    barStates.push("default");
   }
   originalArrayCopy = [...array];
+  
+  if (!vdomRenderer && canvasWrapper) {
+      vdomRenderer = createRenderer(canvasWrapper);
+      perfMonitor = new PerformanceMonitor(canvasWrapper.parentElement);
+      perfMonitor.start();
+  }
+  
   renderBars();
   if (isDbgMode) {
     initDebuggerMode();
   }
 }
 
-// Render array elements as bars
+// Render array elements as bars using VDOM
 function renderBars() {
-  if (!canvasWrapper) return;
-  canvasWrapper.innerHTML = "";
+  if (!vdomRenderer) return;
   
-  array.forEach((val, idx) => {
-    const bar = document.createElement("div");
-    bar.className = "sorting-bar bar-default";
-    bar.style.height = `${val}%`;
-    bar.id = `bar-${idx}`;
-    
-    // Show label values inside bars if array size is small for readability
+  const children = array.map((val, idx) => {
+    let label = null;
     if (size <= 25) {
-      const label = document.createElement("span");
-      label.className = "sorting-bar-label";
-      label.textContent = val;
-      bar.appendChild(label);
+      label = h("span", { className: "sorting-bar-label" }, val);
     }
     
-    canvasWrapper.appendChild(bar);
+    return h("div", {
+      className: `sorting-bar bar-${barStates[idx]}`,
+      style: { height: `${val}%` },
+      id: `bar-${idx}`
+    }, label);
   });
+  
+  // Wrap all bars inside a placeholder container or render directly
+  vdomRenderer(h("div", { 
+      style: { display: "flex", width: "100%", height: "100%", alignItems: "flex-end", justifyContent: "center" } 
+  }, ...children));
 }
 
 // Bar visual highlighting helpers
 function highlight(idx, stateClass) {
-  const bar = document.getElementById(`bar-${idx}`);
-  if (bar) {
-    bar.className = `sorting-bar bar-${stateClass}`;
-  }
+  barStates[idx] = stateClass;
+  renderBars();
 }
 
 // Restore default bar color
 function unhighlight(idx) {
-  const bar = document.getElementById(`bar-${idx}`);
-  if (bar) {
-    bar.className = "sorting-bar bar-default";
-  }
+  barStates[idx] = "default";
+  renderBars();
 }
 
 // Mark element as sorted
 function markSorted(idx) {
-  const bar = document.getElementById(`bar-${idx}`);
-  if (bar) {
-    bar.className = "sorting-bar bar-sorted";
-  }
+  barStates[idx] = "sorted";
+  renderBars();
 }
 
 // Mark complete array as sorted
@@ -562,7 +571,7 @@ if (document.readyState === "loading") {
 // STEP DEBUGGER CODE FOR SORTING VISUALIZER
 // ==========================================================================
 
-let isDbgMode = false;
+var isDbgMode = false;
 let dbgTrace = [];
 let dbgCurrentStep = -1;
 let dbgIsPlaying = false;

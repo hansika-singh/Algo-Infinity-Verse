@@ -19,7 +19,7 @@
   <body>
     
     <!-- Loading Screen -->
-    <div id="loading-screen">
+    <div id="loading-screen" class="hidden">
       <div class="loader">
         <div class="infinity-loader">∞</div>
         <h2>Algo Infinity Verse</h2>

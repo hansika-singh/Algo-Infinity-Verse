@@ -224,5 +224,9 @@ export async function runUserCode({ language, sourceCode, tests, timeoutMs = 200
 
   const normalizedTests = Array.isArray(tests) ? tests.map(normalizeTestCase) : [];
 
+  if (normalizedTests.length > 20) {
+    return { ok: false, error: "Exceeded maximum allowed test cases (20)." };
+  }
+
   return await runWithDocker({ language, sourceCode, tests: normalizedTests, timeoutMs, maxOutputChars, showMySteps });
 }

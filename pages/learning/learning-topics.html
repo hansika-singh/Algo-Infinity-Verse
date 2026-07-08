@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn DSA Topics — Algo Infinity Verse</title>
+  <meta name="description" content="Master data structures and algorithms with interactive learning pages. Browse all DSA topics from arrays to advanced graph theory." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="learning-topics.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = t || (p ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="learning-topics" data-no-loading>
+  <div id="loading-screen" class="hidden">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Loading Learning Topics...</h2>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section class="lt-hero">
+      <div class="lt-hero-bg">
+        <div class="lt-hero-grid"></div>
+        <div class="lt-hero-glow"></div>
+      </div>
+      <button type="button" class="lt-back-btn" id="ltBackBtn" aria-label="Go back to previous page">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+      <div class="lt-hero-content">
+        <h1 class="lt-hero-title">Learn DSA Topics</h1>
+        <p class="lt-hero-subtitle">
+          Interactive deep-dives into every data structure and algorithm you need — from foundational arrays to advanced bitmask DP.
+        </p>
+
+        <!-- SEARCH -->
+        <div class="lt-search-wrapper">
+          <div class="lt-search">
+            <i class="fas fa-search lt-search-icon"></i>
+            <input
+              type="text"
+              id="ltSearchInput"
+              class="lt-search-input"
+              placeholder="Search topics..."
+              aria-label="Search learning topics"
+              autocomplete="off"
+            />
+            <button type="button" id="ltClearBtn" class="lt-clear-btn" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+            <span class="lt-search-hint">⌘K</span>
+          </div>
+        </div>
+
+        <!-- FILTER CHIPS -->
+        <div class="lt-filters" id="ltFilters" role="tablist" aria-label="Topic categories"></div>
+
+        <p class="lt-result-count" id="ltResultCount">Showing <span id="ltCountDisplay">0</span> topics</p>
+      </div>
+    </section>
+
+    <!-- CARD GRID -->
+    <section class="lt-section">
+      <div class="lt-container">
+        <div class="lt-grid" id="ltGrid" role="list">
+          <!-- Cards rendered by JS -->
+        </div>
+        <div class="lt-empty" id="ltEmpty" style="display:none;">
+          <i class="fas fa-search-minus"></i>
+          <h3>No topics found</h3>
+          <p>Try adjusting your search or filter.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/auth.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script src="learning-topics.js"></script>
+</body>
+</html>

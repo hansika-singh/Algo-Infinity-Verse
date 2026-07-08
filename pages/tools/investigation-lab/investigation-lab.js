@@ -3,6 +3,16 @@ document.addEventListener("DOMContentLoaded", () => {
     initCrimeLab();
 });
 
+function getDifficultyBadge(difficulty) {
+    const config = {
+        Easy: { icon: "\u2705", class: "diff-easy" },
+        Medium: { icon: "\u26A1", class: "diff-medium" },
+        Hard: { icon: "\uD83D\uDD25", class: "diff-hard" }
+    };
+    const c = config[difficulty] || { icon: "", class: "" };
+    return `<span class="difficulty-badge ${c.class}"><span class="difficulty-icon">${c.icon}</span> ${difficulty}</span>`;
+}
+
 // The Case Database
 const crimeCases = [
     {
@@ -136,7 +146,7 @@ function renderSidebar() {
         li.innerHTML = `
             <span class="c-id">FILE #${c.id}</span>
             <span class="c-title">${c.title}</span>
-            <span class="c-diff ${c.diffClass}">${c.difficulty}</span>
+            <span class="c-diff ${c.diffClass}">${getDifficultyBadge(c.difficulty)}</span>
         `;
         elements.caseList.appendChild(li);
     });

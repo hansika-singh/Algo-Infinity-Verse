@@ -1,41 +1,66 @@
-name: duplicate-issue
+name: SSOC Label + Duplicate Handler
+
 on:
   issues:
-    types: [labeled]
+    types: [opened]
+
 permissions:
   issues: write
+
 jobs:
-  handle-duplicate:
-    if: github.event.label.name == 'duplicate'
+  manage-issues:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Comment on duplicate issue
+      - name: Add label and handle duplicates
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🔍 **Duplicate Issue Detected**\n\nThis issue appears to be a duplicate of an existing issue. Please check existing issues before creating new ones.\n\nIf you believe this is not a duplicate, please provide additional context explaining why.'
-            })
-      - name: Add duplicate label
-        uses: actions/github-script@v7
-        with:
-          script: |
+            const issue = context.payload.issue;
+            const issueTitle = issue.title.toLowerCase();
+
+            // ✅ Add label
             await github.rest.issues.addLabels({
-              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['duplicate']
-            })
-      - name: Lock conversation
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.lock({
-              issue_number: context.issue.number,
+              issue_number: issue.number,
+              labels: ["SSoC26"]
+            });
+
+            // 🔍 Get issues
+            const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              lock_reason: 'resolved'
-            })
+              state: "open"
+            });
+
+            const similar = issues.find(i =>
+              i.number !== issue.number &&
+              i.title.toLowerCase().includes(issueTitle)
+            );
+
+            if (similar) {
+              // 💬 Comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: "⚠️ Duplicate of #" + similar.number + ". Closing this issue."
+              });
+
+              // 🏷️ Label
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ["duplicate"]
+              });
+
+              // ❌ Close
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: "closed"
+              });
+            }

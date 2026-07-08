@@ -1,0 +1,84 @@
+:root {
+    --bg-main: #020617;
+    --panel-bg: #0f172a;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    /* Complexity Colors */
+    --o-constant: #10b981;   /* Green O(1) */
+    --o-linear: #06b6d4;     /* Cyan O(N) */
+    --o-quadratic: #f59e0b;  /* Yellow O(N^2) */
+    --o-exponential: #ef4444; /* Red O(2^N) */
+    
+    --accent: #8b5cf6;       /* Purple for Memory Theme */
+    --accent-hover: #7c3aed;
+}
+
+body.profiler-body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+/* Nav */
+.profiler-nav { height: 60px; background: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 1.5rem; z-index: 10; gap: 1rem; }
+.nav-logo { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--accent); }
+.nav-title { font-size: 0.8rem; background: rgba(139, 92, 246, 0.1); color: var(--accent); padding: 0.4rem 0.8rem; border-radius: 99px; border: 1px solid rgba(139, 92, 246, 0.3); font-family: 'Fira Code', monospace; }
+
+/* Workspace */
+.profiler-workspace { flex: 1; display: flex; overflow: hidden; }
+.visualization-panel, .editor-panel { display: flex; flex-direction: column; height: 100%; }
+.visualization-panel { width: 450px; background: var(--panel-bg); border-right: 1px solid var(--border-color); }
+.editor-panel { flex: 1; background: var(--bg-main); position: relative; }
+
+.panel-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2); }
+.panel-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--text-main); }
+
+/* Visualization Content */
+.visualization-content { padding: 1.5rem; overflow-y: auto; flex: 1; }
+.instruction-box { background: rgba(139, 92, 246, 0.05); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; color: #cbd5e1; font-size: 0.9rem; padding: 1rem; margin-bottom: 1.5rem; }
+.instruction-box strong { color: var(--accent); display: block; margin-bottom: 0.5rem; }
+
+/* Telemetry */
+.engine-title { margin: 1.5rem 0 1rem; font-size: 0.9rem; color: var(--accent); font-family: 'Fira Code', monospace; text-transform: uppercase; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem; }
+.telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+.tel-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.tel-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); text-align: center; }
+.tel-value { font-family: 'Fira Code', monospace; font-size: 1.2rem; color: var(--text-main); font-weight: 600; text-align: center; }
+
+/* Chart Section */
+.chart-section { display: flex; flex-direction: column; gap: 1rem; }
+.run-btn { width: 100%; padding: 0.8rem; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif; transition: background 0.2s; font-size: 1rem; }
+.run-btn:hover { background: var(--accent-hover); }
+.run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.chart-container { background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); position: relative; height: 300px; }
+
+/* Status */
+.status-indicator { font-family: 'Fira Code', monospace; }
+
+/* Editor & HUD */
+.split-editors { display: flex; flex: 1; overflow: hidden; }
+.editor-col { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
+.editor-col:last-child { border-right: none; }
+
+.editor-header { padding: 0.5rem 1rem; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.3); }
+.header-a { color: var(--o-constant); }
+.header-b { color: var(--o-linear); }
+
+.editor-container { flex: 1; overflow: hidden; }
+.CodeMirror { height: 100% !important; font-family: 'Fira Code', monospace !important; font-size: 14px; background: var(--bg-main) !important; color: var(--text-main) !important; }
+.CodeMirror-gutters { background: var(--panel-bg) !important; border-right: 1px solid var(--border-color) !important; }
+
+@media (max-width: 900px) {
+    .profiler-workspace { flex-direction: column; }
+    .visualization-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); max-height: 50vh; }
+    .editor-panel { flex: 1; }
+    .split-editors { flex-direction: column; }
+}

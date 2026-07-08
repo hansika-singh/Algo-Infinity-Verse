@@ -196,7 +196,7 @@ async function submitSolution(req, res, user, battleId) {
 
       const battle = doc.data();
 
-      if (battle.status === "completed") {
+      if (battle.status === "completed" || battle.winner) {
         throw new Error("Battle already finished — opponent submitted first");
       }
       if (battle.status !== "active") {
