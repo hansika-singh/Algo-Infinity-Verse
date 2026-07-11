@@ -202,6 +202,6 @@ function applyDifficultyStepDown() {
 
 function applyModeSwitch() {
     hideIntervention();
-    console.warn("Alert:", "System architecture dynamically shifting workspace to 'Visual Node/Graph Builder' mode...");
+    void 0;
     // In a real environment, this would initialize the Drag-and-Drop visualizer built in a previous PR
 }

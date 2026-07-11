@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // Simple static file server
 const PORT = 3456;
 const server = http.createServer((req, res) => {
-    console.log("REQUEST:", req.url);
+    void 0;
     // Strip query string
     const urlWithoutQuery = req.url.split('?')[0];
     
@@ -51,24 +51,24 @@ async function runTests() {
     let browser;
     try {
         server.listen(PORT);
-        console.log(`Test server running on port ${PORT}`);
+        void 0;
 
         browser = await puppeteer.launch({ headless: "new" });
         const page = await browser.newPage();
         
         // Forward console logs from page
-        page.on('console', msg => console.log('PAGE LOG:', msg.text()));
-        page.on('pageerror', error => console.log('PAGE ERROR:', error.stack || error.message));
+        page.on('console', msg => void 0);
+        page.on('pageerror', error => void 0);
         
         // Mock the window.showToast if necessary since it relies on main script
         await page.evaluateOnNewDocument(() => {
-            window.showToast = (msg, type) => console.log(`TOAST [${type}]: ${msg}`);
+            window.showToast = (msg, type) => void 0;
         });
 
         // Navigate to the simulator
         await page.goto(`http://localhost:${PORT}/pages/visualizers/map-reduce-simulator/map-reduce-simulator.html`, { waitUntil: 'networkidle0' });
         
-        console.log("--- Test Case 1: Standard Input ---");
+        void 0;
         // Clear input and enter custom text
         await page.evaluate(() => document.getElementById('dataInput').value = 'hello world hello map');
         
@@ -80,7 +80,7 @@ async function runTests() {
         
         // Verify results
         const finalOutputCount = await page.evaluate(() => document.querySelectorAll('.output-item').length);
-        console.log(`Final output keys: ${finalOutputCount}`);
+        void 0;
         
         const outputTexts = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('.output-item')).map(el => {
@@ -90,16 +90,16 @@ async function runTests() {
                 };
             });
         });
-        console.log("Output content:", outputTexts);
+        void 0;
         
         const passed1 = outputTexts.find(o => o.key === 'hello' && o.value === '2') &&
                         outputTexts.find(o => o.key === 'world' && o.value === '1') &&
                         outputTexts.find(o => o.key === 'map' && o.value === '1');
         
-        if (passed1) console.log("✅ Test 1 Passed");
+        if (passed1) void 0;
         else console.error("❌ Test 1 Failed", outputTexts);
 
-        console.log("--- Test Case 2: Punctuation and Case Insensitivity ---");
+        void 0;
         await page.evaluate(() => {
             document.getElementById('btnResetAll').click();
             document.getElementById('dataInput').value = 'Apple, apple! orange? APPLE.';
@@ -116,10 +116,10 @@ async function runTests() {
         const passed2 = outputTexts2.find(o => o.key === 'apple' && o.value === '3') &&
                         outputTexts2.find(o => o.key === 'orange' && o.value === '1') &&
                         outputTexts2.length === 2;
-        if (passed2) console.log("✅ Test 2 Passed");
+        if (passed2) void 0;
         else console.error("❌ Test 2 Failed", outputTexts2);
 
-        console.log("--- Test Case 3: Empty Input / Only Punctuation ---");
+        void 0;
         await page.evaluate(() => {
             document.getElementById('btnResetAll').click();
             document.getElementById('dataInput').value = '!@# $%^';
@@ -128,10 +128,10 @@ async function runTests() {
         await page.waitForFunction(() => document.getElementById('statStatus').textContent === 'Completed', { timeout: 15000 });
         
         const outputTexts3 = await page.evaluate(() => document.querySelectorAll('.output-item').length);
-        if (outputTexts3 === 0) console.log("✅ Test 3 Passed (Handled gracefully with no output)");
+        if (outputTexts3 === 0) void 0;
         else console.error("❌ Test 3 Failed", outputTexts3);
         
-        console.log("--- Test Case 4: Mappers greater than words ---");
+        void 0;
         // Set mappers to 8, but words to 2
         await page.evaluate(() => {
             document.getElementById('btnResetAll').click();
@@ -144,10 +144,10 @@ async function runTests() {
         await page.waitForFunction(() => document.getElementById('statStatus').textContent === 'Completed', { timeout: 15000 });
         
         const outputTexts4 = await page.evaluate(() => document.querySelectorAll('.output-item').length);
-        if (outputTexts4 === 2) console.log("✅ Test 4 Passed");
+        if (outputTexts4 === 2) void 0;
         else console.error("❌ Test 4 Failed");
         
-        console.log("All tests completed!");
+        void 0;
 
     } catch (e) {
         console.error("Test execution failed:", e);

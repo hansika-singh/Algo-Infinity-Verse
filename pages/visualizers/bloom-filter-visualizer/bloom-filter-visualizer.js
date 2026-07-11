@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function runEmpiricalSimulation() {
         if (insertedItems.size === 0) {
             addLog("Simulation error: Add at least one item before running simulation.", "sys");
-            console.warn("Alert:", "Please add some items to the Bloom Filter first to set some bits.");
+            void 0;
             return;
         }
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR AR Data Structure Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Theme Initialization Script -->
+    <script>
+        (function() {
+            try {
+                var storedTheme = localStorage.getItem('theme');
+                var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+                if (theme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else {
+                    document.documentElement.classList.remove('light-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    <!-- Import Maps for Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../node_modules/three/build/three.module.js",
+                "three/addons/": "../node_modules/three/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Top Navigation Overlay -->
+    <nav class="ar-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🚀 Algo-Infinity-Verse</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../code-visualizer/index.html">2D Visualizer</a></li>
+                <li><a href="#" class="active">AR Visualizer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- UI Overlay container -->
+    <div id="ui-container">
+        <div class="panel controls-panel">
+            <h2>Tree Operations</h2>
+            <div class="input-group">
+                <input type="number" id="node-value" placeholder="Enter value" />
+                <button id="insert-btn" class="btn primary-btn">Insert Node</button>
+            </div>
+            
+            <div class="traversal-group">
+                <button id="traverse-inorder" class="btn outline-btn">In-order</button>
+                <button id="traverse-preorder" class="btn outline-btn">Pre-order</button>
+                <button id="traverse-postorder" class="btn outline-btn">Post-order</button>
+            </div>
+            
+            <div class="actions-group">
+                <button id="reset-btn" class="btn danger-btn">Reset Scene</button>
+            </div>
+        </div>
+
+        <!-- Node Info Popup (Hidden by default) -->
+        <div id="node-info-popup" class="popup hidden">
+            <h3 id="popup-value">Node: </h3>
+            <p id="popup-meta">Height: 0</p>
+        </div>
+    </div>
+
+    <!-- The 3D Canvas will be injected by Three.js here -->
+    <div id="canvas-container"></div>
+    
+    <!-- AR Button container -->
+    <div id="ar-button-container"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

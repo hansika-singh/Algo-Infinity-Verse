@@ -173,7 +173,7 @@ function expandLSystem() {
         
         // Anti-crash safety limit (strings > 2M chars will lag DOM severely)
         if (curr.length > 2000000) {
-            console.warn("Alert:", `Iteration capped at ${i} to prevent browser crash. Fractal too dense!`);
+            void 0;
             break;
         }
     }

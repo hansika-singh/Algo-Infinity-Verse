@@ -1,0 +1,630 @@
+/* ============================================
+   INTERVIEW LANDING PAGE — Design System
+   ============================================
+   Follows the frontend-design skill direction:
+   - Display: DM Sans (professional, geometric)
+   - Body: Inter (platform consistency)
+   - Accent signature: cyan (#06b6d4) for active/search
+   - Amber (#f59e0b) for achievements/highlights
+   - Emerald (#10b981) for growth/success
+   - Warm charcoal background (#0c0c14)
+   ============================================ */
+
+/* ─── CSS Variables (scoped to interview page) ─── */
+[data-page="interview"] {
+  --iv-bg: #0c0c14;
+  --iv-surface: #14141f;
+  --iv-elevated: #1c1c2e;
+  --iv-primary: #06b6d4;
+  --iv-primary-rgb: 6, 182, 212;
+  --iv-accent: #f59e0b;
+  --iv-accent-rgb: 245, 158, 11;
+  --iv-emerald: #10b981;
+  --iv-emerald-rgb: 16, 185, 129;
+  --iv-text: #f1f5f9;
+  --iv-text-muted: #64748b;
+  --iv-border: rgba(6, 182, 212, 0.1);
+  --iv-border-hover: rgba(6, 182, 212, 0.2);
+  --iv-radius: 12px;
+  --iv-radius-lg: 20px;
+  --iv-pastel-red: #ffb3ba;
+  --iv-pastel-red-rgb: 255, 179, 186;
+  --iv-pastel-lavender: #c9baff;
+  --iv-pastel-lavender-rgb: 201, 186, 255;
+  --iv-violet: #a78bfa;
+  --iv-violet-rgb: 167, 139, 250;
+  --iv-rose: #fb7185;
+  --iv-rose-rgb: 251, 113, 133;
+  --iv-blue: #38bdf8;
+  --iv-blue-rgb: 56, 189, 248;
+  --iv-indigo: #818cf8;
+  --iv-indigo-rgb: 129, 140, 248;
+}
+
+/* ─── Hero Section ─── */
+[data-page="interview"] .iv-hero {
+  position: relative;
+  padding: 8rem 1.5rem 3rem;
+  text-align: center;
+  overflow: hidden;
+  background: var(--iv-bg);
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iv-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.iv-hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 40% 30% at 70% 60%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.iv-hero-orb {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  top: -200px;
+  right: -150px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  animation: ivOrbFloat 12s ease-in-out infinite;
+}
+
+@keyframes ivOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-30px, 20px) scale(1.05); }
+  66% { transform: translate(20px, -10px) scale(0.97); }
+}
+
+.iv-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  width: 100%;
+}
+
+.iv-hero-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  cursor: default;
+}
+
+.iv-title-letter {
+  display: inline-block;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    text-shadow 0.28s ease,
+    color 0.28s ease;
+  will-change: transform;
+}
+
+.iv-title-space {
+  display: inline-block;
+  width: 0.3em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-title-letter {
+    transition: none !important;
+  }
+}
+
+.iv-hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  color: var(--iv-text-muted);
+  line-height: 1.6;
+  max-width: 540px;
+  margin: 0 auto 2rem;
+}
+
+/* ─── Search ─── */
+.iv-search-wrapper {
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+.iv-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--iv-surface);
+  border: 1px solid var(--iv-border);
+  border-radius: 100px;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.iv-search:focus-within {
+  border-color: var(--iv-primary);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12), 0 4px 20px rgba(6, 182, 212, 0.06);
+  background: #16162a;
+}
+
+.iv-search-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--iv-text-muted);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.iv-search:focus-within .iv-search-icon {
+  color: var(--iv-primary);
+}
+
+.iv-search-input {
+  flex: 1;
+  padding: 0.85rem 3rem 0.85rem 2.75rem;
+  background: transparent;
+  border: none;
+  color: var(--iv-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.iv-search-input::placeholder {
+  color: var(--iv-text-muted);
+  opacity: 0.6;
+}
+
+.iv-clear-btn {
+  position: absolute;
+  right: 44px;
+  background: none;
+  border: none;
+  color: var(--iv-text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.85rem;
+  border-radius: 50%;
+  display: none;
+  transition: all 0.2s ease;
+}
+
+.iv-clear-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.iv-clear-btn.visible {
+  display: flex;
+}
+
+.iv-search-hint {
+  position: absolute;
+  right: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--iv-text-muted);
+  opacity: 0.4;
+  pointer-events: none;
+  padding: 2px 6px;
+  border: 1px solid var(--iv-border);
+  border-radius: 4px;
+}
+
+/* ─── Filter Chips ─── */
+.iv-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.iv-filter-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  background: transparent;
+  border: 1px solid var(--iv-border);
+  color: var(--iv-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.iv-filter-chip:hover {
+  border-color: var(--iv-pastel-lavender);
+  color: var(--iv-pastel-lavender);
+  background: rgba(var(--iv-pastel-lavender-rgb), 0.08);
+}
+
+.iv-filter-chip.active {
+  background: rgba(var(--iv-primary-rgb), 0.1);
+  border-color: var(--iv-primary);
+  color: var(--iv-primary);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.08);
+}
+
+.iv-result-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--iv-text-muted);
+  margin-top: 0.5rem;
+}
+
+.iv-result-count span {
+  color: var(--iv-emerald);
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── Section ─── */
+.iv-section {
+  padding: 2rem 1.5rem 5rem;
+  background: var(--iv-bg);
+}
+
+.iv-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ─── Card Grid ─── */
+.iv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .iv-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .iv-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .iv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Card ─── */
+.iv-card {
+  position: relative;
+  background: var(--iv-surface);
+  border: 1px solid var(--iv-border);
+  border-radius: var(--iv-radius);
+  padding: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.iv-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--iv-radius);
+  background: linear-gradient(135deg, rgba(var(--iv-primary-rgb), 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.iv-card:hover {
+  border-color: var(--iv-border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.iv-card:hover::before {
+  opacity: 1;
+}
+
+.iv-card:focus-visible {
+  outline: 2px solid var(--iv-primary);
+  outline-offset: 2px;
+}
+
+.iv-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  color: inherit;
+}
+
+.iv-card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--iv-text);
+  line-height: 1.3;
+}
+
+.iv-card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--iv-text-muted);
+  line-height: 1.5;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.iv-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--iv-border);
+}
+
+.iv-card-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--iv-primary);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(var(--iv-primary-rgb), 0.06);
+  border: 1px solid rgba(var(--iv-primary-rgb), 0.1);
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iv-card-arrow {
+  color: var(--iv-text-muted);
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.iv-card:hover .iv-card-arrow {
+  color: var(--iv-pastel-lavender);
+  transform: translateX(3px);
+}
+
+/* ─── Category-themed card category badges ─── */
+.iv-card[data-category="practice-mock"] .iv-card-category {
+  color: var(--iv-indigo);
+  border-color: rgba(var(--iv-indigo-rgb), 0.15);
+  background: rgba(var(--iv-indigo-rgb), 0.06);
+}
+
+.iv-card[data-category="behavioral"] .iv-card-category {
+  color: var(--iv-accent);
+  border-color: rgba(var(--iv-accent-rgb), 0.15);
+  background: rgba(var(--iv-accent-rgb), 0.06);
+}
+
+.iv-card[data-category="collaborative-coding"] .iv-card-category {
+  color: var(--iv-emerald);
+  border-color: rgba(var(--iv-emerald-rgb), 0.15);
+  background: rgba(var(--iv-emerald-rgb), 0.06);
+}
+
+.iv-card[data-category="tracking-analytics"] .iv-card-category {
+  color: var(--iv-violet);
+  border-color: rgba(var(--iv-violet-rgb), 0.15);
+  background: rgba(var(--iv-violet-rgb), 0.06);
+}
+
+.iv-card[data-category="special-tools"] .iv-card-category {
+  color: var(--iv-rose);
+  border-color: rgba(var(--iv-rose-rgb), 0.15);
+  background: rgba(var(--iv-rose-rgb), 0.06);
+}
+
+.iv-card[data-category="resume-career"] .iv-card-category {
+  color: var(--iv-blue);
+  border-color: rgba(var(--iv-blue-rgb), 0.15);
+  background: rgba(var(--iv-blue-rgb), 0.06);
+}
+
+/* ─── Empty State ─── */
+.iv-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--iv-text-muted);
+}
+
+.iv-empty i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.iv-empty h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  color: var(--iv-text);
+  margin-bottom: 0.5rem;
+}
+
+.iv-empty p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+}
+
+/* ─── Animation ─── */
+[data-page="interview"] .iv-card {
+  animation: ivCardFadeIn 0.35s ease both;
+}
+
+@keyframes ivCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  [data-page="interview"] .iv-hero {
+    padding: 6rem 1rem 2.5rem;
+    min-height: auto;
+  }
+
+  .iv-hero-title {
+    font-size: 2rem;
+  }
+
+  .iv-hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .iv-search-input {
+    font-size: 0.9rem;
+    padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+  }
+
+  .iv-filters {
+    gap: 0.35rem;
+  }
+
+  .iv-filter-chip {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.75rem;
+  }
+
+  .iv-grid {
+    gap: 0.75rem;
+  }
+
+  .iv-search-hint {
+    display: none;
+  }
+}
+
+/* ─── Back Button ─── */
+.iv-back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 1.5rem;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem 0.55rem 0.85rem;
+  background: var(--iv-surface);
+  border: 1px solid var(--iv-border);
+  border-radius: 100px;
+  color: var(--iv-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.iv-back-btn i {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.iv-back-btn span {
+  font-weight: 500;
+}
+
+.iv-back-btn:hover {
+  border-color: var(--iv-pastel-red);
+  color: var(--iv-pastel-red);
+  background: rgba(var(--iv-pastel-red-rgb), 0.08);
+}
+
+.iv-back-btn:hover i {
+  transform: translateX(-3px);
+}
+
+.iv-back-btn:focus-visible {
+  outline: 2px solid var(--iv-pastel-red);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .iv-back-btn {
+    top: 1rem;
+    left: 0.75rem;
+    padding: 0.45rem 0.75rem 0.45rem 0.65rem;
+    font-size: 0.8rem;
+  }
+  .iv-back-btn span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-back-btn {
+    transition: none;
+  }
+  .iv-back-btn i {
+    transition: none;
+  }
+  .iv-back-btn:hover i {
+    transform: none;
+  }
+
+  .iv-hero-orb {
+    animation: none;
+  }
+
+  .iv-card {
+    animation: none;
+  }
+
+  .iv-card:hover {
+    transform: none;
+  }
+
+  .iv-card:hover .iv-card-arrow {
+    transform: none;
+  }
+
+  .iv-search {
+    transition: none;
+  }
+
+  .iv-filter-chip {
+    transition: none;
+  }
+}

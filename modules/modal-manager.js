@@ -33,10 +33,19 @@ export function initModalManager() {
     function trapFocus(e, modal) {
         if (e.key !== 'Tab') return;
         const focusable = Array.from(getFocusableElements(modal)).filter(el => el.tabIndex !== -1);
-        if (focusable.length === 0) return;
+        if (focusable.length === 0) {
+            e.preventDefault();
+            return;
+        }
         
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
+        
+        if (!modal.contains(document.activeElement)) {
+            first.focus();
+            e.preventDefault();
+            return;
+        }
         
         if (e.shiftKey) {
             if (document.activeElement === first) {
@@ -154,10 +163,12 @@ export function initModalManager() {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            activeModals.forEach(modal => {
-                closeModal(modal);
-            });
+        if (e.key === 'Escape' && activeModals.size > 0) {
+            const modalsArray = Array.from(activeModals);
+            const topMostModal = modalsArray[modalsArray.length - 1];
+            closeModal(topMostModal);
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
 

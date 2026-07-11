@@ -137,26 +137,26 @@ export function auditProject(projectPath) {
  * Main function to run the audit
  */
 export function runAudit(rootDir) {
-    console.log(`Starting audit for: ${rootDir}`);
+    void 0;
     
     const { type, patterns } = detectWorkspaceConfigs(rootDir);
-    console.log(`Detected project type: ${type}`);
+    void 0;
     
     let subprojects = [];
 
     if (patterns.length > 0) {
-        console.log(`Found workspace patterns: ${patterns.join(', ')}`);
+        void 0;
         for (const pattern of patterns) {
             subprojects.push(...expandGlob(rootDir, pattern));
         }
     } else {
-        console.log(`No explicit workspaces found. Falling back to depth-aware recursive search...`);
+        void 0;
         subprojects = boundedRecursiveSearch(rootDir, rootDir, 0);
     }
 
     // Deduplicate projects
     subprojects = [...new Set(subprojects)];
-    console.log(`Discovered ${subprojects.length} subprojects.`);
+    void 0;
 
     const report = {
         projectType: type,
@@ -182,5 +182,5 @@ if (process.argv[1] === __filename) {
     const rootDir = process.argv[2] || process.cwd();
     const report = runAudit(rootDir);
     fs.writeFileSync(path.join(rootDir, 'audit-report.json'), JSON.stringify(report, null, 2));
-    console.log('Audit complete. Results saved to audit-report.json');
+    void 0;
 }

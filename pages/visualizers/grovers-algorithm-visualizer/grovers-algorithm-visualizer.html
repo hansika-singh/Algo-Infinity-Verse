@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grover's Algorithm Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="grovers-algorithm-visualizer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-atom logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Grover's Algorithm <span class="badge badge-algo">Quantum O(√N)</span></h1>
+        <p>Amplitude Amplification, Oracle Phase Flips, and Diffusion</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-crosshairs"></i> Quantum State Target</h2>
+          <p class="desc-text mb-2">Select the item to search for in an unsorted 4-qubit database (N=16 states).</p>
+          <div class="input-group">
+            <select id="select-target" class="w-100">
+               </select>
+          </div>
+          <button id="btn-initialize" class="btn btn-secondary w-100 mt-2">
+             <i class="fa-solid fa-arrows-rotate"></i> Reset Superposition
+          </button>
+        </section>
+
+        <section class="glass-panel control-panel mt-3">
+          <h2><i class="fa-solid fa-microchip"></i> Quantum Gates</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Auto Run
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+          </div>
+          <div class="slider-control">
+            <label for="speed-slider">Engine Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="3.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel telemetry-panel mt-3">
+          <h2><i class="fa-solid fa-chart-line"></i> Amplitude Telemetry</h2>
+          <div class="metric-grid">
+             <div class="metric-box">
+                <span class="metric-title">Iterations</span>
+                <span class="metric-value" id="val-iterations">0</span>
+                <span class="metric-sub">Optimal: ~3</span>
+             </div>
+             <div class="metric-box box-target">
+                <span class="metric-title">Target Probability</span>
+                <span class="metric-value" id="val-probability">6.25%</span>
+                <span class="metric-sub">Measurement Yield</span>
+             </div>
+          </div>
+          <p class="desc-text mt-2 text-warning" id="overcook-warning" style="display: none;">
+             <i class="fa-solid fa-triangle-exclamation"></i> Overcooking! Too many iterations causes probability to drop.
+          </p>
+        </section>
+
+        <section class="glass-panel legend-panel mt-3">
+          <h2><i class="fa-solid fa-layer-group"></i> Amplitude States</h2>
+          <ul class="phase-list">
+            <li class="phase-item">
+              <span class="color-box base-color"></span>
+              <div class="phase-info">
+                <strong>Base State</strong>
+                <p>Positive amplitude.</p>
+              </div>
+            </li>
+            <li class="phase-item">
+              <span class="color-box negative-color"></span>
+              <div class="phase-info">
+                <strong>Phase Flipped</strong>
+                <p>Negative amplitude (-x).</p>
+              </div>
+            </li>
+            <li class="phase-item">
+              <span class="color-box target-color"></span>
+              <div class="phase-info">
+                <strong>Target State</strong>
+                <p>Item satisfying Oracle.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Quantum Register:</span>
+            <span id="status-text" class="status-message">Uniform Superposition Initialized. All states equal.</span>
+          </div>
+        </div>
+
+        <div class="quantum-container">
+            <div class="mean-line-container">
+                <div id="mean-line" class="mean-line">
+                    <span class="mean-label">Average Amplitude (μ)</span>
+                </div>
+                <div class="zero-line"></div>
+            </div>
+            
+            <div class="bars-wrapper" id="bars-wrapper">
+                </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="grovers-algorithm-visualizer.js"></script>
+</body>
+</html>

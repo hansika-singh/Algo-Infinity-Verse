@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Session Timeline | Algo Infinity Verse</title>
+
+    <meta name="description" content="Review what you accomplished in each learning session." />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="./learning-session-timeline.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <meta name="auth-required" content="true" />
+
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body data-page="learning-session-timeline">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">
+      <header class="lst-header">
+        <div>
+          <h1 class="lst-title">
+            <i class="fas fa-clock-rotate-left"></i> Learning Session Timeline
+          </h1>
+          <p class="lst-subtitle">A chronological replay of your learning activity.</p>
+        </div>
+      </header>
+
+      <section class="lst-grid">
+        <aside class="lst-sessions">
+          <div class="lst-panel">
+            <div class="lst-panel-header">
+              <h2><i class="fas fa-list-ul"></i> Sessions</h2>
+              <button id="refreshSessionsBtn" class="btn btn-small btn-secondary" type="button">
+                <i class="fas fa-rotate"></i> Refresh
+              </button>
+            </div>
+            <div id="sessionsList" class="lst-sessions-list">Loading...</div>
+          </div>
+        </aside>
+
+        <section class="lst-timeline">
+          <div class="lst-panel">
+            <div class="lst-panel-header">
+              <h2><i class="fas fa-stream"></i> Timeline</h2>
+              <div class="lst-timeline-meta" id="timelineMeta"></div>
+            </div>
+
+            <div class="lst-filters">
+              <button type="button" class="lst-filter active" data-filter="all">All</button>
+              <button type="button" class="lst-filter" data-filter="problem">Problems</button>
+              <button type="button" class="lst-filter" data-filter="quiz">Quizzes</button>
+              <button type="button" class="lst-filter" data-filter="xp">XP</button>
+              <button type="button" class="lst-filter" data-filter="badges">Badges</button>
+              <button type="button" class="lst-filter" data-filter="topic">Topic pages</button>
+              <button type="button" class="lst-filter" data-filter="playground">
+                Code Playground
+              </button>
+            </div>
+
+            <div id="timelineList" class="lst-timeline-list">Select a session to see events.</div>
+          </div>
+        </section>
+      </section>
+
+      <section class="lst-empty-state hidden" id="emptyState">
+        <div class="lst-empty-card">
+          <div class="lst-empty-icon"><i class="fas fa-mountain-sun"></i></div>
+          <h3>No sessions yet</h3>
+          <p>Your session history will appear here after you start learning.</p>
+          <a class="btn btn-primary" href="/">Go to Dashboard</a>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+
+    <script type="module" src="./learning-session-timeline.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

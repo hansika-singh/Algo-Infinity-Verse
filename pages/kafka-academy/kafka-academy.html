@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apache Kafka & EDA Learning Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="kafka-academy.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+    <!-- Mobile Sidebar Toggle -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden fixed top-4 right-4 z-50 p-2 bg-red-600 text-white rounded shadow-lg"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside
+      id="sidebar"
+      class="w-72 bg-white border-r border-gray-200 h-full flex flex-col transition-transform duration-300 absolute md:relative z-40 -translate-x-full md:translate-x-0"
+    >
+      <div class="p-4 border-b border-gray-200 bg-red-50 flex items-center gap-3">
+        <div
+          class="bg-red-600 text-white w-10 h-10 rounded flex items-center justify-center font-bold text-xl"
+        >
+          K
+        </div>
+        <h1 class="font-bold text-lg text-red-900 leading-tight">Kafka & EDA Hub</h1>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="p-4 border-b border-gray-200">
+        <div class="flex justify-between text-xs mb-1 font-semibold text-gray-500">
+          <span>Progress</span>
+          <span id="progress-text">0%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div
+            id="progress-bar"
+            class="bg-red-600 h-2 rounded-full transition-all duration-500"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+
+      <div id="sidebar-content" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        <!-- JS will inject curriculum navigation here -->
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full flex flex-col relative w-full">
+      <!-- Tabs Header -->
+      <header
+        class="bg-white border-b border-gray-200 px-6 py-4 flex space-x-4 shadow-sm z-10 overflow-x-auto"
+      >
+        <button
+          class="tab-btn active px-4 py-2 font-medium rounded-t-lg border-b-2 border-red-600 text-red-700 transition-colors whitespace-nowrap"
+          data-tab="lesson"
+        >
+          <i class="fas fa-book-open mr-2"></i>Lesson
+        </button>
+        <button
+          class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-red-600 transition-colors whitespace-nowrap"
+          data-tab="simulator"
+        >
+          <i class="fas fa-project-diagram mr-2"></i>Topic Simulator
+        </button>
+        <button
+          class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-red-600 transition-colors whitespace-nowrap"
+          data-tab="quiz"
+        >
+          <i class="fas fa-tasks mr-2"></i>Quiz
+        </button>
+        <div class="ml-auto">
+          <a
+            href="../../index.html"
+            class="text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <i class="fas fa-home"></i> Home
+          </a>
+        </div>
+      </header>
+
+      <!-- Tab Contents -->
+      <div class="flex-1 overflow-y-auto relative bg-gray-50 custom-scrollbar">
+        <!-- Lesson Tab -->
+        <div id="lesson-tab" class="tab-content active p-6 md:p-10 max-w-4xl mx-auto w-full">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+            <h2 id="lesson-title" class="text-3xl font-bold mb-6 text-gray-800">
+              Welcome to Kafka Hub
+            </h2>
+            <div id="lesson-body" class="prose max-w-none text-gray-600 leading-relaxed space-y-4">
+              Select a lesson from the sidebar to begin.
+            </div>
+            <div class="mt-8 flex justify-between items-center border-t border-gray-100 pt-6">
+              <button
+                id="prev-btn"
+                class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors font-medium invisible"
+              >
+                <i class="fas fa-arrow-left mr-2"></i>Previous
+              </button>
+              <button
+                id="mark-complete-btn"
+                class="px-5 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-medium shadow-sm"
+              >
+                Mark as Read <i class="fas fa-check ml-2"></i>
+              </button>
+              <button
+                id="next-btn"
+                class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors font-medium invisible"
+              >
+                Next<i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulator Tab -->
+        <div id="simulator-tab" class="tab-content hidden p-6 h-full flex flex-col">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex-1 flex flex-col items-center justify-center text-center"
+          >
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Topic Architecture Simulator</h2>
+            <p class="text-gray-500 mb-8 max-w-lg">
+              Visually simulate producers pushing messages to topics, and consumers reading from
+              partitions.
+            </p>
+
+            <div
+              class="w-full max-w-3xl border-2 border-dashed border-gray-300 rounded-xl p-8 bg-gray-50 relative min-h-[300px] flex items-center justify-center"
+            >
+              <div class="text-gray-400">
+                <i class="fas fa-cogs text-4xl mb-3 block"></i>
+                Interactive simulator feature coming soon.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz-tab" class="tab-content hidden p-6 md:p-10 max-w-3xl mx-auto w-full">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Knowledge Check</h2>
+            <div id="quiz-container" class="space-y-6">
+              <!-- Quiz questions populated by JS -->
+            </div>
+            <button
+              id="submit-quiz"
+              class="mt-8 w-full py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors shadow-sm hidden"
+            >
+              Submit Answers
+            </button>
+            <div id="quiz-result" class="mt-6 p-4 rounded-lg hidden text-center font-bold"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="kafka-academy.js"></script>
+  </body>
+</html>

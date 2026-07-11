@@ -1,1 +1,1 @@
-console.log('Algorithm Racing feature coming soon');
+void 0;

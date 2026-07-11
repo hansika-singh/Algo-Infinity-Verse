@@ -75,7 +75,7 @@ function renderProfile(data) {
 function shareProfile() {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-        console.warn("Alert:", 'Profile link copied to clipboard!');
+        void 0;
     });
 }
 

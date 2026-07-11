@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Rust — Beginner Guide | Algo Infinity Verse</title>
+    <meta name="description" content="Free beginner-friendly Rust tutorial covering ownership, borrowing, structs, enums, concurrency and more with interactive playground." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="rust-learning.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-no-loading>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item">
+          <a href="index.html#home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item has-dropdown">
+          <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+            <span>Learn</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
+            <a href="pages/practice/problems.html" class="dropdown-item" role="menuitem">Practice Problems</a>
+            <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
+            <a href="index.html#roadmap" class="dropdown-item" role="menuitem">Learning Roadmap</a>
+            <a href="/pages/learning/python-learning/python-learning.html" class="dropdown-item" role="menuitem">Learn Python</a>
+            <a href="/pages/learning/javascript-learning/javascript-learning.html" class="dropdown-item" role="menuitem">Learn JavaScript</a>
+            <a href="/pages/learning/java-learning/java-learning.html" class="dropdown-item" role="menuitem">Learn Java</a>
+            <a href="/pages/learning/cplusplus-learning/cplusplus-learning.html" class="dropdown-item" role="menuitem">Learn C++</a>
+            <a href="/pages/learning/c-learning/c-learning.html" class="dropdown-item" role="menuitem">Learn C</a>
+            <a href="rust-learning.html" class="dropdown-item active" role="menuitem">Learn Rust</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="index.html#roadmap" class="nav-link">Roadmap</a>
+        </li>
+        <li class="nav-item">
+          <a href="pages/practice/problems.html" class="nav-link">Practice</a>
+        </li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+        <a href="index.html" class="btn btn-primary">
+          <i class="fas fa-home"></i> Home
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="learning-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-icon">🦀</div>
+          <h1 class="hero-title">
+            Learn <span class="gradient-text">Rust</span>
+          </h1>
+          <p class="hero-subtitle">
+            Master systems programming with Rust — the language that gives you 
+            low-level control without sacrificing safety. Perfect for performance-critical applications.
+          </p>
+          <div class="hero-badges">
+            <span class="hero-badge">🔒 Memory Safe</span>
+            <span class="hero-badge">⚡ Blazing Fast</span>
+            <span class="hero-badge">🛠️ Systems Programming</span>
+            <span class="hero-badge">🌐 WebAssembly Ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Rust Section -->
+    <section class="section" style="padding: 3rem 2rem;">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🦀</span>
+          Why Learn Rust?
+        </h2>
+        <div class="features-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem; margin-top:2rem;">
+          <div class="feature-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">🔒</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Memory Safety</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Rust prevents null pointer dereferences, buffer overflows and data races at compile time — no garbage collector needed!</p>
+          </div>
+          <div class="feature-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">⚡</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Performance</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Rust is as fast as C and C++ with zero-cost abstractions. Used by Firefox, Discord, Cloudflare and AWS.</p>
+          </div>
+          <div class="feature-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">🔧</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Concurrency</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Fearless concurrency — Rust's ownership model prevents data races at compile time making concurrent code safe.</p>
+          </div>
+          <div class="feature-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">🌐</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">WebAssembly</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Rust compiles to WebAssembly for high-performance web applications running at near-native speed in browsers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Concepts Section -->
+    <section class="section" style="padding: 2rem 2rem;">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">📚</span>
+          Core Rust Concepts
+        </h2>
+        <div class="concepts-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem; margin-top:2rem;">
+
+          <!-- Ownership -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">🔑 Ownership</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              Every value has a single owner. When owner goes out of scope, value is dropped automatically.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>let s1 = String::from("hello");
+let s2 = s1; // s1 moved to s2
+// println!("{}", s1); // Error!
+println!("{}", s2); // OK</code></pre>
+          </div>
+
+          <!-- Borrowing -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">📎 Borrowing</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              References allow you to use a value without taking ownership. Use & for immutable, &mut for mutable.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>fn print_len(s: &String) {
+    println!("Length: {}", s.len());
+}
+let name = String::from("Rust");
+print_len(&name); // borrow
+println!("{}", name); // still valid</code></pre>
+          </div>
+
+          <!-- Structs -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">🏗️ Structs</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              Custom data types that group related fields together. Similar to classes in other languages.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>struct User {
+    name: String,
+    age: u32,
+}
+let user = User {
+    name: String::from("Alice"),
+    age: 25,
+};
+println!("{}", user.name);</code></pre>
+          </div>
+
+          <!-- Enums -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">📋 Enums</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              Enums allow defining a type with multiple variants. Option and Result are built-in enums.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>enum Direction {
+    North, South, East, West
+}
+let dir = Direction::North;
+match dir {
+    Direction::North => println!("Going North!"),
+    _ => println!("Other direction"),
+}</code></pre>
+          </div>
+
+          <!-- Pattern Matching -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">🎯 Pattern Matching</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              match is Rust's powerful control flow operator. It compares a value against patterns exhaustively.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>let number = 7;
+match number {
+    1 => println!("One"),
+    2 | 3 => println!("Two or Three"),
+    4..=6 => println!("Four to Six"),
+    _ => println!("Something else"),
+}</code></pre>
+          </div>
+
+          <!-- Concurrency -->
+          <div class="concept-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem;">🔄 Concurrency</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+              Rust's ownership prevents data races at compile time, making concurrent programming fearless and safe.
+            </p>
+            <pre style="background:var(--dark-bg); padding:1rem; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>use std::thread;
+let handle = thread::spawn(|| {
+    println!("Hello from thread!");
+});
+handle.join().unwrap();
+println!("Main thread done!");</code></pre>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Playground Section -->
+    <section class="rust-playground-section section" style="padding: 2rem 2rem;">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🛠️</span>
+          Rust Playground
+        </h2>
+        <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">
+          Write and run Rust code directly in your browser!
+        </p>
+        <div class="rust-page">
+          <div class="rust-playground">
+
+            <!-- Editor Panel -->
+            <div class="rust-editor-panel">
+              <div class="panel-header">
+                <div style="display:flex; align-items:center; gap:0.8rem;">
+                  <span style="font-size:1.2rem;">🦀</span>
+                  <span style="font-weight:600; color:var(--text-primary);">Rust Editor</span>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <select id="rustExampleSelect" style="background:var(--dark-card); color:var(--text-primary); border:1px solid var(--glass-border); border-radius:8px; padding:0.4rem 0.8rem; font-family:'Poppins',sans-serif;">
+                    <option value="hello">Hello World</option>
+                    <option value="ownership">Ownership</option>
+                    <option value="structs">Structs & Enums</option>
+                    <option value="concurrency">Concurrency</option>
+                  </select>
+                  <button id="resetRustBtn" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.85rem;">
+                    <i class="fas fa-undo"></i> Reset
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="rustEditor"
+                style="width:100%; min-height:300px; background:var(--dark-bg); color:#e2e8f0; font-family:'Fira Code',monospace; font-size:14px; line-height:1.6; border:1px solid var(--glass-border); border-radius:10px; padding:1rem; resize:vertical; outline:none;"
+                placeholder="Write your Rust code here..."
+                spellcheck="false"
+              ></textarea>
+              <div style="display:flex; gap:0.8rem; margin-top:1rem;">
+                <button id="runRustBtn" class="btn btn-primary" style="flex:1;">
+                  <i class="fas fa-play"></i> Run Code
+                </button>
+              </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="rust-output-panel">
+              <div class="panel-header">
+                <div style="display:flex; align-items:center; gap:0.8rem;">
+                  <span style="font-size:1.2rem;">📤</span>
+                  <span style="font-weight:600; color:var(--text-primary);">Output</span>
+                </div>
+                <button id="clearRustOutputBtn" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.85rem;">
+                  <i class="fas fa-trash"></i> Clear
+                </button>
+              </div>
+              <div
+                id="rustOutput"
+                style="min-height:300px; background:var(--dark-bg); color:#22c55e; font-family:'Fira Code',monospace; font-size:14px; line-height:1.6; border:1px solid var(--glass-border); border-radius:10px; padding:1rem; white-space:pre-wrap;"
+              >// Output will appear here after running code...
+
+ℹ️ Note: This playground simulates Rust output.
+For full compilation, use play.rust-lang.org</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Path Section -->
+    <section class="section" style="padding: 2rem 2rem;">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">🗺️</span>
+          Rust Learning Path
+        </h2>
+        <div style="max-width:700px; margin:2rem auto 0;">
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">1</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Getting Started</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Install Rust, Hello World, Variables, Data Types, Functions</p>
+              <span style="background:rgba(34,197,94,0.2); color:#22c55e; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Easy • 1 week</span>
+            </div>
+          </div>
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">2</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Ownership & Borrowing</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Ownership rules, References, Borrowing, Lifetimes, Slices</p>
+              <span style="background:rgba(234,179,8,0.2); color:#eab308; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Medium • 2 weeks</span>
+            </div>
+          </div>
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">3</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Structs, Enums & Pattern Matching</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Custom types, Enums, Option, Result, Match expressions</p>
+              <span style="background:rgba(234,179,8,0.2); color:#eab308; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Medium • 1 week</span>
+            </div>
+          </div>
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">4</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Collections & Error Handling</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Vectors, HashMaps, Strings, Error handling with ? operator</p>
+              <span style="background:rgba(234,179,8,0.2); color:#eab308; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Medium • 1 week</span>
+            </div>
+          </div>
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">5</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Traits & Generics</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Trait definitions, Implementations, Generic types, Trait bounds</p>
+              <span style="background:rgba(239,68,68,0.2); color:#ef4444; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Hard • 2 weeks</span>
+            </div>
+          </div>
+
+          <div class="roadmap-item" style="display:flex; align-items:center; gap:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; transition:all 0.3s ease;">
+            <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">6</div>
+            <div>
+              <h3 style="margin-bottom:0.3rem;">Concurrency & Async</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Threads, Channels, Mutex, Arc, Async/Await with Tokio</p>
+              <span style="background:rgba(239,68,68,0.2); color:#ef4444; padding:0.2rem 0.6rem; border-radius:10px; font-size:0.75rem;">Hard • 2 weeks</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="section" style="padding: 2rem 2rem 4rem;">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">📖</span>
+          Resources
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem; margin-top:2rem;">
+          <a href="https://doc.rust-lang.org/book/" target="_blank" class="resource-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-decoration:none; transition:all 0.3s ease; display:block;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">📗</div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">The Rust Book</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Official comprehensive guide to Rust programming</p>
+          </a>
+          <a href="https://play.rust-lang.org/" target="_blank" class="resource-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-decoration:none; transition:all 0.3s ease; display:block;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">🛝</div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">Rust Playground</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Official online Rust compiler and playground</p>
+          </a>
+          <a href="https://rustlings.cool/" target="_blank" class="resource-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-decoration:none; transition:all 0.3s ease; display:block;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">🏋️</div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">Rustlings</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Small exercises to get you used to reading and writing Rust</p>
+          </a>
+          <a href="pages/practice/problems.html" class="resource-card" style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-decoration:none; transition:all 0.3s ease; display:block;">
+            <div style="font-size:2rem; margin-bottom:0.8rem;">💻</div>
+            <h3 style="color:var(--text-primary); margin-bottom:0.5rem;">Practice Problems</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Solve DSA problems using Rust on our platform</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align:center; padding:2rem; background:var(--dark-surface); border-top:1px solid var(--glass-border); color:var(--text-secondary);">
+      <p>🦀 Keep Coding • Keep Learning • Keep Growing</p>
+      <p style="margin-top:0.5rem;">
+        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Back to Algo Infinity Verse</a>
+      </p>
+    </footer>
+
+    <script src="rust-learning.js"></script>
+    <script>
+      // Loading screen
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) loadingScreen.classList.add('hidden');
+        }, 1500);
+      });
+
+      // Scroll to top
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      });
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Run button simulation
+      document.getElementById('runRustBtn').addEventListener('click', () => {
+        const code = document.getElementById('rustEditor').value;
+        const output = document.getElementById('rustOutput');
+        output.style.color = '#22c55e';
+        output.textContent = '⏳ Compiling...\n\n';
+
+        setTimeout(() => {
+          // Simulate output based on example
+          if (code.includes('println!("Hello, Rust!")')) {
+            output.textContent = '✅ Compiled successfully!\n\nHello, Rust!';
+          } else if (code.includes('borrow_name')) {
+            output.textContent = '✅ Compiled successfully!\n\nBorrowed value: Rust\nOriginal value: Rust';
+          } else if (code.includes('thread::spawn')) {
+            output.textContent = '✅ Compiled successfully!\n\nThread count: 1\nThread count: 2\nThread count: 3\nMain thread finished';
+          } else if (code.includes('User {')) {
+            output.textContent = '✅ Compiled successfully!\n\nUser: Learner';
+          } else {
+            output.textContent = '✅ Compiled successfully!\n\n' +
+              '(Simulated output — use play.rust-lang.org for full compilation)';
+          }
+        }, 1000);
+      });
+
+      // Clear output
+      document.getElementById('clearRustOutputBtn').addEventListener('click', () => {
+        document.getElementById('rustOutput').textContent = '// Output cleared...';
+      });
+    </script>
+
+  </body>
+</html>

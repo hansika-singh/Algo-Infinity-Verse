@@ -15,9 +15,9 @@
     "/data/revision-intervals.js",
     "/data/filters.js",
     "/data/levels.js",
-    "/data/gamification-assets.js",
     "/modules/abortManager.js",
     "/modules/cacheManager.js",
+    "/utils/storage.js",
     "/modules/userProgress.js",
     "/modules/spaced-repetition.js",
     "/modules/utils.js"

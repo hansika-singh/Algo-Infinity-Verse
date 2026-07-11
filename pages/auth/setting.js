@@ -24,7 +24,7 @@ const saveBtn = document.querySelector(".btn");
 
 if (saveBtn) {
     saveBtn.addEventListener("click", function () {
-        console.warn("Alert:", "Changes saved successfully!");
+        alert("Changes saved successfully!");
     });
 }
 
@@ -49,16 +49,16 @@ if (buttons.length > 1) {
             newPassword === "" ||
             confirmPassword === ""
         ) {
-            console.warn("Alert:", "Please fill all password fields.");
+            alert("Please fill in all password fields.");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            console.warn("Alert:", "Passwords do not match.");
+            alert("Passwords do not match. Please try again.");
             return;
         }
 
-        console.warn("Alert:", "Password updated successfully!");
+        alert("Password updated successfully!");
     });
 }
 
@@ -88,7 +88,7 @@ if (deleteBtn) {
         const confirmDelete = false /* confirm removed */;
 
         if (confirmDelete) {
-            console.warn("Alert:", "Account deleted successfully (frontend only).");
+            alert("Account deletion is handled server-side. Please contact support to complete this action.");
             
         }
     });

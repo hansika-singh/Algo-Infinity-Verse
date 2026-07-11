@@ -40,7 +40,7 @@
 </head>
   <body data-page="tree-traversal">
     <!-- Loading Screen -->
-    <div id="loading-screen">
+    <div id="loading-screen" class="hidden">
       <div class="loader">
         <div class="infinity-loader">∞</div>
         <h2>Algo Infinity Verse</h2>
@@ -1017,8 +1017,15 @@ end function"
     <script src="tree-traversal.js"></script>
   
   <script>
-    loadPartial('navbar-placeholder', '/partials/navbar.html');
-    loadPartial('footer-placeholder', '/partials/footer.html');
+    if (typeof loadPartial === 'function') {
+      Promise.all([
+        loadPartial('navbar-placeholder', '/partials/navbar.html'),
+        loadPartial('footer-placeholder', '/partials/footer.html')
+      ]).then(function() {
+        window.partialsLoadedFlag = true;
+        document.dispatchEvent(new Event('partialsLoaded'));
+      });
+    }
   </script>
 </body>
 </html>

@@ -14,9 +14,7 @@ function getTransporter() {
   const pass = process.env.EMAIL_PASS;
 
   if (!user || !pass) {
-    console.warn(
-      "[email] EMAIL_USER or EMAIL_PASS not set — emails will not be sent."
-    );
+    void 0;
     return null;
   }
 
@@ -37,7 +35,7 @@ function getTransporter() {
 export async function sendVerificationEmail(toEmail, name, token) {
   const transporter = getTransporter();
   if (!transporter) {
-    console.warn("[email] Skipping verification email — transporter not configured.");
+    void 0;
     return;
   }
 
@@ -93,5 +91,5 @@ export async function sendVerificationEmail(toEmail, name, token) {
     text: `Hi ${name},\n\nVerify your email here:\n${verifyUrl}\n\nThis link expires in 24 hours.`,
   });
 
-  console.log(`[email] Verification email sent to ${toEmail}`);
+  void 0;
 }

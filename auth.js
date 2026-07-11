@@ -1,26 +1,20 @@
 (function () {
-  document.documentElement.classList.add("auth-loading");
-  const privateHashes = new Set(["#dashboard", "#profile"]);
+  document.documentElement.classList.add('auth-loading');
+  const privateHashes = new Set(['#dashboard', '#profile']);
   let currentSession = null;
   let authReady = false;
-  let firebaseReady = false;
 
   function isAuthPage() {
     return (
-      location.pathname === "/login" ||
-      location.pathname.endsWith("/login.html") ||
-      location.pathname === "/signup" ||
-      location.pathname.endsWith("/signup.html")
+      location.pathname === '/login' ||
+      location.pathname.endsWith('/login.html') ||
+      location.pathname === '/signup' ||
+      location.pathname.endsWith('/signup.html')
     );
   }
 
-  function isFirebaseConfigured() {
-    return typeof window.__firebaseClient !== "undefined" && window.__firebaseClient.isConfigured();
-  }
-
   function authUrl(path) {
-    if (location.protocol === "file:")
-      return path.endsWith(".html") ? path : `${path}.html`;
+    if (location.protocol === 'file:') return path.endsWith('.html') ? path : `${path}.html`;
     return path;
   }
 
@@ -29,12 +23,11 @@
   }
 
   async function getSession() {
-    if (location.protocol === "file:")
-      return { authenticated: false, user: null };
+    if (location.protocol === 'file:') return { authenticated: false, user: null };
 
     try {
-      const response = await fetch("/api/session", {
-        credentials: "include",
+      const response = await fetch('/api/session', {
+        credentials: 'include',
       });
       if (!response.ok) return { authenticated: false, user: null };
       return response.json();
@@ -44,9 +37,7 @@
   }
 
   function loginRedirect() {
-    location.href = `${authUrl("/login")}?next=${encodeURIComponent(
-      nextUrl(),
-    )}`;
+    location.href = `${authUrl('/login')}?next=${encodeURIComponent(nextUrl())}`;
   }
 
   function guardPrivateHash() {
@@ -59,69 +50,59 @@
 
   function updateProfileNames(user) {
     if (!user) {
-      [
-        "profileName",
-        "profileSectionName",
-        "dashboardProfileName",
-        "profileNameInput",
-      ].forEach((id) => {
-        const element = document.getElementById(id);
-        if (!element) return;
+      ['profileName', 'profileSectionName', 'dashboardProfileName', 'profileNameInput'].forEach(
+        (id) => {
+          const element = document.getElementById(id);
+          if (!element) return;
 
-        if (element.tagName === "INPUT") element.value = "";
-        else element.textContent = "Learner";
+          if (element.tagName === 'INPUT') element.value = '';
+          else element.textContent = 'Learner';
+        }
+      );
+
+      document
+        .querySelectorAll('[data-auth-user-name]')
+        .forEach((el) => (el.textContent = 'Learner'));
+
+      document.querySelectorAll('[data-auth-user-email]').forEach((el) => (el.textContent = ''));
+
+      document.querySelectorAll('[data-auth-avatar]').forEach((el) => {
+        el.style.display = 'none';
       });
-
-      document
-        .querySelectorAll("[data-auth-user-name]")
-        .forEach((el) => (el.textContent = "Learner"));
-
-      document
-        .querySelectorAll("[data-auth-user-email]")
-        .forEach((el) => (el.textContent = ""));
-
-      document.querySelectorAll("[data-auth-avatar]").forEach((el) => { el.style.display = "none"; });
       return;
     }
 
-    [
-      "profileName",
-      "profileSectionName",
-      "dashboardProfileName",
-      "profileNameInput",
-    ].forEach((id) => {
-      const element = document.getElementById(id);
-      if (!element) return;
+    ['profileName', 'profileSectionName', 'dashboardProfileName', 'profileNameInput'].forEach(
+      (id) => {
+        const element = document.getElementById(id);
+        if (!element) return;
 
-      if (element.tagName === "INPUT") element.value = user.name;
-      else {
-        element.textContent = user.name;
+        if (element.tagName === 'INPUT') element.value = user.name;
+        else {
+          element.textContent = user.name;
+        }
       }
-    });
+    );
 
     document
-      .querySelectorAll("[data-auth-user-name]")
+      .querySelectorAll('[data-auth-user-name]')
       .forEach((el) => (el.textContent = user.name));
 
     document
-      .querySelectorAll("[data-auth-user-email]")
+      .querySelectorAll('[data-auth-user-email]')
       .forEach((el) => (el.textContent = user.email));
 
-    document.querySelectorAll("[data-auth-avatar]").forEach((el) => {
+    document.querySelectorAll('[data-auth-avatar]').forEach((el) => {
       if (user && user.avatar) {
         el.src = user.avatar;
-        el.style.display = "inline-block";
+        el.style.display = 'inline-block';
       } else {
-        el.style.display = "none";
+        el.style.display = 'none';
       }
     });
 
-    const supportName = document.querySelector(
-      ".support-form input[placeholder='Name']",
-    );
-    const supportEmail = document.querySelector(
-      ".support-form input[placeholder='Email']",
-    );
+    const supportName = document.querySelector(".support-form input[placeholder='Name']");
+    const supportEmail = document.querySelector(".support-form input[placeholder='Email']");
 
     if (supportName && !supportName.value) supportName.value = user.name;
     if (supportEmail && !supportEmail.value) supportEmail.value = user.email;
@@ -129,47 +110,47 @@
 
   function renderAuthNav() {
     function inject() {
-      document.querySelectorAll(".nav-links").forEach((navLinks) => {
-        let slot = navLinks.querySelector(".auth-nav-item");
+      document.querySelectorAll('.nav-links').forEach((navLinks) => {
+        let slot = navLinks.querySelector('.auth-nav-item');
 
         if (!slot) {
-          slot = document.createElement("li");
-          slot.className = "auth-nav-item";
+          slot = document.createElement('li');
+          slot.className = 'auth-nav-item';
           navLinks.appendChild(slot);
         }
 
         if (currentSession?.authenticated) {
-          slot.innerHTML = "";
+          slot.innerHTML = '';
 
-          const chip = document.createElement("span");
-          chip.className = "nav-user-chip";
+          const chip = document.createElement('span');
+          chip.className = 'nav-user-chip';
           chip.title = currentSession.user.email;
-          const nameEl = document.createElement("span");
+          const nameEl = document.createElement('span');
           nameEl.textContent = currentSession.user.name;
           if (currentSession.user.avatar) {
-            const avatarEl = document.createElement("img");
-            avatarEl.className = "nav-avatar";
-            avatarEl.alt = "";
-            avatarEl.setAttribute("data-auth-avatar", "");
+            const avatarEl = document.createElement('img');
+            avatarEl.className = 'nav-avatar';
+            avatarEl.alt = '';
+            avatarEl.setAttribute('data-auth-avatar', '');
             avatarEl.src = currentSession.user.avatar;
             chip.append(avatarEl, nameEl);
           } else {
-            const iconEl = document.createElement("i");
-            iconEl.className = "fas fa-user-circle";
+            const iconEl = document.createElement('i');
+            iconEl.className = 'fas fa-user-circle';
             chip.append(iconEl, nameEl);
           }
-          chip.querySelector("span").textContent = currentSession.user.name;
+          chip.querySelector('span').textContent = currentSession.user.name;
 
-          const btn = document.createElement("button");
-          btn.className = "nav-auth-link";
-          btn.type = "button";
-          btn.setAttribute("data-auth-logout", "");
+          const btn = document.createElement('button');
+          btn.className = 'nav-auth-link';
+          btn.type = 'button';
+          btn.setAttribute('data-auth-logout', '');
           btn.innerHTML = `<i class="fas fa-right-from-bracket"></i> Logout`;
 
           slot.append(chip, btn);
         } else {
           slot.innerHTML = `
-            <a class="nav-auth-link" href="${authUrl("/login")}">
+            <a class="nav-auth-link" href="${authUrl('/login')}">
               <i class="fas fa-right-to-bracket"></i>
               Login
             </a>
@@ -177,7 +158,7 @@
               <i class="fas fa-user-astronaut"></i>
               Continue as Guest
             </button>
-            <a class="nav-auth-link nav-auth-primary" href="${authUrl("/signup")}">
+            <a class="nav-auth-link nav-auth-primary" href="${authUrl('/signup')}">
               Sign Up
             </a>
           `;
@@ -185,11 +166,11 @@
       });
     }
 
-    if (document.querySelector(".nav-links")) {
+    if (document.querySelector('.nav-links')) {
       inject();
     } else {
       const observer = new MutationObserver(() => {
-        if (document.querySelector(".nav-links")) {
+        if (document.querySelector('.nav-links')) {
           observer.disconnect();
           inject();
         }
@@ -199,46 +180,44 @@
   }
 
   function wireLogout() {
-    document.addEventListener("click", async (event) => {
-      const logoutButton = event.target.closest("[data-auth-logout]");
+    document.addEventListener('click', async (event) => {
+      const logoutButton = event.target.closest('[data-auth-logout]');
       if (!logoutButton) return;
 
       event.preventDefault();
-      if (!confirm("Are you sure you want to logout?")) return;
+      if (!confirm('Are you sure you want to logout?')) return;
       logoutButton.disabled = true;
 
-      if (location.protocol !== "file:") {
+      if (location.protocol !== 'file:') {
         try {
-          const response = await fetch("/api/logout", {
-            method: "POST",
-            credentials: "include",
+          const response = await fetch('/api/logout', {
+            method: 'POST',
+            credentials: 'include',
           });
 
-          if (!response.ok) throw new Error("Logout failed.");
+          if (!response.ok) throw new Error('Logout failed.');
 
-    if (window.__firebaseClient) {
+          if (window.__supabaseClient) {
             try {
-              await window.__firebaseClient.signOutUser();
+              await window.__supabaseClient.signOutUser();
             } catch (e) {
-              console.warn("Firebase sign-out failed", e);
-              logoutButton.disabled = false;
-              return;
+              void 0;
             }
           }
         } catch (error) {
-          console.warn("Logout failed", error);
+          void 0;
           logoutButton.disabled = false;
           return;
         }
       }
 
-      location.href = authUrl("/login");
+      location.href = authUrl('/login');
     }); // ✅ closes addEventListener
   } // ✅ closes wireLogout
 
   function wireGoogleButton() {
-    document.addEventListener("click", async (event) => {
-      const googleBtn = event.target.closest("[data-auth-google]");
+    document.addEventListener('click', async (event) => {
+      const googleBtn = event.target.closest('[data-auth-google]');
       if (!googleBtn) return;
       event.preventDefault();
       await handleGoogleSignIn(googleBtn);
@@ -246,35 +225,35 @@
   }
 
   function wireGuestButton() {
-    document.addEventListener("click", async (event) => {
-      const guestBtn = event.target.closest("[data-auth-guest]");
+    document.addEventListener('click', async (event) => {
+      const guestBtn = event.target.closest('[data-auth-guest]');
       if (!guestBtn) return;
       event.preventDefault();
       guestBtn.disabled = true;
-      guestBtn.dataset.loading = "true";
+      guestBtn.dataset.loading = 'true';
       guestBtn.innerHTML = '<span class="btn-spinner"></span><span>Entering as guest...</span>';
       try {
-        const response = await fetch("/api/guest", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('/api/guest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({}),
         });
         const payload = await response.json().catch(() => ({}));
         if (response.ok) {
           currentSession = { authenticated: true, user: payload.user };
           window.algoAuth = currentSession;
-          document.documentElement.classList.remove("auth-unverified", "auth-loading");
-          document.documentElement.classList.add("auth-verified");
+          document.documentElement.classList.remove('auth-unverified', 'auth-loading');
+          document.documentElement.classList.add('auth-verified');
           renderAuthNav();
           updateProfileNames(currentSession.user);
           location.href = getNextDestination();
         } else {
           const text = JSON.stringify(payload);
-          console.warn("Guest auth failed:", response.status, text);
-          throw new Error("Guest login failed: " + (payload.error || text || response.status));
+          void 0;
+          throw new Error('Guest login failed: ' + (payload.error || text || response.status));
         }
       } catch (error) {
-        console.warn("Alert:", error.message || "Guest login failed. Please try again.");
+        void 0;
       } finally {
         guestBtn.disabled = false;
         delete guestBtn.dataset.loading;
@@ -284,71 +263,48 @@
   }
 
   function setFormMessage(form, message, type) {
-    const messageBox = form.querySelector("[data-auth-message]");
+    const messageBox = form.querySelector('[data-auth-message]');
     if (!messageBox) return;
 
     messageBox.textContent = message;
-    messageBox.className = `auth-message ${type || ""}`.trim();
+    messageBox.className = `auth-message ${type || ''}`.trim();
   }
 
   function getNextDestination() {
     const params = new URLSearchParams(location.search);
-    const next = params.get("next");
+    const next = params.get('next');
 
-    if (next && next.startsWith("/") && !next.startsWith("//")) {
+    if (next && next.startsWith('/') && !next.startsWith('//')) {
       return next;
     }
-    return "/";
+    return '/';
   }
 
   async function handleGoogleSignIn(button) {
-    if (!window.__firebaseClient) {
+    if (!window.__supabaseClient) {
       setFormMessage(
-        document.querySelector("[data-auth-form]"),
-        "Google sign-in is not available right now.",
-        "error"
+        document.querySelector('[data-auth-form]'),
+        'Google sign-in is not available right now.',
+        'error'
       );
       return;
     }
 
-    const form = document.querySelector("[data-auth-form]");
+    const form = document.querySelector('[data-auth-form]');
 
     if (button) {
       button.disabled = true;
-      button.dataset.loading = "true";
+      button.dataset.loading = 'true';
       button.innerHTML = '<span class="btn-spinner"></span><span>Signing in with Google...</span>';
     }
 
     try {
-      const result = await window.__firebaseClient.signInWithGoogle();
-
-      if (result) {
-        const idToken = await result.user.getIdToken(true);
-        const response = await fetch("/api/auth/google", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ idToken }),
-        });
-        if (response.ok) {
-          const payload = await response.json();
-          currentSession = { authenticated: true, user: payload.user };
-          window.algoAuth = currentSession;
-          document.documentElement.classList.remove("auth-unverified", "auth-loading");
-          document.documentElement.classList.add("auth-verified");
-          renderAuthNav();
-          updateProfileNames(currentSession.user);
-          location.href = getNextDestination();
-          return;
-        } else {
-          const text = await response.text();
-          console.warn("Google auth failed:", response.status, text);
-          throw new Error("Google sign-in failed. Please try again.");
-        }
-      }
+      // Begin the OAuth redirect flow. Supabase redirects the browser to
+      // Google; on success we return to the same auth page (with `next`
+      // preserved) where the session is exchanged with our backend.
+      await window.__supabaseClient.signInWithGoogle(getOAuthReturnTo());
     } catch (error) {
-      const msg = getFirebaseUserMessage(error);
-      if (form) setFormMessage(form, msg || "Sign-in failed. Please try again.", "error");
+      if (form) setFormMessage(form, 'Sign-in failed. Please try again.', 'error');
     } finally {
       if (button) {
         button.disabled = false;
@@ -358,108 +314,94 @@
     }
   }
 
-  function getFirebaseUserMessage(error) {
-    if (!error || !error.code) return error?.message || null;
-    const map = {
-      "auth/popup-blocked": "Please allow pop-ups for this site to sign in with Google.",
-      "auth/account-exists-with-different-credential": "An account already exists with this email. Please sign in with your password instead.",
-      "auth/credential-already-in-use": "This Google account is already linked to another account.",
-      "auth/network-request-failed": "Network error. Please check your connection and try again.",
-      "auth/invalid-credential": "Sign-in failed. Please try again.",
-      "auth/user-disabled": "This account has been disabled.",
-      "auth/unauthorized-domain": "This domain is not authorized for Google sign-in.",
-    };
-    return map[error.code] || "Sign-in failed. Please try again.";
+  function getOAuthReturnTo() {
+    const params = new URLSearchParams(location.search);
+    const next = params.get('next');
+    const url = new URL(location.pathname, window.location.origin);
+    if (next && next.startsWith('/') && !next.startsWith('//')) {
+      url.searchParams.set('next', next);
+    }
+    return url.toString();
   }
 
   function wireAuthForm() {
-    const form = document.querySelector("[data-auth-form]");
+    const form = document.querySelector('[data-auth-form]');
     if (!form) return;
 
     const mode = form.dataset.authForm;
     const passwordInput = form.querySelector("input[name='password']");
-    const strengthBar = form.querySelector("[data-password-strength]");
+    const strengthBar = form.querySelector('[data-password-strength]');
 
     const validators = {
-      name: (val) =>
-        val.trim().length >= 2 ? "" : "Name must be at least 2 characters.",
+      name: (val) => (val.trim().length >= 2 ? '' : 'Name must be at least 2 characters.'),
       email: (val) =>
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val.trim())
-          ? ""
-          : "Please enter a valid email address.",
+          ? ''
+          : 'Please enter a valid email address.',
       password: (val) => {
-        if (mode === "login")
-          return val.length > 0 ? "" : "Password is required.";
-        if (val.length < 8) return "Password must be at least 8 characters.";
-        if (!/[A-Z]/.test(val)) return "Must include an uppercase letter.";
-        if (!/[a-z]/.test(val)) return "Must include a lowercase letter.";
-        if (!/\d/.test(val)) return "Must include a number.";
-        if (!/[^A-Za-z0-9]/.test(val))
-          return "Must include a special character.";
-        return "";
+        if (mode === 'login') return val.length > 0 ? '' : 'Password is required.';
+        if (val.length < 8) return 'Password must be at least 8 characters.';
+        if (!/[A-Z]/.test(val)) return 'Must include an uppercase letter.';
+        if (!/[a-z]/.test(val)) return 'Must include a lowercase letter.';
+        if (!/\d/.test(val)) return 'Must include a number.';
+        if (!/[^A-Za-z0-9]/.test(val)) return 'Must include a special character.';
+        return '';
       },
       confirmPassword: (val) => {
-        if (mode === "login") return "";
-        return val === passwordInput?.value ? "" : "Passwords do not match.";
+        if (mode === 'login') return '';
+        return val === passwordInput?.value ? '' : 'Passwords do not match.';
       },
     };
 
     function showError(input, message) {
-  const container = input.closest(".form-group") || input.parentElement;
-  let errorEl = container.querySelector(".inline-error");
+      const container = input.closest('.form-group') || input.parentElement;
+      let errorEl = container.querySelector('.inline-error');
 
-  if (!errorEl) {
-    errorEl = document.createElement("div");
-    errorEl.className = "inline-error";
-    errorEl.style.color = "#ef4444";
-    errorEl.style.fontSize = "0.8rem";
-    errorEl.style.marginTop = "0.3rem";
-    container.appendChild(errorEl);
-  }
+      if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.className = 'inline-error';
+        errorEl.style.color = '#ef4444';
+        errorEl.style.fontSize = '0.8rem';
+        errorEl.style.marginTop = '0.3rem';
+        container.appendChild(errorEl);
+      }
 
-  errorEl.textContent = message;
-  input.style.borderColor = message
-    ? "#ef4444"
-    : "rgba(255, 255, 255, 0.1)";
-}
+      errorEl.textContent = message;
+      input.style.borderColor = message ? '#ef4444' : 'rgba(255, 255, 255, 0.1)';
+    }
 
-    form.querySelectorAll("input").forEach((input) => {
-      input.addEventListener("input", () => {
+    form.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', () => {
         if (validators[input.name]) {
           showError(input, validators[input.name](input.value));
         }
 
-        if (input.name === "password" && strengthBar) {
+        if (input.name === 'password' && strengthBar) {
           strengthBar.dataset.score = String(passwordStrength(input.value));
 
-          const confirmInput = form.querySelector(
-            "input[name='confirmPassword']",
-          );
+          const confirmInput = form.querySelector("input[name='confirmPassword']");
 
           if (confirmInput && confirmInput.value) {
-            showError(
-              confirmInput,
-              validators.confirmPassword(confirmInput.value),
-            );
+            showError(confirmInput, validators.confirmPassword(confirmInput.value));
           }
         }
       });
 
-      input.addEventListener("blur", () => {
+      input.addEventListener('blur', () => {
         if (validators[input.name]) {
           showError(input, validators[input.name](input.value));
         }
       });
     });
 
-    form.addEventListener("submit", async (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       let isValid = true;
       const formData = new FormData(form);
       const dataObj = Object.fromEntries(formData.entries());
 
-      form.querySelectorAll("input").forEach((input) => {
+      form.querySelectorAll('input').forEach((input) => {
         if (validators[input.name]) {
           const errorMsg = validators[input.name](input.value);
           showError(input, errorMsg);
@@ -468,11 +410,7 @@
       });
 
       if (!isValid) {
-        setFormMessage(
-          form,
-          "Please fix the errors above before submitting.",
-          "error",
-        );
+        setFormMessage(form, 'Please fix the errors above before submitting.', 'error');
         return;
       }
 
@@ -480,50 +418,49 @@
       const submitButton = form.querySelector("button[type='submit']");
       if (!submitButton) return; // Guard: ensure submit button exists
       submitButton.disabled = true;
-      submitButton.dataset.loading = "true";
+      submitButton.dataset.loading = 'true';
       submitButton.innerHTML = `
   <span class="btn-spinner"></span>
-  <span>${mode === "login" ? "Logging in..." : "Signing up..."}</span>
+  <span>${mode === 'login' ? 'Logging in...' : 'Signing up...'}</span>
 `;
-     setFormMessage(form, "Working...", "info");
+      setFormMessage(form, 'Working...', 'info');
 
       try {
         // --- 1. FETCH CSRF TOKEN FIRST ---
         const csrfResponse = await fetch('/api/csrf-token', { credentials: 'include' });
-        if (!csrfResponse.ok) throw new Error("Failed to initialize secure session.");
+        if (!csrfResponse.ok) throw new Error('Failed to initialize secure session.');
         const { csrfToken } = await csrfResponse.json();
         // ---------------------------------
 
         // --- 2. INJECT TOKEN INTO HEADERS ---
         const response = await fetch(`/api/${mode}`, {
-          method: "POST",
-          credentials: "include",
-          headers: { 
-            "Content-Type": "application/json",
-            "x-csrf-token": csrfToken // <-- New Header Added
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-csrf-token': csrfToken, // <-- New Header Added
           },
           body: JSON.stringify(dataObj),
         });
 
         const payload = await response.json();
         if (payload.requiresVerification) {
-          const emailEnc = encodeURIComponent(payload.email || "");
+          const emailEnc = encodeURIComponent(payload.email || '');
           location.href = `/verify-email?email=${emailEnc}`;
           return;
         }
-        if (!response.ok)
-          throw new Error(payload.error || "Authentication failed.");
+        if (!response.ok) throw new Error(payload.error || 'Authentication failed.');
 
-        setFormMessage(form, "Success. Redirecting...", "success");
+        setFormMessage(form, 'Success. Redirecting...', 'success');
         location.href = getNextDestination();
       } catch (error) {
-        setFormMessage(form, error.message, "error");
+        setFormMessage(form, error.message, 'error');
       } finally {
         submitButton.disabled = false;
         delete submitButton.dataset.loading;
         // Restore button text
         submitButton.innerHTML =
-          mode === "login"
+          mode === 'login'
             ? `<i class="fas fa-right-to-bracket"></i><span>Log In</span>`
             : `<i class="fas fa-user-plus"></i><span>Sign Up</span>`;
       }
@@ -531,21 +468,21 @@
   }
 
   function renderFileModeError() {
-    const form = document.querySelector("[data-auth-form]");
-    const container = form?.closest("main") || document.body;
+    const form = document.querySelector('[data-auth-form]');
+    const container = form?.closest('main') || document.body;
 
-    const box = document.createElement("div");
-    box.style.margin = "16px 0";
-    box.style.padding = "12px 14px";
-    box.style.border = "1px solid #ef4444";
-    box.style.borderRadius = "10px";
-    box.style.background = "rgba(239,68,68,0.08)";
-    box.style.color = "#ef4444";
-    box.style.fontWeight = "600";
-    box.setAttribute("role", "alert");
+    const box = document.createElement('div');
+    box.style.margin = '16px 0';
+    box.style.padding = '12px 14px';
+    box.style.border = '1px solid #ef4444';
+    box.style.borderRadius = '10px';
+    box.style.background = 'rgba(239,68,68,0.08)';
+    box.style.color = '#ef4444';
+    box.style.fontWeight = '600';
+    box.setAttribute('role', 'alert');
 
     box.textContent =
-      "Authentication requires running the server. Open this app at  (run: npm start or node server.js).";
+      'Authentication requires running the server. Open this app at  (run: npm start or node server.js).';
 
     container.prepend(box);
 
@@ -555,15 +492,15 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    if (location.protocol === "file:") {
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (location.protocol === 'file:') {
       renderFileModeError();
       currentSession = {
         authenticated: false,
         user: null,
       };
-      document.documentElement.classList.remove("auth-verified", "auth-loading");
-      document.documentElement.classList.add("auth-unverified");
+      document.documentElement.classList.remove('auth-verified', 'auth-loading');
+      document.documentElement.classList.add('auth-unverified');
       authReady = true;
       window.algoAuth = currentSession;
 
@@ -577,52 +514,54 @@
       updateProfileNames(currentSession.user);
       guardPrivateHash();
 
-      window.addEventListener("hashchange", guardPrivateHash);
+      window.addEventListener('hashchange', guardPrivateHash);
       return;
     }
 
     currentSession = await getSession();
 
-    if (!currentSession.authenticated && window.__firebaseClient) {
+    if (!currentSession.authenticated && window.__supabaseClient) {
       try {
-        const redirectResult = await window.__firebaseClient.getRedirectUser();
-        const idToken = redirectResult?.idToken;
+        const redirectResult = await window.__supabaseClient.getSessionToken();
+        const accessToken = redirectResult?.accessToken;
 
-        if (idToken) {
-          const response = await fetch("/api/auth/google", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idToken }),
+        if (accessToken) {
+          const response = await fetch('/api/auth/supabase', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ accessToken }),
           });
           if (response.ok) {
             const payload = await response.json();
             currentSession = { authenticated: true, user: payload.user };
             window.algoAuth = currentSession;
-            document.documentElement.classList.remove("auth-unverified", "auth-loading");
-            document.documentElement.classList.add("auth-verified");
+            document.documentElement.classList.remove('auth-unverified', 'auth-loading');
+            document.documentElement.classList.add('auth-verified');
             renderAuthNav();
             updateProfileNames(currentSession.user);
           } else {
-            const text = await response.text();
-            console.warn("Google auth failed:", response.status, text);
+            const errorBody = await response.text().catch(() => 'Unknown error');
+            console.error('[auth] Supabase bridge failed:', response.status, errorBody);
           }
+        } else {
+          console.debug('[auth] No Supabase access token in session');
         }
       } catch (error) {
-        console.warn("Google redirect auth error:", error);
+        if (error.message !== 'Supabase not configured')
+          console.error('[auth] Supabase bridge error:', error);
       }
     }
 
-    firebaseReady = true;
     authReady = true;
     window.algoAuth = currentSession;
 
     if (currentSession.authenticated) {
-      document.documentElement.classList.remove("auth-unverified", "auth-loading");
-      document.documentElement.classList.add("auth-verified");
+      document.documentElement.classList.remove('auth-unverified', 'auth-loading');
+      document.documentElement.classList.add('auth-verified');
     } else {
-      document.documentElement.classList.remove("auth-verified", "auth-loading");
-      document.documentElement.classList.add("auth-unverified");
+      document.documentElement.classList.remove('auth-verified', 'auth-loading');
+      document.documentElement.classList.add('auth-unverified');
     }
 
     if (currentSession.authenticated && isAuthPage()) {
@@ -640,95 +579,190 @@
     wireDeleteAccount();
     updateProfileNames(currentSession.user);
 
-    window.addEventListener("hashchange", guardPrivateHash);
+    window.addEventListener('hashchange', guardPrivateHash);
     guardPrivateHash();
   });
 })();
 
+/**
+ * Shows an in-page confirmation modal for a destructive account action,
+ * replacing the native confirm()/prompt() dialogs this codebase avoids.
+ * Resolves with { confirmed, password } — password is only collected when
+ * requirePassword is true, and is null otherwise or on cancel.
+ */
+function showAccountActionModal({ title, message, confirmText, requirePassword = false }) {
+  return new Promise((resolve) => {
+    let settled = false;
+
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 480px;">
+        <div class="modal-header">
+          <h3></h3>
+          <button type="button" class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p></p>
+          ${
+            requirePassword
+              ? `
+            <div class="password-field">
+              <label for="accountActionPassword">Confirm your password</label>
+              <input type="password" id="accountActionPassword" placeholder="Enter your password" autocomplete="current-password" />
+              <small id="accountActionPasswordError" class="field-error"></small>
+            </div>
+          `
+              : ''
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="accountActionCancel">Cancel</button>
+          <button type="button" class="btn btn-danger" id="accountActionConfirm"></button>
+        </div>
+      </div>
+    `;
+    modal.querySelector('.modal-header h3').textContent = title;
+    modal.querySelector('.modal-body p').textContent = message;
+    modal.querySelector('#accountActionConfirm').textContent = confirmText;
+
+    document.body.appendChild(modal);
+
+    const closeBtn = modal.querySelector('.modal-close');
+    const cancelBtn = modal.querySelector('#accountActionCancel');
+    const confirmBtn = modal.querySelector('#accountActionConfirm');
+    const passwordInput = modal.querySelector('#accountActionPassword');
+    const passwordError = modal.querySelector('#accountActionPasswordError');
+
+    function settle(result) {
+      if (settled) return;
+      settled = true;
+      document.removeEventListener('keydown', onKeydown);
+      modal.remove();
+      resolve(result);
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape') settle({ confirmed: false, password: null });
+    }
+
+    document.addEventListener('keydown', onKeydown);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) settle({ confirmed: false, password: null });
+    });
+    closeBtn.addEventListener('click', () => settle({ confirmed: false, password: null }));
+    cancelBtn.addEventListener('click', () => settle({ confirmed: false, password: null }));
+
+    confirmBtn.addEventListener('click', () => {
+      if (requirePassword) {
+        const password = passwordInput.value;
+        if (!password) {
+          passwordError.textContent = 'Password is required.';
+          passwordInput.focus();
+          return;
+        }
+        settle({ confirmed: true, password });
+        return;
+      }
+      settle({ confirmed: true, password: null });
+    });
+
+    setTimeout(() => (passwordInput || confirmBtn).focus(), 50);
+  });
+}
+
 function wireDeactivateAccount() {
-  const btn = document.getElementById("deactivateAccountBtn");
+  const btn = document.getElementById('deactivateAccountBtn');
 
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
-    const confirmed = false /* confirm removed */;
+  btn.addEventListener('click', async () => {
+    const { confirmed } = await showAccountActionModal({
+      title: 'Deactivate Account',
+      message:
+        'Are you sure you want to deactivate your account? You can reactivate it by logging in again.',
+      confirmText: 'Deactivate',
+    });
 
     if (!confirmed) return;
 
     try {
-      const response = await fetch("/api/deactivate-account", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('/api/deactivate-account', {
+        method: 'POST',
+        credentials: 'include',
       });
 
-      const contentType =
-  response.headers.get("content-type") || "";
+      const contentType = response.headers.get('content-type') || '';
 
-if (!contentType.includes("application/json")) {
-  const text = await response.text();
-  throw new Error(text);
-}
-
-const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to deactivate account.");
+      if (!contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(text);
       }
 
-      console.warn("Alert:", "Account deactivated successfully.");
+      const data = await response.json();
 
-      window.location.href = "/login";
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to deactivate account.');
+      }
+
+      void 0;
+
+      window.location.href = '/login';
     } catch (error) {
-      console.warn("Alert:", error.message);
+      void 0;
     }
   });
 }
 
 function wireDeleteAccount() {
-  const btn = document.getElementById("deleteAccountBtn");
+  const btn = document.getElementById('deleteAccountBtn');
 
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
-    const confirmed = false /* confirm removed */;
+  btn.addEventListener('click', async () => {
+    const { confirmed, password } = await showAccountActionModal({
+      title: 'Delete Account',
+      message:
+        'This will permanently delete your account and all associated data. This action cannot be undone. Enter your password to confirm.',
+      confirmText: 'Delete Account',
+      requirePassword: true,
+    });
 
     if (!confirmed) return;
-
-    const password = null /* prompt removed */;
-
     if (!password) return;
 
     try {
-      const response = await fetch("/api/delete-account", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('/api/delete-account', {
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           password,
         }),
       });
 
-     const contentType =
-  response.headers.get("content-type") || "";
+      const contentType = response.headers.get('content-type') || '';
 
-if (!contentType.includes("application/json")) {
-  const text = await response.text();
-  throw new Error(text);
-}
-
-const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to delete account.");
+      if (!contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(text);
       }
 
-      console.warn("Alert:", "Account deleted successfully.");
+      const data = await response.json();
 
-      window.location.href = "/login";
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete account.');
+      }
+
+      void 0;
+
+      window.location.href = '/login';
     } catch (error) {
-      console.warn("Alert:", error.message);
+      void 0;
     }
   });
 }
@@ -746,107 +780,97 @@ function passwordStrength(password) {
 }
 
 function wireChangePassword() {
-  document.querySelectorAll(".password-toggle").forEach((btn) => {
-    btn.addEventListener("click", () => {
+  document.querySelectorAll('.password-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
       const input = document.getElementById(btn.dataset.target);
 
-      input.type = input.type === "password" ? "text" : "password";
+      input.type = input.type === 'password' ? 'text' : 'password';
 
       btn.innerHTML =
-        input.type === "password"
+        input.type === 'password'
           ? '<i class="fas fa-eye"></i>'
           : '<i class="fas fa-eye-slash"></i>';
     });
   });
-  const passwordInput = document.getElementById("newPassword");
+  const passwordInput = document.getElementById('newPassword');
 
-  const strengthBar = document.getElementById("passwordStrengthBar");
+  const strengthBar = document.getElementById('passwordStrengthBar');
 
-  const strengthText = document.getElementById("passwordStrengthText");
+  const strengthText = document.getElementById('passwordStrengthText');
 
   if (passwordInput && strengthBar && strengthText) {
-    passwordInput.addEventListener("input", () => {
+    passwordInput.addEventListener('input', () => {
       const score = passwordStrength(passwordInput.value);
 
       strengthBar.style.width = `${score * 20}%`;
 
-      const labels = [
-        "Very Weak",
-        "Weak",
-        "Fair",
-        "Good",
-        "Strong",
-        "Excellent",
-      ];
+      const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong', 'Excellent'];
 
       strengthText.textContent = labels[score];
 
       if (score <= 1) {
-        strengthBar.style.background = "#ef4444";
+        strengthBar.style.background = '#ef4444';
       } else if (score <= 3) {
-        strengthBar.style.background = "#f59e0b";
+        strengthBar.style.background = '#f59e0b';
       } else {
-        strengthBar.style.background = "#22c55e";
+        strengthBar.style.background = '#22c55e';
       }
     });
   }
-  const confirmPassword = document.getElementById("confirmNewPassword");
+  const confirmPassword = document.getElementById('confirmNewPassword');
 
   if (confirmPassword) {
-    confirmPassword.addEventListener("input", () => {
-      const error = document.getElementById("confirmPasswordError");
+    confirmPassword.addEventListener('input', () => {
+      const error = document.getElementById('confirmPasswordError');
 
-      if (
-        confirmPassword.value &&
-        confirmPassword.value !== passwordInput.value
-      ) {
-        error.textContent = "Passwords do not match";
+      if (confirmPassword.value && confirmPassword.value !== passwordInput.value) {
+        error.textContent = 'Passwords do not match';
       } else {
-        error.textContent = "";
+        error.textContent = '';
       }
     });
   }
-  const modal = document.getElementById("changePasswordModal");
+  const modal = document.getElementById('changePasswordModal');
 
-  const openBtn = document.getElementById("changePasswordBtn");
+  const openBtn = document.getElementById('changePasswordBtn');
 
   if (!modal || !openBtn) return;
 
-  const closeBtn = document.getElementById("changePasswordClose");
+  const closeBtn = document.getElementById('changePasswordClose');
 
-  const cancelBtn = document.getElementById("cancelPasswordChange");
+  const cancelBtn = document.getElementById('cancelPasswordChange');
 
-  const saveBtn = document.getElementById("savePasswordBtn");
+  const saveBtn = document.getElementById('savePasswordBtn');
 
-  const message = document.getElementById("changePasswordMessage");
+  const message = document.getElementById('changePasswordMessage');
 
   function closeModal() {
-    modal.classList.remove("active");
+    modal.classList.remove('active');
   }
 
-  openBtn.addEventListener("click", () => {
-    modal.classList.add("active");
+  openBtn.addEventListener('click', () => {
+    modal.classList.add('active');
   });
 
-  closeBtn?.addEventListener("click", closeModal);
+  closeBtn?.addEventListener('click', closeModal);
 
-  cancelBtn?.addEventListener("click", closeModal);
+  cancelBtn?.addEventListener('click', closeModal);
 
-  saveBtn?.addEventListener("click", async () => {
-    const currentPassword = document.getElementById("currentPassword").value;
+  saveBtn?.addEventListener('click', async () => {
+    const currentPassword = document.getElementById('currentPassword').value;
 
-    const newPassword = document.getElementById("newPassword").value;
+    const newPassword = document.getElementById('newPassword').value;
 
-    const confirmPassword = document.getElementById("confirmNewPassword").value;
+    const confirmPassword = document.getElementById('confirmNewPassword').value;
 
-    message.textContent = "";
+    message.textContent = '';
 
     try {
-      const response = await fetch("/api/change-password", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('/api/change-password', {
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           currentPassword,
@@ -861,15 +885,15 @@ function wireChangePassword() {
         throw new Error(data.error);
       }
 
-      message.className = "password-message success";
+      message.className = 'password-message success';
 
-      message.textContent = "Password changed successfully. Redirecting...";
+      message.textContent = 'Password changed successfully. Redirecting...';
 
       setTimeout(() => {
-        window.location.href = "/login";
+        window.location.href = '/login';
       }, 1500);
     } catch (error) {
-      message.className = "password-message error";
+      message.className = 'password-message error';
 
       message.textContent = error.message;
     }

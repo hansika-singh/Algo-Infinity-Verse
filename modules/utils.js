@@ -144,29 +144,15 @@ function unlockBodyScroll() {
   window.scrollTo(0, scrollPosition);
 }
 
-const PARTIALS_VERSION = 1;
-
-/**
- * Asynchronously loads a partial HTML file and injects it into a target element.
- *
- * @param {string} id - The ID of the target DOM element.
- * @param {string} url - The URL of the partial to load.
- * @returns {Promise<void>}
- */
 async function loadPartial(id, url) {
   const abortKey = `partial_${id}`;
   try {
     const signal = typeof apiAbort !== 'undefined' ? apiAbort.getSignal(abortKey) : undefined;
-    const versionedUrl = url + '?v=' + PARTIALS_VERSION;
+    const fetchUrl = url + '?t=' + Date.now();
     
-    let html;
-    if (typeof apiCache !== 'undefined') {
-      html = await apiCache.fetchWithCache(versionedUrl, { signal }, 86400000, 'text');
-    } else {
-      const resp = await fetch(versionedUrl, { signal });
-      if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
-      html = await resp.text();
-    }
+    const resp = await fetch(fetchUrl, { signal });
+    if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
+    const html = await resp.text();
     
     const el = document.getElementById(id);
     if (el) {
@@ -176,7 +162,7 @@ async function loadPartial(id, url) {
     handleActiveNav();
   } catch (e) {
     if (e.name !== 'AbortError') {
-      console.warn('Could not load partial:', url, e);
+      void 0;
     }
   } finally {
     if (typeof apiAbort !== 'undefined') {

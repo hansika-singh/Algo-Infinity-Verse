@@ -7,14 +7,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Selected tag for filtering
   let selectedTag = null;
 
-  // Initial render
-  filterAndRender();
-  renderTagCloud();
-
   // Bind Search Filters
   const searchInput = document.getElementById("notesSearchInput");
   const categorySelect = document.getElementById("categoryFilterSelect");
   const btnClearFilters = document.getElementById("btnClearFilters");
+
+  // Initial render
+  filterAndRender();
+  renderTagCloud();
 
   if (searchInput) searchInput.addEventListener("input", filterAndRender);
   if (categorySelect) categorySelect.addEventListener("change", filterAndRender);

@@ -1,0 +1,190 @@
+:root {
+  --app-color: #3498db;
+  --db-color: #9b59b6;
+  --node-color: #2ecc71;
+  --text-light: #f5f6fa;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 80px); /* Adjust based on top-bar height */
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.side-panel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.canvas-container {
+  flex: 1;
+  position: relative;
+  background: var(--bg-secondary, #1e272e);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.architecture-stage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.system-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  color: var(--text-light);
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.system-component i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.application {
+  background: linear-gradient(135deg, var(--app-color), #2980b9);
+}
+
+.database {
+  background: linear-gradient(135deg, var(--db-color), #8e44ad);
+}
+
+.cluster-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.stage-label {
+  position: absolute;
+  top: -40px;
+  color: var(--text-light);
+  font-size: 1.2rem;
+}
+
+.ring {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.memcached-node {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--node-color), #27ae60);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.memcached-node.inactive {
+  background: #7f8c8d;
+  filter: grayscale(100%);
+  opacity: 0.7;
+}
+
+.memcached-node i {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.node-cache {
+  position: absolute;
+  top: 90px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 150px;
+  font-size: 0.8rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.2rem;
+  z-index: 20;
+  border: 1px solid var(--node-color);
+}
+
+.memcached-node:hover .node-cache {
+  display: flex;
+}
+
+.cache-item {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.cache-item .ttl {
+  color: #f39c12;
+}
+
+.animation-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.data-packet {
+  fill: #f1c40f;
+  filter: drop-shadow(0 0 5px #f1c40f);
+}
+
+.data-packet-miss {
+  fill: #e74c3c;
+  filter: drop-shadow(0 0 5px #e74c3c);
+}
+
+.data-packet-hit {
+  fill: #2ecc71;
+  filter: drop-shadow(0 0 5px #2ecc71);
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

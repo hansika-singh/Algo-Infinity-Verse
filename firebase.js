@@ -41,9 +41,7 @@ export function initializeFirebase() {
       if (process.env.NODE_ENV === "production") {
         throw new Error("Firebase credentials are required in production mode.");
       }
-      console.warn(
-        "Firebase credentials not set. Using in-memory fallback."
-      );
+      void 0;
       return null;
     }
 

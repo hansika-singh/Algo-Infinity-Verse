@@ -1,0 +1,852 @@
+/* ==========================================================================
+   Algorithm Decision Tree Assistant CSS
+   ========================================================================== */
+
+/* Page Specific Variables */
+:root {
+  --adt-search: #3b82f6;
+  --adt-sort: #ef4444;
+  --adt-graph: #10b981;
+  --adt-opt: #f59e0b;
+  --adt-string: #8b5cf6;
+  --code-bg: #0d0d21;
+}
+
+html.light-mode {
+  --code-bg: #f5f5fa;
+}
+
+/* Hero Section Styling */
+.adt-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 8rem 2rem 5rem 2rem;
+  text-align: center;
+}
+
+.adt-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--primary-light, #a78bfa) 0%,
+    var(--accent, #06b6d4) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(6, 182, 212, 0.2);
+}
+
+.adt-section {
+  padding: 3rem 0;
+}
+
+/* Breadcrumb Decision Trail */
+.adt-trail-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.adt-trail-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+.adt-trail-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.adt-trail-step {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.adt-trail-step:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.adt-trail-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+}
+
+/* Wizard Card and Progress */
+.adt-wizard-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px);
+  max-width: 800px;
+  margin: 0 auto;
+  transition: all 0.4s ease;
+}
+
+.adt-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  gap: 0.5rem;
+}
+
+.adt-progress-step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--glass-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.adt-progress-step.active {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--text-primary);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+}
+
+.adt-progress-step.completed {
+  border-color: var(--accent);
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--text-primary);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.adt-progress-line {
+  height: 2px;
+  background: var(--glass-border);
+  flex-grow: 1;
+  max-width: 50px;
+  transition: all 0.3s ease;
+}
+
+.adt-progress-line.completed {
+  background: var(--accent);
+}
+
+/* Question Panel */
+.adt-question-panel {
+  text-align: center;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.adt-question-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.adt-question-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.adt-question-hint {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Option Buttons Grid */
+.adt-options-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+  .adt-options-group {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+.adt-option-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adt-option-btn i {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  transition: color 0.25s ease;
+}
+
+.adt-option-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
+  transform: translateY(-3px);
+}
+
+.adt-option-btn:hover i {
+  color: var(--accent);
+}
+
+.adt-option-btn:active {
+  transform: translateY(-1px);
+}
+
+.adt-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 1.5rem;
+}
+
+/* Result Section */
+.adt-result-section {
+  display: none;
+  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.adt-result-section.visible {
+  display: block;
+}
+
+.adt-result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .adt-result-grid {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+/* Recommendation Card Styling */
+.adt-recommendation-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.adt-rec-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+}
+
+.adt-rec-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary) 0%, rgba(124, 58, 237, 0.6) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.2rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+}
+
+.adt-rec-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.adt-rec-tagline {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+/* Complexity Grid */
+.adt-complexity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.adt-complexity-chip {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.adt-complexity-chip:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.adt-complexity-value {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent);
+  display: block;
+}
+
+.adt-complexity-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Traits / Strengths / Weaknesses */
+.adt-traits-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 576px) {
+  .adt-traits-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.adt-trait-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.adt-trait-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adt-trait-title.strengths {
+  color: #10b981;
+}
+
+.adt-trait-title.weaknesses {
+  color: #f59e0b;
+}
+
+.adt-trait-list {
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adt-trait-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.adt-trait-list li i {
+  margin-top: 3px;
+  font-size: 0.8rem;
+}
+
+.adt-trait-list .strengths i {
+  color: #10b981;
+}
+
+.adt-trait-list .weaknesses i {
+  color: #f59e0b;
+}
+
+/* Details Card Styling */
+.adt-details-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px);
+}
+
+.adt-card-header {
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.adt-card-header h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Code Tabs Styling */
+.adt-code-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.35rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+}
+
+.adt-tab-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.adt-tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adt-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.adt-tab-btn.active {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--accent);
+}
+
+.adt-copy-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.adt-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+/* Code Box window-like look */
+.adt-code-box {
+  background: var(--code-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  margin-bottom: 2rem;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.adt-code-box pre {
+  margin: 0;
+}
+
+.adt-code-box code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #cfd8dc;
+}
+
+html.light-mode .adt-code-box code {
+  color: #37474f;
+}
+
+/* Custom Scrollbar for Code Box */
+.adt-code-box::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.adt-code-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.adt-code-box::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 4px;
+}
+
+.adt-code-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Recommended Problems list */
+.adt-problems-section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.adt-problems-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adt-problem-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.adt-problem-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+
+.adt-problem-link span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adt-problem-link span i {
+  color: var(--accent);
+}
+
+.adt-problem-diff {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.adt-problem-diff.easy {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.adt-problem-diff.medium {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.adt-problem-diff.hard {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Actions Row styling */
+.adt-actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.adt-action-btn {
+  padding: 0.75rem 2rem !important;
+  font-size: 0.95rem !important;
+}
+
+/* Library Section Styling */
+.adt-library-section {
+  border-top: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.1);
+  padding-top: 4rem;
+}
+
+.adt-library-filters {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.adt-filter-btn {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 0.5rem 1.25rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adt-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.adt-filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+  font-weight: 700;
+}
+
+html.light-mode .adt-filter-btn.active {
+  color: #fff;
+}
+
+.adt-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.adt-library-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.adt-library-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--glass-shadow);
+}
+
+.adt-lib-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.adt-lib-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.adt-lib-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.adt-lib-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.adt-lib-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.adt-lib-path {
+  color: var(--accent);
+  font-weight: 500;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adt-lib-complexity {
+  font-family: 'Fira Code', monospace;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--glass-border);
+}
+
+/* Light mode overrides for container backgrounds and text elements */
+html.light-mode .adt-trail-container,
+html.light-mode .adt-wizard-card,
+html.light-mode .adt-recommendation-card,
+html.light-mode .adt-details-card,
+html.light-mode .adt-library-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+html.light-mode .adt-complexity-chip,
+html.light-mode .adt-trait-card,
+html.light-mode .adt-problem-link,
+html.light-mode .adt-library-section {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .adt-trail-step {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .adt-trail-step:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+html.light-mode .adt-option-btn {
+  background: rgba(0, 0, 0, 0.01);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light-mode .adt-option-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+html.light-mode .adt-trail-arrow {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+html.light-mode .adt-lib-meta {
+  border-top-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Transition classes toggled via JS */
+.adt-slide-enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.adt-slide-exit {
+  opacity: 0;
+  transform: translateY(-10px);
+}

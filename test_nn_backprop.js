@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
 const delay = ms => new Promise(r => setTimeout(r, ms));
 
 server.listen(PORT, async () => {
-    console.log(`Test server running on port ${PORT}`);
+    void 0;
     
     let browser;
     try {
@@ -44,7 +44,7 @@ server.listen(PORT, async () => {
         
         await page.goto(`http://localhost:${PORT}/pages/visualizers/nn-backprop-visualizer/nn-backprop-visualizer.html`, { waitUntil: 'networkidle0' });
         
-        console.log('\n--- Test Case 1: Initial Network Initialization ---');
+        void 0;
         const initialLoss = await page.evaluate(() => {
             els.datasetSelect.value = 'xor';
             els.datasetSelect.dispatchEvent(new Event('change'));
@@ -52,12 +52,12 @@ server.listen(PORT, async () => {
             return parseFloat(els.lossStat.textContent);
         });
         if (initialLoss > 0.0) {
-            console.log('✅ Test 1 Passed (Network built and randomly initialized correctly)');
+            void 0;
         } else {
             throw new Error(`Test 1 Failed: Initial Loss should be > 0. Got ${initialLoss}`);
         }
 
-        console.log('\n--- Test Case 2: Neural Network Math & Backpropagation (XOR Problem) ---');
+        void 0;
         await page.evaluate(() => {
             els.lrSlider.value = 0.5;
             for(let i=0; i<1000; i++) trainEpoch();
@@ -66,9 +66,9 @@ server.listen(PORT, async () => {
         let finalLoss = await page.evaluate(() => parseFloat(els.lossStat.textContent));
         
         if (finalLoss < 0.15) {
-            console.log('✅ Test 2 Passed (Backpropagation successfully converged)');
+            void 0;
         } else {
-            console.warn('⚠️ Retrying Test 2 (Escaping local minimum)...');
+            void 0;
             await page.evaluate(() => {
                 resetNetwork();
                 els.lrSlider.value = 0.5;
@@ -77,13 +77,13 @@ server.listen(PORT, async () => {
             await delay(500);
             const retryLoss = await page.evaluate(() => parseFloat(els.lossStat.textContent));
             if (retryLoss < 0.15) {
-                console.log('✅ Test 2 Passed on Retry.');
+                void 0;
             } else {
                 throw new Error(`Test 2 Failed: Backprop math is broken. Loss: ${retryLoss}`);
             }
         }
         
-        console.log('\n--- Test Case 3: Edge Case - Malformed Architecture Input ---');
+        void 0;
         await page.evaluate(() => {
             els.archInput.value = 'a, b, c, -5, 0';
             els.archInput.dispatchEvent(new Event('change'));
@@ -91,12 +91,12 @@ server.listen(PORT, async () => {
         await delay(500);
         const hasNetwork = await page.evaluate(() => network.length > 0 && network[0].neurons.length === 2 && network[network.length-1].neurons.length === 1);
         if (hasNetwork) {
-            console.log('✅ Test 3 Passed (Network gracefully handled invalid architecture input by defaulting to safe sizes without crashing)');
+            void 0;
         } else {
             throw new Error('Test 3 Failed: Malformed input corrupted the network array.');
         }
 
-        console.log('\n--- Test Case 4: Edge Case - Deep/Massive Architecture Stress Test ---');
+        void 0;
         await page.evaluate(() => {
             // Very deep network: 5 hidden layers with 10 neurons each
             els.archInput.value = '10,10,10,10,10';
@@ -108,12 +108,12 @@ server.listen(PORT, async () => {
         await delay(500);
         const massiveLoss = await page.evaluate(() => parseFloat(els.lossStat.textContent));
         if (!isNaN(massiveLoss)) {
-            console.log('✅ Test 4 Passed (Custom matrix math engine successfully processed extremely deep architectures without thread lock or NaN explosions)');
+            void 0;
         } else {
             throw new Error('Test 4 Failed: Massive architecture caused NaN or crash.');
         }
         
-        console.log('\n--- Test Case 5: Edge Case - Activation Function Swap Mid-Training (ReLU) ---');
+        void 0;
         await page.evaluate(() => {
             resetNetwork();
             els.activationSelect.value = 'relu';
@@ -123,12 +123,12 @@ server.listen(PORT, async () => {
         await delay(500);
         const reluLoss = await page.evaluate(() => parseFloat(els.lossStat.textContent));
         if (!isNaN(reluLoss)) {
-            console.log('✅ Test 5 Passed (ReLU and its derivative successfully engaged without mathematical corruption)');
+            void 0;
         } else {
             throw new Error('Test 5 Failed');
         }
 
-        console.log('\nAll tests completed successfully!');
+        void 0;
 
     } catch (error) {
         console.error('\n❌ Test execution failed:', error.message);

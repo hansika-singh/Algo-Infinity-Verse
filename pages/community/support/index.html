@@ -1,19 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Support Center - Algo Infinity Verse</title>
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="style.css" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-    <!-- Theme Initialization Script -->
     <script>
-      (function() {
+      (function () {
         try {
           var storedTheme = localStorage.getItem('theme');
           var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
@@ -26,98 +29,820 @@
         } catch (e) {}
       })();
     </script>
-</head>
-<body data-page="index">
+
+    <style>
+      .skeleton-support-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 2rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .skeleton-support-grid.visible {
+        opacity: 1;
+      }
+
+      .skeleton-support-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        min-height: 300px;
+        animation: skeletonPulse 1.5s ease-in-out infinite;
+      }
+
+      .skeleton-support-card .skeleton-title {
+        width: 60%;
+        height: 28px;
+        background: var(--border-color);
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+      }
+
+      .skeleton-support-card .skeleton-line {
+        height: 14px;
+        background: var(--border-color);
+        border-radius: 6px;
+        margin: 10px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .skeleton-support-card .skeleton-line::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: skeletonShimmer 2s infinite;
+        transform: translateX(-100%);
+      }
+
+      .skeleton-support-card .skeleton-line-lg {
+        width: 80%;
+        height: 18px;
+      }
+
+      .skeleton-support-card .skeleton-line-md {
+        width: 60%;
+        height: 12px;
+      }
+
+      .skeleton-support-card .skeleton-line-sm {
+        width: 40%;
+        height: 10px;
+      }
+
+      .skeleton-support-card .skeleton-line-xs {
+        width: 30%;
+        height: 8px;
+      }
+
+      .skeleton-support-card .skeleton-button {
+        width: 120px;
+        height: 44px;
+        background: var(--border-color);
+        border-radius: 10px;
+        margin-top: 1rem;
+      }
+
+      .skeleton-support-card .skeleton-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--border-color);
+        border-radius: 50%;
+        margin-bottom: 1rem;
+      }
+
+      .skeleton-support-card .skeleton-faq {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 1rem;
+      }
+
+      .skeleton-support-card .skeleton-faq-item {
+        height: 40px;
+        background: var(--border-color);
+        border-radius: 8px;
+      }
+
+      @keyframes skeletonPulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      @keyframes skeletonShimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .dark .skeleton-support-card {
+        background: rgba(30, 41, 59, 0.8);
+        border-color: rgba(51, 65, 85, 0.5);
+      }
+
+      .dark .skeleton-support-card .skeleton-title,
+      .dark .skeleton-support-card .skeleton-line,
+      .dark .skeleton-support-card .skeleton-button,
+      .dark .skeleton-support-card .skeleton-icon,
+      .dark .skeleton-support-card .skeleton-faq-item {
+        background: #334155;
+      }
+
+      .dark .skeleton-support-card .skeleton-line::after {
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      }
+
+      .required {
+        color: #ef4444;
+      }
+
+      .error-message {
+        font-size: 0.82rem;
+        color: #ef4444;
+        margin-top: 0.3rem;
+        min-height: 1.2rem;
+        display: none;
+      }
+
+      .error-message.visible {
+        display: block;
+      }
+
+      .form-group input.error,
+      .form-group select.error,
+      .form-group textarea.error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+      }
+
+      .form-group input.success,
+      .form-group select.success,
+      .form-group textarea.success {
+        border-color: #22c55e !important;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2) !important;
+      }
+
+      .char-counter {
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.3rem;
+      }
+
+      .char-counter.limit-reached {
+        color: #ef4444;
+      }
+
+      .form-success {
+        display: none;
+        padding: 1rem;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid #22c55e;
+        border-radius: 8px;
+        color: #22c55e;
+        margin-top: 1rem;
+      }
+
+      .form-success.visible {
+        display: block;
+      }
+
+      .form-success i {
+        margin-right: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .skeleton-support-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        .skeleton-support-card {
+          padding: 1.5rem;
+          min-height: 250px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .skeleton-support-card {
+          padding: 1.25rem;
+          min-height: 200px;
+        }
+        .skeleton-support-card .skeleton-title {
+          height: 22px;
+        }
+        .skeleton-support-card .skeleton-line {
+          height: 12px;
+        }
+        .skeleton-support-card .skeleton-button {
+          height: 38px;
+          width: 100px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .skeleton-support-card {
+          animation: none;
+        }
+        .skeleton-support-card .skeleton-line::after {
+          animation: none;
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body data-page="support">
     <div id="navbar-placeholder"></div>
-    <section class="support-page">
-        <div class="support-container">
-            <h1 class="section-title">
-                <span class="title-icon">🛟</span>
-                Support Center
-            </h1>
-            <p class="section-subtitle">
-                Get help and report bugs
-            </p>
-            <div class="support-grid">
-                <div class="support-card">
-                    <h2>Support Request</h2>
-                    <form class="support-form" id="supportForm">
-                        <input type="text" placeholder="Name" aria-label="Your Name" required>
-                        <input type="email" placeholder="Email" aria-label="Your Email Address" required>
-                        <input type="text" placeholder="Subject" aria-label="Subject" required>
-                        <textarea placeholder="Message" aria-label="Message details" required></textarea>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fas fa-paper-plane"></i>
-                            Submit Request
-                        </button>
-                    </form>
-                </div>
-                <div class="support-card">
-                    <h2>Bug Report</h2>
-                    <form class="support-form" id="bugForm">
-                        <select required aria-label="Select Bug Type">
-                            <option value="">Select Bug Type</option>
-                            <option>UI Issue</option>
-                            <option>Performance Bug</option>
-                            <option>Crash</option>
-                            <option>Other</option>
-                        </select>
-                        <textarea placeholder="Describe the issue" aria-label="Describe the issue details" required></textarea>
-                        <input type="file" aria-label="Upload File or Screenshot">
-                        <button class="btn btn-secondary" type="submit">
-                            <i class="fas fa-bug"></i>
-                            Report Bug
-                        </button>
-                    </form>
-                </div>
-                <div class="support-card">
-                    <h2>FAQs</h2>
-                    <details class="faq-item">
-                        <summary>How do I use the platform?</summary>
-                        <p>
-                            Explore DSA topics, quizzes, practice problems,
-                            and learning roadmaps from the homepage.
-                        </p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>How do I report a bug?</summary>
-                        <p>
-                            Use the bug report section above and explain the issue clearly.
-                        </p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>How can I contact support?</summary>
-                        <p>
-                            Use the contact section below or create a GitHub issue.
-                        </p>
-                    </details>
-                </div>
-                <div class="support-card">
-                    <h2>Contact</h2>
-                    <div class="contact-links">
-                        <a href="mailto:support@algoinfinityverse.com">
-                            <i class="fas fa-envelope"></i>
-                            support@algoinfinityverse.com
-                        </a>
-                        <a href="https://github.com/Eshajha19/Algo-Infinity-Verse/issues">
-                            <i class="fab fa-github"></i>
-                            GitHub Issues
-                        </a>
-                    </div>
-                </div>
+
+    <main class="support-page" role="main">
+      <div class="support-container">
+        <h1 class="section-title">
+          <span class="title-icon">🛟</span>
+          Support Center
+        </h1>
+        <p class="section-subtitle">Get help and report bugs</p>
+
+        <div id="skeletonLoader" class="skeleton-support-grid visible">
+          <div class="skeleton-support-card">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-line skeleton-line-lg"></div>
+            <div class="skeleton-line skeleton-line-md"></div>
+            <div class="skeleton-line skeleton-line-sm"></div>
+            <div class="skeleton-line skeleton-line-xs"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="skeleton-support-card">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-line skeleton-line-lg"></div>
+            <div class="skeleton-line skeleton-line-md"></div>
+            <div class="skeleton-line skeleton-line-sm"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="skeleton-support-card">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-faq">
+              <div class="skeleton-faq-item"></div>
+              <div class="skeleton-faq-item"></div>
+              <div class="skeleton-faq-item"></div>
+              <div class="skeleton-faq-item"></div>
             </div>
+          </div>
+          <div class="skeleton-support-card">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-line skeleton-line-lg"></div>
+            <div class="skeleton-line skeleton-line-md"></div>
+            <div class="skeleton-line skeleton-line-sm"></div>
+            <div class="skeleton-line skeleton-line-xs"></div>
+          </div>
         </div>
-    </section>
+
+        <div id="supportContent" class="support-grid" style="display: none">
+          <div class="support-card">
+            <h2>Support Request</h2>
+            <form class="support-form" id="supportForm" novalidate>
+              <div class="form-group">
+                <label for="supportName">Full Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="supportName"
+                  placeholder="Enter your full name"
+                  required
+                  minlength="2"
+                  maxlength="100"
+                />
+                <div class="error-message" id="supportNameError"></div>
+              </div>
+              <div class="form-group">
+                <label for="supportEmail">Email Address <span class="required">*</span></label>
+                <input
+                  type="email"
+                  id="supportEmail"
+                  placeholder="Enter your email address"
+                  required
+                />
+                <div class="error-message" id="supportEmailError"></div>
+              </div>
+              <div class="form-group">
+                <label for="supportSubject">Subject <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="supportSubject"
+                  placeholder="Brief subject line"
+                  required
+                  minlength="3"
+                  maxlength="100"
+                />
+                <div class="error-message" id="supportSubjectError"></div>
+              </div>
+              <div class="form-group">
+                <label for="supportMessage">Message <span class="required">*</span></label>
+                <textarea
+                  id="supportMessage"
+                  placeholder="Describe your issue in detail"
+                  required
+                  minlength="10"
+                  maxlength="2000"
+                ></textarea>
+                <div class="error-message" id="supportMessageError"></div>
+                <div class="char-counter"><span id="supportCharCount">0</span>/2000</div>
+              </div>
+              <button class="btn btn-primary" type="submit">
+                <i class="fas fa-paper-plane"></i> Submit Request
+              </button>
+              <div class="form-success" id="supportSuccess">
+                <i class="fas fa-check-circle"></i> Support request submitted successfully!
+              </div>
+            </form>
+          </div>
+
+          <div class="support-card">
+            <h2>Bug Report</h2>
+            <form class="support-form" id="bugForm" novalidate>
+              <div class="form-group">
+                <label for="bugType">Bug Type <span class="required">*</span></label>
+                <select id="bugType" required>
+                  <option value="">Select Bug Type</option>
+                  <option value="ui">UI Issue</option>
+                  <option value="performance">Performance Bug</option>
+                  <option value="crash">Crash</option>
+                  <option value="security">Security Issue</option>
+                  <option value="other">Other</option>
+                </select>
+                <div class="error-message" id="bugTypeError"></div>
+              </div>
+              <div class="form-group">
+                <label for="bugDescription"
+                  >Describe the Issue <span class="required">*</span></label
+                >
+                <textarea
+                  id="bugDescription"
+                  placeholder="Describe the bug in detail (steps to reproduce, expected vs actual behavior)"
+                  required
+                  minlength="10"
+                  maxlength="2000"
+                ></textarea>
+                <div class="error-message" id="bugDescriptionError"></div>
+                <div class="char-counter"><span id="bugCharCount">0</span>/2000</div>
+              </div>
+              <div class="form-group">
+                <label for="bugFile">Attach Screenshot (optional)</label>
+                <input type="file" id="bugFile" accept="image/*,.png,.jpg,.jpeg,.gif" />
+              </div>
+              <button class="btn btn-secondary" type="submit">
+                <i class="fas fa-bug"></i> Report Bug
+              </button>
+              <div class="form-success" id="bugSuccess">
+                <i class="fas fa-check-circle"></i> Bug report submitted successfully!
+              </div>
+            </form>
+          </div>
+
+          <div class="support-card">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+              <details class="faq-item" open>
+                <summary>How do I use the platform?</summary>
+                <p>
+                  Explore DSA topics, quizzes, practice problems, and learning roadmaps from the
+                  homepage. Start with the <a href="/#topics">Topics section</a> to begin learning.
+                </p>
+              </details>
+              <details class="faq-item">
+                <summary>How do I report a bug?</summary>
+                <p>
+                  Use the bug report section above and explain the issue clearly. Include steps to
+                  reproduce and screenshots if possible.
+                </p>
+              </details>
+              <details class="faq-item">
+                <summary>How can I track my progress?</summary>
+                <p>
+                  Your progress is automatically tracked in the <a href="/#dashboard">Dashboard</a>.
+                  You can view XP, completed topics, and earned badges.
+                </p>
+              </details>
+              <details class="faq-item">
+                <summary>How can I contact support?</summary>
+                <p>
+                  Use the support request form above or create a
+                  <a href="https://github.com/Eshajha19/Algo-Infinity-Verse/issues">GitHub issue</a
+                  >. We'll respond within 24-48 hours.
+                </p>
+              </details>
+              <details class="faq-item">
+                <summary>Is this platform free?</summary>
+                <p>
+                  Yes! Algo Infinity Verse is completely free and open-source. We're committed to
+                  making DSA learning accessible to everyone.
+                </p>
+              </details>
+            </div>
+          </div>
+
+          <div class="support-card">
+            <h2>Get In Touch</h2>
+            <div class="contact-links">
+              <a href="mailto:support@algoinfinityverse.com" class="contact-link">
+                <i class="fas fa-envelope"></i>
+                <span>support@algoinfinityverse.com</span>
+              </a>
+              <a
+                href="https://github.com/Eshajha19/Algo-Infinity-Verse/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-link"
+              >
+                <i class="fab fa-github"></i>
+                <span>GitHub Issues</span>
+              </a>
+              <a
+                href="https://discord.gg/algoinfinityverse"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-link"
+              >
+                <i class="fab fa-discord"></i>
+                <span>Discord Community</span>
+              </a>
+              <a
+                href="https://twitter.com/algoinfinity"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-link"
+              >
+                <i class="fab fa-twitter"></i>
+                <span>Twitter/X</span>
+              </a>
+            </div>
+            <br />
+            <div class="support-hours">
+              <h3>Support Hours</h3>
+              <p><i class="far fa-clock"></i> Monday - Friday: 9 AM - 6 PM EST</p>
+              <p><i class="far fa-calendar-alt"></i> Response within 24-48 hours</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
     <script src="/auth.js"></script>
     <script src="/bootstrap-legacy.js"></script>
 
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
     <script type="module" src="/dist/legacy-bundle.mjs"></script>
-    <script src="/theme.js"></script>
+    <script>
+      async function loadPartial(elementId, path) {
+        try {
+          const response = await fetch(path);
+          if (!response.ok) throw new Error('Failed to load ' + path);
+          const html = await response.text();
+          const element = document.getElementById(elementId);
+          if (element) {
+            element.innerHTML = html;
+            if (elementId === 'navbar-placeholder') {
+              if (typeof initNavbar === 'function') {
+                setTimeout(initNavbar, 100);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error loading partial:', error);
+        }
+      }
 
-  <script>
-    loadPartial('navbar-placeholder', '/partials/navbar.html');
-    loadPartial('footer-placeholder', '/partials/footer.html');
-  </script>
-</body>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+
+      function showSkeleton() {
+        var skeleton = document.getElementById('skeletonLoader');
+        var content = document.getElementById('supportContent');
+        if (skeleton) {
+          skeleton.style.display = 'grid';
+          skeleton.classList.add('visible');
+        }
+        if (content) {
+          content.style.display = 'none';
+        }
+      }
+
+      function hideSkeleton() {
+        var skeleton = document.getElementById('skeletonLoader');
+        var content = document.getElementById('supportContent');
+        if (skeleton) {
+          skeleton.style.display = 'none';
+          skeleton.classList.remove('visible');
+        }
+        if (content) {
+          content.style.display = 'grid';
+          content.style.animation = 'fadeInUp 0.5s ease';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        showSkeleton();
+        setTimeout(function () {
+          hideSkeleton();
+        }, 1000);
+      });
+
+      function validateEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      function showError(inputId, errorId, message) {
+        var input = document.getElementById(inputId);
+        var error = document.getElementById(errorId);
+        if (input) {
+          input.classList.add('error');
+          input.classList.remove('success');
+        }
+        if (error) {
+          error.textContent = message;
+          error.classList.add('visible');
+        }
+      }
+
+      function showSuccess(inputId, errorId) {
+        var input = document.getElementById(inputId);
+        var error = document.getElementById(errorId);
+        if (input) {
+          input.classList.remove('error');
+          input.classList.add('success');
+        }
+        if (error) {
+          error.classList.remove('visible');
+        }
+      }
+
+      function clearError(inputId, errorId) {
+        var input = document.getElementById(inputId);
+        var error = document.getElementById(errorId);
+        if (input) {
+          input.classList.remove('error', 'success');
+        }
+        if (error) {
+          error.classList.remove('visible');
+        }
+      }
+
+      function validateSupportForm() {
+        var name = document.getElementById('supportName').value || '';
+        var email = document.getElementById('supportEmail').value || '';
+        var subject = document.getElementById('supportSubject').value || '';
+        var message = document.getElementById('supportMessage').value || '';
+        var isValid = true;
+
+        if (name.length < 2 || name.length > 100) {
+          showError('supportName', 'supportNameError', 'Name must be 2-100 characters.');
+          isValid = false;
+        } else {
+          showSuccess('supportName', 'supportNameError');
+        }
+
+        if (!validateEmail(email)) {
+          showError('supportEmail', 'supportEmailError', 'Please enter a valid email address.');
+          isValid = false;
+        } else {
+          showSuccess('supportEmail', 'supportEmailError');
+        }
+
+        if (subject.length < 3 || subject.length > 100) {
+          showError('supportSubject', 'supportSubjectError', 'Subject must be 3-100 characters.');
+          isValid = false;
+        } else {
+          showSuccess('supportSubject', 'supportSubjectError');
+        }
+
+        if (message.length < 10 || message.length > 2000) {
+          showError('supportMessage', 'supportMessageError', 'Message must be 10-2000 characters.');
+          isValid = false;
+        } else {
+          showSuccess('supportMessage', 'supportMessageError');
+        }
+
+        return isValid;
+      }
+
+      function validateBugForm() {
+        var bugType = document.getElementById('bugType').value || '';
+        var description = document.getElementById('bugDescription').value || '';
+        var isValid = true;
+
+        if (!bugType) {
+          showError('bugType', 'bugTypeError', 'Please select a bug type.');
+          isValid = false;
+        } else {
+          showSuccess('bugType', 'bugTypeError');
+        }
+
+        if (description.length < 10 || description.length > 2000) {
+          showError(
+            'bugDescription',
+            'bugDescriptionError',
+            'Description must be 10-2000 characters.'
+          );
+          isValid = false;
+        } else {
+          showSuccess('bugDescription', 'bugDescriptionError');
+        }
+
+        return isValid;
+      }
+
+      function updateCharCount(textareaId, counterId) {
+        var textarea = document.getElementById(textareaId);
+        var counter = document.getElementById(counterId);
+        if (textarea && counter) {
+          var count = textarea.value.length;
+          counter.textContent = count;
+          if (count > 2000) {
+            counter.classList.add('limit-reached');
+          } else {
+            counter.classList.remove('limit-reached');
+          }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var supportForm = document.getElementById('supportForm');
+        if (supportForm) {
+          supportForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (validateSupportForm()) {
+              var btn = this.querySelector('button[type="submit"]');
+              btn.disabled = true;
+              btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+              setTimeout(function () {
+                document.getElementById('supportSuccess').classList.add('visible');
+                supportForm.reset();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request';
+                document
+                  .querySelectorAll(
+                    '#supportForm .form-group input, #supportForm .form-group textarea'
+                  )
+                  .forEach(function (el) {
+                    el.classList.remove('success');
+                  });
+                document.querySelectorAll('#supportForm .char-counter span').forEach(function (el) {
+                  el.textContent = '0';
+                });
+                setTimeout(function () {
+                  document.getElementById('supportSuccess').classList.remove('visible');
+                }, 5000);
+              }, 1500);
+            }
+          });
+
+          document
+            .querySelectorAll('#supportForm input, #supportForm textarea')
+            .forEach(function (field) {
+              field.addEventListener('blur', function () {
+                var id = this.id;
+                if (id === 'supportEmail') {
+                  if (!validateEmail(this.value)) {
+                    showError(id, id + 'Error', 'Please enter a valid email address.');
+                  } else {
+                    showSuccess(id, id + 'Error');
+                  }
+                } else {
+                  var rules = {
+                    supportName: { min: 2, max: 100 },
+                    supportSubject: { min: 3, max: 100 },
+                    supportMessage: { min: 10, max: 2000 },
+                  };
+                  var rule = rules[id];
+                  if (rule) {
+                    if (this.value.length < rule.min || this.value.length > rule.max) {
+                      showError(
+                        id,
+                        id + 'Error',
+                        'Must be ' + rule.min + '-' + rule.max + ' characters.'
+                      );
+                    } else {
+                      showSuccess(id, id + 'Error');
+                    }
+                  }
+                }
+              });
+              field.addEventListener('input', function () {
+                clearError(this.id, this.id + 'Error');
+              });
+            });
+
+          document.getElementById('supportMessage').addEventListener('input', function () {
+            updateCharCount('supportMessage', 'supportCharCount');
+          });
+        }
+
+        var bugForm = document.getElementById('bugForm');
+        if (bugForm) {
+          bugForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (validateBugForm()) {
+              var btn = this.querySelector('button[type="submit"]');
+              btn.disabled = true;
+              btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+              setTimeout(function () {
+                document.getElementById('bugSuccess').classList.add('visible');
+                bugForm.reset();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-bug"></i> Report Bug';
+                document
+                  .querySelectorAll(
+                    '#bugForm .form-group input, #bugForm .form-group textarea, #bugForm .form-group select'
+                  )
+                  .forEach(function (el) {
+                    el.classList.remove('success');
+                  });
+                document.querySelectorAll('#bugForm .char-counter span').forEach(function (el) {
+                  el.textContent = '0';
+                });
+                setTimeout(function () {
+                  document.getElementById('bugSuccess').classList.remove('visible');
+                }, 5000);
+              }, 1500);
+            }
+          });
+
+          document.getElementById('bugType').addEventListener('blur', function () {
+            if (!this.value) {
+              showError('bugType', 'bugTypeError', 'Please select a bug type.');
+            } else {
+              showSuccess('bugType', 'bugTypeError');
+            }
+          });
+          document.getElementById('bugType').addEventListener('input', function () {
+            clearError('bugType', 'bugTypeError');
+          });
+
+          document.getElementById('bugDescription').addEventListener('blur', function () {
+            if (this.value.length < 10 || this.value.length > 2000) {
+              showError(
+                'bugDescription',
+                'bugDescriptionError',
+                'Description must be 10-2000 characters.'
+              );
+            } else {
+              showSuccess('bugDescription', 'bugDescriptionError');
+            }
+          });
+          document.getElementById('bugDescription').addEventListener('input', function () {
+            clearError('bugDescription', 'bugDescriptionError');
+            updateCharCount('bugDescription', 'bugCharCount');
+          });
+        }
+      });
+
+      function showToast(message, type) {
+        type = type || 'info';
+        var existingToast = document.querySelector('.message-box');
+        if (existingToast) {
+          existingToast.remove();
+        }
+        var toast = document.createElement('div');
+        toast.className = 'message-box ' + type;
+        toast.innerHTML =
+          '<span>' +
+          message +
+          '</span><button class="message-close" onclick="this.parentElement.remove()">&times;</button>';
+        document.body.appendChild(toast);
+        setTimeout(function () {
+          if (toast.parentElement) {
+            toast.classList.add('hiding');
+            setTimeout(function () {
+              toast.remove();
+            }, 300);
+          }
+        }, 4000);
+      }
+
+      window.showToast = showToast;
+
+      var style = document.createElement('style');
+      style.textContent =
+        '@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }';
+      document.head.appendChild(style);
+    </script>
+  </body>
 </html>

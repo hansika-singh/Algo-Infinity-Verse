@@ -242,7 +242,7 @@ function initCopyButtons() {
           btn.classList.remove("copied");
         }, 2000);
       } catch {
-        console.warn("Copy failed");
+        void 0;
       }
     });
   });
@@ -345,7 +345,7 @@ function initProgressTracker() {
             JSON.stringify([...completed])
           );
         } catch (e) {
-          console.warn("Could not save progress:", e);
+          void 0;
         }
 
         updateUI();

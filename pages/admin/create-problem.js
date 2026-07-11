@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
       } catch (e) {
-        console.warn("Corrupted draft found, ignoring.");
+        void 0;
       }
     }
   }
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleSubmit() {
     const data = getFormData();
-    console.log("Problem Submitted:", data);
+    void 0;
     
     // Clear draft
     localStorage.removeItem(DRAFT_KEY);
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.style.backgroundColor = 'var(--success)';
       
       setTimeout(() => {
-        console.warn("Alert:", "Problem successfully created! You can copy the JSON from the console or the output box.");
+        void 0;
         // Optional: redirect to admin dashboard or reset form
       }, 500);
     }, 1500);

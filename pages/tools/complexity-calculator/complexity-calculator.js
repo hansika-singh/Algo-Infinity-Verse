@@ -1,16 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  initLoadingScreen();
   initNavbar();
   initScrollTop();
   try { initComplexityCalculator(); } catch(e) { console.error("Complexity Calculator Error:", e); }
 });
-
-function initLoadingScreen() {
-  setTimeout(() => {
-    const s = document.getElementById("loading-screen");
-    if (s) s.classList.add("hidden");
-  }, 1000);
-}
 
 function initScrollTop() {
   const btn = document.getElementById("scrollTopBtn");

@@ -81,12 +81,12 @@
           }
         } else {
           const text = JSON.stringify(payload);
-          console.warn("Guest auth failed:", response.status, text);
-          console.warn("Alert:", "Guest login failed: " + (payload.error || text || response.status));
+          void 0;
+          void 0;
         }
       } catch (error) {
         console.error("Guest auth error:", error);
-        console.warn("Alert:", "Guest login failed: " + (error.message || "network error"));
+        void 0;
       } finally {
         guestBtn.disabled = false;
         guestBtn.innerHTML = '<i class="fas fa-user-astronaut"></i> Continue as Guest';

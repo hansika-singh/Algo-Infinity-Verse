@@ -27,28 +27,10 @@ function db() {
 
 // ─── Create Battle ────────────────────────────────────────────────────────────
 export async function createBattle(creatorId, opponentEmail, difficulty) {
+  // opponentEmail is no longer strictly used for 1v1 matching but we can ignore it
+  // or allow it as an optional invite later. For Battle Royale, we just create a room.
   const firestore = db();
 
-  // Lookup by email — the project stores email not username (confirmed in server.js signup).
-  const opponentSnap = await firestore
-    .collection(USERS)
-    .where("email", "==", opponentEmail.toLowerCase())
-    .limit(1)
-    .get();
-
-  if (opponentSnap.empty) {
-    throw new Error(`No account found with email "${opponentEmail}"`);
-  }
-
-  const opponentId = opponentSnap.docs[0].id;
-
-  if (opponentId === creatorId) {
-    throw new Error("You cannot challenge yourself");
-  }
-
-  // Server picks the problem so both players always see the same one.
-  // Previous client-side Math.random() pick meant each browser could load
-  // a different problem — that was a real bug.
   const problemSnap = await firestore
     .collection(PROBLEMS)
     .where("difficulty", "==", difficulty)
@@ -63,21 +45,23 @@ export async function createBattle(creatorId, opponentEmail, difficulty) {
   const candidates = problemSnap.docs;
   const chosen = candidates[Math.floor(Math.random() * candidates.length)];
 
-  const battleRef = firestore.collection(BATTLES).doc();
+  // Generate a random 6-character alphanumeric code
+  const lobbyCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const battleRef = firestore.collection(BATTLES).doc(lobbyCode);
+  
+  const doc = await battleRef.get();
+  if (doc.exists) {
+     throw new Error("Lobby code collision, please try again");
+  }
 
   await battleRef.set({
-    player1:            creatorId,
-    player2:            opponentId,
-    // participants array enables array-contains queries in getHistory.
-    // Firestore cannot do "player1 == X OR player2 == X" natively.
-    participants:       [creatorId, opponentId],
-    status:             "pending",   // pending → active → completed | expired
+    hostId:             creatorId,
+    participants:       [creatorId],
+    status:             "waiting",   // waiting → active → completed | expired
     difficulty,
     problemId:          chosen.id,
     problemTitle:       chosen.data().title,
     problemDescription: chosen.data().description,
-    // Map keyed by playerId — allows atomic per-player updates with dot notation.
-    // An array would require reading and rewriting the whole field.
     submissions:        {},
     winner:             null,
     xpAwarded:          0,
@@ -86,7 +70,7 @@ export async function createBattle(creatorId, opponentEmail, difficulty) {
     expiresAt:          null,
   });
 
-  return battleRef.id;
+  return lobbyCode;
 }
 
 // ─── Join Battle ──────────────────────────────────────────────────────────────
@@ -100,11 +84,37 @@ export async function joinBattle(battleId, requesterId) {
 
     const battle = doc.data();
 
-    if (battle.status !== "pending") {
-      throw new Error("This battle is no longer open to join");
+    if (battle.status !== "waiting" && battle.status !== "active") {
+      throw new Error("This battle is finished and cannot be joined");
     }
-    if (battle.player2 !== requesterId) {
-      throw new Error("You were not invited to this battle");
+
+    if (!battle.participants.includes(requesterId)) {
+        if (battle.participants.length >= 8) {
+            throw new Error("Lobby is full");
+        }
+        tx.update(battleRef, { participants: FieldValue.arrayUnion(requesterId) });
+    }
+
+    return { status: battle.status, problemTitle: battle.problemTitle };
+  });
+}
+
+// ─── Start Battle ─────────────────────────────────────────────────────────────
+export async function startBattle(battleId, requesterId) {
+  const firestore = db();
+  const battleRef = firestore.collection(BATTLES).doc(battleId);
+
+  return firestore.runTransaction(async (tx) => {
+    const doc = await tx.get(battleRef);
+    if (!doc.exists) throw new Error("Battle not found");
+
+    const battle = doc.data();
+
+    if (battle.hostId !== requesterId) {
+      throw new Error("Only the host can start the battle");
+    }
+    if (battle.status !== "waiting") {
+      throw new Error("Battle is already active or finished");
     }
 
     const startedAt = Timestamp.now();
@@ -137,7 +147,7 @@ export async function submitSolution(battleId, playerId, code) {
     if (battle.status !== "active") {
       throw new Error("Battle is not active");
     }
-    if (![battle.player1, battle.player2].includes(playerId)) {
+    if (!battle.participants.includes(playerId)) {
       throw new Error("You are not a participant in this battle");
     }
     if (battle.submissions?.[playerId]) {

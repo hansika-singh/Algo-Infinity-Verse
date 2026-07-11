@@ -387,7 +387,7 @@ function arenaFight() {
 
   let keyA = selA.value, keyB = selB.value;
   if (keyA === keyB) {
-    console.warn("Alert:", 'Please select two different algorithms to battle!');
+    void 0;
     return;
   }
 

@@ -616,7 +616,7 @@ function initProfiler() {
         const maxLimit = algoId.includes("fib") ? 10 : 12;
 
         if (isNaN(sizeVal) || sizeVal < 1 || sizeVal > maxLimit) {
-            console.warn("Alert:", `Please enter a valid input size N between 1 and ${maxLimit}.`);
+            void 0;
             return;
         }
 

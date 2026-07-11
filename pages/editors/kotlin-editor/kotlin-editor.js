@@ -447,13 +447,13 @@ function initKotlinEditor() {
       
       // Validations
       if (!name.endsWith(".kt")) {
-        console.warn("Alert:", "File name must end with '.kt'");
+        void 0;
         input.focus();
         return;
       }
 
       if (files.some(f => f.name.toLowerCase() === name.toLowerCase())) {
-        console.warn("Alert:", "A file with this name already exists.");
+        void 0;
         input.focus();
         return;
       }
@@ -516,13 +516,13 @@ function initKotlinEditor() {
       }
 
       if (!newName.endsWith(".kt")) {
-        console.warn("Alert:", "File name must end with '.kt'");
+        void 0;
         input.focus();
         return;
       }
 
       if (files.some((f, idx) => idx !== index && f.name.toLowerCase() === newName.toLowerCase())) {
-        console.warn("Alert:", "A file with this name already exists.");
+        void 0;
         input.focus();
         return;
       }
@@ -558,7 +558,7 @@ function initKotlinEditor() {
   function deleteFile(index) {
     const file = files[index];
     if (files.length <= 1) {
-      console.warn("Alert:", "Cannot delete the only file in the project.");
+      void 0;
       return;
     }
 

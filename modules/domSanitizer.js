@@ -73,8 +73,8 @@ function sanitizeHTML(htmlStr) {
   // Fallback for environments without DOMParser (e.g. server-side/test environments)
   return stringified
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
-    .replace(/\s*href\s*=\s*["']javascript:[^"']*["']/gi, '');
+    .replace(/\s*on\w+\s*=\s*(?:"[^"]*"|'[^']*')/gi, '')
+    .replace(/\s*href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, '');
 }
 
 // Expose to window for classic scripts

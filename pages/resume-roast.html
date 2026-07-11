@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Roast & ATS Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --surface: #1a1d2d;
+            --primary: #ef4444;
+            --primary-hover: #dc2626;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --good: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .upload-card {
+            background-color: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .upload-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .results {
+            display: none;
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 0 auto 30px;
+            border: 8px solid var(--border);
+            position: relative;
+        }
+
+        .roast-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-card {
+            background-color: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-card h3 {
+            margin-top: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.1);
+            font-size: 14px;
+            margin: 4px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Resume Roast & ATS Analyzer</h1>
+        <p>Upload your resume and prepare for the harsh truth.</p>
+    </div>
+
+    <div class="upload-card">
+        <p style="margin-bottom: 20px; color: var(--text-muted);">Supports PDF and DOCX files (Max 5MB)</p>
+        <input type="file" id="resumeFile" class="file-input" accept=".pdf,.docx,.doc">
+        <button class="upload-btn" onclick="document.getElementById('resumeFile').click()">Choose File</button>
+        <p id="fileName" style="margin-top: 15px; font-size: 14px;"></p>
+        <button id="analyzeBtn" class="upload-btn" style="display: none; margin-top: 10px; background: #3b82f6;">Analyze & Roast</button>
+    </div>
+
+    <div class="loading" id="loading">Analyzing your life choices... please wait.</div>
+
+    <div class="results" id="results">
+        <div class="score-circle" id="scoreCircle">0%</div>
+        <div class="roast-box" id="roastText"></div>
+
+        <div class="details-grid">
+            <div class="detail-card">
+                <h3>Missing Skills</h3>
+                <div id="missingSkills"></div>
+            </div>
+            <div class="detail-card">
+                <h3>Suggestions</h3>
+                <div id="suggestions"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('resumeFile');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            fileNameDisplay.textContent = e.target.files[0].name;
+            analyzeBtn.style.display = 'inline-block';
+        }
+    });
+
+    analyzeBtn.addEventListener('click', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('resume', file);
+        formData.append('jobDescription', 'Software Engineer Developer Programmer'); // default generic keywords
+
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('results').style.display = 'none';
+        
+        try {
+            const res = await fetch('/api/analyze-resume', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            
+            document.getElementById('loading').style.display = 'none';
+
+            if (!res.ok) {
+                alert('Error: ' + (data.error || 'Failed to analyze'));
+                return;
+            }
+
+            displayResults(data);
+        } catch (err) {
+            document.getElementById('loading').style.display = 'none';
+            alert('Network error: ' + err.message);
+        }
+    });
+
+    function getRoast(score) {
+        if (score >= 90) return "Okay, flex much? Your resume actually looks decent. Did you pay someone to write it?";
+        if (score >= 70) return "Not terrible, but not great either. You'll pass the ATS but human eyes might bleed a little.";
+        if (score >= 50) return "This resume screams 'I used a generic Word template from 2010'. Time for a serious rewrite.";
+        if (score >= 30) return "I've seen grocery lists more compelling than this. Are you actively trying not to get hired?";
+        return "Is this a prank? Did your cat walk across the keyboard? Delete this and start over before someone sees it.";
+    }
+
+    function displayResults(data) {
+        document.getElementById('results').style.display = 'block';
+        
+        const score = data.atsScore || 0;
+        const circle = document.getElementById('scoreCircle');
+        circle.textContent = score + '%';
+        
+        if (score >= 80) circle.style.borderColor = 'var(--good)';
+        else if (score >= 50) circle.style.borderColor = 'var(--warning)';
+        else circle.style.borderColor = 'var(--primary)';
+
+        document.getElementById('roastText').textContent = getRoast(score);
+
+        const skillsContainer = document.getElementById('missingSkills');
+        skillsContainer.innerHTML = '';
+        if (data.missingSkills && data.missingSkills.length > 0) {
+            data.missingSkills.forEach(skill => {
+                const el = document.createElement('span');
+                el.className = 'tag';
+                el.textContent = skill;
+                skillsContainer.appendChild(el);
+            });
+        } else {
+            skillsContainer.textContent = "None! (Or our parser just couldn't figure it out)";
+        }
+
+        const suggestionsContainer = document.getElementById('suggestions');
+        suggestionsContainer.innerHTML = '';
+        if (data.suggestions && data.suggestions.length > 0) {
+            const ul = document.createElement('ul');
+            ul.style.paddingLeft = '20px';
+            ul.style.marginTop = '0';
+            data.suggestions.forEach(s => {
+                const li = document.createElement('li');
+                li.textContent = s;
+                li.style.marginBottom = '8px';
+                ul.appendChild(li);
+            });
+            suggestionsContainer.appendChild(ul);
+        } else {
+            suggestionsContainer.textContent = "We have no words. Just start over.";
+        }
+    }
+</script>
+
+</body>
+</html>

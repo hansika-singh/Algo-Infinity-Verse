@@ -31,6 +31,15 @@ export function initNavbar() {
     homeLink.closest('.nav-item').style.display = isHomePage ? 'none' : '';
   }
 
+  // Restore last-used visualizer filter in navbar link
+  const vizLink = navLinks.querySelector('a[href="/pages/visualizers/visualizers.html"]');
+  if (vizLink) {
+    const savedFilter = localStorage.getItem('vizFilterCategory');
+    if (savedFilter && savedFilter !== 'all') {
+      vizLink.href = '/pages/visualizers/visualizers.html?category=' + encodeURIComponent(savedFilter);
+    }
+  }
+
   let overlay = document.querySelector(".nav-overlay");
   if (!overlay) { overlay = document.createElement("div"); overlay.className = "nav-overlay"; document.body.appendChild(overlay); }
   const toggleMenu = (open) => {

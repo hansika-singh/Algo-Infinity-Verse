@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BGP Route Propagation & Hijacking Simulator | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="bgp-route-hijack-simulator.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-globe logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>BGP Route Hijacking <span class="badge badge-algo">Internet Architecture</span></h1>
+        <p>Border Gateway Protocol, Path Vectors & Longest Prefix Matching</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-tower-broadcast"></i> Network Controls</h2>
+          
+          <div class="control-card normal-state">
+              <h3>Normal Operation</h3>
+              <p>AS 400 (Target) announces its legitimate prefix block: <code>10.0.0.0/16</code>.</p>
+              <button id="btn-reset" class="btn btn-primary w-100 mt-2">
+                <i class="fa-solid fa-check-circle"></i> Restore Normal Routing
+              </button>
+          </div>
+
+          <div class="control-card hijack-state mt-3">
+              <h3>Chaos Mode: BGP Hijack</h3>
+              <p>AS 666 (Attacker) maliciously announces a more specific subnet: <code>10.0.0.0/24</code>. BGP routers prefer the longest prefix match!</p>
+              <button id="btn-hijack" class="btn btn-danger w-100 mt-2">
+                <i class="fa-solid fa-skull-crossbones"></i> Initiate Route Hijack
+              </button>
+          </div>
+        </section>
+
+        <section class="glass-panel telemetry-panel mt-3">
+          <h2><i class="fa-solid fa-chart-line"></i> Traffic Telemetry</h2>
+          <div class="metric-grid">
+             <div class="metric-box box-legit">
+                <span class="metric-title">Legitimate Traffic</span>
+                <span class="metric-value" id="val-legit">0</span>
+                <span class="metric-sub">Packets Delivered</span>
+             </div>
+             
+             <div class="metric-box box-hijacked">
+                <span class="metric-title">Hijacked Traffic</span>
+                <span class="metric-value" id="val-hijacked">0</span>
+                <span class="metric-sub">Packets Blackholed</span>
+             </div>
+          </div>
+        </section>
+
+        <section class="glass-panel routing-panel mt-3">
+          <h2><i class="fa-solid fa-table"></i> AS 100 Routing Table</h2>
+          <p class="desc-text mb-2">Simulating target destination IP: <code>10.0.0.55</code></p>
+          <div class="table-container">
+            <table class="rib-table" id="rib-table">
+                <thead>
+                    <tr>
+                        <th>Prefix</th>
+                        <th>AS Path</th>
+                        <th>Next Hop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+          </div>
+        </section>
+
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">BGP Daemon:</span>
+            <span id="status-text" class="status-message text-success">BGP Convergence Complete. Routes stable.</span>
+          </div>
+        </div>
+
+        <div class="network-wrapper" id="network-wrapper">
+            <canvas id="bgp-canvas" class="bgp-canvas"></canvas>
+            
+            <div id="nodes-layer" class="nodes-layer"></div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="bgp-route-hijack-simulator.js"></script>
+</body>
+</html>

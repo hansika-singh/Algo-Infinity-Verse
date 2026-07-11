@@ -729,7 +729,7 @@ function stPromptUpdate(idx) {
   if (idx < 0 || idx >= n) return;
   
   let currentVal = stState.arr[idx];
-  let inputVal = null /* prompt removed */:', currentVal);
+  let inputVal = null;
   if (inputVal === null) return;
   
   let val = parseInt(inputVal.trim());

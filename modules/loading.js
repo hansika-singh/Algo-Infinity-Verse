@@ -1,12 +1,18 @@
 let loadingTimeout = null;
 let animationObserver = null;
-let isPageLoaded = false;
 
 export function initLoadingScreen() {
     const loadingScreen = document.getElementById("loading-screen");
     
     if (!loadingScreen) {
-        console.warn("Loading screen element not found");
+        void 0;
+        initializeAnimations();
+        return;
+    }
+
+    // Skip loading animation on non-landing pages (all individual visualizers)
+    if (!document.body.hasAttribute('data-no-loading')) {
+        loadingScreen.classList.add("hidden");
         initializeAnimations();
         return;
     }
@@ -17,6 +23,13 @@ export function initLoadingScreen() {
         loadingScreen.classList.add("hidden");
         initializeAnimations();
         return;
+    }
+
+    // NEW: set context-specific loading text
+    const textEl = loadingScreen.querySelector('#loadingScreenText');
+    if (textEl) {
+        const customMessage = document.body.getAttribute('data-loading-message');
+        textEl.textContent = customMessage || 'Loading...';
     }
 
     const FALLBACK_TIMEOUT = 3000;
@@ -42,7 +55,7 @@ export function initLoadingScreen() {
         
         loadingTimeout = setTimeout(() => {
             if (!isHidden) {
-                console.warn("Loading screen timeout - forcing hide");
+                void 0;
                 hideLoadingScreen();
             }
         }, FALLBACK_TIMEOUT);

@@ -517,7 +517,7 @@ function initHtmlEditor() {
     if (demoForm) {
         demoForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            console.warn("Alert:", "Form submitted! (Demo only)");
+            void 0;
         });
     }
 

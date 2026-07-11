@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarjan's SCC Visualizer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="tarjans-scc-visualizer.css" />
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans h-screen flex flex-col">
+    <nav
+      class="bg-indigo-600 text-white p-4 shadow-md flex justify-between items-center z-10 relative"
+    >
+      <a
+        href="../visualizers.html"
+        class="text-xl font-bold hover:text-indigo-200 transition-colors flex items-center gap-2"
+      >
+        <i class="fas fa-arrow-left"></i> Visualizers
+      </a>
+      <h1 class="text-xl font-bold">Tarjan's SCC Algorithm</h1>
+      <div class="flex items-center gap-4">
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-indigo-700 transition-colors">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </nav>
+
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+      <!-- Sidebar Controls -->
+      <aside class="w-full md:w-80 bg-white border-r border-gray-200 flex flex-col shadow-lg z-10">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+          <h2 class="font-bold text-lg text-gray-700 mb-2">Controls</h2>
+          <div class="grid grid-cols-2 gap-2 mb-4">
+            <button id="btn-add-node" class="btn bg-blue-500 hover:bg-blue-600 text-white">
+              <i class="fas fa-plus"></i> Node
+            </button>
+            <button id="btn-add-edge" class="btn bg-green-500 hover:bg-green-600 text-white">
+              <i class="fas fa-project-diagram"></i> Edge
+            </button>
+            <button id="btn-clear" class="btn bg-red-500 hover:bg-red-600 text-white col-span-2">
+              <i class="fas fa-trash"></i> Clear Graph
+            </button>
+            <button
+              id="btn-random"
+              class="btn bg-purple-500 hover:bg-purple-600 text-white col-span-2"
+            >
+              <i class="fas fa-random"></i> Random Graph
+            </button>
+          </div>
+
+          <h2 class="font-bold text-lg text-gray-700 mt-4 mb-2">Execution</h2>
+          <div class="flex items-center gap-2 mb-2">
+            <button id="btn-start" class="btn bg-indigo-600 hover:bg-indigo-700 text-white flex-1">
+              <i class="fas fa-play"></i> Start
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              id="btn-prev"
+              class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 flex-1"
+              disabled
+            >
+              <i class="fas fa-step-backward"></i> Prev
+            </button>
+            <button
+              id="btn-next"
+              class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 flex-1"
+              disabled
+            >
+              Next <i class="fas fa-step-forward"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Algorithm State panel -->
+        <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <h3 class="font-bold text-gray-700 mb-2 border-b pb-1">Algorithm State</h3>
+          <div
+            id="status-message"
+            class="text-sm font-semibold text-indigo-600 mb-4 bg-indigo-100 p-2 rounded"
+          >
+            Ready to start. Create a graph or click 'Random Graph'.
+          </div>
+
+          <div class="mb-4">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Stack</h4>
+            <div
+              id="stack-display"
+              class="bg-gray-800 text-white p-2 rounded min-h-[40px] flex flex-wrap gap-1 items-center font-mono text-sm"
+            >
+              <!-- Stack items -->
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
+              Node Details (disc, low)
+            </h4>
+            <ul id="node-details-list" class="text-sm space-y-1">
+              <!-- Populated by JS -->
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Canvas Area -->
+      <main class="flex-1 bg-gray-100 relative cursor-crosshair" id="canvas-container">
+        <!-- Overlay for mode instructions -->
+        <div
+          id="mode-indicator"
+          class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-md text-sm font-bold text-gray-600 pointer-events-none hidden z-20"
+        >
+          Mode Active
+        </div>
+        <!-- Canvas -->
+        <canvas id="graph-canvas" class="w-full h-full block"></canvas>
+      </main>
+    </div>
+
+    <script src="tarjans-scc-visualizer.js"></script>
+  </body>
+</html>

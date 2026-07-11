@@ -191,7 +191,7 @@ function generateKeys() {
 }
 
 function encryptInputs() {
-    if (!fhe.sk) return console.warn("Alert:", "Please generate a Secret Key first.");
+    if (!fhe.sk) return void 0;
 
     const bitA = parseInt(els.valA.value);
     const bitB = parseInt(els.valB.value);

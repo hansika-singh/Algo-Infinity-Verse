@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QUIC & HTTP/3 Protocol Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive simulator comparing TCP/TLS handshakes and head-of-line blocking against QUIC's 0-RTT and stream multiplexing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="quic-simulator.css" />
+</head>
+<body class="quic-body">
+
+    <nav class="navbar quic-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge">
+            <i class="fas fa-network-wired"></i> QUIC / HTTP3 Engine
+        </div>
+    </nav>
+
+    <main class="quic-workspace">
+        <!-- Left Panel: Controls -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-sliders-h"></i> Simulation Controls</h3>
+            </div>
+            
+            <div class="control-section">
+                <h4><i class="fas fa-play"></i> Handshake Simulation</h4>
+                <p class="text-secondary">Compare the connection setup latency between TCP+TLS and QUIC.</p>
+                <div class="action-row">
+                    <button type="button" class="btn btn-primary" id="btnRunTcpHandshake">
+                        Simulate TCP + TLS 1.3
+                    </button>
+                    <button type="button" class="btn btn-accent" id="btnRunQuicHandshake">
+                        Simulate QUIC 0-RTT
+                    </button>
+                </div>
+                <div class="metrics-box">
+                    <div>TCP+TLS Time: <span id="tcpTime" class="text-danger">0ms</span></div>
+                    <div>QUIC Time: <span id="quicTime" class="text-success">0ms</span></div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h4><i class="fas fa-random"></i> Multiplexing & Head-of-Line Blocking</h4>
+                <p class="text-secondary">Send 3 files simultaneously. Drop a packet to see how TCP blocks all streams while QUIC allows independent streams to proceed.</p>
+                <div class="action-row">
+                    <button type="button" class="btn btn-warning w-100" id="btnDropPacket">
+                        <i class="fas fa-skull"></i> Drop Packet (Inject Loss)
+                    </button>
+                </div>
+                <div class="action-row mt-2">
+                    <button type="button" class="btn btn-outline w-100" id="btnStartTransfer">
+                        <i class="fas fa-file-export"></i> Start File Transfer
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h4><i class="fas fa-wifi"></i> Connection Migration</h4>
+                <p class="text-secondary">Simulate a client switching from Wi-Fi to Cellular. TCP connections drop when the IP changes, but QUIC uses Connection IDs.</p>
+                <button type="button" class="btn btn-danger w-100" id="btnSwitchNetwork">
+                    <i class="fas fa-mobile-alt"></i> Switch Network (Change IP)
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Visualization -->
+        <div class="panel-right">
+            <div class="viz-container">
+                <!-- TCP Lane -->
+                <div class="protocol-lane" id="tcpLane">
+                    <div class="lane-header">
+                        <h2>HTTP/2 over TCP</h2>
+                        <span class="status-badge tcp-status">Disconnected</span>
+                    </div>
+                    <div class="network-pipe">
+                        <div class="client-node"><i class="fas fa-laptop"></i> Client<br/><small class="ip-address">192.168.1.5</small></div>
+                        <div class="pipe-canvas-container">
+                            <canvas id="tcpCanvas"></canvas>
+                        </div>
+                        <div class="server-node"><i class="fas fa-server"></i> Server</div>
+                    </div>
+                </div>
+
+                <!-- QUIC Lane -->
+                <div class="protocol-lane" id="quicLane">
+                    <div class="lane-header">
+                        <h2>HTTP/3 over QUIC</h2>
+                        <span class="status-badge quic-status">Disconnected</span>
+                    </div>
+                    <div class="network-pipe">
+                        <div class="client-node"><i class="fas fa-mobile-alt"></i> Client<br/><small class="ip-address">192.168.1.5</small></div>
+                        <div class="pipe-canvas-container">
+                            <canvas id="quicCanvas"></canvas>
+                        </div>
+                        <div class="server-node"><i class="fas fa-server"></i> Server</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="explanation-panel">
+                <h3><i class="fas fa-info-circle"></i> Live Activity Log</h3>
+                <div id="logTerminal" class="terminal-log">
+                    <div class="log-entry">Waiting for simulation to start...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="quic-simulator.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyperLogLog Estimator | Algo Infinity Verse</title>
+    <meta name="description" content="Estimate billions of unique items using kilobytes of memory. Watch registers update live, see the harmonic mean estimate converge, and compare memory against an exact hash set." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="hyperloglog-estimator.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="hyperloglog-estimator">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="hl-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hl-hero-inner">
+        <div class="hl-hero-eyebrow">📊 Redis PFCOUNT · BigQuery APPROX_COUNT_DISTINCT · Presto</div>
+        <h1 class="hl-hero-title">HyperLogLog Estimator</h1>
+        <p class="hl-hero-sub">Count a billion unique things using a few kilobytes.</p>
+        <p class="hl-hero-desc">The longest run of leading zeros you've seen in a random hash tells you, probabilistically, how many distinct items you've hashed — see a run of 20 zeros and you've probably hashed around 2²⁰ items. HyperLogLog turns this single strange fact into a ~2% accurate cardinality estimator using a fixed, tiny register array.</p>
+        <a href="#lab" class="btn btn-primary hl-btn-primary"><i class="fas fa-chart-column"></i> Open Estimator</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section hl-section">
+      <div class="container">
+
+        <div class="hl-control-card">
+          <div class="hl-row">
+            <span class="hl-row-label">Registers (m)</span>
+            <input type="range" id="hlMSlider" class="hl-range" min="4" max="10" value="6" aria-label="Register count exponent" />
+            <span class="hl-m-val" id="hlMVal">m = 64</span>
+            <span class="hl-error-hint" id="hlErrorHint">Standard error ≈ 13.0%</span>
+          </div>
+          <div class="hl-row">
+            <button class="btn hl-btn-primary hl-stream-btn" id="hlStreamBtn"><i class="fas fa-play"></i> Stream 500 Items</button>
+            <button class="btn btn-secondary hl-step-btn" id="hlStepBtn"><i class="fas fa-forward-step"></i> Add One Item</button>
+            <button class="btn btn-secondary hl-reset-btn" id="hlResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            <label class="hl-toggle-label">
+              <input type="checkbox" id="hlDuplicates" class="hl-check" />
+              <span>Include 30% duplicate items (real-world stream)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="hl-status" id="hlStatus">Choose a register count, then stream items to watch the estimate converge toward the true unique count.</div>
+
+        <div class="hl-main-layout">
+
+          <div class="hl-registers-section">
+            <div class="hl-panel-title"><i class="fas fa-grip"></i> Register Array (max leading-zero-run seen per bucket)</div>
+            <div class="hl-registers-grid" id="hlRegistersGrid"></div>
+            <div class="hl-hash-trace" id="hlHashTrace">Stream an item to see its hash split into bucket index + leading-zero-run.</div>
+          </div>
+
+          <div class="hl-right-panel">
+
+            <div class="hl-panel-card">
+              <div class="hl-panel-title"><i class="fas fa-bullseye"></i> Live Estimate</div>
+              <div class="hl-estimate-display">
+                <div class="hl-estimate-big" id="hlEstimateBig">0</div>
+                <div class="hl-estimate-label">estimated unique items</div>
+              </div>
+              <div class="hl-stat-rows">
+                <div class="hl-stat-row"><span>Items streamed</span><span id="hlStreamed">0</span></div>
+                <div class="hl-stat-row"><span>True unique count</span><span id="hlTrueCount">0</span></div>
+                <div class="hl-stat-row"><span>Error</span><span id="hlErrorPct">—</span></div>
+              </div>
+            </div>
+
+            <div class="hl-panel-card">
+              <div class="hl-panel-title"><i class="fas fa-weight-hanging"></i> Memory Comparison</div>
+              <div class="hl-stat-rows">
+                <div class="hl-stat-row"><span>HLL register array</span><span id="hlMemHll">—</span></div>
+                <div class="hl-stat-row"><span>Exact hash set (est.)</span><span id="hlMemSet">—</span></div>
+                <div class="hl-stat-row hl-mem-savings"><span>Memory saved</span><span id="hlMemSavings">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="hl-chart-card">
+          <div class="hl-panel-title"><i class="fas fa-chart-line"></i> Estimate vs True Count Over Time</div>
+          <canvas id="hlChartCanvas" class="hl-chart-canvas" role="img" aria-label="Line chart comparing HyperLogLog estimate versus true unique count over items streamed"></canvas>
+          <div class="hl-chart-legend">
+            <span class="hl-cl"><span class="hl-cl-dot" style="background:#22c55e"></span>True unique count</span>
+            <span class="hl-cl"><span class="hl-cl-dot" style="background:#06b6d4"></span>HyperLogLog estimate</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📊</span> Why Leading Zeros Encode Cardinality</h2>
+        <div class="hl-learn-grid">
+          <div class="hl-learn-card" style="--lc:#06b6d4">
+            <div class="hl-learn-icon">🪙</div>
+            <h3>The Coin Flip Intuition</h3>
+            <p>A random hash bit is like a coin flip. The probability of seeing k leading zeros in a row is 1/2^k. If you've hashed N items and the longest run seen is k zeros, then N is probably around 2^k — because it took about that many "flips" to get that lucky.</p>
+          </div>
+          <div class="hl-learn-card" style="--lc:#a855f7">
+            <div class="hl-learn-icon">📦</div>
+            <h3>Why m Registers Instead of 1</h3>
+            <p>A single register has huge variance — one lucky item can throw off the whole estimate. Splitting into m buckets by hash prefix and taking the harmonic mean of 2^register across all of them averages out the luck, bringing error down to about 1.04/√m.</p>
+          </div>
+          <div class="hl-learn-card" style="--lc:#22c55e">
+            <div class="hl-learn-icon">➗</div>
+            <h3>Why Harmonic Mean, Not Arithmetic</h3>
+            <p>A single register with an unusually large run length would dominate and badly skew an arithmetic mean. The harmonic mean of 2^register values is far more robust to that one outlier bucket, which is exactly why Flajolet et al. chose it in the original 2007 paper.</p>
+          </div>
+          <div class="hl-learn-card" style="--lc:#f59e0b">
+            <div class="hl-learn-icon">💾</div>
+            <h3>Real Deployments</h3>
+            <p>Redis's PFCOUNT uses HyperLogLog with 16384 registers (~12KB) to estimate cardinality of sets with billions of elements. Google BigQuery's APPROX_COUNT_DISTINCT and Presto's approx_distinct use the same core algorithm for exactly this reason: constant memory regardless of stream size.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="hyperloglog-estimator.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

@@ -141,7 +141,7 @@ function initPBFT() {
 function bindEvents() {
     els.btnAddNode.addEventListener('click', () => {
         if (isSimulating) return;
-        if (nodes.length >= MAX_NODES) return console.warn("Alert:", "Maximum nodes reached.");
+        if (nodes.length >= MAX_NODES) return void 0;
         
         const newIdx = nodes.length;
         nodes.push(new PBFTNode(`N${newIdx}`, newIdx));

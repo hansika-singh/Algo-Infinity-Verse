@@ -646,16 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateConsoleUI([]);
 });
 
-// ====== UPDATE LINE NUMBERS (from editor.js) ======
-function updateLineNumbers() {
-    const lines = document.getElementById('codeEditor').value.split('\n');
-    const count = lines.length;
-    let html = '';
-    for (let i = 1; i <= count; i++) {
-        html += `<span>${i}</span>`;
-    }
-    document.getElementById('lineNumbers').innerHTML = html;
-}
+// updateLineNumbers() is defined in editor.js, loaded before this file.
 
 // Re-initialize when code changes
 document.getElementById('codeEditor').addEventListener('input', () => {
@@ -823,7 +814,14 @@ function renderCertificatesDashboard(tracks) {
         // Automatically uses structural records cleanly 
         downloadCertificatePDF("Prasiddhi Mishra", track.topicName, track.completionDate, track.certificateId);
       } else {
-        console.warn("Alert:", "This roadmap track is not fully completed yet.");
+        downloadBtn.textContent = '⚠ Track not completed';
+        downloadBtn.style.background = '#6b7280';
+        downloadBtn.disabled = true;
+        setTimeout(() => {
+          downloadBtn.textContent = 'Download PDF';
+          downloadBtn.style.background = '#667eea';
+          downloadBtn.disabled = false;
+        }, 3000);
       }
     });
 

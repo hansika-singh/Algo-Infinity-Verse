@@ -39,7 +39,7 @@ function showDailyFact() {
     const factText = document.getElementById('factText');
     const factDate = document.getElementById('factDate');
     if (!factText || !factDate) {
-        console.warn('Daily fact elements not found');
+        void 0;
         return;
     }
     factText.textContent = getDailyFact();

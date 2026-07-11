@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Complexity Profiler | Algo Infinity Verse</title>
+    <meta name="description" content="Dynamic memory profiling tool to visualize and estimate space complexity." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- CodeMirror for the Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css">
+    
+    <!-- Acorn.js for AST Parsing in Browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.10.0/acorn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn-walk/8.2.0/walk.min.js"></script>
+    
+    <!-- Chart.js for Dynamic Profiling Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="space-complexity-profiler.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body class="profiler-body">
+
+    <nav class="profiler-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="nav-title"><i class="fas fa-memory"></i> Space Complexity Profiler</div>
+        <a href="/index.html" class="home-btn" style="color: var(--text-color); margin-left: auto; margin-right: 1rem; text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+    </nav>
+
+    <main class="profiler-workspace">
+        <!-- Left: Telemetry & Visualization -->
+        <div class="visualization-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-chart-area"></i> Memory Allocation Timeline</h3>
+            </div>
+            <div class="visualization-content">
+                <div class="instruction-box">
+                    <strong><i class="fas fa-info-circle"></i> Real-time Profiling:</strong>
+                    <p>This tool instruments your code using an AST parser to estimate memory allocations dynamically. It tracks arrays, objects, and function call depths to determine the estimated space complexity.</p>
+                </div>
+                
+                <h3 class="engine-title">Telemetry HUD</h3>
+                <div class="telemetry-grid">
+                    <div class="tel-box">
+                        <span class="tel-label">Peak Memory A</span>
+                        <span class="tel-value" id="peakMemA">0 B</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Estimated Space A</span>
+                        <span class="tel-value" id="spaceComplexityA">O(1)</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Peak Memory B</span>
+                        <span class="tel-value" id="peakMemB">0 B</span>
+                    </div>
+                    <div class="tel-box">
+                        <span class="tel-label">Estimated Space B</span>
+                        <span class="tel-value" id="spaceComplexityB">O(1)</span>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <button id="runProfilerBtn" class="btn primary-btn run-btn">
+                        <i class="fas fa-play"></i> Run Space Profiler
+                    </button>
+                    <div class="chart-container">
+                        <canvas id="memoryChart"></canvas>
+                    </div>
+                    <div class="status-indicator" id="profilerStatus">
+                        Ready to profile.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Code Editors -->
+        <div class="editor-panel">
+            <div class="split-editors">
+                <!-- Editor A -->
+                <div class="editor-col">
+                    <div class="editor-header header-a">
+                        <i class="fas fa-code"></i> Editor A (Iterative Search)
+                    </div>
+                    <div class="editor-container" id="editorContainerA"></div>
+                </div>
+                <!-- Editor B -->
+                <div class="editor-col">
+                    <div class="editor-header header-b">
+                        <i class="fas fa-bolt"></i> Editor B (Recursive Sort)
+                    </div>
+                    <div class="editor-container" id="editorContainerB"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="space-complexity-profiler.js"></script>
+</body>
+</html>

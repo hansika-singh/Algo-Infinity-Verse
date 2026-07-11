@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service Mesh Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Simulate and visualize Service Mesh concepts like Sidecars, mTLS, Retries, and Circuit Breakers."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="service-mesh-visualizer.css" />
+  </head>
+  <body class="mesh-body">
+    <nav class="navbar mesh-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-project-diagram"></i> Service Mesh Simulator</div>
+    </nav>
+
+    <main class="mesh-workspace">
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-sliders-h"></i> Mesh Policies</h3>
+        </div>
+
+        <div class="control-section">
+          <div class="config-grid">
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleMtls" checked /> Mutual TLS (mTLS) </label>
+              <p class="desc-text">Encrypts traffic between sidecars.</p>
+            </div>
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleRetry" /> Retry Logic </label>
+              <p class="desc-text">Sidecar retries on transient failures.</p>
+            </div>
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleCircuitBreaker" /> Circuit Breaker </label>
+              <p class="desc-text">Fails fast if target service is down.</p>
+            </div>
+            <div class="toggle-group">
+              <label>Target Status</label>
+              <select id="targetStatus">
+                <option value="healthy">Healthy (200 OK)</option>
+                <option value="transient">Transient Error (503)</option>
+                <option value="down">Service Down</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="btn btn-primary w-100" id="btnSendRequest">
+              <i class="fas fa-paper-plane"></i> Send Request
+            </button>
+            <button type="button" class="btn btn-outline w-100" id="btnReset">
+              <i class="fas fa-redo"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="state-explanation">
+          <div class="state-header">
+            <span class="state-badge" id="requestStatus">IDLE</span>
+          </div>
+          <div class="state-body">
+            <p id="logOutput">Ready to send request.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-right">
+        <div class="network-wrapper">
+          <div class="panel-header">
+            <h3><i class="fas fa-network-wired"></i> Architecture</h3>
+          </div>
+
+          <div class="mesh-container">
+            <!-- Client Side -->
+            <div class="node-group client-group">
+              <div class="service-node client-service">
+                <i class="fas fa-laptop-code"></i>
+                <span>Service A</span>
+              </div>
+              <div class="sidecar-node client-sidecar">
+                <i class="fas fa-shield-alt"></i>
+                <span>Proxy A</span>
+              </div>
+            </div>
+
+            <!-- Network Space -->
+            <div class="network-space" id="networkSpace">
+              <div class="packet" id="dataPacket"><i class="fas fa-envelope"></i></div>
+            </div>
+
+            <!-- Server Side -->
+            <div class="node-group server-group">
+              <div class="sidecar-node server-sidecar">
+                <i class="fas fa-shield-alt"></i>
+                <span>Proxy B</span>
+              </div>
+              <div class="service-node server-service">
+                <i class="fas fa-server"></i>
+                <span>Service B</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="service-mesh-visualizer.js"></script>
+  </body>
+</html>

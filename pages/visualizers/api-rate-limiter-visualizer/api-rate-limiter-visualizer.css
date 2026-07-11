@@ -1,0 +1,269 @@
+/* =========================================
+   API Rate Limiter Visualizer Styles
+   ========================================= */
+
+.gw-body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.gw-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.gw-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.panel-left {
+  width: 350px;
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.panel-right {
+  flex: 1;
+  background-color: #0f172a;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #334155;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: #38bdf8;
+}
+
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.config-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.target-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.target-selector label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+select {
+  padding: 0.5rem;
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: #0284c7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0369a1;
+}
+
+.btn-secondary {
+  background: #334155;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #475569;
+}
+
+.log-console {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: #10b981;
+  flex: 1;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.state-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  background: #334155;
+  color: white;
+  font-weight: bold;
+}
+.state-badge.success {
+  background: #10b981;
+}
+.state-badge.error {
+  background: #ef4444;
+}
+.state-badge.warn {
+  background: #f59e0b;
+}
+
+/* Visualization Canvas */
+.visualization-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  gap: 2rem;
+  position: relative;
+}
+
+.bucket-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bucket {
+  width: 150px;
+  height: 200px;
+  border: 4px solid #334155;
+  border-top: none;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.bucket-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(56, 189, 248, 0.5);
+  transition: height 0.3s ease;
+}
+
+.bucket-label {
+  font-family: 'Fira Code', monospace;
+  font-weight: bold;
+  color: #38bdf8;
+  font-size: 1.2rem;
+}
+
+.requests-track {
+  width: 80%;
+  height: 100px;
+  position: relative;
+  border-bottom: 2px dashed #334155;
+}
+
+.req-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  transition:
+    left 0.5s linear,
+    opacity 0.3s;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+.req-packet.accepted {
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.req-packet.rejected {
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+  animation: drop-packet 0.5s forwards;
+}
+
+@keyframes drop-packet {
+  0% {
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px) rotate(45deg);
+    opacity: 0;
+  }
+}

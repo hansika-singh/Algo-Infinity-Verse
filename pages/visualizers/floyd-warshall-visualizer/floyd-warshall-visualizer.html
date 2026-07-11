@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floyd-Warshall Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive Floyd-Warshall (All-Pairs Shortest Path) visualizer with 2D distance matrix animation and negative cycle detection."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="floyd-warshall-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="floyd-warshall-visualizer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero fw-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">All Pairs. Shortest Paths.</span>
+          <span class="main-title fw-gradient">Floyd-Warshall</span>
+          <span class="subtitle">Dynamic Programming to find optimal routes.</span>
+        </h1>
+        <p class="section-subtitle">
+          Watch the Floyd-Warshall algorithm iteratively build a 2D distance matrix, considering
+          every vertex as an intermediate point to find the shortest paths between all pairs of
+          nodes.
+        </p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary fw-btn-primary"
+            ><i class="fas fa-play"></i> Open Visualizer</a
+          >
+          <a href="#learn" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> How It Works</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+        <!-- Controls -->
+        <div class="fw-control-card">
+          <!-- Graph presets -->
+          <div class="fw-row">
+            <span class="fw-row-label">Preset:</span>
+            <div class="fw-preset-btns">
+              <button type="button" class="fw-preset-btn active" data-preset="basic">Basic</button>
+              <button type="button" class="fw-preset-btn" data-preset="negative">
+                Negative Edges
+              </button>
+              <button type="button" class="fw-preset-btn" data-preset="negcycle">
+                Negative Cycle
+              </button>
+              <button type="button" class="fw-preset-btn" data-preset="complex">Complex</button>
+            </div>
+          </div>
+
+          <!-- Playback -->
+          <div class="fw-playback-row">
+            <button type="button" class="btn fw-btn-primary fw-pb-btn" id="fwRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button type="button" class="btn btn-secondary fw-pb-btn" id="fwStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button type="button" class="btn btn-secondary fw-pb-btn" id="fwPauseBtn" disabled>
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button type="button" class="btn btn-secondary fw-pb-btn" id="fwResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="fw-speed-wrap">
+              <span class="fw-speed-label">Speed:</span>
+              <input
+                type="range"
+                id="fwSpeed"
+                class="fw-range"
+                min="1"
+                max="5"
+                value="3"
+                aria-label="Speed"
+              />
+              <span class="fw-speed-val" id="fwSpeedVal">Normal</span>
+            </div>
+            <div class="fw-step-ctr">
+              Step <span id="fwStepNum">0</span>/<span id="fwStepTotal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="fwNegCycleBanner" class="fw-neg-cycle-banner hidden">
+          <i class="fas fa-triangle-exclamation"></i> Negative cycle detected! The shortest paths
+          are undefined for affected nodes.
+        </div>
+
+        <div id="fwStatus" class="fw-status">Select a preset and click Run to begin.</div>
+
+        <div class="fw-legend">
+          <div class="fw-legend-item">
+            <div class="fw-ldot fw-ldot-k"></div>
+            Intermediate (k)
+          </div>
+          <div class="fw-legend-item">
+            <div class="fw-ldot fw-ldot-i"></div>
+            Source (i)
+          </div>
+          <div class="fw-legend-item">
+            <div class="fw-ldot fw-ldot-j"></div>
+            Destination (j)
+          </div>
+          <div class="fw-legend-item">
+            <div class="fw-ldot fw-ldot-negcycle"></div>
+            Negative Cycle
+          </div>
+        </div>
+
+        <!-- Main layout -->
+        <div class="fw-main-layout">
+          <!-- Canvas -->
+          <div class="fw-canvas-wrap">
+            <canvas id="fwCanvas" class="fw-canvas"></canvas>
+          </div>
+
+          <!-- Distance panel -->
+          <div class="fw-dist-panel">
+            <div class="fw-dist-title">Distance Matrix</div>
+            <div class="fw-pass-label" id="fwPassLabel">Phase k: —</div>
+            <div class="fw-matrix-wrap" id="fwMatrixWrap">
+              <!-- Matrix populated by JS -->
+            </div>
+            <div class="fw-dist-title" style="margin-top: 1rem">Relaxation Log</div>
+            <div class="fw-relax-log" id="fwRelaxLog">
+              <div class="fw-relax-empty">No relaxations yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn Section -->
+    <section id="learn" class="section bg-light">
+      <div class="container">
+        <h2 class="section-title">How Floyd-Warshall Works</h2>
+        <div class="fw-learn-grid">
+          <div class="fw-learn-card fw-learn-dp">
+            <div class="fw-learn-num">1</div>
+            <h3>Dynamic Programming</h3>
+            <p>
+              Floyd-Warshall builds the shortest paths incrementally. In phase <code>k</code>, it
+              checks if the path going through vertex <code>k</code> is shorter than the currently
+              known shortest path.
+            </p>
+            <div class="fw-chips">
+              <span class="fw-chip">DP</span>
+              <span class="fw-chip">O(V³) Time</span>
+            </div>
+          </div>
+          <div class="fw-learn-card fw-learn-matrix">
+            <div class="fw-learn-num">2</div>
+            <h3>Distance Matrix</h3>
+            <p>
+              It maintains a 2D matrix where <code>dist[i][j]</code> stores the shortest distance
+              from node <code>i</code> to <code>j</code>. Initially, it holds direct edge weights.
+            </p>
+            <div class="fw-chips">
+              <span class="fw-chip">Adjacency Matrix</span>
+              <span class="fw-chip">O(V²) Space</span>
+            </div>
+          </div>
+          <div class="fw-learn-card fw-learn-relax">
+            <div class="fw-learn-num">3</div>
+            <h3>Relaxation Rule</h3>
+            <p>
+              For every pair <code>(i, j)</code>, the algorithm tests:
+              <code>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])</code>. If going through
+              <code>k</code> is cheaper, it updates.
+            </p>
+            <div class="fw-chips">
+              <span class="fw-chip">Relaxation</span>
+              <span class="fw-chip">Transitive Closure</span>
+            </div>
+          </div>
+          <div class="fw-learn-card fw-learn-cycle">
+            <div class="fw-learn-num">4</div>
+            <h3>Negative Cycles</h3>
+            <p>
+              After finishing, if any diagonal element <code>dist[i][i] < 0</code>, a negative cycle
+              exists because the shortest path from a node to itself shouldn't be negative.
+            </p>
+            <div class="fw-chips">
+              <span class="fw-chip">Cycle Detection</span>
+              <span class="fw-chip">Graph Theory</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="floyd-warshall-visualizer.js"></script>
+  </body>
+</html>

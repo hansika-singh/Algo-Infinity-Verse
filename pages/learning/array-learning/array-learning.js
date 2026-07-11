@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
         } catch (e) {
-          console.warn('Could not save progress:', e);
+          void 0;
         }
         updateUI();
       }

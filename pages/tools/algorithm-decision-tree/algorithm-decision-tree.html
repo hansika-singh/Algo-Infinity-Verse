@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algorithm Decision Tree Assistant | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Struggling to choose the right algorithm? Answer structured questions about your constraints and get instant, detailed algorithm recommendations."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="algorithm-decision-tree.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="algorithm-decision-tree">
+    <!-- Scroll to Top -->
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section class="hero adt-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Struggling to Choose the Right Algorithm?</span>
+          <span class="main-title adt-gradient">Algorithm Decision Tree Assistant</span>
+          <span class="subtitle"
+            >Navigate code constraints, inputs, and goals to discover the most optimal
+            algorithm.</span
+          >
+        </h1>
+        <div class="hero-buttons">
+          <a href="#assistant" class="btn btn-primary"
+            ><i class="fas fa-network-wired"></i> Launch Assistant</a
+          >
+          <a href="#library" class="btn btn-secondary"
+            ><i class="fas fa-book-bookmark"></i> Explore Library</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Assistant Section -->
+    <section id="assistant" class="section adt-section">
+      <div class="container">
+        <!-- Breadcrumbs / History Trail -->
+        <div class="adt-trail-container hidden" id="adtTrailContainer">
+          <div class="adt-trail-label"><i class="fas fa-route"></i> Decision Path:</div>
+          <div class="adt-trail-steps" id="adtTrailSteps">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Wizard Card -->
+        <div class="adt-wizard-card" id="adtWizardCard">
+          <div class="adt-progress" id="adtProgress">
+            <!-- Progress steps rendered dynamically -->
+          </div>
+          <div class="adt-question-panel" id="adtQuestionPanel">
+            <!-- Question content rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Result Section (hidden initially) -->
+        <div class="adt-result-section" id="adtResultSection">
+          <div class="adt-result-grid">
+            <!-- Primary Recommendation Card -->
+            <div class="adt-recommendation-card">
+              <div class="adt-rec-badge">
+                <i class="fas fa-circle-check"></i> Recommended Algorithm
+              </div>
+              <div class="adt-rec-icon-wrapper" id="adtRecIcon">
+                <i class="fas fa-code"></i>
+              </div>
+              <h2 class="adt-rec-name adt-gradient" id="adtRecName">Binary Search</h2>
+              <p class="adt-rec-tagline" id="adtRecTagline">
+                Efficiently find items in a sorted list by halving the search space.
+              </p>
+
+              <div class="adt-complexity-grid" id="adtComplexityGrid">
+                <!-- Complexity items -->
+              </div>
+
+              <div class="adt-traits-row">
+                <div class="adt-trait-card">
+                  <div class="adt-trait-title strengths">
+                    <i class="fas fa-check-circle"></i> Strengths
+                  </div>
+                  <ul class="adt-trait-list" id="adtStrengths">
+                    <!-- Strengths list -->
+                  </ul>
+                </div>
+                <div class="adt-trait-card">
+                  <div class="adt-trait-title weaknesses">
+                    <i class="fas fa-exclamation-circle"></i> Considerations / Weaknesses
+                  </div>
+                  <ul class="adt-trait-list" id="adtWeaknesses">
+                    <!-- Weaknesses list -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Code Snippet & Problems Card -->
+            <div class="adt-details-card">
+              <div class="adt-card-header">
+                <h3><i class="fas fa-laptop-code"></i> Implementation & Practice</h3>
+              </div>
+
+              <!-- Code Viewer Tabs -->
+              <div class="adt-code-tabs">
+                <div class="adt-tab-buttons" role="tablist" aria-label="Code language">
+                  <button type="button" class="adt-tab-btn active" data-lang="js" role="tab" aria-selected="true" aria-controls="adtCodeContent" id="adtTabJs">
+                    <i class="fab fa-js"></i> JavaScript
+                  </button>
+                  <button type="button" class="adt-tab-btn" data-lang="py" role="tab" aria-selected="false" aria-controls="adtCodeContent" id="adtTabPy">
+                    <i class="fab fa-python"></i> Python
+                  </button>
+                </div>
+                <button type="button" class="adt-copy-btn" id="adtCopyBtn" aria-label="Copy Code">
+                  <i class="far fa-copy"></i> Copy
+                </button>
+              </div>
+
+              <!-- Code Box -->
+              <div class="adt-code-box" role="tabpanel" aria-labelledby="adtTabJs" tabindex="0">
+                <pre><code class="language-javascript" id="adtCodeContent"></code></pre>
+              </div>
+
+              <!-- Similar Problems -->
+              <div class="adt-problems-section">
+                <h4><i class="fas fa-puzzle-piece"></i> Recommended Problems to Practice</h4>
+                <div class="adt-problems-list" id="adtProblemsList">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="adt-actions-row">
+            <button type="button" class="btn btn-secondary adt-action-btn" id="adtBackToTreeBtn">
+              <i class="fas fa-arrow-left"></i> Change Last Answer
+            </button>
+            <button type="button" class="btn btn-primary adt-action-btn" id="adtRestartBtn">
+              <i class="fas fa-rotate-left"></i> Start Assistant Over
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Library Cheat Sheet Section -->
+    <section id="library" class="section adt-library-section">
+      <div class="container">
+        <h2 class="section-title">
+          <span class="title-icon">📚</span> Algorithm Reference Library
+        </h2>
+        <p class="section-subtitle">
+          Browse all 19 algorithms supported by the assistant, compare their complexities, and view
+          the decision paths leading to them.
+        </p>
+
+        <!-- Library Filter Controls -->
+        <div class="adt-library-filters">
+          <button type="button" class="adt-filter-btn active" data-filter="all">
+            All Algorithms
+          </button>
+          <button type="button" class="adt-filter-btn" data-filter="search">Searching</button>
+          <button type="button" class="adt-filter-btn" data-filter="sort">Sorting</button>
+          <button type="button" class="adt-filter-btn" data-filter="graph">Graphs & Paths</button>
+          <button type="button" class="adt-filter-btn" data-filter="opt">DP & Arrays</button>
+          <button type="button" class="adt-filter-btn" data-filter="string">Strings</button>
+        </div>
+
+        <div class="adt-library-grid" id="adtLibraryGrid">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="algorithm-decision-tree.js"></script>
+
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

@@ -85,7 +85,7 @@ async function initVisionEngine() {
         els.engineStatus.style.color = 'var(--cv-danger)';
         els.engineStatus.style.borderColor = 'rgba(239, 68, 68, 0.3)';
         els.engineStatus.style.background = 'rgba(239, 68, 68, 0.1)';
-        console.warn("Alert:", "Could not load the vision model. Ensure you have an internet connection and are running on a local web server (CORS requirement for WebGL).");
+        void 0;
     }
 }
 
@@ -147,7 +147,7 @@ async function startAnalysis() {
         
     } catch (err) {
         console.error("Camera access denied or failed.", err);
-        console.warn("Alert:", "Please grant camera permissions to use the AI Analyst.");
+        void 0;
     }
 }
 

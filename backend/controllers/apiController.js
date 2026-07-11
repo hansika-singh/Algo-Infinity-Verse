@@ -226,10 +226,13 @@ export async function executeTracedCode(req, res) {
     try {
       await fs.writeFile(tmpFile, instrumented, "utf8");
       await new Promise((resolve, reject) => {
-        execFile(process.execPath, ["--permission", tmpFile], {
+        execFile(process.execPath, ["--experimental-permission", `--allow-fs-read=${tmpFile}`, tmpFile], {
           timeout: 10000,
           maxBuffer: 1024 * 1024,
-          env: {},
+          env: {
+            PATH: process.env.PATH,
+            SystemRoot: process.env.SystemRoot,
+          },
         }, (err, stdout, stderr) => {
           if (stdout) {
             try {

@@ -371,12 +371,12 @@ class Heap3DVisualizer {
 
         const val = parseInt(this.dom.nodeValueInput.value);
         if (isNaN(val) || val < 1 || val > 99) {
-            console.warn("Alert:", "Please enter a value between 1 and 99.");
+            void 0;
             return;
         }
 
         if (this.heap.length >= 31) {
-            console.warn("Alert:", "Maximum tree visual limit reached (31 nodes / 5 levels).");
+            void 0;
             return;
         }
 

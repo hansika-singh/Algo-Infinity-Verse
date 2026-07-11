@@ -3,7 +3,9 @@ import crypto from "crypto";
 export const ACCESS_TOKEN_MAX_AGE_SECONDS = 15 * 60; // 15 mins
 export const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
-// Tracking families for token rotation
+import { redisAvailable, redisClient } from "../jobs/queue.js";
+
+// Tracking families for token rotation (fallback when Redis is not available)
 export const activeRefreshFamilies = new Map();
 const PBKDF2_ITERATIONS = 210000;
 const PASSWORD_KEY_LENGTH = 32;
@@ -117,8 +119,12 @@ export function createAccessToken(user) {
   return `${body}.${sign(body)}`;
 }
 
-export function createRefreshToken(user, familyId = crypto.randomUUID(), nonce = crypto.randomUUID()) {
-  activeRefreshFamilies.set(familyId, { currentNonce: nonce });
+export async function createRefreshToken(user, familyId = crypto.randomUUID(), nonce = crypto.randomUUID()) {
+  if (redisAvailable && redisClient) {
+    await redisClient.set(`refresh:${familyId}`, nonce, 'EX', REFRESH_TOKEN_MAX_AGE_SECONDS);
+  } else {
+    activeRefreshFamilies.set(familyId, { currentNonce: nonce });
+  }
   const header = base64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const payload = base64Url(
     JSON.stringify({
@@ -135,8 +141,12 @@ export function createRefreshToken(user, familyId = crypto.randomUUID(), nonce =
   return `${body}.${sign(body)}`;
 }
 
-export function revokeTokenFamily(familyId) {
-  activeRefreshFamilies.delete(familyId);
+export async function revokeTokenFamily(familyId) {
+  if (redisAvailable && redisClient) {
+    await redisClient.del(`refresh:${familyId}`);
+  } else {
+    activeRefreshFamilies.delete(familyId);
+  }
 }
 
 export function verifyToken(token, expectedType) {
@@ -169,16 +179,25 @@ export function verifyAccessToken(token) {
   return verifyToken(token, "access");
 }
 
-export function verifyRefreshToken(token) {
+export async function verifyRefreshToken(token) {
   const session = verifyToken(token, "refresh");
   if (!session) return null;
   
-  const family = activeRefreshFamilies.get(session.familyId);
-  if (!family) return null;
-  
-  if (family.currentNonce !== session.nonce) {
-    revokeTokenFamily(session.familyId);
-    return null;
+  if (redisAvailable && redisClient) {
+    const currentNonce = await redisClient.get(`refresh:${session.familyId}`);
+    if (!currentNonce) return null;
+    if (currentNonce !== session.nonce) {
+      await revokeTokenFamily(session.familyId);
+      return null;
+    }
+  } else {
+    const family = activeRefreshFamilies.get(session.familyId);
+    if (!family) return null;
+    
+    if (family.currentNonce !== session.nonce) {
+      activeRefreshFamilies.delete(session.familyId);
+      return null;
+    }
   }
   return session;
 }

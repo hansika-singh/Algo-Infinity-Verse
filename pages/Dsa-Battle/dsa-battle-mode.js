@@ -1,50 +1,109 @@
 // dsa-battle-mode.js
-//
-// Auth: session cookies with credentials: "include" — matches auth.js exactly.
-// No Firebase client SDK. No Bearer tokens.
-// User ID is session.sub — confirmed from server.js createSessionToken().
-// Timer authority lives entirely on the server — this file never owns a countdown.
-
-// ─── State ────────────────────────────────────────────────────────────────────
 let currentBattleId = null;
-let pollInterval    = null;
-let currentUserId   = null; // populated on init from /api/session
+let pollInterval = null;
+let currentUserId = null;
+let currentUserName = null;
+let socket = null;
+let spectatorTargetId = null;
+let participantsMap = {}; // map of id to { progress, code }
 
-// ─── DOM refs ─────────────────────────────────────────────────────────────────
-const startBattleBtn    = document.getElementById("startBattleBtn");
-const joinBattleBtn     = document.getElementById("joinBattleBtn");
+// DOM refs
+const startBattleBtn = document.getElementById("startBattleBtn");
+const joinBattleBtn = document.getElementById("joinBattleBtn");
 const submitSolutionBtn = document.getElementById("submitSolutionBtn");
-const timerEl           = document.getElementById("timer");
-const winnerText        = document.getElementById("winnerText");
-const xpReward          = document.getElementById("xpReward");
-const problemTitle      = document.getElementById("problemTitle");
-const problemDesc       = document.getElementById("problemDescription");
-const opponentEl        = document.getElementById("currentOpponent");
-const difficultyEl      = document.getElementById("difficultyBadge");
-const historyGrid       = document.getElementById("historyGrid");
-const statusMsg         = document.getElementById("battleStatusMsg");
+const timerEl = document.getElementById("timer");
+const winnerText = document.getElementById("winnerText");
+const xpReward = document.getElementById("xpReward");
+const problemTitle = document.getElementById("problemTitle");
+const problemDesc = document.getElementById("problemDescription");
+const difficultyEl = document.getElementById("difficultyBadge");
+const historyGrid = document.getElementById("historyGrid");
+const statusMsg = document.getElementById("battleStatusMsg");
 
-// ─── Authenticated fetch ──────────────────────────────────────────────────────
-// credentials: "include" sends the session cookie on every request.
-// Matches the exact pattern used in auth.js.
+const waitingRoom = document.getElementById("waitingRoom");
+const lobbyCodeDisplay = document.getElementById("lobbyCodeDisplay");
+const participantsList = document.getElementById("participantsList");
+const hostStartBtn = document.getElementById("hostStartBtn");
+const activeBattle = document.getElementById("active-battle");
+const scoreboardList = document.getElementById("scoreboardList");
+const battleLobby = document.getElementById("battle-lobby");
+
+const solutionCode = document.getElementById("solutionCode");
+
+// Spectator
+const spectatorModal = document.getElementById("spectatorModal");
+const spectatorTargetName = document.getElementById("spectatorTargetName");
+const spectatorCode = document.getElementById("spectatorCode");
+const spectatorCursor = document.getElementById("spectatorCursor");
+const closeSpectatorBtn = document.getElementById("closeSpectatorBtn");
+
+// ─── Authenticated fetch ───
 async function apiFetch(path, options = {}) {
   const res = await fetch(`/api${path}`, {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+    ...options, credentials: "include",
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Request failed");
   return data;
 }
 
-// ─── Polling ──────────────────────────────────────────────────────────────────
+// ─── Init ───
+async function init() {
+  try {
+    const { authenticated, user } = await apiFetch("/session");
+    if (!authenticated || !user) {
+      window.location.href = "/login?next=" + encodeURIComponent(window.location.pathname);
+      return;
+    }
+    currentUserId = user.sub;
+    currentUserName = user.name || user.email;
+    initSocket();
+    await loadHistory();
+  } catch (err) {
+    console.error("Session check failed:", err.message);
+  }
+}
+
+function initSocket() {
+  if (typeof io !== "undefined") {
+    socket = io();
+    
+    socket.on("battle-user-joined", (data) => {
+      // Just re-poll to get updated participant list
+      if (currentBattleId) pollBattle(currentBattleId);
+    });
+
+    socket.on("battle-code-update", (data) => {
+      if (spectatorTargetId === data.userId && spectatorCode) {
+        spectatorCode.value = data.code || "";
+      }
+    });
+
+    socket.on("battle-cursor-update", (data) => {
+      if (spectatorTargetId === data.userId && spectatorCursor) {
+        spectatorCursor.style.display = "block";
+        // Approximating cursor position, in a real editor we'd map row/col to pixels.
+        // We use 8px per char width and 16px line height approximation
+        spectatorCursor.style.left = (data.position.col * 8 + 16) + "px"; 
+        spectatorCursor.style.top = (data.position.row * 16 + 16) + "px";
+      }
+    });
+
+    socket.on("battle-progress-update", (data) => {
+      if (!participantsMap[data.userId]) {
+         participantsMap[data.userId] = { progress: 0 };
+      }
+      participantsMap[data.userId].progress = data.progress;
+      renderScoreboard();
+    });
+  }
+}
+
+// ─── Polling ───
 function startPolling(battleId) {
   stopPolling();
-  pollBattle(battleId);                                      // immediate first fetch
+  pollBattle(battleId);
   pollInterval = setInterval(() => pollBattle(battleId), 3000);
 }
 
@@ -60,42 +119,55 @@ async function pollBattle(battleId) {
     const battle = await apiFetch(`/battles/${battleId}`);
     renderBattleState(battle);
   } catch (err) {
-    // Silent — don't alert on transient poll failures
     console.error("Poll error:", err.message);
   }
 }
 
-// ─── Render battle state ──────────────────────────────────────────────────────
 function renderBattleState(battle) {
   switch (battle.status) {
-    case "pending":
-      setStatus(`⏳ Waiting for opponent to join. Share this Battle ID: ${battle.id}`);
+    case "waiting":
+      battleLobby.style.display = "block";
+      activeBattle.style.display = "none";
+      waitingRoom.style.display = "block";
+      lobbyCodeDisplay.textContent = battle.id;
+      
+      participantsList.innerHTML = battle.participants.map(p => 
+        `<li style="padding: 8px; background: var(--bg-lighter); margin-bottom: 5px; border-radius: 4px;">
+            ${p === currentUserId ? 'You' : 'Player ' + p.substring(0,6)}
+        </li>`
+      ).join('');
+      
+      if (battle.hostId === currentUserId) {
+        hostStartBtn.style.display = "inline-block";
+      } else {
+        hostStartBtn.style.display = "none";
+      }
+      
+      // Update participantsMap for scoreboard
+      battle.participants.forEach(p => {
+         if(!participantsMap[p]) participantsMap[p] = { progress: 0 };
+      });
       break;
 
-    case "active": {
-      setStatus("⚔️ Battle in progress!");
+    case "active":
+      battleLobby.style.display = "none";
+      activeBattle.style.display = "block";
+      waitingRoom.style.display = "none";
 
       if (problemTitle) problemTitle.textContent = battle.problemTitle || "Battle Problem";
       if (problemDesc)  problemDesc.textContent  = battle.problemDescription || "";
-      if (opponentEl)   opponentEl.textContent   = battle.player2;
-      if (opponentEl) {
-        const opponentId =
-          battle.player1 === currentUserId ? battle.player2 : battle.player1;
-        opponentEl.textContent = opponentId || "Opponent";
-      }
       if (difficultyEl) difficultyEl.textContent = battle.difficulty;
 
-      // Server owns the time — display what it says is left
       const secsLeft = Math.max(0, Math.floor((battle.timeRemainingMs ?? 0) / 1000));
       if (timerEl) timerEl.textContent = secsLeft;
+      
+      renderScoreboard();
 
       if (secsLeft <= 0) {
-        setStatus("⏰ Time is up!");
         stopPolling();
-        pollBattle(battle.id); // one final fetch to get the resolved state
+        pollBattle(battle.id);
       }
       break;
-    }
 
     case "completed":
     case "expired":
@@ -106,196 +178,230 @@ function renderBattleState(battle) {
   }
 }
 
-// ─── Result ───────────────────────────────────────────────────────────────────
-function renderResult(battle) {
-  // currentUserId is session.sub — set during init() from /api/session response
-  const iWon  = currentUserId && battle.winner === currentUserId;
-  const isDraw = battle.status === "expired" && !battle.winner;
+function renderScoreboard() {
+    if (!scoreboardList) return;
+    scoreboardList.innerHTML = Object.keys(participantsMap).map(pId => {
+        const isMe = pId === currentUserId;
+        const prog = participantsMap[pId].progress || 0;
+        return `
+            <div style="background:var(--bg-lighter); padding: 10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong>${isMe ? 'You' : 'Player ' + pId.substring(0,6)}</strong>
+                    <div style="width: 150px; background:#444; height:10px; border-radius:5px; margin-top:5px; overflow:hidden;">
+                        <div style="width:${prog}%; background:var(--primary-color); height:100%;"></div>
+                    </div>
+                </div>
+                ${!isMe ? `<button class="btn btn-secondary btn-sm spectate-btn" data-id="${pId}">Spectate</button>` : ''}
+            </div>
+        `;
+    }).join('');
 
-  if (winnerText) {
-    winnerText.textContent = isDraw
-      ? "🤝 Draw — time ran out"
-      : iWon
-        ? "🏆 You Won!"
-        : "❌ Opponent Won";
-  }
-  if (xpReward) xpReward.textContent = iWon ? battle.xpAwarded : 0;
-
-  resetUI();
+    document.querySelectorAll('.spectate-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetId = e.target.getAttribute('data-id');
+            spectatorTargetId = targetId;
+            spectatorTargetName.textContent = 'Player ' + targetId.substring(0,6);
+            spectatorCode.value = "// Waiting for code updates...";
+            spectatorCursor.style.display = "none";
+            spectatorModal.style.display = "flex";
+        });
+    });
 }
 
-// ─── History ──────────────────────────────────────────────────────────────────
-async function loadHistory() {
-  try {
-    const { history } = await apiFetch("/battles/history");
-    renderHistory(history);
-  } catch (err) {
-    console.error("Failed to load history:", err.message);
-  }
-}
-
-function renderHistory(history) {
-  if (!historyGrid) return;
-
-  if (!history?.length) {
-    historyGrid.innerHTML =
-      '<p style="color:#94a3b8;text-align:center">No battles yet.</p>';
-    return;
-  }
-
-  historyGrid.innerHTML = history.map((b) => {
-    const iWon   = currentUserId && b.winner === currentUserId;
-    const isDraw = b.status === "expired" && !b.winner;
-    const result = isDraw ? "Draw" : iWon ? "Victory" : "Defeat";
-    const xp     = iWon ? b.xpAwarded : 0;
-
-    // Firestore server timestamps arrive as { _seconds, _nanoseconds }
-    // when serialized to JSON through the API.
-    const date = b.createdAt?._seconds
-      ? new Date(b.createdAt._seconds * 1000).toLocaleDateString()
-      : "—";
-
-    return `
-      <div class="history-card">
-        <h3>${result}</h3>
-        <p>${b.problemTitle || "Unknown Problem"}</p>
-        <p>${b.difficulty} • ${xp} XP</p>
-        <p>${date}</p>
-      </div>
-    `;
-  }).join("");
-}
-
-// ─── Create battle ────────────────────────────────────────────────────────────
+// ─── Actions ───
 if (startBattleBtn) {
   startBattleBtn.addEventListener("click", async () => {
-    // opponentEmail field — see HTML changes at bottom of this file
-    const opponentEmail = document.getElementById("opponentEmail")?.value.trim();
-    const difficulty    = document.getElementById("difficultySelect")?.value;
-
-    if (!opponentEmail) {
-      console.warn("Alert:", "Enter your opponent's email address first.");
-      return;
-    }
-
-    startBattleBtn.disabled    = true;
+    const difficulty = document.getElementById("difficultySelect")?.value;
+    startBattleBtn.disabled = true;
     startBattleBtn.textContent = "Creating...";
 
     try {
       const { battleId } = await apiFetch("/battles", {
         method: "POST",
-        body: JSON.stringify({ opponentEmail, difficulty }),
+        body: JSON.stringify({ difficulty }), // No opponent email needed
       });
 
       currentBattleId = battleId;
-      setStatus(`✅ Battle created! Share this ID with your opponent: ${battleId}`);
+      if (socket) socket.emit('battle-join', { battleId, userId: currentUserId });
       startPolling(battleId);
+      setStatus("Lobby created!");
     } catch (err) {
-      console.warn("Alert:", `Could not create battle: ${err.message}`);
+      console.warn("Alert:", err.message);
       resetUI();
     }
   });
 }
 
-// ─── Join battle ──────────────────────────────────────────────────────────────
 if (joinBattleBtn) {
   joinBattleBtn.addEventListener("click", async () => {
-    const battleId = document.getElementById("joinBattleId")?.value.trim();
-    if (!battleId) {
-      console.warn("Alert:", "Paste the Battle ID your opponent shared with you.");
-      return;
-    }
+    const battleId = document.getElementById("joinBattleId")?.value.trim().toUpperCase();
+    if (!battleId) return;
 
-    joinBattleBtn.disabled    = true;
+    joinBattleBtn.disabled = true;
     joinBattleBtn.textContent = "Joining...";
 
     try {
       await apiFetch(`/battles/${battleId}/join`, { method: "POST" });
       currentBattleId = battleId;
-      setStatus("✅ Joined! Battle is starting...");
+      if (socket) socket.emit('battle-join', { battleId, userId: currentUserId });
       startPolling(battleId);
+      setStatus("Joined lobby!");
     } catch (err) {
-      console.warn("Alert:", `Could not join: ${err.message}`);
-      joinBattleBtn.disabled    = false;
-      joinBattleBtn.textContent = "Join Battle";
+      console.warn("Alert:", err.message);
+      resetUI();
     }
   });
 }
 
-// ─── Submit solution ──────────────────────────────────────────────────────────
+if (hostStartBtn) {
+  hostStartBtn.addEventListener("click", async () => {
+    if (!currentBattleId) return;
+    try {
+      await apiFetch(`/battles/${currentBattleId}/start`, { method: "POST" });
+      pollBattle(currentBattleId);
+    } catch (err) {
+      console.warn("Alert:", err.message);
+    }
+  });
+}
+
 if (submitSolutionBtn) {
   submitSolutionBtn.addEventListener("click", async () => {
-    if (!currentBattleId) {
-      console.warn("Alert:", "No active battle. Create or join one first.");
-      return;
-    }
+    if (!currentBattleId) return;
+    const code = solutionCode.value || "";
+    if (!code.trim()) return;
 
-    const code = document.getElementById("solutionCode")?.value || "";
-    if (!code.trim()) {
-      console.warn("Alert:", "Write your solution before submitting.");
-      return;
-    }
-
-    submitSolutionBtn.disabled    = true;
+    submitSolutionBtn.disabled = true;
     submitSolutionBtn.textContent = "Submitting...";
 
     try {
       const result = await apiFetch(`/battles/${currentBattleId}/submit`, {
-        method: "POST",
-        body: JSON.stringify({ code }),
+        method: "POST", body: JSON.stringify({ code }),
       });
-
       stopPolling();
-      if (winnerText) winnerText.textContent = "🏆 You Won!";
-      if (xpReward)   xpReward.textContent   = result.xpAwarded;
+      winnerText.textContent = "🏆 You Won!";
+      xpReward.textContent = result.xpAwarded;
       loadHistory();
-      resetUI();
+      renderResult({ winner: currentUserId, xpAwarded: result.xpAwarded });
     } catch (err) {
-      // Could be "opponent submitted first" — poll to get the real final state
       console.warn("Alert:", err.message);
-      submitSolutionBtn.disabled    = false;
+      submitSolutionBtn.disabled = false;
       submitSolutionBtn.textContent = "Submit Solution";
-      if (currentBattleId) pollBattle(currentBattleId);
+      pollBattle(currentBattleId);
     }
   });
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+if (closeSpectatorBtn) {
+    closeSpectatorBtn.addEventListener("click", () => {
+        spectatorModal.style.display = "none";
+        spectatorTargetId = null;
+    });
+}
+
+// ─── Real-time typing logic ───
+if (solutionCode) {
+    solutionCode.addEventListener('input', () => {
+        if (!currentBattleId || !socket) return;
+        socket.emit('battle-code-update', {
+            battleId: currentBattleId,
+            userId: currentUserId,
+            code: solutionCode.value
+        });
+        
+        // Mock progress updates based on line count for demo purposes
+        const lines = solutionCode.value.split('\n').length;
+        const progress = Math.min(100, lines * 5); // 5% per line typed as a mock
+        socket.emit('battle-progress-update', {
+            battleId: currentBattleId,
+            userId: currentUserId,
+            progress
+        });
+        if (participantsMap[currentUserId]) participantsMap[currentUserId].progress = progress;
+        renderScoreboard();
+    });
+
+    solutionCode.addEventListener('keyup', updateCursor);
+    solutionCode.addEventListener('click', updateCursor);
+
+    function updateCursor() {
+        if (!currentBattleId || !socket) return;
+        const pos = solutionCode.selectionStart;
+        const textToCursor = solutionCode.value.substring(0, pos);
+        const lines = textToCursor.split('\n');
+        const row = lines.length - 1;
+        const col = lines[lines.length - 1].length;
+        
+        socket.emit('battle-cursor-update', {
+            battleId: currentBattleId,
+            userId: currentUserId,
+            position: { row, col }
+        });
+    }
+}
+
+// ─── Helpers ───
 function setStatus(msg) {
   if (statusMsg) statusMsg.textContent = msg;
 }
 
 function resetUI() {
   currentBattleId = null;
+  participantsMap = {};
   if (startBattleBtn) {
-    startBattleBtn.disabled    = false;
-    startBattleBtn.textContent = "⚔️ Start Challenge";
+    startBattleBtn.disabled = false;
+    startBattleBtn.textContent = "Create Lobby";
   }
   if (joinBattleBtn) {
-    joinBattleBtn.disabled    = false;
-    joinBattleBtn.textContent = "Join Battle";
+    joinBattleBtn.disabled = false;
+    joinBattleBtn.textContent = "Join Lobby";
   }
   if (submitSolutionBtn) {
-    submitSolutionBtn.disabled    = false;
+    submitSolutionBtn.disabled = false;
     submitSolutionBtn.textContent = "Submit Solution";
   }
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-// Fetch the current session once on load to get the user ID (session.sub).
-// /api/session returns { authenticated, user: { sub, name, email, exp } }
-async function init() {
+function renderResult(battle) {
+  const iWon = currentUserId && battle.winner === currentUserId;
+  const isDraw = battle.status === "expired" && !battle.winner;
+
+  if (winnerText) {
+    winnerText.textContent = isDraw
+      ? "🤝 Draw — time ran out"
+      : iWon ? "🏆 You Won!" : "❌ Player " + (battle.winner ? battle.winner.substring(0,6) : "Unknown") + " Won";
+  }
+  if (xpReward) xpReward.textContent = iWon ? battle.xpAwarded : 0;
+  
+  // Show result modal or section (reuse active battle but hide editor)
+  battleLobby.style.display = "none";
+  activeBattle.style.display = "block";
+  document.querySelector('.battle-editor').style.display = "none";
+  resetUI();
+}
+
+async function loadHistory() {
   try {
-    const { authenticated, user } = await apiFetch("/session");
-    if (!authenticated || !user) {
-      window.location.href = "/login?next=" + encodeURIComponent(window.location.pathname);
+    const { history } = await apiFetch("/battles/history");
+    if (!historyGrid) return;
+    if (!history?.length) {
+      historyGrid.innerHTML = '<p style="color:#94a3b8;text-align:center">No battles yet.</p>';
       return;
     }
-    currentUserId = user.sub; // confirmed from server.js createSessionToken line 195
-    await loadHistory();
-  } catch (err) {
-    console.error("Session check failed:", err.message);
-  }
+    historyGrid.innerHTML = history.map((b) => {
+      const iWon = currentUserId && b.winner === currentUserId;
+      const isDraw = b.status === "expired" && !b.winner;
+      const result = isDraw ? "Draw" : iWon ? "Victory" : "Defeat";
+      const xp = iWon ? b.xpAwarded : 0;
+      const date = b.createdAt?._seconds ? new Date(b.createdAt._seconds * 1000).toLocaleDateString() : "—";
+      return `<div class="history-card">
+          <h3>${result}</h3>
+          <p>${b.problemTitle || "Unknown Problem"}</p>
+          <p>${b.difficulty} • ${xp} XP</p>
+          <p>${date}</p>
+        </div>`;
+    }).join("");
+  } catch (err) { }
 }
 
 document.addEventListener("DOMContentLoaded", init);

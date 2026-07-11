@@ -142,4 +142,6 @@ export function executeSandboxedCode(code, timeoutMs = 3000) {
     });
 }
 // Legacy global exports
-window.executeSandboxedCode = executeSandboxedCode;
+if (typeof window !== 'undefined') {
+    window.executeSandboxedCode = executeSandboxedCode;
+}

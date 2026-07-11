@@ -69,7 +69,7 @@
     try {
       return localStorage.getItem('theme');
     } catch (error) {
-      console.warn('Theme: Could not read from localStorage', error);
+      void 0;
       return null;
     }
   }
@@ -78,7 +78,7 @@
     try {
       localStorage.setItem('theme', theme);
     } catch (error) {
-      console.warn('Theme: Could not write to localStorage', error);
+      void 0;
     }
   }
 
@@ -181,7 +181,7 @@
         subtree: true
       });
     } catch (error) {
-      console.warn('Theme: Could not setup MutationObserver', error);
+      void 0;
     }
   }
 

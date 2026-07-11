@@ -2,7 +2,7 @@ import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { analyzeWorkflow } from '../repository-analyzer/cicdValidator.js';
 import { VCSFactory } from '../vcs/VCSFactory.js';
-import { batchStore, redisAvailable, redisReady } from './queue.js';
+import { batchStore, redisAvailable, redisReady, redisClient } from './queue.js';
 
 let auditWorker = null;
 
@@ -62,29 +62,45 @@ async function startWorker() {
   });
 
   auditWorker.on('error', (err) => {
-    console.warn('Worker Redis Connection Error:', err.message);
+    void 0;
   });
 
   // Event listeners for tracking batch progress
-  auditWorker.on('completed', (job, result) => {
+  auditWorker.on('completed', async (job, result) => {
     const { batchId } = job.data;
-    const batch = batchStore.get(batchId);
-    if (batch) {
-      batch.completed += 1;
-      batch.results.push(result);
+    if (redisClient) {
+      await redisClient.hincrby(`batch:${batchId}`, 'completed', 1);
+      const resStr = await redisClient.hget(`batch:${batchId}`, 'results');
+      const results = JSON.parse(resStr || '[]');
+      results.push(result);
+      await redisClient.hset(`batch:${batchId}`, 'results', JSON.stringify(results));
+    } else {
+      const batch = batchStore.get(batchId);
+      if (batch) {
+        batch.completed += 1;
+        batch.results.push(result);
+      }
     }
   });
 
-  auditWorker.on('failed', (job, err) => {
-    const { batchId } = job.data;
-    const batch = batchStore.get(batchId);
-    if (batch) {
-      batch.failed += 1;
-      batch.results.push({ repoUrl: job.data.repoUrl, error: err.message, score: 0 });
+  auditWorker.on('failed', async (job, err) => {
+    const { batchId, repoUrl } = job.data;
+    if (redisClient) {
+      await redisClient.hincrby(`batch:${batchId}`, 'failed', 1);
+      const resStr = await redisClient.hget(`batch:${batchId}`, 'results');
+      const results = JSON.parse(resStr || '[]');
+      results.push({ repoUrl, error: err.message, score: 0 });
+      await redisClient.hset(`batch:${batchId}`, 'results', JSON.stringify(results));
+    } else {
+      const batch = batchStore.get(batchId);
+      if (batch) {
+        batch.failed += 1;
+        batch.results.push({ repoUrl, error: err.message, score: 0 });
+      }
     }
   });
 
-  console.log('Background Audit Worker started and listening for jobs...');
+  void 0;
   return auditWorker;
 }
 
@@ -92,7 +108,7 @@ async function startWorker() {
 // Redis hiccup at boot doesn't crash the importing process; jobs fall back to
 // the in-process path in queue.js.
 const workerReady = startWorker().catch((err) => {
-  console.warn('Failed to start Background Audit Worker:', err.message);
+  void 0;
   return null;
 });
 

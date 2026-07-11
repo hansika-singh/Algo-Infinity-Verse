@@ -1,3 +1,5 @@
+import { renderBookmarkCollectionsPanel } from './bookmarkUI.js';
+
 export function initProfile() {
   window.initProfile = initProfile;
   const userProgress = window.userProgress || {};
@@ -27,6 +29,7 @@ export function initProfile() {
 
   updateProfile();
   updateProfileLeaderboard();
+  renderBookmarkCollectionsPanel();
 
   // Render language chips if available
   if (typeof window.renderLanguageChips === 'function') {
@@ -129,7 +132,7 @@ function updateProfileLeaderboard() {
     .catch(err => {
       apiAbort.clearSignal('profileLeaderboard');
       if (err.name === 'AbortError') return;
-      console.warn("Profile leaderboard load failed:", err);
+      void 0;
       renderProfileLeaderboardFallback(profileLeaderboardList);
     });
 }

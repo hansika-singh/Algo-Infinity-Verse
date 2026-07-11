@@ -27,7 +27,7 @@ export function initKeyboardShortcuts() {
     }
     if (e.altKey && e.key === 'p') {
       e.preventDefault();
-      window.location.href = '#practice';
+      window.location.href = '/pages/practice/problems.html';
     }
     if (e.altKey && e.key === 'q') {
       e.preventDefault();

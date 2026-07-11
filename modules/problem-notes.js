@@ -68,7 +68,7 @@ window.saveActiveProblemNotes = async function() {
       if (noteSaveStatus) noteSaveStatus.textContent = "Saved locally.";
     }
   } catch (err) {
-    console.warn("Cloud sync failed:", err);
+    void 0;
     if (noteSaveStatus) noteSaveStatus.textContent = "Saved locally (offline).";
   }
 };
@@ -87,7 +87,7 @@ window.syncProblemNotesDown = async function() {
       }
     }
   } catch (err) {
-    console.warn("Could not sync notes down:", err);
+    void 0;
   }
 };
 

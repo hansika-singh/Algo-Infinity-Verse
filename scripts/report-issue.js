@@ -86,12 +86,12 @@
             // Mock API request
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            console.log("Mock API Submission: /api/report-issue", payload);
+            void 0;
 
             if (typeof window.showNotification === 'function') {
                 window.showNotification("Issue reported successfully! Thank you for your feedback.", "success");
             } else {
-                console.warn("Alert:", "Issue reported successfully!");
+                void 0;
             }
 
             form.reset();

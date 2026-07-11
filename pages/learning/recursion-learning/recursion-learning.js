@@ -158,10 +158,10 @@ function initCopyButtons() {
                 if (copied) {
                     markCopied();
                 } else {
-                    console.warn("Copy failed");
+                    void 0;
                 }
              } catch (e) {
-                 console.warn("Copy failed", e);
+                 void 0;
              }
              document.body.removeChild(textarea);
             }

@@ -507,7 +507,7 @@ function bindControls() {
                 element: circle
             });
         } else {
-            console.warn("Alert:", "No active leader! Please wait for election.");
+            void 0;
         }
     });
 }

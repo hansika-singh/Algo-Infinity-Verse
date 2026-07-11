@@ -500,351 +500,26 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
         updateTimerDisplay(timeLeft);
       }
     }, 250);
-
-  // --- QUIZ SUBMISSION CONFIRMATION ---
-
-  /**
-   * Get count of unanswered questions
-   * @param {string} containerId - The container ID of the quiz
-   * @param {Array} questions - The current questions array
-   * @returns {number} Count of unanswered questions
-   */
-  function getUnansweredCount(containerId, questions) {
-    const form = document.getElementById(`${containerId}-form`);
-    if (!form) return 0;
-    
-    let count = 0;
-    questions.forEach((_, index) => {
-      const selected = form.querySelector(`input[name="question-${index}"]:checked`);
-      if (!selected) count++;
-    });
-    return count;
   }
 
-  /**
-   * Show custom confirmation modal for quiz submission
-   * @param {Object} options - Configuration options
-   */
-  function showCustomConfirmModal(options) {
-    const {
-      title = 'Submit Quiz',
-      message,
-      confirmText = 'Yes, Submit',
-      cancelText = 'Review Answers',
-      onConfirm,
-      unanswered = 0,
-      total = 0
-    } = options;
-    
-    // Remove existing modal if any
-    const existing = document.getElementById('quizConfirmModal');
-    if (existing) existing.remove();
-    
-    // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'quizConfirmModal';
-    modal.className = 'quiz-confirm-modal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    
-    const isComplete = unanswered === 0;
-    const icon = isComplete ? '✅' : '⚠️';
-    const iconColor = isComplete ? '#22c55e' : '#eab308';
-    const statusText = isComplete ? 'All Questions Answered!' : `${unanswered} Question${unanswered > 1 ? 's' : ''} Unanswered`;
-    
-    modal.innerHTML = `
-      <div class="quiz-confirm-modal-content">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="font-size: 48px; margin-bottom: 12px;">${icon}</div>
-          <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">${title}</h3>
-          <p style="color: ${iconColor}; font-weight: 600; font-size: 14px; margin: 0;">${statusText}</p>
-        </div>
-        
-        <div style="background: var(--bg-primary); border-radius: 12px; padding: 16px; margin-bottom: 24px; border: 1px solid var(--border-color);">
-          <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin: 0;">
-            ${message}
-          </p>
-          ${unanswered > 0 ? `
-            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
-              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">
-                💡 <strong>${unanswered}</strong> question${unanswered > 1 ? 's' : ''} left unanswered
-              </p>
-            </div>
-          ` : ''}
-        </div>
-        
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button id="quizConfirmCancel" class="btn-cancel">${cancelText}</button>
-          <button id="quizConfirmSubmit" class="btn-confirm ${isComplete ? 'complete' : ''}">${confirmText}</button>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Add styles if not already present
-    if (!document.getElementById('quiz-confirm-styles')) {
-      const style = document.createElement('style');
-      style.id = 'quiz-confirm-styles';
-      style.textContent = `
-        .quiz-confirm-modal {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.6);
-          backdrop-filter: blur(8px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 99999;
-          animation: quizFadeIn 0.3s ease;
-        }
-        .quiz-confirm-modal-content {
-          background: var(--bg-secondary);
-          border-radius: 20px;
-          padding: 32px;
-          max-width: 440px;
-          width: 90%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-          border: 1px solid var(--border-color);
-          animation: quizScaleIn 0.3s ease;
-        }
-        .quiz-confirm-modal .btn-cancel {
-          padding: 10px 20px;
-          border: 1px solid var(--border-color);
-          border-radius: 10px;
-          background: transparent;
-          color: var(--text-secondary);
-          cursor: pointer;
-          font-weight: 500;
-          font-size: 14px;
-          transition: all 0.2s ease;
-          flex: 1;
-        }
-        .quiz-confirm-modal .btn-cancel:hover {
-          background: var(--bg-hover);
-        }
-        .quiz-confirm-modal .btn-confirm {
-          padding: 10px 20px;
-          border: none;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #7c3aed, #6d28d9);
-          color: white;
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 14px;
-          transition: all 0.2s ease;
-          flex: 1;
-        }
-        .quiz-confirm-modal .btn-confirm.complete {
-          background: linear-gradient(135deg, #22c55e, #16a34a);
-        }
-        .quiz-confirm-modal .btn-confirm:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
-        }
-        @keyframes quizFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes quizScaleIn {
-          from { transform: scale(0.9); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        .dark .quiz-confirm-modal-content {
-          background: #1e293b;
-          border-color: #334155;
-        }
-        .dark .quiz-confirm-modal .btn-cancel {
-          color: #94a3b8;
-          border-color: #334155;
-        }
-        .dark .quiz-confirm-modal .btn-cancel:hover {
-          background: #334155;
-        }
-        @media (max-width: 480px) {
-          .quiz-confirm-modal-content {
-            padding: 24px;
-          }
-          .quiz-confirm-modal .btn-cancel,
-          .quiz-confirm-modal .btn-confirm {
-            width: 100%;
-            justify-content: center;
-          }
-        }
+  // Render skeleton loader
+  function renderSkeleton() {
+    container.innerHTML = '';
+    const skeletonForm = document.createElement('div');
+    skeletonForm.className = 'quiz-skeleton';
+    for (let i = 0; i < 3; i++) {
+      const block = document.createElement('div');
+      block.className = 'quiz-question-block glass-card';
+      block.innerHTML = `
+        <div class="skeleton skeleton-line question" style="width:70%;margin-bottom:1rem;"></div>
+        <div class="skeleton skeleton-line option"></div>
+        <div class="skeleton skeleton-line option" style="width:85%;"></div>
+        <div class="skeleton skeleton-line option" style="width:75%;"></div>
+        <div class="skeleton skeleton-line option" style="width:90%;"></div>
       `;
-      document.head.appendChild(style);
+      skeletonForm.appendChild(block);
     }
-    
-    // Handle button clicks
-    const cancelBtn = document.getElementById('quizConfirmCancel');
-    const submitBtn = document.getElementById('quizConfirmSubmit');
-    
-    cancelBtn.addEventListener('click', () => {
-      modal.remove();
-    });
-    
-    submitBtn.addEventListener('click', () => {
-      modal.remove();
-      if (typeof onConfirm === 'function') {
-        onConfirm();
-      }
-    });
-    
-    // Close on ESC
-    const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-        document.removeEventListener('keydown', escHandler);
-      }
-    };
-    document.addEventListener('keydown', escHandler);
-    
-    // Close on outside click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.remove();
-      }
-    });
-  }
-
-  /**
-   * Show confirmation dialog before quiz submission
-   * @param {string} containerId - The container ID of the quiz
-   * @param {Array} questions - The current questions array
-   * @param {Function} onConfirm - Callback when user confirms
-   */
-  function confirmQuizSubmission(containerId, questions, onConfirm) {
-    const unanswered = getUnansweredCount(containerId, questions);
-    const total = questions.length;
-    
-    let message = 'Are you sure you want to submit your quiz?';
-    
-    if (unanswered > 0) {
-      message = `You have ${unanswered} unanswered question(s) out of ${total}. Are you sure you want to submit?`;
-    } else {
-      message = `You've answered all ${total} questions! Are you sure you want to submit?`;
-    }
-    
-    showCustomConfirmModal({
-      title: 'Submit Quiz',
-      message: message,
-      confirmText: 'Yes, Submit',
-      cancelText: 'Review Answers',
-      onConfirm: onConfirm,
-      unanswered: unanswered,
-      total: total
-    });
-  }
-
-  // --- UPDATED HANDLE SUBMIT ---
-
-  function handleSubmit() {
-    if (hasSubmitted) return;
-    
-    // Show confirmation before submitting
-    confirmQuizSubmission(containerId, currentQuestions, () => {
-      // This runs only if user confirms
-      performSubmit();
-    });
-  }
-
-  /**
-   * Perform the actual quiz submission
-   */
-  function performSubmit() {
-    hasSubmitted = true;
-    
-    // Stop the timer
-    stopQuizTimer();
-    
-    const form = document.getElementById(`${containerId}-form`);
-    let score = 0;
-    
-    currentQuestions.forEach((q, index) => {
-      const selectedInput = form.querySelector(`input[name="question-${index}"]:checked`);
-      const selectedValue = selectedInput ? selectedInput.value : null;
-      
-      const isCorrect = selectedValue === q.answer;
-      if (isCorrect) score++;
-      
-      // Highlight options
-      const labels = form.querySelectorAll(`input[name="question-${index}"]`);
-      labels.forEach(input => {
-        input.disabled = true;
-        const label = input.parentElement;
-        if (input.value === q.answer) {
-          label.classList.add('correct');
-        } else if (input.checked && !isCorrect) {
-          label.classList.add('incorrect');
-        }
-      });
-      
-      // Show feedback
-      const feedbackDiv = document.getElementById(`feedback-${index}`);
-      feedbackDiv.style.display = 'block';
-      if (isCorrect) {
-        feedbackDiv.innerHTML = `<p class="feedback-correct"><i class="fas fa-check-circle"></i> Correct! ${q.explanation || ''}</p>`;
-      } else {
-        feedbackDiv.innerHTML = `<p class="feedback-incorrect"><i class="fas fa-times-circle"></i> Incorrect. ${q.explanation || ''}</p>`;
-      }
-    });
-    
-    // Hide submit button
-    const submitBtn = form.querySelector('.submit-quiz-btn');
-    if (submitBtn) submitBtn.style.display = 'none';
-    
-    // Show score
-    const scoreDiv = document.getElementById(`${containerId}-score`);
-    scoreDiv.style.display = 'block';
-    
-    const totalQuestions = currentQuestions.length;
-    const pct = Math.round((score / totalQuestions) * 100);
-    
-    // Check if time ran out
-    const timeRanOut = timeLeft === 0;
-    const timeMessage = timeRanOut ? '⏰ Time ran out! ' : '';
-    
-    // Build score display with animation support
-    scoreDiv.innerHTML = `
-      <div class="score-header">
-        <h3>${timeMessage}Quiz Results</h3>
-        <div class="score-circle ${pct >= 70 ? 'good' : 'needs-work'}">
-          <span class="score-number">${score}/${totalQuestions}</span>
-        </div>
-      </div>
-      <div class="score-percentage">
-        <span class="percentage-number">0%</span>
-        <span class="percentage-label">Score</span>
-      </div>
-      <div class="xp-gained">+0 XP</div>
-      <p class="score-message"></p>
-      <button class="btn btn-secondary retake-quiz-btn" id="${containerId}-retake">
-        <i class="fas fa-redo"></i> Retake Quiz
-      </button>
-    `;
-    
-    // --- START ANIMATIONS ---
-    
-    // Animate score from 0 to final percentage (2 seconds)
-    animateScore(pct, 2000);
-    
-    // Animate XP (if available)
-    const xpEarned = Math.round((score / totalQuestions) * 50);
-    animateXP(xpEarned, 1500);
-    
-    // Show performance message
-    showPerformanceMessage(pct);
-    
-    // Retake button handler
-    document.getElementById(`${containerId}-retake`).addEventListener('click', () => {
-      setupQuiz();
-      const y = container.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({top: y, behavior: 'smooth'});
-    });
-
+    container.appendChild(skeletonForm);
   }
 
   // Initialize and shuffle quiz data
@@ -857,7 +532,8 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
         shuffledOptions: shuffleArray(q.options)
       };
     });
-    renderQuiz();
+    renderSkeleton();
+    setTimeout(renderQuiz, 600);
     
     // Add resize listener
     window.addEventListener('resize', handleResize);
@@ -1364,24 +1040,15 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
 }
 
 // --- EXPORT FUNCTIONS ---
-export { 
-  startQuizTimer, 
-  stopQuizTimer, 
-  resetQuizTimer, 
-  updateTimerDisplay,
-  getTimerStatus,
-  animateScore,
-  animateScoreStepBased,
-  animateXP,
-  triggerCelebration,
-  createConfetti,
-  updateQuizProgress,
-  resetQuizProgress,
-  nextQuestion,
-  getProgressStatus,
-  cleanupQuiz,
-  handleResize
-};
+// initQuiz is already exported inline above. startQuizTimer, stopQuizTimer,
+// resetQuizTimer, updateTimerDisplay, animateScore, animateScoreStepBased,
+// animateXP, triggerCelebration, createConfetti, updateQuizProgress,
+// resetQuizProgress, nextQuestion, getProgressStatus, cleanupQuiz, and
+// handleResize are declared inside initQuiz() as closures and cannot be
+// re-exported here — listing them produces a static
+// "Export 'X' is not defined in module" SyntaxError that blocks the whole
+// module. Export only the module-scope getTimerStatus.
+export { getTimerStatus };
 
 function getTimerStatus() {
   return {

@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 <!DOCTYPE html>
 <html lang="en">
 
@@ -140,7 +140,7 @@ let currentTheme = getCurrentTheme();
 
 // Language templates
 const templates = {
-    javascript: `// JavaScript Playground\n\nfunction greet(name) {\n  return \`Hello \${name}\`;\n}\n\nconsole.log(greet("Learner"));\n`,
+    javascript: `// JavaScript Playground\n\nfunction greet(name) {\n  return `Hello ${name}`;\n}\n\nconsole.log(greet("Learner"));\n`,
     typescript: `// TypeScript Playground\n\ninterface User {\n  name: string;\n}\n\nconst user: User = {\n  name: "Learner"\n};\n\nconsole.log(user);\n`,
     dart: `// Dart Playground\n\nvoid main() {\n  print("Hello Learner");\n}\n`,
     python: `# Python Playground\n\ndef greet(name):\n    return f"Hello {name}"\n\nprint(greet("Learner"))\n`,
@@ -189,11 +189,22 @@ function initEditor() {
     });
     
     // Load saved code or default
-    const savedCode = localStorage.getItem(`playground-code-${currentLanguage}`);
-    if (savedCode) {
-        editor.setValue(savedCode, -1);
+    if (window.StorageDB && window.DB_STORES) {
+        window.StorageDB.get(window.DB_STORES.PLAYGROUND, `playground-code-${currentLanguage}`)
+            .then(savedCode => {
+                if (savedCode) {
+                    editor.setValue(savedCode, -1);
+                } else {
+                    editor.setValue(templates[currentLanguage], -1);
+                }
+            });
     } else {
-        editor.setValue(templates[currentLanguage], -1);
+        const savedCode = localStorage.getItem(`playground-code-${currentLanguage}`);
+        if (savedCode) {
+            editor.setValue(savedCode, -1);
+        } else {
+            editor.setValue(templates[currentLanguage], -1);
+        }
     }
     
     // Update theme indicator
@@ -283,22 +294,35 @@ function setupEventListeners() {
     document.getElementById("resetBtn").addEventListener("click", resetEditor);
     
     // Language selector
-    languageSelector.addEventListener("change", (event) => {
+    languageSelector.addEventListener("change", async (event) => {
         const selectedLang = event.target.value.toLowerCase();
         
         // Save current code before switching
         codeStorage[currentLanguage] = editor.getValue();
-        localStorage.setItem(`playground-code-${currentLanguage}`, codeStorage[currentLanguage]);
+        if (window.StorageDB && window.DB_STORES) {
+            await window.StorageDB.set(window.DB_STORES.PLAYGROUND, `playground-code-${currentLanguage}`, codeStorage[currentLanguage]);
+        } else {
+            localStorage.setItem(`playground-code-${currentLanguage}`, codeStorage[currentLanguage]);
+        }
         
         // Switch language
         currentLanguage = selectedLang;
         
         // Load saved code or template
-        const savedCode = localStorage.getItem(`playground-code-${selectedLang}`);
-        if (savedCode) {
-            editor.setValue(savedCode, -1);
+        if (window.StorageDB && window.DB_STORES) {
+            const savedCode = await window.StorageDB.get(window.DB_STORES.PLAYGROUND, `playground-code-${selectedLang}`);
+            if (savedCode) {
+                editor.setValue(savedCode, -1);
+            } else {
+                editor.setValue(templates[selectedLang] || templates.javascript, -1);
+            }
         } else {
-            editor.setValue(templates[selectedLang] || templates.javascript, -1);
+            const savedCode = localStorage.getItem(`playground-code-${selectedLang}`);
+            if (savedCode) {
+                editor.setValue(savedCode, -1);
+            } else {
+                editor.setValue(templates[selectedLang] || templates.javascript, -1);
+            }
         }
         
         // Update editor mode
@@ -351,7 +375,11 @@ function setupEventListeners() {
 
 function saveCode() {
     const code = editor.getValue();
-    localStorage.setItem(`playground-code-${currentLanguage}`, code);
+    if (window.StorageDB && window.DB_STORES) {
+        window.StorageDB.set(window.DB_STORES.PLAYGROUND, `playground-code-${currentLanguage}`, code);
+    } else {
+        localStorage.setItem(`playground-code-${currentLanguage}`, code);
+    }
 }
 
 

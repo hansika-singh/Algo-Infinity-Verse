@@ -221,6 +221,12 @@ function initBigOAnalyzer() {
   if (nextQuestionBtn) nextQuestionBtn.addEventListener("click", loadNextQuestion);
   if (restartBtn) restartBtn.addEventListener("click", startGame);
 
+  // Hide loading screen
+  setTimeout(() => {
+    const loader = document.getElementById("loading-screen");
+    if (loader) loader.classList.add("hidden");
+  }, 300);
+
   function startGame() {
     const diff = difficultySelect.value;
     // Get questions for difficulty and shuffle

@@ -1,4 +1,4 @@
-console.log("GREEDY JS STARTED");
+void 0;
 /**
  * greedy-learning.js
  * Interactivity for the Greedy Learning page:
@@ -391,7 +391,7 @@ function initQuiz() {
       }
 
       if (!allAnswered) {
-        console.warn("Alert:", "Please answer all questions before submitting!");
+        void 0;
         return;
       }
 
@@ -476,4 +476,4 @@ function initQuiz() {
     });
   }
 }
-console.log("GREEDY JS FINISHED");
+void 0;

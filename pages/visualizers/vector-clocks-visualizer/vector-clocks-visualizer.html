@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vector Clocks Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="See how distributed systems detect causality without a shared clock — vector clock increments, message merges, and the happened-before vs concurrent distinction." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="vector-clocks-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="vector-clocks-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="vc-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="vc-hero-inner">
+        <div class="vc-hero-eyebrow">🕸️ Riak · Voldemort · Amazon Dynamo</div>
+        <h1 class="vc-hero-title">Vector Clocks Visualizer</h1>
+        <p class="vc-hero-sub">No shared clock. No coordinator. Still know exactly what happened before what.</p>
+        <p class="vc-hero-desc">Every node keeps a vector of counters, one per node. A local event increments its own counter. Receiving a message merges clocks by taking the component-wise maximum, then increments. This lets a distributed system correctly detect causality — and just as importantly, correctly detect true concurrency, which no single shared timestamp can do.</p>
+        <a href="#lab" class="btn btn-primary vc-btn-primary"><i class="fas fa-diagram-project"></i> Open the Timeline</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section vc-section">
+      <div class="container">
+
+        <div class="vc-control-card">
+          <div class="vc-row">
+            <span class="vc-row-label">Nodes</span>
+            <div class="vc-node-btns" id="vcNodeBtns"></div>
+            <button class="btn btn-secondary vc-reset-btn" id="vcResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+        </div>
+
+        <div class="vc-status" id="vcStatus">Click "Local Event" on any node, or "Send Message" to have one node message another.</div>
+
+        <div class="vc-node-panels" id="vcNodePanels"></div>
+
+        <div class="vc-timeline-card">
+          <div class="vc-panel-title"><i class="fas fa-timeline"></i> Event Timeline</div>
+          <div class="vc-timeline-wrap"><canvas id="vcTimelineCanvas" class="vc-timeline-canvas"></canvas></div>
+        </div>
+
+        <div class="vc-causality-card">
+          <div class="vc-panel-title"><i class="fas fa-code-compare"></i> Causality Checker</div>
+          <p class="vc-cc-desc">Click any two events on the timeline above (or pick from the dropdowns), then check their relationship.</p>
+          <div class="vc-cc-row">
+            <select id="vcEventASelect" class="vc-select" aria-label="Event A"><option value="">Event A</option></select>
+            <select id="vcEventBSelect" class="vc-select" aria-label="Event B"><option value="">Event B</option></select>
+            <button class="btn vc-btn-primary vc-cc-check-btn" id="vcCcCheckBtn"><i class="fas fa-magnifying-glass"></i> Check Relationship</button>
+          </div>
+          <div class="vc-cc-result hidden" id="vcCcResult"></div>
+        </div>
+
+        <div class="vc-lamport-card">
+          <div class="vc-panel-title"><i class="fas fa-clock"></i> Lamport vs Vector Clock — Where Lamport Gets It Wrong</div>
+          <p class="vc-lamport-desc">Lamport timestamps compress causality into a single integer — useful for total ordering, but they can't distinguish "A happened before B" from "A and B were concurrent but A's counter happened to end up smaller." Run the scenario below to see this exact failure.</p>
+          <button class="btn vc-btn-primary vc-lamport-run-btn" id="vcLamportRunBtn"><i class="fas fa-play"></i> Run Divergence Scenario</button>
+          <div class="vc-lamport-result hidden" id="vcLamportResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🕸️</span> The Rules That Make This Work</h2>
+        <div class="vc-learn-grid">
+          <div class="vc-learn-card" style="--lc:#06b6d4">
+            <div class="vc-learn-icon">➕</div>
+            <h3>Local Event Rule</h3>
+            <p>Before any local event, a node increments only its own component in its vector clock. Every other component stays exactly as it was.</p>
+          </div>
+          <div class="vc-learn-card" style="--lc:#a855f7">
+            <div class="vc-learn-icon">🔀</div>
+            <h3>Message Merge Rule</h3>
+            <p>On receiving a message, the receiver's new clock is the component-wise maximum of its own clock and the sender's attached clock, then its own component is incremented once more.</p>
+          </div>
+          <div class="vc-learn-card" style="--lc:#22c55e">
+            <div class="vc-learn-icon">⚖️</div>
+            <h3>The Comparison Rule</h3>
+            <p>Event A happened-before event B if and only if every component of A's clock is ≤ the corresponding component of B's clock, and at least one is strictly less. If neither clock dominates the other, the events are genuinely concurrent.</p>
+          </div>
+          <div class="vc-learn-card" style="--lc:#f59e0b">
+            <div class="vc-learn-icon">⚠️</div>
+            <h3>Why This Matters for Conflicts</h3>
+            <p>Riak and the original Dynamo paper use vector clocks precisely to detect when two writes to the same key are truly concurrent (a real conflict needing resolution) versus one simply happening after the other (no conflict, just take the later write).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="vector-clocks-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recursion vs Iteration – Compare & Master Both | Algo Infinity Verse</title>
+    <meta name="description"
+        content="Compare recursive and iterative approaches through interactive examples: call stack behavior, tail recursion, stack simulation, recursive trees, performance, and common mistakes." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles/design-tokens.css" />
+    <link rel="stylesheet" href="recursion-vs-iteration-learning.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+ 
+    <!-- Theme Initialization Script — applies saved theme before first paint,
+         so the page doesn't flash dark before the async navbar/theme.js load -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+ 
+<body data-page="recursion-vs-iteration-learning">
+ 
+    <div id="navbar-placeholder"></div>
+ 
+    <!-- ================= HERO ================= -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="stars"></div>
+            <div class="stars2"></div>
+            <div class="stars3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Two Paths, One Destination</span>
+                <span class="main-title gradient-text">Recursion vs Iteration</span>
+                <span class="subtitle">
+                    Learn Call Stacks, Tail Recursion, Performance Trade-offs &amp; When to Use Which
+                </span>
+            </h1>
+            <div class="typing-container">
+                <span class="typing-text_rvi" id="typingTextRVI"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#call-stack" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Learning
+                </a>
+                <a href="#exercises" class="btn btn-secondary">
+                    <i class="fas fa-code"></i> Practice Exercises
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="6">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="2">0</span>
+                    <span class="stat-label">Interactive Demos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" data-target="5">0</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+ 
+    <section id="recursion-vs-iteration" class="section">
+ 
+        <!-- ================= 1. CALL STACK ================= -->
+        <div id="call-stack" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 1</span>
+                <h2>The Call Stack</h2>
+                <p class="rvi-lede">
+                    Every recursive call pushes a new frame onto the call stack. Every iterative loop just
+                    updates variables in place — no stack growth at all.
+                </p>
+            </div>
+ 
+            <div class="rvi-compare-grid">
+                <div class="rvi-card rvi-card-recursive">
+                    <h3><i class="fas fa-layer-group"></i> Recursive factorial(4)</h3>
+                    <pre><code>function factorial(n) {
+  if (n <= 1) return 1;       // base case
+  return n * factorial(n-1);  // pushes a new frame
+}</code></pre>
+                    <p>Each call waits on the stack for its child call to return before it can multiply
+                        and return its own result — 4 frames deep for <code>factorial(4)</code>.</p>
+                </div>
+                <div class="rvi-card rvi-card-iterative">
+                    <h3><i class="fas fa-arrows-spin"></i> Iterative factorial(4)</h3>
+                    <pre><code>function factorial(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;               // updates in place
+  }
+  return result;
+}</code></pre>
+                    <p>One stack frame for the whole function. <code>result</code> and <code>i</code> are
+                        just updated on every loop iteration — memory usage stays flat.</p>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- ================= 2. TAIL RECURSION ================= -->
+        <div id="tail-recursion" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 2</span>
+                <h2>Tail Recursion</h2>
+                <p class="rvi-lede">
+                    A tail-recursive function's last action is the recursive call itself — nothing left to
+                    do after it returns. That shape makes it rewrite-able into a loop.
+                </p>
+            </div>
+ 
+            <div class="rvi-compare-grid">
+                <div class="rvi-card">
+                    <h3><i class="fas fa-triangle-exclamation"></i> Not Tail Recursive</h3>
+                    <pre><code>function factorial(n) {
+  if (n <= 1) return 1;
+  return n * factorial(n-1);
+  // ⬆ multiplication happens AFTER
+  // the recursive call returns
+}</code></pre>
+                </div>
+                <div class="rvi-card rvi-card-good">
+                    <h3><i class="fas fa-circle-check"></i> Tail Recursive</h3>
+                    <pre><code>function factorial(n, acc = 1) {
+  if (n <= 1) return acc;
+  return factorial(n - 1, n * acc);
+  // ⬆ nothing left to do after this call —
+  // the accumulator carries the work
+}</code></pre>
+                </div>
+            </div>
+            <div class="rvi-note">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Important:</strong> tail-call optimization (TCO) lets a compiler reuse the current
+                    stack frame instead of pushing a new one — but <strong>most JS engines and Python don't
+                        implement it</strong>. Languages like Scheme, Elixir, and some C compilers do. So in
+                    JS/Python, a tail-recursive function is still cleaner to reason about, but it won't
+                    save you from a stack overflow on very deep recursion — an explicit loop will.</p>
+            </div>
+        </div>
+ 
+        <!-- ================= 3. STACK SIMULATION (interactive) ================= -->
+        <div id="stack-simulation" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 3 · Interactive</span>
+                <h2>Stack Simulation</h2>
+                <p class="rvi-lede">
+                    Step through <code>factorial(5)</code> one call at a time and watch frames push and pop.
+                </p>
+            </div>
+ 
+            <div class="rvi-sim">
+                <div class="rvi-sim-controls">
+                    <button id="simPrev" class="btn btn-secondary" disabled>
+                        <i class="fas fa-arrow-left"></i> Prev
+                    </button>
+                    <span id="simStepLabel" class="rvi-sim-step-label">Step 0 / 0</span>
+                    <button id="simNext" class="btn btn-primary">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button id="simReset" class="btn btn-secondary">
+                        <i class="fas fa-rotate-left"></i> Reset
+                    </button>
+                </div>
+                <div class="rvi-sim-body">
+                    <div class="rvi-sim-stack-wrapper">
+                        <span class="rvi-sim-label">Call Stack</span>
+                        <div id="simStack" class="rvi-sim-stack"></div>
+                    </div>
+                    <div class="rvi-sim-explain-wrapper">
+                        <span class="rvi-sim-label">What's happening</span>
+                        <p id="simExplain" class="rvi-sim-explain">Click "Next" to begin the simulation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- ================= 4. RECURSIVE TREE (interactive) ================= -->
+        <div id="recursive-tree" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 4 · Interactive</span>
+                <h2>Recursive Tree</h2>
+                <p class="rvi-lede">
+                    Naive recursive <code>fibonacci(n)</code> re-solves the same subproblems over and over.
+                    Drag the slider to see how fast the tree — and the repeated work — explodes.
+                </p>
+            </div>
+ 
+            <div class="rvi-tree-controls">
+                <label for="treeN">n = <span id="treeNValue">5</span></label>
+                <input type="range" id="treeN" min="2" max="8" value="5" />
+                <span id="treeCallCount" class="rvi-tree-count"></span>
+            </div>
+            <div class="rvi-tree-canvas-wrapper">
+                <svg id="treeSvg" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div class="rvi-legend">
+                <span><i class="rvi-swatch rvi-swatch-recursive"></i> Branching call — still waiting on child calls to return</span>
+                <span><i class="rvi-swatch rvi-swatch-iterative"></i> Leaf call — hit the base case, returns immediately</span>
+            </div>
+        </div>
+ 
+        <!-- ================= 5. PERFORMANCE COMPARISON ================= -->
+        <div id="performance-comparison" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 5</span>
+                <h2>Performance Comparison</h2>
+                <p class="rvi-lede">
+                    Performance differences between recursion and iteration come down to two things:
+                    <strong>time complexity</strong> (does the algorithm redo work?) and
+                    <strong>space complexity</strong> (does the call stack grow?). Neither approach is
+                    "faster" by default — it depends entirely on whether the recursion re-solves
+                    overlapping subproblems.
+                </p>
+            </div>
+ 
+            <div class="rvi-perf-table-wrapper">
+                <table class="rvi-perf-table">
+                    <thead>
+                        <tr>
+                            <th>Problem type</th>
+                            <th>Recursive time</th>
+                            <th>Iterative time</th>
+                            <th>Recursive space</th>
+                            <th>Iterative space</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Linear pass <span class="rvi-perf-sub">(sum, search, reverse)</span></td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                            <td>O(n) &mdash; one stack frame per call</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td>Divide &amp; conquer <span class="rvi-perf-sub">(merge sort, binary search)</span></td>
+                            <td>O(n log n) / O(log n)</td>
+                            <td>same, with an explicit stack/queue</td>
+                            <td>O(log n)</td>
+                            <td>O(log n) with explicit stack, or O(1) for binary search</td>
+                        </tr>
+                        <tr class="rvi-perf-highlight">
+                            <td>Naive overlapping subproblems <span class="rvi-perf-sub">(naive Fibonacci)</span></td>
+                            <td>O(2ⁿ)</td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td>Tree traversal <span class="rvi-perf-sub">(naturally recursive shape)</span></td>
+                            <td>O(n)</td>
+                            <td>O(n) with explicit stack/queue</td>
+                            <td>O(h) &mdash; tree height</td>
+                            <td>O(w) &mdash; widest level</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="rvi-lede" style="margin-top: 1.5rem;">
+                The gap only becomes dramatic when recursion keeps re-solving the <em>same</em>
+                subproblem — that's exactly what happens with naive Fibonacci, so it makes a good
+                worked example of the worst case:
+            </p>
+ 
+            <div class="rvi-chart-wrapper">
+                <svg id="perfChart" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div class="rvi-legend">
+                <span><i class="rvi-swatch rvi-swatch-recursive"></i> Recursive calls</span>
+                <span><i class="rvi-swatch rvi-swatch-iterative"></i> Iterative calls</span>
+            </div>
+            <div class="rvi-note">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Takeaway:</strong> this isn't "recursion is slow." It's that naive recursion
+                    without memoization re-does identical work exponentially. Add memoization
+                    (caching each <code>fib(k)</code> result) and the recursive version drops right back
+                    down to O(n) time — same complexity as the loop, just with O(n) stack space instead
+                    of O(1).</p>
+            </div>
+        </div>
+ 
+        <!-- ================= 6. COMMON MISTAKES ================= -->
+        <div id="common-mistakes" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 6</span>
+                <h2>Common Mistakes</h2>
+                <p class="rvi-lede">Click a card to reveal why each mistake breaks — and how to fix it.</p>
+            </div>
+ 
+            <div class="rvi-mistakes-grid">
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-infinity"></i>
+                        <h4>Missing base case</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Without a stopping condition, the function calls itself forever until the stack
+                            overflows. <strong>Fix:</strong> always define and test the base case first.</p>
+                    </div>
+                </div>
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-ruler-combined"></i>
+                        <h4>Off-by-one base case</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Using <code>n == 0</code> when the real stopping point is <code>n == 1</code> (or
+                            vice versa) causes wrong results or one extra/missing call. <strong>Fix:</strong>
+                            trace the smallest 2–3 inputs by hand before trusting the recursion.</p>
+                    </div>
+                </div>
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-layer-group"></i>
+                        <h4>Stack overflow on large input</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Deep recursion (e.g. processing 100,000 items) can exceed the call stack size.
+                            <strong>Fix:</strong> convert to an iterative loop or explicit stack for large
+                            inputs.</p>
+                    </div>
+                </div>
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-clone"></i>
+                        <h4>Recomputing overlapping subproblems</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Naive recursive Fibonacci recalculates the same values thousands of times.
+                            <strong>Fix:</strong> add memoization, or switch to an iterative/tabulated
+                            approach.</p>
+                    </div>
+                </div>
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-scale-unbalanced"></i>
+                        <h4>Recursion where iteration is simpler</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Summing a flat array recursively adds stack overhead for no real benefit.
+                            <strong>Fix:</strong> reach for recursion when the problem is naturally
+                            self-similar (trees, backtracking, divide &amp; conquer) — not by default.</p>
+                    </div>
+                </div>
+                <div class="rvi-mistake-card">
+                    <div class="rvi-mistake-front">
+                        <i class="fas fa-arrow-rotate-right"></i>
+                        <h4>Mutating shared state across calls</h4>
+                    </div>
+                    <div class="rvi-mistake-back">
+                        <p>Forgetting to pass a fresh copy of an accumulator/array leads to calls
+                            corrupting each other's data. <strong>Fix:</strong> pass new values as
+                            parameters rather than mutating outer-scope variables.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- ================= 7. EXERCISES ================= -->
+        <div id="exercises" class="rvi-topic">
+            <div class="rvi-topic-header">
+                <span class="rvi-badge">Topic 7</span>
+                <h2>Exercises</h2>
+                <p class="rvi-lede">Try solving each problem both ways, then reveal the solutions.</p>
+            </div>
+ 
+            <div class="rvi-exercise" data-difficulty="Easy">
+                <div class="rvi-exercise-head">
+                    <h4>1. Sum of an array</h4>
+                    <span class="rvi-diff rvi-diff-easy">Easy</span>
+                    <button class="rvi-toggle-btn">Show Solutions</button>
+                </div>
+                <div class="rvi-exercise-body">
+                    <div class="rvi-compare-grid">
+                        <div class="rvi-card"><h3>Recursive</h3><pre><code>function sum(arr) {
+  if (arr.length === 0) return 0;
+  return arr[0] + sum(arr.slice(1));
+}</code></pre></div>
+                        <div class="rvi-card"><h3>Iterative</h3><pre><code>function sum(arr) {
+  let total = 0;
+  for (const n of arr) total += n;
+  return total;
+}</code></pre></div>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="rvi-exercise" data-difficulty="Easy">
+                <div class="rvi-exercise-head">
+                    <h4>2. Reverse a string</h4>
+                    <span class="rvi-diff rvi-diff-easy">Easy</span>
+                    <button class="rvi-toggle-btn">Show Solutions</button>
+                </div>
+                <div class="rvi-exercise-body">
+                    <div class="rvi-compare-grid">
+                        <div class="rvi-card"><h3>Recursive</h3><pre><code>function reverse(s) {
+  if (s === "") return "";
+  return reverse(s.slice(1)) + s[0];
+}</code></pre></div>
+                        <div class="rvi-card"><h3>Iterative</h3><pre><code>function reverse(s) {
+  let result = "";
+  for (let i = s.length - 1; i >= 0; i--) {
+    result += s[i];
+  }
+  return result;
+}</code></pre></div>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="rvi-exercise" data-difficulty="Medium">
+                <div class="rvi-exercise-head">
+                    <h4>3. Nth Fibonacci number</h4>
+                    <span class="rvi-diff rvi-diff-medium">Medium</span>
+                    <button class="rvi-toggle-btn">Show Solutions</button>
+                </div>
+                <div class="rvi-exercise-body">
+                    <div class="rvi-compare-grid">
+                        <div class="rvi-card"><h3>Recursive (naive)</h3><pre><code>function fib(n) {
+  if (n <= 1) return n;
+  return fib(n - 1) + fib(n - 2);
+}</code></pre></div>
+                        <div class="rvi-card"><h3>Iterative</h3><pre><code>function fib(n) {
+  let [a, b] = [0, 1];
+  for (let i = 0; i < n; i++) {
+    [a, b] = [b, a + b];
+  }
+  return a;
+}</code></pre></div>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="rvi-exercise" data-difficulty="Medium">
+                <div class="rvi-exercise-head">
+                    <h4>4. Flatten a nested array</h4>
+                    <span class="rvi-diff rvi-diff-medium">Medium</span>
+                    <button class="rvi-toggle-btn">Show Solutions</button>
+                </div>
+                <div class="rvi-exercise-body">
+                    <div class="rvi-compare-grid">
+                        <div class="rvi-card"><h3>Recursive</h3><pre><code>function flatten(arr) {
+  return arr.reduce((flat, item) =>
+    flat.concat(Array.isArray(item) ? flatten(item) : item), []);
+}</code></pre></div>
+                        <div class="rvi-card"><h3>Iterative (explicit stack)</h3><pre><code>function flatten(arr) {
+  const stack = [...arr];
+  const result = [];
+  while (stack.length) {
+    const next = stack.shift();
+    if (Array.isArray(next)) stack.unshift(...next);
+    else result.push(next);
+  }
+  return result;
+}</code></pre></div>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="rvi-exercise" data-difficulty="Hard">
+                <div class="rvi-exercise-head">
+                    <h4>5. Binary tree height</h4>
+                    <span class="rvi-diff rvi-diff-hard">Hard</span>
+                    <button class="rvi-toggle-btn">Show Solutions</button>
+                </div>
+                <div class="rvi-exercise-body">
+                    <div class="rvi-compare-grid">
+                        <div class="rvi-card"><h3>Recursive</h3><pre><code>function height(node) {
+  if (!node) return 0;
+  return 1 + Math.max(height(node.left), height(node.right));
+}</code></pre></div>
+                        <div class="rvi-card"><h3>Iterative (BFS with explicit queue)</h3><pre><code>function height(root) {
+  if (!root) return 0;
+  let level = 0;
+  let queue = [root];
+  while (queue.length) {
+    const next = [];
+    for (const node of queue) {
+      if (node.left) next.push(node.left);
+      if (node.right) next.push(node.right);
+    }
+    queue = next;
+    level++;
+  }
+  return level;
+}</code></pre></div>
+                    </div>
+                    <p class="rvi-note-inline">
+                        <i class="fas fa-info-circle"></i>
+                        Trees are naturally recursive structures, so the recursive version here is usually
+                        the more readable choice in practice — this is a good example of when recursion
+                        is the better tool, not just the "convertible" one.
+                    </p>
+                </div>
+            </div>
+        </div>
+ 
+    </section>
+ 
+    <script src="/modules/utils.js" type="module"></script>
+    <script src="/theme.js"></script>
+    <script src="recursion-vs-iteration-learning.js"></script>
+    <script>
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+    </script>
+</body>
+ 
+</html>
+ 

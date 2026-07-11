@@ -158,10 +158,7 @@ function initPredictor() {
   // Initial Calculation
   recalculateForecasts();
 
-  // Hide loading screen
-  const s = document.getElementById("loading-screen");
-  if (s) s.classList.add("hidden");
-}
+  }
 
 // ──────────────────────────────────────────────────────────────────────────
 // 💾 LOCAL STORAGE LINK
@@ -177,7 +174,7 @@ function loadScoresFromLocalStorage() {
       if (topicData.DynamicProgramming) scores.dp = Math.round((topicData.DynamicProgramming.solved / topicData.DynamicProgramming.attempts) * 100) || 55;
     }
   } catch (e) {
-    console.warn("Failed to load local storage topicPerformance:", e);
+    void 0;
   }
 }
 

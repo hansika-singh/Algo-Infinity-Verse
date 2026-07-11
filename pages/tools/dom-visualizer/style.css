@@ -1,0 +1,235 @@
+:root {
+    --bg-dark: #121212;
+    --panel-bg: #1e1e1e;
+    --border-color: #333;
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaa;
+    --highlight-active: #00ff88;
+    --highlight-visited: #3a86ff;
+    --danger: #ff3333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.visualizer-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Control Panel */
+.control-panel {
+    width: 350px;
+    background-color: var(--panel-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+select, input[type="range"] {
+    width: 100%;
+    padding: 8px;
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.8; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.primary { background: var(--highlight-active); color: black; }
+.secondary { background: #555; }
+.danger { background: var(--danger); }
+
+.stats-panel {
+    background: #2a2a2a;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.highlight-text {
+    color: var(--highlight-active);
+    font-weight: bold;
+}
+
+/* DOM Tree View (Sidebar) */
+.dom-tree-view {
+    flex: 1;
+    background: #111;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.tree-node {
+    margin-left: 15px;
+    padding: 2px 0;
+    border-left: 1px dotted #444;
+    padding-left: 10px;
+}
+
+.tree-tag {
+    color: #569cd6;
+}
+.tree-class {
+    color: #ce9178;
+}
+
+.tree-node.active-node {
+    background-color: rgba(0, 255, 136, 0.2);
+    border-radius: 3px;
+}
+.tree-node.visited-node {
+    background-color: rgba(58, 134, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* Sandbox Webpage Area */
+.sandbox-area {
+    flex: 1;
+    background: #ffffff;
+    color: #333;
+    padding: 40px;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Base styles for the mock webpage */
+.sandbox-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sandbox-header ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.sandbox-header a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.sandbox-main {
+    display: flex;
+    gap: 30px;
+}
+
+.articles {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.card h2 { margin-bottom: 10px; }
+.card p { margin-bottom: 15px; color: #666; }
+.card button {
+    padding: 8px 16px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.sidebar {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+.sidebar h3 { margin-bottom: 15px; }
+.sidebar ul { padding-left: 20px; }
+.sidebar li { margin-bottom: 10px; }
+
+.sandbox-footer {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    background: #333;
+    color: white;
+    border-radius: 8px;
+}
+
+/* =========================================
+   HIGHLIGHTING CLASSES (The Magic)
+   ========================================= */
+
+/* Base transition for all elements in the sandbox */
+.sandbox-area * {
+    transition: all 0.3s ease;
+    position: relative; /* For the pseudo-element glow */
+}
+
+/* When the algorithm is currently at this node */
+.sandbox-area .traversal-active {
+    box-shadow: 0 0 0 4px var(--highlight-active) inset !important;
+    background-color: rgba(0, 255, 136, 0.15) !important;
+    border-radius: 4px;
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+/* When the algorithm has finished with this node */
+.sandbox-area .traversal-visited {
+    box-shadow: 0 0 0 2px var(--highlight-visited) inset !important;
+    background-color: rgba(58, 134, 255, 0.05) !important;
+    border-radius: 4px;
+}

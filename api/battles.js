@@ -1,6 +1,6 @@
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import crypto from "crypto";
+import { SESSION_COOKIE, verifySessionToken, parseCookies } from "../backend/utils/sessionToken.js";
 
 // ─── Firebase init ────────────────────────────────────────────────────────────
 let db = null;
@@ -24,51 +24,7 @@ function getDb() {
   return db;
 }
 
-// ─── Auth helpers (mirrors session.js exactly) ────────────────────────────────
-const SESSION_COOKIE = "aiv_session";
-
-function sessionSecret() {
-  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  if (process.env.NODE_ENV === "production") throw new Error("SESSION_SECRET required");
-  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
-}
-
-function sign(value) {
-  return crypto.createHmac("sha256", sessionSecret()).update(value).digest("base64url");
-}
-
-function fromBase64Url(input) {
-  return Buffer.from(input.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
-}
-
-function timingSafeEqStr(a, b) {
-  const ab = Buffer.from(a || "", "utf8");
-  const bb = Buffer.from(b || "", "utf8");
-  if (ab.length !== bb.length) return false;
-  return crypto.timingSafeEqual(ab, bb);
-}
-
-function verifySessionToken(token) {
-  if (!token) return null;
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
-  const [header, payload, signature] = parts;
-  if (!timingSafeEqStr(signature, sign(`${header}.${payload}`))) return null;
-  try {
-    const session = JSON.parse(fromBase64Url(payload));
-    if (!session.exp || session.exp < Math.floor(Date.now() / 1000)) return null;
-    return session;
-  } catch { return null; }
-}
-
-function parseCookies(h = "") {
-  return h.split(";").reduce((c, p) => {
-    const [k, ...v] = p.trim().split("=");
-    if (k) c[k] = decodeURIComponent(v.join("="));
-    return c;
-  }, {});
-}
-
+// ─── Auth helpers ──────────────────────────────────────────────────────────
 function getUser(req) {
   const cookies = parseCookies(req.headers.cookie || "");
   return verifySessionToken(cookies[SESSION_COOKIE]);
@@ -240,7 +196,7 @@ async function submitSolution(req, res, user, battleId) {
 
       const battle = doc.data();
 
-      if (battle.status === "completed") {
+      if (battle.status === "completed" || battle.winner) {
         throw new Error("Battle already finished — opponent submitted first");
       }
       if (battle.status !== "active") {

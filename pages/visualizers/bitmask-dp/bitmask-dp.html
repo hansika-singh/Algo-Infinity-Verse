@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Space Bitmasking DP | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="bitmask-dp.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="bitmask-dp.js" defer></script>
+</head>
+<body data-page="bitmask-dp">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>Advanced DP: State Space Bitmasking</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Graph Initialized</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm"><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Execution"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode" id="pseudocode-block">
+                    <div id="bm-1" class="code-line">1. Target Mask = (1 &lt;&lt; N) - 1 // 1111</div>
+                    <div id="bm-2" class="code-line">2. Initialize Queue: push(startNode, mask)</div>
+                    <div id="bm-3" class="code-line">3. While Queue is not empty:</div>
+                    <div id="bm-4" class="code-line indent">4. curr = Queue.shift()</div>
+                    <div id="bm-5" class="code-line indent">5. If curr.mask == Target:</div>
+                    <div id="bm-6" class="code-line indent-2">Return Shortest Path</div>
+                    <div id="bm-7" class="code-line indent">6. For each neighbor v of curr.node:</div>
+                    <div id="bm-8" class="code-line indent-2">7. nextMask = curr.mask | (1 &lt;&lt; v)</div>
+                    <div id="bm-9" class="code-line indent-2">8. If dp[nextMask][v] == visited:</div>
+                    <div id="bm-10" class="code-line indent-3">Continue // Cycle Pruned</div>
+                    <div id="bm-11" class="code-line indent-2">9. Else:</div>
+                    <div id="bm-12" class="code-line indent-3">dp[nextMask][v] = visited</div>
+                    <div id="bm-13" class="code-line indent-3">Queue.push(v, nextMask)</div>
+                </div>
+            </div>
+            
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> BFS Telemetry</h3>
+                <div class="telemetry-grid">
+                    <div class="metric"><span class="label">Queue Size</span><span id="stat-q" class="value" style="color: var(--accent-cyan);">1</span></div>
+                    <div class="metric"><span class="label">States Explored</span><span id="stat-states" class="value" style="color: var(--accent-purple);">1</span></div>
+                    <div class="metric"><span class="label">Cycles Pruned</span><span id="stat-pruned" class="value highlight-val">0</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <div class="graph-mask-container">
+                    <div class="mask-readout-panel">
+                        <span class="mask-title">Active Bitmask State</span>
+                        <div class="binary-display" id="binary-mask">0001</div>
+                    </div>
+                    
+                    <div class="graph-wrapper">
+                        <canvas id="viz-canvas" role="img" aria-label="Graph Traversal Visualization"></canvas>
+                    </div>
+                </div>
+
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Bitwise Evaluation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+
+                <div class="dp-stage">
+                    <h4 class="stage-label">Memoization Table: dp[mask][node]</h4>
+                    <div class="dp-wrapper">
+                        <div class="dp-header-row">
+                            <div class="dp-label-header">Mask</div>
+                            <div class="dp-node-header">N0</div>
+                            <div class="dp-node-header">N1</div>
+                            <div class="dp-node-header">N2</div>
+                            <div class="dp-node-header">N3</div>
+                        </div>
+                        <div id="dp-table" class="dp-table" role="grid" aria-label="Dynamic Programming Matrix">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text">Finding the shortest path that visits all nodes in a cyclic graph requires BFS. However, a standard `visited` array causes infinite loops.</p>
+                <p class="edu-text">We solve this by memoizing the path history as an integer <strong>Bitmask</strong>.</p>
+                <ul class="edu-list">
+                    <li><span class="badge bit-or">Bitwise OR</span> `mask | (1 &lt;&lt; v)` flags node $v$ as visited in the binary string.</li>
+                    <li><span class="badge cycle">Cycle Pruning</span> `dp[mask][v]` allows us to revisit node $v$, BUT ONLY IF doing so unlocks a new, previously unvisited node in the mask.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-chart-line"></i> Complexity</h3>
+                <div class="complexity-stat">
+                    <span class="label">Time Complexity</span>
+                    <span class="value">O(N &times; 2^N)</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Space Complexity</span>
+                    <span class="value">O(N &times; 2^N)</span>
+                </div>
+                <p class="edu-text sub-text" style="margin-top: 1rem;">The state space is bounded by the $2^N$ possible mask combinations multiplied by the $N$ possible current nodes.</p>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

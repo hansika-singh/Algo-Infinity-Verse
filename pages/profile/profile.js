@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (typeof openQuizEditor === 'function') {
                     // We need to trigger the editor, maybe navigate to main page with a hash
-                    window.location.href = `../../index.html?problem=${problem.id}#practice`;
+                    window.location.href = `../../pages/practice/problems.html?problem=${problem.id}`;
                 }
             });
 
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } catch (e) {
-            console.warn("Failed to get rank from leaderboard:", e);
+            void 0;
         }
         return "#1";
     }
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
             } catch (e) {
                 console.error("Error generating PNG:", e);
-                console.warn("Alert:", "Failed to export PNG. Please try again.");
+                void 0;
             } finally {
                 downloadPngBtn.innerHTML = prevText;
                 downloadPngBtn.disabled = false;
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pdf.save(`${(typeof userProgress !== 'undefined' ? userProgress.name : 'learner')}_coding_card.pdf`);
             } catch (e) {
                 console.error("Error generating PDF:", e);
-                console.warn("Alert:", "Failed to export PDF. Please try again.");
+                void 0;
             } finally {
                 downloadPdfBtn.innerHTML = prevText;
                 downloadPdfBtn.disabled = false;

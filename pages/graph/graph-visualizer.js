@@ -372,7 +372,7 @@ function toggleSimulation() {
         return;
     }
 
-    if (nodes.length === 0) return console.warn("Alert:", "Add some nodes first!");
+    if (nodes.length === 0) return void 0;
     
     const startNodeId = els.startNodeSelect.value;
     const algo = els.algoSelect.value;

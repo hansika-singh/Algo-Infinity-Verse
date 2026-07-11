@@ -22,7 +22,7 @@
   </script>
 </head>
 <body data-page="b-tree-visualizer">
-  <div id="loading-screen"><div class="loader"><div class="infinity-loader">∞</div><h2>Algo Infinity Verse</h2><div class="loading-bar"><div class="loading-progress"></div></div></div></div>
+  <div id="loading-screen" class="hidden"><div class="loader"><div class="infinity-loader">∞</div><h2>Algo Infinity Verse</h2><div class="loading-bar"><div class="loading-progress"></div></div></div></div>
   <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn"><i class="fas fa-circle-chevron-up"></i></button>
   <div id="navbar-placeholder"></div>
 
@@ -86,18 +86,25 @@
 
   <div id="footer-placeholder"></div>
 
+  <script src="/auth.js"></script>
   <script src="/bootstrap-legacy.js"></script>
 
-
-  <script src="../../../script.js"></script>
+  <script src="/script.js"></script>
     <script type="module" src="/dist/legacy-bundle.mjs"></script>
-  <script src="../../../auth.js"></script>
-  <script src="../../../theme.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/auth-gate.js"></script>
   <script src="b-tree-visualizer.js"></script>
   <script>
     if (typeof loadPartial === 'function') {
-      loadPartial('navbar-placeholder', '/partials/navbar.html');
-      loadPartial('footer-placeholder', '/partials/footer.html');
+      Promise.all([
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        }),
+        loadPartial('footer-placeholder', '/partials/footer.html')
+      ]).then(function() {
+        window.partialsLoadedFlag = true;
+        document.dispatchEvent(new Event('partialsLoaded'));
+      });
     }
   </script>
 </body>

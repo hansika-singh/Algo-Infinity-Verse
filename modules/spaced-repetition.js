@@ -21,7 +21,7 @@ function scheduleNextRevision(topicId) {
   if (schedule.currentStage < REVISION_INTERVALS.length - 1) schedule.currentStage++;
   if (typeof saveUserData === "function") saveUserData();
   else localStorage.setItem("algoInfinityVerse", JSON.stringify(userProgress));
-  console.log(`[Scheduler] ${topicId}: Next review in ${daysToAdd} days.`);
+  void 0;
 }
 
 function handleQuizCompletionForRevision(topicId, scorePercentage) {
@@ -35,7 +35,7 @@ function injectRevisionSchedulerUI(topicId) {
   if (!userProgress.revisionSchedule?.[topicId]) return;
 
   const targetHeader = document.querySelector(".arr-lesson-header") || document.querySelector("h3") || document.querySelector("h2");
-  if (!targetHeader) { console.warn("[Scheduler] No target header found."); return; }
+  if (!targetHeader) { void 0; return; }
   const existing = document.getElementById("revision-scheduler-badge");
   if (existing) existing.remove();
   const schedule = userProgress.revisionSchedule[topicId];
@@ -83,7 +83,7 @@ window.rateRecallDifficulty = async function(quality) {
       showNotification("Could not schedule on cloud. Saved locally.", "info");
     }
   } catch (err) {
-    console.warn("Spaced repetition sync failed:", err);
+    void 0;
 
     // Client-side fallback computation
     const q = Math.max(0, Math.min(5, Number(quality)));

@@ -1,112 +1,42 @@
-import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
+import {
+  hashPassword as hashPasswordSecure,
+  passwordMatches as passwordMatchesSecure,
+} from "../services/auth.service.js";
+import {
+  SESSION_COOKIE,
+  SESSION_MAX_AGE_SECONDS,
+  base64Url,
+  fromBase64Url,
+  sessionSecret,
+  sign,
+  createSessionToken,
+  verifySessionToken,
+  parseCookies,
+  getSession,
+  sessionCookie,
+  clearSessionCookie,
+} from "./sessionToken.js";
+import { COLLECTIONS } from "../../firebase.js";
+let userWriteQueue = Promise.resolve();
 
-export const SESSION_COOKIE = "aiv_session";
-export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 export const DATA_DIR = path.join(process.cwd(), "data");
 
-// JWT Functions
-export function base64Url(input) {
-  return Buffer.from(input)
-    .toString("base64")
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
-}
-
-export function fromBase64Url(input) {
-  const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(normalized, "base64").toString("utf8");
-}
-
-export function sessionSecret() {
-  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("SESSION_SECRET is required in production.");
-  }
-  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
-}
-
-export function sign(value) {
-  return crypto
-    .createHmac("sha256", sessionSecret())
-    .update(value)
-    .digest("base64url");
-}
-
-export function createSessionToken(user) {
-  const header = base64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-  const payload = base64Url(
-    JSON.stringify({
-      sub: user.id,
-      name: user.name,
-      email: user.email,
-      exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS,
-    }),
-  );
-  const body = `${header}.${payload}`;
-  return `${body}.${sign(body)}`;
-}
-
-export function verifySessionToken(token) {
-  if (!token) return null;
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
-  const [header, payload, signature] = parts;
-  const body = `${header}.${payload}`;
-  const expected = sign(body);
-  const signatureBuffer = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
-  if (
-    signatureBuffer.length !== expectedBuffer.length ||
-    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
-  ) {
-    return null;
-  }
-
-  try {
-    const session = JSON.parse(fromBase64Url(payload));
-    if (!session.exp || session.exp < Math.floor(Date.now() / 1000))
-      return null;
-    return session;
-  } catch {
-    return null;
-  }
-}
-
-// Cookie Functions
-export function parseCookies(cookieHeader = "") {
-  return cookieHeader.split(";").reduce((cookies, part) => {
-    const [rawName, ...rawValue] = part.trim().split("=");
-    if (!rawName) return cookies;
-    cookies[rawName] = decodeURIComponent(rawValue.join("="));
-    return cookies;
-  }, {});
-}
-
-export function getSession(req) {
-  const cookies = parseCookies(req.headers.cookie || "");
-  return verifySessionToken(cookies[SESSION_COOKIE]);
-}
-
-export function sessionCookie(token, req) {
-  const secure = req.headers["x-forwarded-proto"] === "https";
-  return [
-    `${SESSION_COOKIE}=${encodeURIComponent(token)}`,
-    "HttpOnly",
-    "SameSite=Lax",
-    "Path=/",
-    `Max-Age=${SESSION_MAX_AGE_SECONDS}`,
-    secure ? "Secure" : "",
-  ]
-    .filter(Boolean)
-    .join("; ");
-}
-
-export function clearSessionCookie() {
-  return `${SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`;
-}
+export {
+  SESSION_COOKIE,
+  SESSION_MAX_AGE_SECONDS,
+  base64Url,
+  fromBase64Url,
+  sessionSecret,
+  sign,
+  createSessionToken,
+  verifySessionToken,
+  parseCookies,
+  getSession,
+  sessionCookie,
+  clearSessionCookie,
+};
 
 // Response Helpers
 export function sendJson(res, status, body, headers = {}) {
@@ -187,10 +117,15 @@ export async function readUsers() {
 }
 
 export async function writeUsers(users) {
-  const DATA_DIR = path.join(process.cwd(), "data");
-  const USERS_FILE = path.join(DATA_DIR, "users.json");
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`);
+  const task = userWriteQueue.then(async () => {
+    const DATA_DIR = path.join(process.cwd(), "data");
+    const USERS_FILE = path.join(DATA_DIR, "users.json");
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`);
+  });
+  // Update the queue synchronously so next write waits for this one
+  userWriteQueue = task.catch(() => { });
+  return task;
 }
 
 export async function getUserByEmail(email, useFirestore = false, db = null) {
@@ -198,8 +133,13 @@ export async function getUserByEmail(email, useFirestore = false, db = null) {
     const users = await readUsers();
     return users.find((u) => u.email === email) || null;
   }
-  // Firestore implementation
-  return null;
+  const snapshot = await db
+    .collection(COLLECTIONS.USERS)
+    .where("email", "==", email)
+    .limit(1)
+    .get();
+  if (snapshot.empty) return null;
+  return { ...snapshot.docs[0].data(), id: snapshot.docs[0].id };
 }
 
 export async function createUser(userData, useFirestore = false, db = null) {
@@ -209,17 +149,68 @@ export async function createUser(userData, useFirestore = false, db = null) {
     await writeUsers(users);
     return userData;
   }
-  // Firestore implementation
-  return userData;
+  const docRef = await db.collection(COLLECTIONS.USERS).add(userData);
+  return { ...userData, id: docRef.id };
 }
 
-// Password Functions (placeholder)
+// Password Functions — delegate to the PBKDF2 implementation in
+// auth.service.js so every caller gets real hashing/verification instead of
+// storing and comparing plaintext passwords.
 export function hashPassword(password) {
-  // Implement actual password hashing
-  return password; // Placeholder
+  return hashPasswordSecure(password);
 }
 
-export function passwordMatches(password, hash) {
-  // Implement actual password verification
-  return password === hash; // Placeholder
+export function passwordMatches(password, stored) {
+  return passwordMatchesSecure(password, stored);
+}
+// ── Atomic User Creation (To prevent race conditions on signup) ──────────────
+let _createUserLock = Promise.resolve();
+
+export async function createUserAtomic(userData, useFirestore = false, db = null) {
+  // Case 1: Firestore (Uses native transaction)
+  if (useFirestore) {
+    try {
+      const userRef = db.collection(COLLECTIONS.USERS);
+      const result = await db.runTransaction(async (t) => {
+        const snapshot = await t.get(userRef.where('email', '==', userData.email).limit(1));
+        if (!snapshot.empty) {
+          throw new Error('User already exists');
+        }
+        const newUserRef = userRef.doc();
+        const newUser = { ...userData, id: newUserRef.id };
+        t.set(newUserRef, newUser);
+        return newUser;
+      });
+      return result;
+    } catch (error) {
+      if (error.message === 'User already exists') throw error;
+      console.error('Transaction error:', error);
+      throw new Error('Failed to create user');
+    }
+  }
+
+  // Case 2: Local JSON (Uses a Promise Lock to serialize writes)
+  const run = _createUserLock.then(async () => {
+    const users = await readUsers();
+    const existing = users.find((u) => u.email === userData.email);
+    if (existing) {
+      throw new Error('User already exists');
+    }
+    users.push(userData);
+    await writeUsers(users);
+    return userData;
+  });
+
+  // Update the lock synchronously so the next caller queues behind this write.
+  _createUserLock = run.catch(() => { });
+  return run;
+}
+export async function ensureUserStore() {
+  const DATA_DIR = path.join(process.cwd(), "data");
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  try {
+    await fs.access(path.join(DATA_DIR, "users.json"));
+  } catch {
+    await fs.writeFile(path.join(DATA_DIR, "users.json"), "[]\n");
+  }
 }

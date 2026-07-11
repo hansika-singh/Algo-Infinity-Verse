@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Simulator - Algo Infinity Verse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --surface-color: #1a1d2d;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin-top: 0;
+        }
+
+        .editor-container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 16px;
+            background-color: #141622;
+            color: #a5b4fc;
+            border: none;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .controls {
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            padding: 10px 18px;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-run {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-run:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-reset:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .results-container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            min-height: 100px;
+        }
+
+        .results-container h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: rgba(0,0,0,0.2);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .error {
+            color: var(--danger);
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--danger);
+            font-family: monospace;
+        }
+
+        .success {
+            color: var(--success);
+        }
+
+        .empty-state {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Interactive SQL Simulator</h1>
+            <p>Practice your SQL queries in a real database environment. The sample `employees` table is ready.</p>
+        </div>
+
+        <div class="editor-container">
+            <textarea id="queryInput" placeholder="SELECT * FROM employees;" spellcheck="false">SELECT * FROM employees;</textarea>
+            <div class="controls">
+                <button class="btn-run" onclick="runQuery()">Run Query</button>
+                <button class="btn-reset" onclick="resetDb()">Reset Database</button>
+            </div>
+        </div>
+
+        <div class="results-container">
+            <h3>Query Results</h3>
+            <div id="results">
+                <div class="empty-state">Run a query to see results here.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runQuery() {
+            const query = document.getElementById('queryInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<div class="empty-state">Executing...</div>';
+
+            try {
+                const res = await fetch('/api/sql/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                const data = await res.json();
+                
+                if (!res.ok || data.error) {
+                    resultsDiv.innerHTML = `<div class="error">Error: ${data.error || 'Execution failed'}</div>`;
+                    return;
+                }
+
+                if (data.results) {
+                    if (data.results.length === 0) {
+                        resultsDiv.innerHTML = '<div class="empty-state">No rows returned.</div>';
+                        return;
+                    }
+                    const cols = Object.keys(data.results[0]);
+                    let html = '<table><thead><tr>';
+                    cols.forEach(c => html += `<th>${c}</th>`);
+                    html += '</tr></thead><tbody>';
+                    data.results.forEach(row => {
+                        html += '<tr>';
+                        cols.forEach(c => html += `<td>${row[c]}</td>`);
+                        html += '</tr>';
+                    });
+                    html += '</tbody></table>';
+                    resultsDiv.innerHTML = html;
+                } else if (data.info) {
+                    resultsDiv.innerHTML = `<div class="success">Query executed successfully. Rows affected: ${data.info.changes}</div>`;
+                }
+            } catch (err) {
+                resultsDiv.innerHTML = `<div class="error">Network error: ${err.message}</div>`;
+            }
+        }
+
+        async function resetDb() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="empty-state">Resetting...</div>';
+
+            try {
+                const res = await fetch('/api/sql/reset', { method: 'POST' });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    resultsDiv.innerHTML = `<div class="success">Database reset to initial state successfully.</div>`;
+                } else {
+                    resultsDiv.innerHTML = `<div class="error">Error resetting DB: ${data.error}</div>`;
+                }
+            } catch (err) {
+                resultsDiv.innerHTML = `<div class="error">Network error: ${err.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

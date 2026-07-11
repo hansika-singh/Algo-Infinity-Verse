@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualizers — Algo Infinity Verse</title>
+  <meta name="description" content="Browse all interactive algorithm visualizers. Watch sorting, trees, graphs, and more come to life." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="visualizers.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = t || (p ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+  <body data-page="visualizers" data-no-loading>
+  <div id="loading-screen" class="hidden">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Loading Visualizers...</h2>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section class="viz-hero">
+      <div class="viz-hero-bg">
+        <div class="viz-hero-grid"></div>
+      </div>
+      <button type="button" class="viz-back-btn" id="vizBackBtn" aria-label="Go back to previous page">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+      <div class="viz-hero-content">
+        <h1 class="viz-hero-title">Visualizers</h1>
+        <p class="viz-hero-subtitle">
+          See algorithms come to life. Watch data structures sort, search, traverse, and transform in real time.
+        </p>
+
+        <!-- SEARCH -->
+        <div class="viz-search-wrapper">
+          <div class="viz-search">
+            <i class="fas fa-search viz-search-icon"></i>
+            <input
+              type="text"
+              id="vizSearchInput"
+              class="viz-search-input"
+              placeholder="Search visualizers..."
+              aria-label="Search visualizers"
+              autocomplete="off"
+            />
+            <button type="button" id="vizClearBtn" class="viz-clear-btn" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+            <span class="viz-search-hint">⌘K</span>
+          </div>
+        </div>
+
+        <!-- FILTER CHIPS -->
+        <div class="viz-filters" id="vizFilters" role="tablist" aria-label="Visualizer categories"></div>
+
+        <p class="viz-result-count" id="vizResultCount">Showing <span id="vizCountDisplay">0</span> visualizers</p>
+      </div>
+    </section>
+
+    <!-- CARD GRID -->
+    <section class="viz-section">
+      <div class="viz-container">
+        <div class="viz-grid" id="vizGrid" role="list">
+          <!-- Cards rendered by JS -->
+        </div>
+        <div class="viz-empty" id="vizEmpty" style="display:none;">
+          <i class="fas fa-search-minus"></i>
+          <h3>No visualizers found</h3>
+          <p>Try adjusting your search or filter.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/auth.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script src="visualizers.js"></script>
+</body>
+</html>

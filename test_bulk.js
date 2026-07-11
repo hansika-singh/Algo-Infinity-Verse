@@ -49,7 +49,7 @@ function request(path, method, body, headers = {}) {
 }
 
 async function runTests() {
-  console.log("Starting server for API tests...");
+  void 0;
   const serverProc = spawn("node", ["server.js"], {
     env: { ...process.env, PORT: PORT.toString(), HOST: "127.0.0.1" },
     stdio: "inherit" // Important to see Redis connection warnings instead of silent failures
@@ -60,7 +60,7 @@ async function runTests() {
   let failed = false;
 
   try {
-    console.log("Test 1: Upload CSV to /api/audit/bulk");
+    void 0;
     
     const csvContent = "https://github.com/expressjs/express\nhttps://github.com/octocat/Hello-World";
     fs.writeFileSync("test.csv", csvContent);
@@ -75,9 +75,9 @@ async function runTests() {
     }
 
     const { batchId, totalJobs } = res.data;
-    console.log(`✓ Test 1 passed: Accepted batch ${batchId} with ${totalJobs} jobs`);
+    void 0;
 
-    console.log("\nTest 2: Poll /api/audit/bulk/:batchId for completion");
+    void 0;
     
     let isComplete = false;
     for (let i = 0; i < 15; i++) {
@@ -86,34 +86,34 @@ async function runTests() {
       
       if (pollRes.status === 200) {
         const { progress, completed, failed, total } = pollRes.data;
-        console.log(`Polling... Progress: ${progress}% (${completed + failed}/${total})`);
+        void 0;
         
         if (progress === 100) {
           isComplete = true;
-          console.log("✓ Test 2 passed: All jobs completed");
+          void 0;
           break;
         }
       } else {
-        console.warn(`Polling failed with status ${pollRes.status}`);
+        void 0;
       }
     }
 
-    console.log("\n=== Testing Edge Cases ===");
+    void 0;
 
-    console.log("Edge Case 1: Upload CSV with no supported repository URLs");
+    void 0;
     fs.writeFileSync("test_invalid.csv", "https://example.com/user/repo\nnot-a-url");
     const formInvalid = new FormData();
     formInvalid.append('csv', fs.createReadStream("test_invalid.csv"));
     const resInvalid = await request("/api/audit/bulk", "POST", formInvalid, formInvalid.getHeaders());
     if (resInvalid.status !== 400) throw new Error(`Expected 400, got ${resInvalid.status}`);
-    console.log("✓ Edge Case 1 passed: Rejected CSV lacking supported VCS URLs.");
+    void 0;
 
-    console.log("Edge Case 2: Polling an invalid/non-existent batch ID");
+    void 0;
     const resPollInvalid = await request("/api/audit/bulk/this-id-does-not-exist", "GET");
     if (resPollInvalid.status !== 404) throw new Error(`Expected 404, got ${resPollInvalid.status}`);
-    console.log("✓ Edge Case 2 passed: Correctly returned 404 for invalid batch ID.");
+    void 0;
 
-    console.log("Edge Case 3: CSV with a non-existent GitHub repo (Testing graceful worker failure)");
+    void 0;
     fs.writeFileSync("test_nonexistent.csv", "https://github.com/octocat/this-repo-surely-does-not-exist-123");
     const formNonExistent = new FormData();
     formNonExistent.append('csv', fs.createReadStream("test_nonexistent.csv"));
@@ -132,17 +132,17 @@ async function runTests() {
       }
     }
     if (!missingComplete) throw new Error("Worker hung on non-existent repository.");
-    console.log("✓ Edge Case 3 passed: Worker gracefully processed non-existent repository without crashing.");
+    void 0;
 
     if (!isComplete) {
-      console.warn("Test timed out before completion.");
+      void 0;
     }
 
   } catch (err) {
     console.error("Test failed:", err.message);
     failed = true;
   } finally {
-    console.log("\nShutting down server...");
+    void 0;
     serverProc.kill();
     if (fs.existsSync("test.csv")) fs.unlinkSync("test.csv");
     if (fs.existsSync("test_invalid.csv")) fs.unlinkSync("test_invalid.csv");

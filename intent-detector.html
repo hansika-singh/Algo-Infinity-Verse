@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Intent Detection Assistant | Algo Infinity Verse</title>
+    <meta name="description" content="AI-powered coding intent detector that tracks your behavior and helps you understand if you are stuck, guessing, confident or overthinking." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="intent-detector.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-no-loading>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item">
+        <a href="index.html#home" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item has-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="menu" aria-expanded="false">
+            <span>Learn</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+        </button>
+        <div class="dropdown-menu" role="menu">
+            <a href="index.html#topics" class="dropdown-item" role="menuitem">DSA Topics</a>
+            <a href="pages/practice/problems.html" class="dropdown-item" role="menuitem">Practice Problems</a>
+            <a href="index.html#quiz" class="dropdown-item" role="menuitem">Quizzes</a>
+            <a href="index.html#roadmap" class="dropdown-item" role="menuitem">Learning Roadmap</a>
+            <a href="/pages/ai-features/concept-bridge/concept-bridge.html" class="dropdown-item" role="menuitem">Concept Bridge Trainer</a>
+            <a href="/pages/tools/think-aloud-judge/think-aloud-judge.html" class="dropdown-item" role="menuitem">Think-Aloud AI Judge</a>
+            <a href="intent-detector.html" class="dropdown-item active" role="menuitem">AI Intent Detection</a>
+            <a href="/pages/tools/cognitive-load-analyzer/cognitive-load-analyzer.html" class="dropdown-item" role="menuitem">Cognitive Load Analyzer</a>
+        </div>
+        </li>
+        <li class="nav-item">
+        <a href="pages/practice/problems.html" class="nav-link">Practice</a>
+        </li>
+    </ul>
+    <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+        </button>
+        <a href="index.html" class="btn btn-primary">
+        <i class="fas fa-home"></i> Home
+        </a>
+    </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="learning-hero">
+    <div class="container">
+        <div class="hero-content" style="text-align:center; padding: 4rem 2rem 2rem;">
+        <div style="font-size:4rem; margin-bottom:1rem;">🧠</div>
+        <h1 class="hero-title">
+            AI <span class="gradient-text">Intent Detection</span> Assistant
+        </h1>
+        <p style="color:var(--text-secondary); max-width:600px; margin:1rem auto; font-size:1.1rem; line-height:1.6;">
+            An intelligent system that tracks your coding behavior in real-time 
+            and detects whether you are <strong>stuck</strong>, <strong>guessing</strong>, 
+            <strong>confident</strong>, or <strong>overthinking</strong>.
+        </p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:1.5rem;">
+            <span style="background:rgba(220,53,69,0.2); color:#dc3545; padding:0.4rem 1rem; border-radius:20px; font-size:0.9rem;">🔴 Stuck Detection</span>
+            <span style="background:rgba(255,193,7,0.2); color:#b8860b; padding:0.4rem 1rem; border-radius:20px; font-size:0.9rem;">🟡 Guessing Detection</span>
+            <span style="background:rgba(34,197,94,0.2); color:#22c55e; padding:0.4rem 1rem; border-radius:20px; font-size:0.9rem;">🟢 Confident State</span>
+            <span style="background:rgba(79,70,229,0.2); color:#6366f1; padding:0.4rem 1rem; border-radius:20px; font-size:0.9rem;">🟣 Overthinking Alert</span>
+        </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" style="padding: 2rem 2rem;">
+    <div class="container">
+        <h2 class="section-title">
+        <span class="title-icon">⚙️</span>
+        How It Works
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem; margin-top:2rem;">
+
+        <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">👀</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Behavior Tracking</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Monitors your edits, run attempts, errors and pauses in real-time as you code
+            </p>
+        </div>
+
+        <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">🔍</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Pattern Analysis</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Analyzes patterns like repeated errors, rapid runs, long pauses and frequent small edits
+            </p>
+        </div>
+
+        <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">🎯</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Intent Classification</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Classifies your current state into Stuck, Guessing, Confident or Overthinking
+            </p>
+        </div>
+
+        <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">💡</div>
+            <h3 style="color:var(--accent); margin-bottom:0.5rem;">Smart Hints</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Provides personalized hints and suggestions based on your detected intent state
+            </p>
+        </div>
+
+        </div>
+    </div>
+    </section>
+
+    <!-- Intent States Section -->
+    <section class="section" style="padding: 2rem 2rem;">
+    <div class="container">
+        <h2 class="section-title">
+        <span class="title-icon">📊</span>
+        Intent States Explained
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:2rem;">
+
+        <!-- Stuck -->
+        <div style="background:rgba(220,53,69,0.08); border:1px solid rgba(220,53,69,0.3); border-radius:16px; padding:1.5rem; border-left:4px solid #dc3545;">
+            <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <span style="font-size:2rem;">🔴</span>
+            <h3 style="color:#dc3545;">Stuck</h3>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+            Detected when you have repeated errors with no meaningful code changes between runs.
+            </p>
+            <div style="background:rgba(220,53,69,0.1); border-radius:8px; padding:0.8rem;">
+            <strong style="color:#dc3545; font-size:0.85rem;">Signals:</strong>
+            <ul style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; padding-left:1rem;">
+            <li>3+ consecutive errored runs</li>
+                <li>No meaningful edits between runs</li>
+                <li>Same error repeating</li>
+            </ul>
+            </div>
+            <div style="margin-top:1rem; padding:0.8rem; background:rgba(34,197,94,0.08); border-radius:8px; border:1px solid rgba(34,197,94,0.2);">
+            <strong style="color:#22c55e; font-size:0.85rem;">💡 Hint:</strong>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.3rem;">
+                Take a break, re-read the problem, or ask for a hint in our chatbot!
+            </p>
+            </div>
+        </div>
+
+        <!-- Guessing -->
+        <div style="background:rgba(255,193,7,0.08); border:1px solid rgba(255,193,7,0.3); border-radius:16px; padding:1.5rem; border-left:4px solid #ffc107;">
+            <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <span style="font-size:2rem;">🟡</span>
+            <h3 style="color:#b8860b;">Guessing</h3>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+            Detected when you run code rapidly with minimal changes — suggesting trial and error.
+            </p>
+            <div style="background:rgba(255,193,7,0.1); border-radius:8px; padding:0.8rem;">
+            <strong style="color:#b8860b; font-size:0.85rem;">Signals:</strong>
+            <ul style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; padding-left:1rem;">
+                <li>3+ runs within 30 seconds</li>
+                <li>Less than 10 characters changed</li>
+                <li>No clear logical progression</li>
+            </ul>
+            </div>
+            <div style="margin-top:1rem; padding:0.8rem; background:rgba(34,197,94,0.08); border-radius:8px; border:1px solid rgba(34,197,94,0.2);">
+            <strong style="color:#22c55e; font-size:0.85rem;">💡 Hint:</strong>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.3rem;">
+                Slow down! Plan your approach on paper before running code.
+            </p>
+            </div>
+        </div>
+
+        <!-- Confident -->
+        <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:16px; padding:1.5rem; border-left:4px solid #22c55e;">
+            <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <span style="font-size:2rem;">🟢</span>
+            <h3 style="color:#22c55e;">Confident</h3>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+            Detected when you have steady edits followed by successful runs — great progress!
+            </p>
+            <div style="background:rgba(34,197,94,0.1); border-radius:8px; padding:0.8rem;">
+            <strong style="color:#22c55e; font-size:0.85rem;">Signals:</strong>
+            <ul style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; padding-left:1rem;">
+                <li>Meaningful edits between runs</li>
+                <li>Decreasing error rate</li>
+                <li>Successful run achieved</li>
+            </ul>
+            </div>
+            <div style="margin-top:1rem; padding:0.8rem; background:rgba(34,197,94,0.08); border-radius:8px; border:1px solid rgba(34,197,94,0.2);">
+            <strong style="color:#22c55e; font-size:0.85rem;">💡 Hint:</strong>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.3rem;">
+                Great work! Consider optimizing your solution or trying a harder problem.
+            </p>
+            </div>
+        </div>
+
+        <!-- Overthinking -->
+        <div style="background:rgba(79,70,229,0.08); border:1px solid rgba(79,70,229,0.3); border-radius:16px; padding:1.5rem; border-left:4px solid #6366f1;">
+            <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem;">
+            <span style="font-size:2rem;">🟣</span>
+            <h3 style="color:#6366f1;">Overthinking</h3>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">
+            Detected when you make many small edits with long pauses but never run the code.
+            </p>
+            <div style="background:rgba(79,70,229,0.1); border-radius:8px; padding:0.8rem;">
+            <strong style="color:#6366f1; font-size:0.85rem;">Signals:</strong>
+            <ul style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; padding-left:1rem;">
+                <li>45+ second pause between runs</li>
+                <li>5+ small edits with no run</li>
+                <li>Frequent minor changes</li>
+            </ul>
+            </div>
+            <div style="margin-top:1rem; padding:0.8rem; background:rgba(34,197,94,0.08); border-radius:8px; border:1px solid rgba(34,197,94,0.2);">
+            <strong style="color:#22c55e; font-size:0.85rem;">💡 Hint:</strong>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.3rem;">
+                Trust your instincts! Run your code and see what happens.
+            </p>
+            </div>
+        </div>
+
+        </div>
+    </div>
+    </section>
+
+    <!-- Live Demo Section -->
+    <section class="section" style="padding: 2rem 2rem 4rem;">
+    <div class="container">
+        <h2 class="section-title">
+        <span class="title-icon">🎮</span>
+        Live Demo
+        </h2>
+        <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">
+        Try the intent detector yourself! Write code below and watch your intent state update in real-time.
+        </p>
+
+        <div style="display:grid; grid-template-columns: 1fr 350px; gap:2rem; max-width:1100px; margin:0 auto;">
+
+        <!-- Code Editor -->
+        <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="color:var(--text-primary);">💻 Code Editor</h3>
+            <div style="display:flex; gap:0.5rem;">
+                <button id="demoRunBtn" class="btn btn-primary" style="padding:0.5rem 1rem; font-size:0.85rem;">
+                <i class="fas fa-play"></i> Run
+                </button>
+                <button id="demoClearBtn" class="btn btn-outline" style="padding:0.5rem 1rem; font-size:0.85rem;">
+                <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+            </div>
+            <textarea
+            id="demoEditor"
+            style="width:100%; min-height:300px; background:var(--dark-bg); color:#e2e8f0; font-family:'Fira Code',monospace; font-size:14px; line-height:1.6; border:1px solid var(--glass-border); border-radius:10px; padding:1rem; resize:vertical; outline:none;"
+            placeholder="// Write your code here and watch the intent detector analyze your behavior!
+function twoSum(nums, target) {
+    // Your solution here
+}"
+            spellcheck="false"
+            ></textarea>
+            <div id="intentHintBanner" class="intent-hint-banner hidden"></div>
+            <div style="margin-top:1rem; background:var(--dark-bg); border-radius:10px; padding:1rem; min-height:80px;">
+            <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0.5rem;">Output:</div>
+            <div id="demoOutput" style="color:#22c55e; font-family:'Fira Code',monospace; font-size:0.9rem;">
+                // Run your code to see output...
+            </div>
+            </div>
+        </div>
+
+        <!-- Intent State Panel -->
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+
+            <!-- Current State -->
+            <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem; text-align:center;">
+            <h3 style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">CURRENT INTENT STATE</h3>
+            <div id="intentStateIcon" style="font-size:3rem; margin-bottom:0.5rem;">⚪</div>
+            <div id="intentStateName" style="font-size:1.3rem; font-weight:700; color:var(--text-primary);">Neutral</div>
+            <div id="intentStateDesc" style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.5rem;">
+                Start coding to detect your intent...
+            </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">BEHAVIOR STATS</h3>
+            <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-secondary); font-size:0.85rem;">Total Edits</span>
+                <span id="statEdits" style="color:var(--accent); font-weight:600;">0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-secondary); font-size:0.85rem;">Run Attempts</span>
+                <span id="statRuns" style="color:var(--accent); font-weight:600;">0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-secondary); font-size:0.85rem;">Errors</span>
+                <span id="statErrors" style="color:#ef4444; font-weight:600;">0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-secondary); font-size:0.85rem;">State Changes</span>
+                <span id="statStateChanges" style="color:#22c55e; font-weight:600;">0</span>
+                </div>
+            </div>
+            </div>
+
+            <!-- State History -->
+            <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; padding:1.5rem;">
+            <h3 style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem;">STATE HISTORY</h3>
+            <div id="stateHistory" style="display:flex; flex-direction:column; gap:0.5rem; max-height:150px; overflow-y:auto;">
+                <p style="color:var(--text-secondary); font-size:0.8rem; font-style:italic;">No state changes yet...</p>
+            </div>
+            </div>
+
+        </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align:center; padding:2rem; background:var(--dark-surface); border-top:1px solid var(--glass-border); color:var(--text-secondary);">
+    <p>🧠 Code Smarter • Learn Faster • Grow Better</p>
+    <p style="margin-top:0.5rem;">
+        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Back to Algo Infinity Verse</a>
+    </p>
+    </footer>
+
+    <script src="intent-detector.js"></script>
+    <script>
+      // Loading screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) loadingScreen.classList.add('hidden');
+        }, 1500);
+    });
+
+      // Scroll to top
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('visible');
+        } else {
+        scrollTopBtn.classList.remove('visible');
+        }
+    });
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+      // Demo Stats
+    let stats = { edits: 0, runs: 0, errors: 0, stateChanges: 0 };
+    const stateConfig = {
+        neutral:      { icon: '⚪', color: 'var(--text-secondary)', desc: 'Start coding to detect your intent...' },
+        stuck:        { icon: '🔴', color: '#dc3545', desc: 'You seem stuck! Try a different approach.' },
+        guessing:     { icon: '🟡', color: '#b8860b', desc: 'You are guessing! Plan before running.' },
+        confident:    { icon: '🟢', color: '#22c55e', desc: 'Great progress! You are on the right track.' },
+        overthinking: { icon: '🟣', color: '#6366f1', desc: 'Stop overthinking! Just run your code.' },
+    };
+
+      // Initialize intent detector
+    const detector = createIntentDetector({
+        onStateChange: (state, details) => {
+        stats.stateChanges++;
+        updateIntentUI(state);
+        addStateHistory(state);
+        document.getElementById('statStateChanges').textContent = stats.stateChanges;
+        }
+    });
+
+    function updateIntentUI(state) {
+        const config = stateConfig[state] || stateConfig.neutral;
+        document.getElementById('intentStateIcon').textContent = config.icon;
+        document.getElementById('intentStateName').textContent = 
+        state.charAt(0).toUpperCase() + state.slice(1);
+        document.getElementById('intentStateName').style.color = config.color;
+        document.getElementById('intentStateDesc').textContent = config.desc;
+    }
+
+    function addStateHistory(state) {
+        const config = stateConfig[state] || stateConfig.neutral;
+        const history = document.getElementById('stateHistory');
+        const time = new Date().toLocaleTimeString();
+        const item = document.createElement('div');
+        item.style.cssText = `display:flex; justify-content:space-between; font-size:0.8rem; padding:0.3rem 0; border-bottom:1px solid var(--glass-border);`;
+        item.innerHTML = `
+        <span>${config.icon} ${state.charAt(0).toUpperCase() + state.slice(1)}</span>
+        <span style="color:var(--text-secondary);">${time}</span>
+        `;
+        if (history.querySelector('p')) history.innerHTML = '';
+        history.prepend(item);
+    }
+
+      // Track edits
+    document.getElementById('demoEditor').addEventListener('input', (e) => {
+        stats.edits++;
+        document.getElementById('statEdits').textContent = stats.edits;
+        detector.recordEdit(e.target.value);
+    });
+
+      // Run button
+    document.getElementById('demoRunBtn').addEventListener('click', () => {
+        stats.runs++;
+        document.getElementById('statRuns').textContent = stats.runs;
+
+        const code = document.getElementById('demoEditor').value;
+        const output = document.getElementById('demoOutput');
+
+        // Simulate run
+        const hasError = Math.random() > 0.6; // 40% chance of error for demo
+        if (hasError) {
+        stats.errors++;
+        document.getElementById('statErrors').textContent = stats.errors;
+        output.style.color = '#ef4444';
+        output.textContent = '❌ Error: Simulated compilation error\nat line ' + 
+            Math.floor(Math.random() * 10 + 1);
+        } else {
+        output.style.color = '#22c55e';
+        output.textContent = '✅ Code executed successfully!';
+        }
+
+        detector.recordRun({ hasError, code });
+    });
+
+      // Clear button
+    document.getElementById('demoClearBtn').addEventListener('click', () => {
+        document.getElementById('demoEditor').value = '';
+        document.getElementById('demoOutput').textContent = '// Output cleared...';
+        document.getElementById('demoOutput').style.color = '#22c55e';
+    });
+    </script>
+
+</body>
+</html>

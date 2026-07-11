@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Gateway Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Simulate and visualize API Gateway concepts like JWT Authentication, Rate Limiting, and Routing."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="api-gateway-visualizer.css" />
+  </head>
+  <body class="gw-body">
+    <nav class="navbar gw-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-network-wired"></i> API Gateway Simulator</div>
+    </nav>
+
+    <main class="gw-workspace">
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-sliders-h"></i> Gateway Config</h3>
+        </div>
+
+        <div class="control-section">
+          <div class="config-grid">
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleJwt" checked /> JWT Auth </label>
+              <p class="desc-text">Requires valid token for access.</p>
+            </div>
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleRateLimit" checked /> Rate Limiter </label>
+              <p class="desc-text">Drops requests if sent too fast.</p>
+            </div>
+            <div class="toggle-group">
+              <label> <input type="checkbox" id="toggleCache" /> Edge Cache </label>
+              <p class="desc-text">Returns cached response if available.</p>
+            </div>
+          </div>
+
+          <div class="target-selector">
+            <label for="routeSelect">Request Route</label>
+            <select id="routeSelect">
+              <option value="users">/api/users (Service A)</option>
+              <option value="orders">/api/orders (Service B)</option>
+              <option value="invalid">/api/invalid (404)</option>
+            </select>
+          </div>
+
+          <div class="auth-selector">
+            <label for="authSelect">Provided Token</label>
+            <select id="authSelect">
+              <option value="valid">Valid Token</option>
+              <option value="invalid">Invalid/Expired Token</option>
+              <option value="none">No Token</option>
+            </select>
+          </div>
+
+          <div class="action-buttons">
+            <button id="btnSendRequest" class="btn-primary">
+              <i class="fas fa-paper-plane"></i> Send Request
+            </button>
+            <button id="btnReset" class="btn-secondary">
+              <i class="fas fa-rotate-left"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-header" style="margin-top: 2rem">
+          <h3><i class="fas fa-terminal"></i> Gateway Logs</h3>
+          <span id="requestStatus" class="state-badge">IDLE</span>
+        </div>
+        <div class="log-console" id="logOutput">Ready to receive requests...</div>
+      </div>
+
+      <div class="panel-right">
+        <div class="network-canvas">
+          <div class="pipeline">
+            <div class="node-container">
+              <div class="node client-node" id="nodeClient">
+                <i class="fas fa-laptop"></i>
+                <span>Client</span>
+              </div>
+            </div>
+
+            <div class="edge-container" id="edge1">
+              <div class="packet" id="dataPacket"><i class="fas fa-envelope"></i></div>
+              <div class="line"></div>
+            </div>
+
+            <div class="gateway-box">
+              <div class="gateway-header">API Gateway</div>
+              <div class="gateway-internals">
+                <div class="node gw-node auth-node" id="nodeAuth">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Auth</span>
+                </div>
+                <div class="node gw-node limit-node" id="nodeLimit">
+                  <i class="fas fa-tachometer-alt"></i>
+                  <span>Rate Limit</span>
+                </div>
+                <div class="node gw-node route-node" id="nodeRoute">
+                  <i class="fas fa-route"></i>
+                  <span>Router</span>
+                </div>
+                <div class="node gw-node cache-node" id="nodeCache">
+                  <i class="fas fa-database"></i>
+                  <span>Cache</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edge-container" id="edge2">
+              <div class="line"></div>
+            </div>
+
+            <div class="services-container">
+              <div class="node service-node" id="nodeServiceA">
+                <i class="fas fa-server"></i>
+                <span>Service A<br />(Users)</span>
+              </div>
+              <div class="node service-node" id="nodeServiceB">
+                <i class="fas fa-server"></i>
+                <span>Service B<br />(Orders)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="api-gateway-visualizer.js"></script>
+  </body>
+</html>

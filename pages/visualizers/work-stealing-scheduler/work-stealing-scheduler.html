@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Work-Stealing Scheduler Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="See how Go's runtime and Java's ForkJoinPool scale parallel work — per-worker deques, LIFO pop, FIFO steal, and near-zero contention compared to a shared queue." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="work-stealing-scheduler.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="work-stealing-scheduler">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="ws-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ws-hero-inner">
+        <div class="ws-hero-eyebrow">🧵 Go Runtime · Java ForkJoinPool · .NET TPL</div>
+        <h1 class="ws-hero-title">Work-Stealing Scheduler</h1>
+        <p class="ws-hero-sub">Own queue for speed. Steal from others for balance.</p>
+        <p class="ws-hero-desc">Every worker owns a private double-ended queue. It pushes and pops its OWN new work from the front — LIFO, cache-friendly. When idle, it steals from the BACK of someone else's queue — FIFO, taking the oldest, most parallelizable work. This nearly eliminates lock contention compared to a single shared queue.</p>
+        <a href="#lab" class="btn btn-primary ws-btn-primary"><i class="fas fa-diagram-project"></i> Open the Scheduler</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section ws-section">
+      <div class="container">
+
+        <div class="ws-control-card">
+          <div class="ws-row">
+            <span class="ws-row-label">Workers</span>
+            <div class="ws-worker-btns">
+              <button class="ws-worker-btn" data-workers="3">3</button>
+              <button class="ws-worker-btn active" data-workers="4">4</button>
+              <button class="ws-worker-btn" data-workers="6">6</button>
+            </div>
+            <button class="btn ws-btn-primary ws-spawn-btn" id="wsSpawnRootBtn"><i class="fas fa-code-branch"></i> Spawn Merge Sort (16 elements)</button>
+            <button class="btn btn-secondary ws-reset-btn" id="wsResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+          <div class="ws-row">
+            <button class="btn ws-btn-primary ws-step-btn" id="wsStepBtn"><i class="fas fa-step-forward"></i> Step Scheduler</button>
+            <button class="btn btn-secondary ws-auto-btn" id="wsAutoBtn"><i class="fas fa-play"></i> Auto-Run</button>
+            <button class="btn btn-secondary ws-stall-btn" id="wsStallBtn"><i class="fas fa-hand"></i> Stall a Worker</button>
+            <div class="ws-tick-ctr">Tick <span id="wsTickNum">0</span></div>
+          </div>
+        </div>
+
+        <div class="ws-status" id="wsStatus">Click Spawn to create a recursive task tree, then Step or Auto-Run to watch workers process and steal work.</div>
+
+        <div class="ws-main-layout">
+
+          <div class="ws-workers-col" id="wsWorkersCol"></div>
+
+          <div class="ws-right-col">
+
+            <div class="ws-panel-card">
+              <div class="ws-panel-title"><i class="fas fa-sitemap"></i> Task Tree</div>
+              <div class="ws-tree-wrap"><svg id="wsTreeSvg" class="ws-tree-svg"></svg></div>
+            </div>
+
+            <div class="ws-panel-card">
+              <div class="ws-panel-title"><i class="fas fa-list-ul"></i> Scheduler Log</div>
+              <div class="ws-log" id="wsLog"><div class="ws-empty">No activity yet.</div></div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="ws-compare-card">
+          <div class="ws-compare-header"><i class="fas fa-scale-balanced"></i> Shared Queue vs Work-Stealing — Contention Comparison</div>
+          <p class="ws-compare-desc">Same task tree, two scheduling strategies. Watch the contention meter — how often a worker had to wait for a lock — and the throughput chart.</p>
+          <button class="btn ws-btn-primary ws-run-compare-btn" id="wsRunCompareBtn"><i class="fas fa-play"></i> Run Comparison (both strategies, same tasks)</button>
+
+          <div class="ws-compare-grid">
+            <div class="ws-compare-col">
+              <div class="ws-compare-title" style="color:#ef4444">Shared Queue</div>
+              <div class="ws-contention-track"><div class="ws-contention-fill ws-contention-shared" id="wsContentionShared"></div></div>
+              <div class="ws-compare-stat">Contention events: <strong id="wsSharedContention">—</strong></div>
+              <div class="ws-compare-stat">Total ticks to finish: <strong id="wsSharedTicks">—</strong></div>
+            </div>
+            <div class="ws-compare-col">
+              <div class="ws-compare-title" style="color:#22c55e">Work-Stealing</div>
+              <div class="ws-contention-track"><div class="ws-contention-fill ws-contention-ws" id="wsContentionWs"></div></div>
+              <div class="ws-compare-stat">Contention events: <strong id="wsWsContention">—</strong></div>
+              <div class="ws-compare-stat">Total ticks to finish: <strong id="wsWsTicks">—</strong></div>
+            </div>
+          </div>
+
+          <canvas id="wsThroughputCanvas" class="ws-throughput-canvas"></canvas>
+          <div class="ws-throughput-legend">
+            <span class="ws-tl-item"><span class="ws-tl-dot" style="background:#ef4444"></span>Shared Queue throughput</span>
+            <span class="ws-tl-item"><span class="ws-tl-dot" style="background:#22c55e"></span>Work-Stealing throughput</span>
+          </div>
+        </div>
+
+        <div class="ws-challenge-card">
+          <div class="ws-challenge-header"><i class="fas fa-puzzle-piece"></i> Challenge: Balance the Load</div>
+          <p class="ws-challenge-desc">Worker 0 has a deep task queue while others sit idle. Manually trigger steals (click idle workers) until load is balanced. Fewer clicks = better score.</p>
+          <button class="btn ws-btn-primary ws-challenge-start-btn" id="wsChallengeStartBtn"><i class="fas fa-flag-checkered"></i> Start Challenge</button>
+          <div class="ws-challenge-stats hidden" id="wsChallengeStats">
+            <span>Steals triggered: <strong id="wsChallengeSteals">0</strong></span>
+            <span>Max deque depth: <strong id="wsChallengeMaxDepth">0</strong></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🧵</span> Why Work-Stealing Wins</h2>
+        <div class="ws-learn-grid">
+          <div class="ws-learn-card" style="--lc:#06b6d4">
+            <div class="ws-learn-icon">📥</div>
+            <h3>LIFO for Cache Locality</h3>
+            <p>A worker pops its OWN most-recently-pushed task first. That task's data was just touched — still hot in L1/L2 cache. This is why work-stealing outperforms naive round-robin scheduling on real hardware, not just in Big-O terms.</p>
+          </div>
+          <div class="ws-learn-card" style="--lc:#a855f7">
+            <div class="ws-learn-icon">🔓</div>
+            <h3>FIFO Stealing Minimizes Collisions</h3>
+            <p>Thieves steal from the opposite end (back) of a victim's deque — the oldest, coarsest-grained task. This means the owner (popping from front) and thieves (popping from back) almost never touch the same end at once, minimizing lock contention to near zero.</p>
+          </div>
+          <div class="ws-learn-card" style="--lc:#22c55e">
+            <div class="ws-learn-icon">⚖️</div>
+            <h3>Provably Balanced</h3>
+            <p>Work-stealing schedulers achieve expected O(T∞ + P) execution time for T∞ critical-path length and P processors — a theoretical guarantee proven by Blumofe and Leiserson in 1994, still the basis of Cilk, Go, and Java's ForkJoinPool today.</p>
+          </div>
+          <div class="ws-learn-card" style="--lc:#f59e0b">
+            <div class="ws-learn-icon">🏃</div>
+            <h3>Go's GMP Model</h3>
+            <p>Go's runtime scheduler (Goroutines, Machine threads, Processors) uses exactly this pattern — each P has a local run queue; idle Ps steal from busy ones. This is why goroutine-heavy Go programs scale near-linearly across cores without manual tuning.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="work-stealing-scheduler.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

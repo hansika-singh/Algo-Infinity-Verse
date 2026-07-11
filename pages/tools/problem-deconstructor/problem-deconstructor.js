@@ -1,21 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
-  // LOADING SCREEN FIX (IMPORTANT)
-  // -----------------------------
-  const loader = document.getElementById("loading-screen");
-
-  if (loader) {
-    setTimeout(() => {
-      loader.style.opacity = "0";
-      loader.style.transition = "opacity 0.5s ease";
-
-      setTimeout(() => {
-        loader.style.display = "none";
-      }, 500);
-    }, 300);
-  }
-
-  // -----------------------------
   // ELEMENT REFERENCES
   // -----------------------------
   const analyzeBtn = document.getElementById("analyzeBtn");
@@ -45,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputText = problemInput.value.trim();
 
     if (!inputText) {
-      console.warn("Alert:", "Please enter a problem statement.");
+      void 0;
       return;
     }
 

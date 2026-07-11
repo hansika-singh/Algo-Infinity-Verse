@@ -535,7 +535,8 @@ function sendPacket() {
 
     const table = globalRoutingTables[srcId];
     if (!table || table.dist[dstId] === Infinity) {
-        console.warn("Alert:", "Destination is unreachable! No path exists.");
+        els.statusLabel.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#ef4444"></i> Destination unreachable — no path exists.';
+        els.sendBtn.disabled = false;
         return;
     }
 

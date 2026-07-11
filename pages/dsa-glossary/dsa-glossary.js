@@ -151,7 +151,7 @@ async function maybeLoadFromCache() {
       }
     } catch (e) {
       // Cache failure should not block rendering.
-      console.warn("[OfflineLearning] glossary cache update failed:", e);
+      void 0;
     }
     indicator?.clearUI?.();
     return;

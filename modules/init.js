@@ -3,7 +3,7 @@ import { initNavbar } from './navbar.js';
 import { initHeroSection } from './hero.js';
 import { initTopicOfTheDay, initTopicsSection } from './topics.js';
 import { initQuizSection } from './quiz-game.js';
-import { initPracticeSection } from './practice.js';
+
 import { initRoadmap } from './roadmap.js';
 import { initDashboard } from './dashboard.js';
 import { initGamification, initDailyChallenge } from './gamification.js';
@@ -24,30 +24,39 @@ import { initHashRouter } from './hash-router.js';
 import { initEditor } from './editor.js';
 import { initMistakeDna } from './mistake-dna.js';
 import { initPersonalityQuiz } from './personality-quiz.js';
+import { initBookmarkCollections } from './bookmarkUI.js';
 
 function loadUserData() {
   if (typeof window.loadUserData === 'function') {
     return window.loadUserData();
   }
-  const saved = localStorage.getItem("algoInfinityVerse");
+  const saved = localStorage.getItem('algoInfinityVerse');
   if (saved) {
     try {
       const data = JSON.parse(saved);
-      if (data && typeof data === "object") {
+      if (data && typeof data === 'object') {
         window.userProgress = window.userProgress || {};
         Object.assign(window.userProgress, data);
       }
     } catch (e) {
-      console.error("Error loading progress:", e);
+      console.error('Error loading progress:', e);
     }
   }
 }
 
 function initFooterCurrentDate() {
-  const yearEl = document.getElementById("footer-current-year");
+  const yearEl = document.getElementById('footer-current-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
-  const dateEl = document.getElementById("footer-current-date");
-  if (dateEl) dateEl.textContent = "Today: " + new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const dateEl = document.getElementById('footer-current-date');
+  if (dateEl)
+    dateEl.textContent =
+      'Today: ' +
+      new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
 }
 window.initFooterCurrentDate = initFooterCurrentDate;
 
@@ -59,13 +68,14 @@ function initializeApp() {
   initTopicOfTheDay();
   initTopicsSection();
   initQuizSection();
-  initPracticeSection();
+
   initRoadmap();
   initDashboard();
   initGamification();
   initDailyChallenge();
   initChatbot();
   initProfile();
+  initBookmarkCollections();
   initAiInterviewer();
   initNewsletterValidation();
   initScrollEffects();

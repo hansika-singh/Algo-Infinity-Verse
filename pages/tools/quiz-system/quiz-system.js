@@ -322,7 +322,7 @@ class QuizState {
             raw[tag] = (raw[tag] || 0) + 1;
             localStorage.setItem(MISTAKE_STORAGE_KEY, JSON.stringify(raw));
         } catch (e) {
-            console.warn('Could not persist mistake tag:', e);
+            void 0;
         }
     }
 
@@ -431,6 +431,21 @@ class QuizUI {
             card.addEventListener('click', () => this.controller.handleStartQuiz(cat.id));
             this.categoryGrid.appendChild(card);
         });
+    }
+
+    renderSkeleton(categoryTitle) {
+        this.quizTopicLabel.textContent = categoryTitle;
+        this.quizProgressLabel.textContent = 'Loading...';
+        this.quizProgressBar.style.width = '0%';
+        this.questionText.innerHTML = '<div class="skeleton skeleton-line question"></div>';
+        this.optionsGrid.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+            const div = document.createElement('div');
+            div.className = 'skeleton skeleton-line option';
+            this.optionsGrid.appendChild(div);
+        }
+        this.feedbackMsg.textContent = '';
+        this.btnNextQuestion.disabled = true;
     }
 
     renderQuestion(questionData, progressData, categoryTitle) {
@@ -582,7 +597,10 @@ class QuizController {
         this.state.startQuiz(categoryId);
         const categoryTitle = QuizData.categories.find(c => c.id === categoryId).title;
         this.ui.switchView('quiz');
-        this.ui.renderQuestion(this.state.getCurrentQuestion(), this.state.getProgress(), categoryTitle);
+        this.ui.renderSkeleton(categoryTitle);
+        setTimeout(() => {
+            this.ui.renderQuestion(this.state.getCurrentQuestion(), this.state.getProgress(), categoryTitle);
+        }, 600);
     }
 
     handleAnswer(selectedIndex, btnElement) {
@@ -640,7 +658,7 @@ class QuizController {
 
             if (!sessionData.authenticated || !sessionData.user) {
                 // User not logged in — skip saving
-                console.log('Quiz result not saved: user not authenticated.');
+                void 0;
                 return;
             }
 
@@ -666,13 +684,13 @@ class QuizController {
 
             if (!response.ok) {
                 const err = await response.json().catch(() => ({}));
-                console.warn('Failed to save quiz result:', err.error || response.statusText);
+                void 0;
             } else {
-                console.log('Quiz result saved successfully.');
+                void 0;
             }
         } catch (error) {
             // Network failure — log but don't block UI
-            console.warn('Quiz result save failed (network):', error.message);
+            void 0;
         }
     }
 

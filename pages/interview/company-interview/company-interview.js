@@ -144,6 +144,16 @@ function getDiffClass(diff) {
   return { easy: "difficulty-easy", medium: "difficulty-medium", hard: "difficulty-hard" }[diff] || "";
 }
 
+function getDifficultyBadge(difficulty) {
+  const config = {
+    Easy: { icon: "\u2705", class: "easy" },
+    Medium: { icon: "\u26A1", class: "medium" },
+    Hard: { icon: "\uD83D\uDD25", class: "hard" }
+  };
+  const c = config[difficulty] || { icon: "", class: "" };
+  return `<span class="difficulty-badge ${c.class}"><span class="difficulty-icon">${c.icon}</span> ${difficulty}</span>`;
+}
+
 /* ─── Core Logic ─── */
 function initCIQ() {
   const grid         = document.getElementById("ciqGrid");
@@ -229,7 +239,7 @@ function initCIQ() {
             <span class="ciq-company-badge" style="background:${c.bg}; border-color:${c.border}; color:${c.color};">
               ${q.company}
             </span>
-            <span class="difficulty-badge ${getDiffClass(q.diff)}">${q.diff}</span>
+            ${getDifficultyBadge(q.diff)}
           </div>
           <h3>${q.title}</h3>
           <div class="ciq-card-meta">

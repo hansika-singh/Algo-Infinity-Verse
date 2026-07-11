@@ -700,9 +700,10 @@ class PathfindingArena {
     logCompletedRace() {
         const leftCost = this.getPathCost(this.leftPath);
         const rightCost = this.getPathCost(this.rightPath);
-        const leftVisited = this.leftVisited.length;
-        const rightVisited = this.rightVisited.length;
-        
-        console.log(`Race Finished! Left Path Cost: ${leftCost}, Nodes Visited: ${leftVisited}. Right Path Cost: ${rightCost}, Nodes Visited: ${rightVisited}.`);
+        // Update the stat panels with final results (values were being reset during animation)
+        this.dom.costLeft.textContent  = leftCost  ?? '\u2014';
+        this.dom.costRight.textContent = rightCost ?? '\u2014';
+        this.dom.waveLeft.textContent  = this.leftVisited.length;
+        this.dom.waveRight.textContent = this.rightVisited.length;
     }
 }

@@ -1,6 +1,8 @@
 import { getSession, sendJson, readJsonBody } from "../utils/helpers.js";
 import { updateMemoryStore, readMemoryStore, applySM2 } from "../utils/memoryUtils.js";
 
+const MAX_TOPIC_LENGTH = 100;
+
 export async function handleMemoryLog(req, res) {
   const session = getSession(req);
   if (!session) return sendJson(res, 401, { error: "Login required." });
@@ -13,9 +15,19 @@ export async function handleMemoryLog(req, res) {
   }
 
   const { topic, quality } = payload;
+
   if (!topic || typeof topic !== "string" || topic.trim().length < 1) {
     return sendJson(res, 400, { error: "Topic is required." });
   }
+
+  const trimmedTopic = topic.trim();
+
+  if (trimmedTopic.length > MAX_TOPIC_LENGTH) {
+    return sendJson(res, 400, {
+      error: `Topic cannot exceed ${MAX_TOPIC_LENGTH} characters. Current length: ${trimmedTopic.length}`
+    });
+  }
+
   if (
     quality === undefined ||
     isNaN(Number(quality)) ||
@@ -27,7 +39,6 @@ export async function handleMemoryLog(req, res) {
     });
   }
 
-  const trimmedTopic = topic.trim();
   const updatedCard = await updateMemoryStore((store) => {
     const userCards = store[session.sub] || {};
     const existing = userCards[trimmedTopic] || { topic: trimmedTopic };

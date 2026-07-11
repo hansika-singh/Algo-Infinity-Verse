@@ -379,6 +379,6 @@ function severRootReference() {
     if (rootLink) {
         removeLink(rootLink.source.id || rootLink.source, rootLink.target.id || rootLink.target);
     } else {
-        console.warn("Alert:", "No root references left to sever!");
+        void 0;
     }
 }

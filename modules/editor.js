@@ -249,10 +249,26 @@ function runWorker(harnessCode, timeoutMs) {
 function setOutput(text, type) {
   const el = document.getElementById("quizOutputContent");
   if (!el) return;
-  if (type === "running") el.innerHTML = '<p class="output-running">⏳ Running code...</p>';
-  else if (type === "error") el.innerHTML = '<pre class="output-error">❌ Error:\n' + text + '</pre>';
-  else if (type === "success") el.innerHTML = '<pre class="output-success">✅ ' + text + '</pre>';
-  else el.innerHTML = '<pre>' + text + '</pre>';
+  
+  if (type === "running") {
+    el.innerHTML = '<p class="output-running">⏳ Running code...</p>';
+    return;
+  }
+  
+  el.innerHTML = '';
+  const pre = document.createElement("pre");
+  
+  if (type === "error") {
+    pre.className = "output-error";
+    pre.textContent = "❌ Error:\n" + text;
+  } else if (type === "success") {
+    pre.className = "output-success";
+    pre.textContent = "✅ " + text;
+  } else {
+    pre.textContent = text;
+  }
+  
+  el.appendChild(pre);
 }
 
 function getProblemSignature(problem) {
@@ -263,7 +279,7 @@ function saveEditorDraft(problemId, code, signature) {
   try {
     localStorage.setItem(`editorDraft_${problemId}`, code);
     if (signature) localStorage.setItem(`editorDraft_sig_${problemId}`, signature);
-  } catch (e) { console.warn('Could not save draft:', e); }
+  } catch (e) { void 0; }
 }
 
 function getEditorDraft(problemId) { try { return localStorage.getItem(`editorDraft_${problemId}`); } catch (e) { return null; } }
@@ -273,7 +289,7 @@ function clearEditorDraft(problemId) {
   try {
     localStorage.removeItem(`editorDraft_${problemId}`);
     localStorage.removeItem(`editorDraft_sig_${problemId}`);
-  } catch (e) { console.warn('Could not clear draft:', e); }
+  } catch (e) { void 0; }
 }
 
 function getXPForDifficulty(difficulty) { const map = { easy: 100, medium: 250, hard: 500 }; return map[difficulty.toLowerCase()] || 100; }
@@ -646,6 +662,7 @@ function openQuizEditor(problem) {
     document.getElementById('outputHeader')?.addEventListener('click', toggleOutputPanel);
   }
 
+  modal.classList.remove("hidden");
   modal.classList.add("active");
   updateLineNumbers();
   syncScroll();
@@ -675,7 +692,17 @@ function openQuizEditor(problem) {
   if (sm2Container) sm2Container.style.display = "none";
 }
 
-function closeQuizEditor() { const el = document.getElementById("quizEditorModal"); if (el) el.classList.remove("active"); currentProblem = null; }
+function closeQuizEditor() {
+  const el = document.getElementById("quizEditorModal");
+  if (el) {
+    el.classList.remove("active");
+    // Clean up hidden class added by initModalManager's closeModal overlay handler
+    el.classList.remove("hidden");
+  }
+  currentProblem = null;
+  // Ensure body scroll is always restored, regardless of MutationObserver timing
+  document.body.classList.remove("modal-open");
+}
 
 async function runQuizCode() {
   if (_running) return;

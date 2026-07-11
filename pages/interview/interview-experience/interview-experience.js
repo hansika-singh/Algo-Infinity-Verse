@@ -103,17 +103,9 @@ let currentSort = 'newest';
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   sessionStorage.setItem('algoInfinityVerse_appLoaded', 'true');
-  initLoadingScreen();
   initNavbar();
   initIEP();
 });
-
-function initLoadingScreen() {
-  setTimeout(() => {
-    const s = document.getElementById('loading-screen');
-    if (s) s.classList.add('hidden');
-  }, 1500);
-}
 
 function initNavbar() {
   const menuToggle = document.getElementById('menuToggle');
@@ -297,7 +289,7 @@ function submitExperience() {
   }
 
   if (!company || !role || !difficulty || !rating || !title || !content) {
-    console.warn("Alert:", 'Please fill in all required fields.');
+    void 0;
     return;
   }
 

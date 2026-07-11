@@ -46,11 +46,10 @@ test.describe('Navigation and Topics Flow', () => {
     const topicsSection = page.locator('#topics');
     await expect(topicsSection).toBeVisible();
 
-    // Ensure the practice section is visible
-    const practiceSection = page.locator('#practice');
-    await expect(practiceSection).toBeVisible();
-
-    // Check if the filter buttons are rendered
-    await expect(page.locator('.filter-btn[data-filter="all"]')).toBeVisible();
+    // Ensure the practice page loads
+    await page.goto('/pages/practice/problems.html');
+    await expect(page).toHaveURL(/problems\.html/);
+    const heroTitle = page.locator('.pp-hero-title');
+    await expect(heroTitle).toBeVisible();
   });
 });

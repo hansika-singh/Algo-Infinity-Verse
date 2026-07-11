@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zobrist Hashing Playground | Algo Infinity Verse</title>
+    <meta name="description" content="See how chess engines hash board positions in O(1) per move using XOR — incremental updates, undo via self-inverse XOR, and transposition detection." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="zobrist-hashing-playground.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="zobrist-hashing-playground">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="zb-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="zb-hero-inner">
+        <div class="zb-hero-eyebrow">♟️ Stockfish · Transposition Tables · Threefold Repetition</div>
+        <h1 class="zb-hero-title">Zobrist Hashing Playground</h1>
+        <p class="zb-hero-sub">One XOR to make a move. The same XOR to undo it.</p>
+        <p class="zb-hero-desc">Chess engines can't afford to re-hash the entire board on every move. Zobrist hashing assigns a random 64-bit key to every (piece, square) pair — the board's hash is just the XOR of all present keys. Making or undoing a move is exactly one or two XOR operations, regardless of board complexity.</p>
+        <a href="#lab" class="btn btn-primary zb-btn-primary"><i class="fas fa-chess-board"></i> Open Playground</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section zb-section">
+      <div class="container">
+
+        <div class="zb-control-card">
+          <div class="zb-row">
+            <button class="btn zb-btn-primary zb-newtable-btn" id="zbNewTableBtn"><i class="fas fa-shuffle"></i> Generate New Random Key Table</button>
+            <button class="btn btn-secondary zb-undo-btn" id="zbUndoBtn" disabled><i class="fas fa-rotate-left"></i> Undo Last Move</button>
+            <button class="btn btn-secondary zb-reset-btn" id="zbResetBtn"><i class="fas fa-undo"></i> Reset Board</button>
+          </div>
+          <div class="zb-hint">Click any square to cycle Empty → X → O → Empty. Each transition is a real move, hashed incrementally.</div>
+        </div>
+
+        <div class="zb-status" id="zbStatus">Click any square on the board to make your first move.</div>
+
+        <div class="zb-main-layout">
+
+          <div class="zb-board-section">
+            <div class="zb-panel-title"><i class="fas fa-border-all"></i> Board (4×4)</div>
+            <div class="zb-board" id="zbBoard"></div>
+
+            <div class="zb-hash-display">
+              <div class="zb-hash-label">Current Zobrist Hash (64-bit)</div>
+              <div class="zb-hash-value" id="zbHashValue">0x0000000000000000</div>
+            </div>
+          </div>
+
+          <div class="zb-right-panel">
+
+            <div class="zb-panel-card">
+              <div class="zb-panel-title"><i class="fas fa-list-ol"></i> Move Log</div>
+              <div class="zb-log" id="zbMoveLog"><div class="zb-empty">No moves yet.</div></div>
+            </div>
+
+            <div class="zb-panel-card">
+              <div class="zb-panel-title"><i class="fas fa-key"></i> Zobrist Key Table (sample)</div>
+              <div class="zb-key-table" id="zbKeyTable"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="zb-transposition-card">
+          <div class="zb-tc-header"><i class="fas fa-code-compare"></i> Transposition Demo — Same Position, Different Move Orders</div>
+          <p class="zb-tc-desc">Two independent move sequences below reach the exact same final board — but arrive via different orders. Run both and compare the final hashes.</p>
+          <div class="zb-tc-grid">
+            <div class="zb-tc-col">
+              <div class="zb-tc-title">Path A</div>
+              <div class="zb-tc-moves" id="zbPathAMoves"></div>
+              <button class="btn btn-secondary zb-tc-run-btn" data-path="A" id="zbRunPathA"><i class="fas fa-play"></i> Run Path A</button>
+              <div class="zb-tc-hash" id="zbHashA">—</div>
+            </div>
+            <div class="zb-tc-col">
+              <div class="zb-tc-title">Path B</div>
+              <div class="zb-tc-moves" id="zbPathBMoves"></div>
+              <button class="btn btn-secondary zb-tc-run-btn" data-path="B" id="zbRunPathB"><i class="fas fa-play"></i> Run Path B</button>
+              <div class="zb-tc-hash" id="zbHashB">—</div>
+            </div>
+          </div>
+          <div class="zb-tc-verdict hidden" id="zbTcVerdict"></div>
+        </div>
+
+        <div class="zb-collision-card">
+          <div class="zb-cc-header"><i class="fas fa-triangle-exclamation"></i> Collision Demo — Why 64 Bits Matters</div>
+          <p class="zb-cc-desc">Generate 300 random board positions and hash each one. With 64-bit keys, collisions are astronomically unlikely. Truncate to 8-bit keys (only 256 possible values) and watch collisions happen almost immediately — the birthday paradox in action.</p>
+          <div class="zb-cc-controls">
+            <div class="zb-cc-mode-btns">
+              <button class="zb-cc-mode-btn active" data-bits="64">64-bit keys</button>
+              <button class="zb-cc-mode-btn" data-bits="8">8-bit keys (truncated)</button>
+            </div>
+            <button class="btn zb-btn-primary zb-cc-run-btn" id="zbCcRunBtn"><i class="fas fa-play"></i> Generate 300 Random Positions</button>
+          </div>
+          <div class="zb-cc-result" id="zbCcResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">♟️</span> Why This Technique Is Everywhere</h2>
+        <div class="zb-learn-grid">
+          <div class="zb-learn-card" style="--lc:#06b6d4">
+            <div class="zb-learn-icon">⚡</div>
+            <h3>O(1) Incremental Updates</h3>
+            <p>Making a move XORs out the piece's old (piece, square) key and XORs in its new one — exactly 2 operations, regardless of how complex the position is. No full re-hash, ever.</p>
+          </div>
+          <div class="zb-learn-card" style="--lc:#a855f7">
+            <div class="zb-learn-icon">↩️</div>
+            <h3>Self-Inverse Undo</h3>
+            <p>XOR-ing a value with itself cancels it out (a ⊕ a = 0). Applying the exact same XOR operations used to make a move restores the exact previous hash — undo is free, no separate logic needed.</p>
+          </div>
+          <div class="zb-learn-card" style="--lc:#22c55e">
+            <div class="zb-learn-icon">🔁</div>
+            <h3>Transposition Tables</h3>
+            <p>XOR is commutative — the final hash depends only on which (piece, square) pairs are present, never on the order moves were made. This lets engines detect "I've evaluated this exact position before" and reuse cached evaluations, even via a completely different move sequence.</p>
+          </div>
+          <div class="zb-learn-card" style="--lc:#f59e0b">
+            <div class="zb-learn-icon">🎲</div>
+            <h3>The Birthday Bound</h3>
+            <p>With 64-bit random keys, collisions become likely only after roughly 2³² (~4 billion) distinct positions have been hashed — far beyond what any real search tree explores. Real engines like Stockfish rely on exactly this margin of safety.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="zobrist-hashing-playground.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

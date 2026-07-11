@@ -2,10 +2,9 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { getSession, sendJson, readJsonBody } from "../utils/helpers.js";
+import { initializeFirebase } from "../../firebase.js";
 
 const DATA_DIR = path.join(process.cwd(), "data");
-let db = null;
-let useFirestore = false;
 
 export async function handleSubmitInterviewExperience(req, res) {
   const session = getSession(req);
@@ -52,7 +51,8 @@ export async function handleSubmitInterviewExperience(req, res) {
   };
 
   try {
-    if (useFirestore) {
+    const db = initializeFirebase();
+    if (db) {
       const docRef = await db
         .collection("interviewExperiences")
         .add(experienceData);

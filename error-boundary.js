@@ -16,7 +16,7 @@
   // Function to report an error payload to the backend
   async function sendErrorToBackend(payload) {
     if (location.protocol === "file:") {
-      console.warn("Offline environment; skipping remote error report.", payload);
+      void 0;
       return;
     }
     try {

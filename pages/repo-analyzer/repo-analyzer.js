@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   analyzeBtn.addEventListener("click", async () => {
     const repoUrl = repoUrlInput.value.trim();
     if (!repoUrl) {
-      console.warn("Alert:", "Please enter a valid GitHub URL");
+      void 0;
       return;
     }
 
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
       console.error(error);
-      console.warn("Alert:", error.message);
+      void 0;
     } finally {
       loadingIndicator.style.display = "none";
       analyzeBtn.disabled = false;

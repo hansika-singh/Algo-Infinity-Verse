@@ -71,33 +71,41 @@ export function instrumentJS(sourceCode) {
 
   const allVariableNames = collectTopLevelAssignedNames(sourceCode);
   const lines = sourceCode.split("\n");
-
-  let braceDepth = 0;
   const instrumentedLines = [];
   const isInsideFunction = new Array(lines.length).fill(false);
-  let inFn = false;
 
-  for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim();
-
-    if (!trimmed.startsWith("//")) {
-      if (/^(?:function|class)\s/.test(trimmed)) {
-        inFn = true;
-      }
-
-      const openBraces = (trimmed.match(/\{/g) || []).length;
-      const closeBraces = (trimmed.match(/\}/g) || []).length;
-
-      braceDepth += openBraces - closeBraces;
-
-      if (closeBraces > 0 && braceDepth === 0) {
-        inFn = false;
+  function markFunctions(node) {
+    if (!node || typeof node !== "object") return;
+    if (isFunctionLike(node) || node.type === "ClassDeclaration" || node.type === "ClassExpression") {
+      const bodyNode = node.body || node;
+      if (bodyNode.loc) {
+        const startLine = bodyNode.loc.start.line;
+        const endLine = bodyNode.loc.end.line;
+        
+        for (let i = startLine; i <= endLine; i++) {
+          // If the function spans multiple lines, mark the internal lines as strictly inside.
+          // If it's a single-line function, mark the line itself as inside.
+          if (startLine === endLine) {
+            isInsideFunction[i - 1] = true;
+          } else if (i > startLine && i < endLine) {
+            isInsideFunction[i - 1] = true;
+          }
+        }
       }
     }
-
-    const isFnDeclLine = /^(?:function|class)\s/.test(trimmed);
-    isInsideFunction[i] = inFn && !isFnDeclLine;
+    
+    for (const key of Object.keys(node)) {
+      if (key === "start" || key === "end" || key === "loc") continue;
+      const val = node[key];
+      if (Array.isArray(val)) {
+        for (let j = val.length - 1; j >= 0; j--) markFunctions(val[j]);
+      } else if (val && typeof val === "object") {
+        markFunctions(val);
+      }
+    }
   }
+
+  markFunctions(ast);
 
   const skipLine = (trimmed, idx) => {
     if (!trimmed) return true;

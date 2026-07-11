@@ -398,6 +398,6 @@ shareBtn?.addEventListener("click", async () => {
         });
     } else {
         await navigator.clipboard.writeText(dataUrl);
-        console.warn("Alert:", "Artwork copied as image data URL.");
+        void 0;
     }
 });

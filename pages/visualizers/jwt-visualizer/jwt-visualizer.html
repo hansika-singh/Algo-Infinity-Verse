@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JWT Structure and Lifecycle Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive visualizer for JSON Web Token encoding, decoding, and signature verification."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="jwt-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="jwt-visualizer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero jwt-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Stateless Authentication.</span>
+          <span class="main-title jwt-gradient">JSON Web Tokens</span>
+          <span class="subtitle">Structure & Lifecycle Visualizer</span>
+        </h1>
+        <p class="section-subtitle">
+          Encode, decode, and verify JWTs in real-time. Understand how the Header, Payload, and
+          Signature securely pass claims between parties without maintaining state.
+        </p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary jwt-btn-primary"
+            ><i class="fas fa-key"></i> Open Visualizer</a
+          >
+          <a href="#learn" class="btn btn-secondary"><i class="fas fa-book"></i> How It Works</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+        <div id="jwtStatus" class="jwt-status">Valid Signature</div>
+
+        <!-- Main layout -->
+        <div class="jwt-main-layout">
+          <!-- Encoded Column -->
+          <div class="jwt-col jwt-encoded-col">
+            <div class="jwt-col-header">
+              <h2>Encoded</h2>
+              <span class="jwt-badge">Paste a token here</span>
+            </div>
+
+            <div class="jwt-textarea-wrap">
+              <div
+                class="jwt-encoded-display"
+                id="jwtEncodedDisplay"
+                contenteditable="true"
+                spellcheck="false"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Decoded Column -->
+          <div class="jwt-col jwt-decoded-col">
+            <div class="jwt-col-header">
+              <h2>Decoded</h2>
+              <span class="jwt-badge">Edit the JSON</span>
+            </div>
+
+            <!-- Header Section -->
+            <div class="jwt-section jwt-section-header">
+              <div class="jwt-sec-title">
+                HEADER: <span class="jwt-sec-sub">ALGORITHM & TOKEN TYPE</span>
+              </div>
+              <textarea
+                class="jwt-json-input"
+                id="jwtInputHeader"
+                spellcheck="false"
+                autocomplete="off"
+              ></textarea>
+              <div class="jwt-error-msg" id="jwtErrHeader"></div>
+            </div>
+
+            <!-- Payload Section -->
+            <div class="jwt-section jwt-section-payload">
+              <div class="jwt-sec-title">PAYLOAD: <span class="jwt-sec-sub">DATA</span></div>
+              <textarea
+                class="jwt-json-input"
+                id="jwtInputPayload"
+                spellcheck="false"
+                autocomplete="off"
+              ></textarea>
+              <div class="jwt-error-msg" id="jwtErrPayload"></div>
+            </div>
+
+            <!-- Signature Section -->
+            <div class="jwt-section jwt-section-signature">
+              <div class="jwt-sec-title">VERIFY SIGNATURE</div>
+              <div class="jwt-sig-box">
+                <div class="jwt-sig-formula">
+                  <span class="cm-keyword">HMACSHA256</span>(
+                  <div class="jwt-sig-indent">
+                    <span class="cm-method">base64UrlEncode</span>(<span class="cm-header"
+                      >header</span
+                    >) + <span class="cm-string">"."</span> +
+                    <br />
+                    <span class="cm-method">base64UrlEncode</span>(<span class="cm-payload"
+                      >payload</span
+                    >),
+                    <br />
+                    <input
+                      type="text"
+                      id="jwtInputSecret"
+                      class="jwt-secret-input"
+                      value="your-256-bit-secret"
+                      placeholder="secret"
+                      autocomplete="off"
+                    />
+                  </div>
+                  )
+                </div>
+                <div class="jwt-signature-flag">
+                  <label class="jwt-checkbox-wrap">
+                    <input type="checkbox" id="jwtSecretBase64" />
+                    <span>secret base64 encoded</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn Section -->
+    <section id="learn" class="section bg-light">
+      <div class="container">
+        <h2 class="section-title">Anatomy of a JWT</h2>
+        <div class="jwt-learn-grid">
+          <div class="jwt-learn-card">
+            <h3 class="jwt-red">1. Header</h3>
+            <p>
+              Typically consists of two parts: the type of the token (JWT) and the signing algorithm
+              being used, such as HMAC SHA256 or RSA. It is Base64Url encoded to form the first part
+              of the token.
+            </p>
+          </div>
+          <div class="jwt-learn-card">
+            <h3 class="jwt-purple">2. Payload</h3>
+            <p>
+              Contains the claims. Claims are statements about an entity (typically, the user) and
+              additional data. It is Base64Url encoded to form the second part of the token.
+              <em>Do not put secrets here, as anyone can decode it.</em>
+            </p>
+          </div>
+          <div class="jwt-learn-card">
+            <h3 class="jwt-blue">3. Signature</h3>
+            <p>
+              Created by taking the encoded header, the encoded payload, a secret, and the algorithm
+              specified in the header, and signing that. This verifies that the sender is who it
+              says it is and ensures the message wasn't changed along the way.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="jwt-visualizer.js"></script>
+  </body>
+</html>

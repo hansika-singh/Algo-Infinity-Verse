@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Whiteboard | Algo Infinity Verse</title>
+
+    <meta name="description" content="Collaborate on DSA problems in real-time with our interactive shared whiteboard." />
+    <meta name="theme-color" content="#38bdf8" />
+
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="whiteboard.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body class="wb-body">
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <main class="wb-main">
+        <!-- Header / Room Panel -->
+        <header class="wb-header glass-panel">
+            <div class="wb-header-left">
+                <h2><i class="fas fa-chalkboard"></i> Collaborative Whiteboard</h2>
+                <div class="wb-room-info">
+                    <span class="room-label">Room ID:</span>
+                    <strong id="roomIdDisplay" class="room-id">...</strong>
+                    <button id="btnCopyLink" class="btn-icon tooltip" aria-label="Copy Link">
+                        <i class="fas fa-link"></i>
+                        <span class="tooltip-text">Copy Link</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="wb-header-right">
+                <div id="connectionStatus" class="connection-status connecting">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <div class="wb-presence">
+                    <div id="presenceAvatars" class="avatar-group">
+                        <!-- Avatars dynamically inserted here -->
+                    </div>
+                </div>
+                <button id="btnExport" class="btn-primary btn-sm">
+                    <i class="fas fa-download"></i> Export PNG
+                </button>
+            </div>
+        </header>
+
+        <div class="wb-workspace">
+            <!-- Sidebar Toolbar -->
+            <aside class="wb-toolbar glass-panel">
+                <div class="toolbar-section">
+                    <div class="tool-group">
+                        <button class="wb-tool active tooltip" data-tool="pen" aria-label="Pen Tool (P)">
+                            <i class="fas fa-pen"></i>
+                            <span class="tooltip-text right">Pen (P)</span>
+                        </button>
+                        <button class="wb-tool tooltip" data-tool="eraser" aria-label="Eraser (E)">
+                            <i class="fas fa-eraser"></i>
+                            <span class="tooltip-text right">Eraser (E)</span>
+                        </button>
+                        <button class="wb-tool tooltip" data-tool="text" aria-label="Text (T)">
+                            <i class="fas fa-font"></i>
+                            <span class="tooltip-text right">Text (T)</span>
+                        </button>
+                    </div>
+                    
+                    <div class="toolbar-divider"></div>
+                    
+                    <div class="tool-group shapes-group">
+                        <button class="wb-tool tooltip" data-tool="rect" aria-label="Rectangle (R)">
+                            <i class="far fa-square"></i>
+                            <span class="tooltip-text right">Rectangle (R)</span>
+                        </button>
+                        <button class="wb-tool tooltip" data-tool="circle" aria-label="Circle (C)">
+                            <i class="far fa-circle"></i>
+                            <span class="tooltip-text right">Circle (C)</span>
+                        </button>
+                        <button class="wb-tool tooltip" data-tool="line" aria-label="Line (L)">
+                            <i class="fas fa-minus"></i>
+                            <span class="tooltip-text right">Line (L)</span>
+                        </button>
+                        <button class="wb-tool tooltip" data-tool="arrow" aria-label="Arrow (A)">
+                            <i class="fas fa-long-arrow-alt-right"></i>
+                            <span class="tooltip-text right">Arrow (A)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="toolbar-section">
+                    <div class="toolbar-divider"></div>
+                    <label class="toolbar-label">Color</label>
+                    <div class="color-palette">
+                        <button class="color-swatch active" style="background-color: #8b5cf6;" data-color="#8b5cf6"></button>
+                        <button class="color-swatch" style="background-color: #ef4444;" data-color="#ef4444"></button>
+                        <button class="color-swatch" style="background-color: #f59e0b;" data-color="#f59e0b"></button>
+                        <button class="color-swatch" style="background-color: #10b981;" data-color="#10b981"></button>
+                        <button class="color-swatch" style="background-color: #3b82f6;" data-color="#3b82f6"></button>
+                        <button class="color-swatch" style="background-color: #ec4899;" data-color="#ec4899"></button>
+                        <button class="color-swatch" style="background-color: #ffffff;" data-color="#ffffff"></button>
+                        <button class="color-swatch" style="background-color: #0f172a;" data-color="#0f172a" style="border: 1px solid #334155;"></button>
+                        <div class="color-picker-wrap tooltip">
+                            <input type="color" id="customColorPicker" value="#8b5cf6" class="color-picker" />
+                            <i class="fas fa-palette"></i>
+                            <span class="tooltip-text right">Custom</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-section">
+                    <div class="toolbar-divider"></div>
+                    <label class="toolbar-label">Size: <span id="strokeSizeVal">4</span>px</label>
+                    <input type="range" id="strokeSlider" min="1" max="40" value="4" class="size-slider">
+                </div>
+
+                <div class="toolbar-section actions-section">
+                    <div class="toolbar-divider"></div>
+                    <div class="action-group">
+                        <button id="btnUndo" class="action-btn tooltip" aria-label="Undo (Ctrl+Z)">
+                            <i class="fas fa-undo"></i>
+                            <span class="tooltip-text right">Undo</span>
+                        </button>
+                        <button id="btnRedo" class="action-btn tooltip" aria-label="Redo (Ctrl+Y)">
+                            <i class="fas fa-redo"></i>
+                            <span class="tooltip-text right">Redo</span>
+                        </button>
+                        <button id="btnClear" class="action-btn clear-btn tooltip" aria-label="Clear Canvas">
+                            <i class="fas fa-trash"></i>
+                            <span class="tooltip-text right">Clear</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Canvas Container -->
+            <div class="wb-canvas-container" id="canvasContainer">
+                <!-- Background canvas for rendering local changes -->
+                <canvas id="whiteboardCanvas"></canvas>
+                <!-- Temporary canvas for shape previews -->
+                <canvas id="tempCanvas"></canvas>
+                
+                <!-- Remote Cursors Overlay -->
+                <div id="remoteCursorsOverlay"></div>
+
+                <div id="textInputOverlay" class="hidden">
+                    <input type="text" id="canvasTextInput" placeholder="Type and hit Enter..." autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Clear Confirmation Modal -->
+    <div id="clearModal" class="modal-backdrop hidden">
+        <div class="modal-content glass-panel">
+            <h3>Clear Whiteboard?</h3>
+            <p>Are you sure you want to clear the whiteboard for everyone in the room? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="btnCancelClear" class="btn-secondary">Cancel</button>
+                <button id="btnConfirmClear" class="btn-danger">Clear Everything</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Required by init.js) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="../../js/init.js"></script>
+    <script src="../../auth.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="whiteboard.js" type="module"></script>
+</body>
+</html>

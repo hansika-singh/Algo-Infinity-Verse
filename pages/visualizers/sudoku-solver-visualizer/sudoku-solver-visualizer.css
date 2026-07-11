@@ -1,0 +1,459 @@
+/* ─────────────────────────────────────────────
+   Sudoku Solver Visualizer
+   ───────────────────────────────────────────── */
+
+.su-gradient {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.su-btn-primary {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Control Card ── */
+.su-control-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(10px);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.su-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.su-row-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+/* Preset buttons */
+.su-preset-btns {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.su-preset-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  transition: all 0.2s ease;
+}
+
+.su-preset-btn:hover {
+  color: var(--text-primary);
+  border-color: #f59e0b;
+}
+.su-preset-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+/* Playback */
+.su-playback-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.su-pb-btn {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.su-pb-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.su-speed-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.su-speed-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.su-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  width: 100px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.su-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f59e0b;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+}
+
+.su-speed-val {
+  font-size: 0.72rem;
+  color: #f59e0b;
+  font-weight: 700;
+  font-family:
+    Fira Code,
+    monospace;
+  min-width: 55px;
+}
+
+.su-step-ctr {
+  margin-left: auto;
+  font-family:
+    Fira Code,
+    monospace;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.su-step-ctr span {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+/* ── Status ── */
+.su-status {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  min-height: 2.4rem;
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  transition: all 0.25s ease;
+  line-height: 1.5;
+}
+
+.su-status.trying {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.06);
+  color: #3b82f6;
+}
+.su-status.backtrack {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+  color: #ef4444;
+}
+.su-status.done {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+}
+.su-status.unsolvable {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+/* ── Main layout ── */
+.su-main-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+  align-items: start;
+}
+
+/* ── Sudoku Board ── */
+.su-board-wrap {
+  display: flex;
+  justify-content: center;
+  background: rgba(10, 10, 26, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.su-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1px;
+  background: #1e293b; /* grid line color */
+  border: 3px solid #64748b; /* Thick outer border */
+}
+
+/* Thick borders for 3x3 subgrids */
+.su-cell:nth-child(3n) {
+  border-right: 3px solid #64748b;
+}
+.su-cell:nth-child(9n) {
+  border-right: none;
+}
+.su-cell:nth-child(n + 19):nth-child(-n + 27),
+.su-cell:nth-child(n + 46):nth-child(-n + 54) {
+  border-bottom: 3px solid #64748b;
+}
+
+.su-cell {
+  width: clamp(28px, 5vw, 44px);
+  height: clamp(28px, 5vw, 44px);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-family: Orbitron, monospace;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  border: none;
+  text-align: center;
+  outline: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.su-cell:focus {
+  background: rgba(59, 130, 246, 0.15);
+}
+.su-cell.su-fixed {
+  color: #94a3b8;
+  font-weight: 900;
+  background: rgba(15, 23, 42, 0.6);
+  cursor: not-allowed;
+}
+
+/* Visualizer states */
+.su-cell.su-trying {
+  background: rgba(59, 130, 246, 0.4);
+  color: #fff;
+  transform: scale(1.05);
+  z-index: 10;
+  border-radius: 4px;
+}
+.su-cell.su-backtrack {
+  background: rgba(239, 68, 68, 0.5);
+  color: #fff;
+  transform: scale(0.95);
+  z-index: 10;
+  border-radius: 4px;
+}
+.su-cell.su-solved {
+  color: #22c55e;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+/* Hide number input arrows */
+.su-cell::-webkit-outer-spin-button,
+.su-cell::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.su-cell[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* ── State panel ── */
+.su-state-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 480px;
+}
+
+.su-state-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+/* Action log */
+.su-log-wrap {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 180px;
+  background: rgba(10, 10, 26, 0.3);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+}
+
+.su-log-entry {
+  font-size: 0.72rem;
+  font-family:
+    Fira Code,
+    monospace;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.su-log-entry.trying {
+  border-left-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+.su-log-entry.backtrack {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+  color: #fca5a5;
+}
+.su-log-entry.done {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  color: #86efac;
+  font-weight: 600;
+}
+.su-log-empty {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Stats grid */
+.su-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.su-stat-box {
+  background: rgba(10, 10, 26, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.su-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.su-stat-val {
+  font-family:
+    Fira Code,
+    monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+#suStatBacktracks {
+  color: #ef4444;
+}
+
+/* ── Learn cards ── */
+.su-learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+}
+
+.su-learn-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.su-learn-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: #f59e0b;
+}
+.su-learn-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .su-main-layout {
+    grid-template-columns: 1fr;
+  }
+  .su-board-wrap {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .su-playback-row {
+    flex-wrap: wrap;
+  }
+  .su-step-ctr {
+    margin-left: 0;
+  }
+  .su-board {
+    border-width: 2px;
+  }
+  .su-cell:nth-child(3n) {
+    border-right-width: 2px;
+  }
+  .su-cell:nth-child(n + 19):nth-child(-n + 27),
+  .su-cell:nth-child(n + 46):nth-child(-n + 54) {
+    border-bottom-width: 2px;
+  }
+}

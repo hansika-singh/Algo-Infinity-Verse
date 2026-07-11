@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFU Cache Engine | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="lfu-cache.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="lfu-cache.js" defer></script>
+</head>
+<body data-page="lfu-cache">
+    <div class="glass-panel top-bar">
+        <div class="header-info">
+            <h2>System Design: LFU Cache (Least Frequently Used)</h2>
+            <p class="status" role="status" aria-live="polite" id="main-status">Status: Cache Initialized | Capacity: 4</p>
+        </div>
+        <div class="controls">
+            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
+            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
+            <div class="divider"></div>
+            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Cache"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <aside class="side-panel left-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-database"></i> Operations</h3>
+                
+                <div class="param-grid" style="margin-bottom: 1rem;">
+                    <label>Put(Key, Value)</label>
+                    <input type="number" id="input-put-k" class="glass-input" placeholder="Key (1-9)" min="1" max="9">
+                    <input type="number" id="input-put-v" class="glass-input" placeholder="Val (1-99)" min="1" max="99">
+                    <button type="button" id="btn-put" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-download"></i> Put</button>
+                </div>
+
+                <div class="param-grid" style="margin-bottom: 1.5rem;">
+                    <label>Get(Key)</label>
+                    <input type="number" id="input-get-k" class="glass-input" placeholder="Key (1-9)" min="1" max="9" style="grid-column: 1 / 3;">
+                    <button type="button" id="btn-get" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-search"></i> Get</button>
+                </div>
+
+                <div class="param-grid">
+                    <label>Set Capacity</label>
+                    <input type="number" id="input-cap" class="glass-input" value="4" min="2" max="8" style="grid-column: 1 / 3;">
+                </div>
+            </div>
+
+            <div class="panel-section" style="flex: 1;">
+                <h3><i class="fas fa-code"></i> Execution Trace</h3>
+                
+                <div class="pseudocode hidden" id="pseudo-put">
+                    <div id="pt-1" class="code-line">1. If key exists in Map:</div>
+                    <div id="pt-2" class="code-line indent">Update node.value</div>
+                    <div id="pt-3" class="code-line indent">Call internal Get(key) to promote</div>
+                    <div id="pt-4" class="code-line">2. Else (New Key):</div>
+                    <div id="pt-5" class="code-line indent">If Cache is Full (Size == Cap):</div>
+                    <div id="pt-6" class="code-line indent-2">DLL = freqMap[minFreq]</div>
+                    <div id="pt-7" class="code-line indent-2">Evict DLL.tail (LRU of Min Freq)</div>
+                    <div id="pt-8" class="code-line indent-2">Delete from Map, Size--</div>
+                    <div id="pt-9" class="code-line indent">Create new Node(freq=1)</div>
+                    <div id="pt-10" class="code-line indent">Insert into freqMap[1] Head</div>
+                    <div id="pt-11" class="code-line indent">minFreq = 1, Add to Map, Size++</div>
+                </div>
+
+                <div class="pseudocode hidden" id="pseudo-get">
+                    <div id="gt-1" class="code-line">1. If key NOT in Map:</div>
+                    <div id="gt-2" class="code-line indent">Return -1 (Cache Miss)</div>
+                    <div id="gt-3" class="code-line">2. Else (Cache Hit):</div>
+                    <div id="gt-4" class="code-line indent">node = Map[key], f = node.freq</div>
+                    <div id="gt-5" class="code-line indent">Remove node from freqMap[f]</div>
+                    <div id="gt-6" class="code-line indent">If freqMap[f] is empty & minFreq == f:</div>
+                    <div id="gt-7" class="code-line indent-2">minFreq++</div>
+                    <div id="gt-8" class="code-line indent">node.freq++</div>
+                    <div id="gt-9" class="code-line indent">Insert node at freqMap[f+1] Head</div>
+                    <div id="gt-10" class="code-line indent">Return node.value</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <div class="visualizer-stage">
+                
+                <div class="hash-map-panel">
+                    <h4 class="stage-label">O(1) Memory Map</h4>
+                    <div class="map-table" id="hash-map-table"></div>
+                </div>
+
+                <div class="lfu-stage" id="lfu-stage">
+                    <div id="tiers-background" class="tiers-bg-container"></div>
+                    <div id="nodes-layer" class="nodes-layer" role="region" aria-label="LFU Cache Nodes"></div>
+                </div>
+
+                <div id="math-overlay" class="glass-panel math-panel hidden">
+                    <h4 id="math-title">Current Operation</h4>
+                    <div id="math-equation" class="equation">...</div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel glass-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+                <p class="edu-text">An <strong>LFU Cache</strong> evicts the element accessed least often. It requires an <span class="badge freq-map">O(1) Freq Map</span> pointing to multiple Doubly Linked Lists.</p>
+                <ul class="edu-list">
+                    <li><span class="badge promotion">Promotion</span> Accessing a node increments its frequency, moving it to a higher tier DLL.</li>
+                    <li><span class="badge tie-break">LRU Tie-Break</span> If the cache is full, it looks at the `minFreq` tier and evicts the Least Recently Used node (Tail) in that specific list.</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3><i class="fas fa-microchip"></i> Telemetry</h3>
+                <div class="complexity-stat">
+                    <span class="label">Cache Size</span>
+                    <span class="value" id="stat-size">0 / 4</span>
+                </div>
+                <div class="complexity-stat">
+                    <span class="label">Min Freq Pointer</span>
+                    <span class="value highlight-val" id="stat-minfreq">0</span>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-half">
+                        <span class="label">Hits</span>
+                        <span class="value" style="color: var(--accent-emerald);" id="stat-hits">0</span>
+                    </div>
+                    <div class="metric-half">
+                        <span class="label">Misses</span>
+                        <span class="value" style="color: var(--danger);" id="stat-misses">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redis Cache Visualizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚡ Redis Cache Visualizer</h1>
+      <p>See how caching improves performance</p>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-group">
+        <input type="text" id="keyInput" placeholder="Key name" />
+        <input type="text" id="valueInput" placeholder="Value" />
+        <button id="addBtn">➕ Add</button>
+      </div>
+      <div class="control-group">
+        <input type="text" id="getKeyInput" placeholder="Get key" />
+        <button id="getBtn">🔍 Get</button>
+      </div>
+      <div class="control-group">
+        <input type="number" id="ttlInput" placeholder="TTL (s)" value="30" />
+        <button id="expireBtn">⏰ Expire</button>
+        <button id="clearBtn">🗑️ Clear</button>
+      </div>
+      <div class="control-group">
+        <button id="trafficBtn">🚀 Simulate Traffic</button>
+        <button id="resetBtn">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-dashboard">
+      <div class="stat-card">
+        <span class="stat-label">Cache Hits</span>
+        <span class="stat-value" id="hits">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Cache Misses</span>
+        <span class="stat-value" id="misses">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Hit Ratio</span>
+        <span class="stat-value" id="hitRatio">0%</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Keys</span>
+        <span class="stat-value" id="keyCount">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Memory</span>
+        <span class="stat-value" id="memoryUsed">0 KB</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Evictions</span>
+        <span class="stat-value" id="evictions">0</span>
+      </div>
+    </div>
+
+    <!-- Visualization -->
+    <div class="visualization">
+      <div class="cache-grid" id="cacheGrid">
+        <div class="cache-empty">No keys in cache. Add some!</div>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="log-container">
+      <h3>📋 Activity Log</h3>
+      <div id="logMessages"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

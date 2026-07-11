@@ -9,6 +9,7 @@ export const batchStore = new Map();
 
 let bulkAuditQueue = null;
 let redisAvailable = false;
+export let redisClient = null;
 
 async function checkRedis() {
   const probe = new IORedis(process.env.REDIS_URL || 'redis://127.0.0.1:6379', {
@@ -22,13 +23,13 @@ async function checkRedis() {
   try {
     await probe.ping();
     redisAvailable = true;
-    const connection = new IORedis(process.env.REDIS_URL || 'redis://127.0.0.1:6379', {
+    redisClient = new IORedis(process.env.REDIS_URL || 'redis://127.0.0.1:6379', {
       maxRetriesPerRequest: null,
       enableOfflineQueue: false,
     });
-    bulkAuditQueue = new Queue('bulk-audit-queue', { connection });
+    bulkAuditQueue = new Queue('bulk-audit-queue', { connection: redisClient });
     bulkAuditQueue.on('error', (err) => {
-      console.warn('Queue Redis Connection Error:', err.message);
+      void 0;
     });
   } catch {
     redisAvailable = false;
@@ -55,15 +56,16 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
   // Defensive cap so a direct caller can never enqueue an unbounded batch.
   repoUrls = repoUrls.slice(0, MAX_BULK_AUDIT_URLS);
 
-  batchStore.set(batchId, {
-    total: repoUrls.length,
-    completed: 0,
-    failed: 0,
-    results: [],
-    status: 'processing'
-  });
+  if (redisAvailable && redisClient && bulkAuditQueue) {
+    await redisClient.hmset(`batch:${batchId}`, {
+      total: repoUrls.length,
+      completed: 0,
+      failed: 0,
+      results: JSON.stringify([]),
+      status: 'processing'
+    });
+    await redisClient.expire(`batch:${batchId}`, 86400); // 24h expiry
 
-  if (redisAvailable && bulkAuditQueue) {
     const jobs = repoUrls.map((url, index) => ({
       name: `audit-${batchId}-${index}`,
       data: { batchId, repoUrl: url }
@@ -72,11 +74,19 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
       await bulkAuditQueue.addBulk(jobs);
       return;
     } catch (err) {
-      console.warn("Bulk add to Redis failed. Falling back to in-process.");
+      console.error(`Failed to enqueue bulk audit for batch ${batchId}:`, err);
     }
   }
 
   // ── In-process fallback (no Redis) ───────────────────────────────────────
+  batchStore.set(batchId, {
+    total: repoUrls.length,
+    completed: 0,
+    failed: 0,
+    results: [],
+    status: 'processing'
+  });
+
   setImmediate(async () => {
     const { analyzeWorkflow } = await import('../repository-analyzer/cicdValidator.js');
     const { VCSFactory } = await import('../vcs/VCSFactory.js');
@@ -102,7 +112,28 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
 /**
  * Gets the current progress of a batch.
  */
-export function getBatchProgress(batchId) {
+export async function getBatchProgress(batchId) {
+  if (redisAvailable && redisClient) {
+    const data = await redisClient.hgetall(`batch:${batchId}`);
+    if (!data || Object.keys(data).length === 0) return null;
+
+    const completed = parseInt(data.completed || 0);
+    const failed = parseInt(data.failed || 0);
+    const total = parseInt(data.total || 0);
+    const results = JSON.parse(data.results || '[]');
+    const totalProcessed = completed + failed;
+    const progress = total > 0 ? Math.round((totalProcessed / total) * 100) : 0;
+
+    let status = data.status;
+    if (progress === 100 && status === 'processing') {
+      status = 'completed';
+      await redisClient.hset(`batch:${batchId}`, 'status', 'completed');
+    }
+
+    return { total, completed, failed, results, status, progress };
+  }
+
+  // Fallback
   const batch = batchStore.get(batchId);
   if (!batch) return null;
 

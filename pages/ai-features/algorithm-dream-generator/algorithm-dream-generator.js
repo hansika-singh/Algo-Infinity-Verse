@@ -815,10 +815,7 @@ function initDreamApp() {
     });
   });
 
-  // Hide platform loading screen
-  const s = document.getElementById("loading-screen");
-  if (s) s.classList.add("hidden");
-}
+  }
 
 // ──────────────────────────────────────────────────────────────────────────
 // 🌀 REM LOADING SCREEN SEQUENCE

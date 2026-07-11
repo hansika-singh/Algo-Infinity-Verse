@@ -4,16 +4,16 @@ test.describe('AI Recommendations Debounce & Abort E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Enable console log diagnostics
     page.on('console', msg => {
-      console.log('PAGE LOG:', msg.text());
+      void 0;
     });
 
     page.on('requestfailed', request => {
-      console.log('REQUEST FAILED:', request.method(), request.url(), request.failure()?.errorText);
+      void 0;
     });
 
     page.on('response', response => {
       if (response.status() >= 400) {
-        console.log('BAD RESPONSE:', response.status(), response.url());
+        void 0;
       }
     });
 

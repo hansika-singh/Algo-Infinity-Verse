@@ -532,7 +532,7 @@ function ufDoInit() {
 
 /* ─── Operations ─── */
 function ufDoUnion() {
-  if (!ufState.built) { console.warn("Alert:", 'Initialize the DSU first.'); return; }
+  if (!ufState.built) { void 0; return; }
   ufStopPlay();
 
   let aEl = document.getElementById('ufUnionA');
@@ -557,7 +557,7 @@ function ufDoUnion() {
 }
 
 function ufDoFind() {
-  if (!ufState.built) { console.warn("Alert:", 'Initialize the DSU first.'); return; }
+  if (!ufState.built) { void 0; return; }
   ufStopPlay();
 
   let xEl = document.getElementById('ufFindX');
@@ -578,7 +578,7 @@ function ufDoFind() {
 }
 
 function ufDoConn() {
-  if (!ufState.built) { console.warn("Alert:", 'Initialize the DSU first.'); return; }
+  if (!ufState.built) { void 0; return; }
   ufStopPlay();
 
   let aEl = document.getElementById('ufConnA');

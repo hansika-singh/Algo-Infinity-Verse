@@ -3,17 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>In-Memory Git Visualizer | Algo Infinity Verse</title>
-    <meta name="description" content="Experiment freely. Commit, branch, and rollback your algorithmic solutions instantly." />
+    <title>Git Version Control DAG Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive Directed Acyclic Graph simulator for Git. Visualize rebase, merge, and detached HEAD states." />
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
-    <!-- CodeMirror for the Editor -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
-    
-    <!-- External Stylesheets -->
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="git-visualizer.css" />
 
@@ -41,75 +36,57 @@
             <span class="logo-text">∞</span>
             <span class="logo-title">Algo Infinity Verse</span>
         </div>
-        <div class="head-status" id="headStatusBadge">
-            <i class="fas fa-code-branch"></i> HEAD: <span id="headLabel">main</span>
+        <div class="engine-badge">
+            <i class="fas fa-code-branch"></i> Git DAG Simulator
         </div>
     </nav>
 
-    <!-- Main Workspace -->
     <main class="git-workspace">
-        
-        <!-- Left Panel: Code Editor -->
-        <div class="panel-editor">
-            
+        <!-- Left Panel: Interactive Terminal -->
+        <div class="panel-left">
             <div class="panel-header">
-                <h3><i class="fab fa-js"></i> solution.js</h3>
+                <h3><i class="fas fa-terminal"></i> Git Terminal</h3>
+                <span class="badge">Bash</span>
             </div>
-
-            <div class="editor-wrapper" id="editorContainer">
-                <!-- CodeMirror injects here -->
-            </div>
-
-            <!-- Git Commit Toolbar -->
-            <div class="commit-toolbar">
-                <div class="commit-input-group">
-                    <input type="text" id="commitMessage" placeholder="Enter commit message (e.g., 'Optimized loop')" />
-                    <button type="button" class="btn btn-primary" id="btnCommit"><i class="fas fa-check"></i> Commit</button>
+            
+            <div class="terminal-container" id="terminalContainer">
+                <div class="terminal-output" id="terminalOutput" aria-live="polite" aria-relevant="additions">
+                    <div class="log-info">Welcome to the Git DAG Simulator!</div>
+                    <div class="log-info">Available commands:</div>
+                    <div class="log-info">  git commit -m "msg"</div>
+                    <div class="log-info">  git branch &lt;name&gt;</div>
+                    <div class="log-info">  git checkout &lt;name&gt;</div>
+                    <div class="log-info">  git merge &lt;branch&gt;</div>
+                    <div class="log-info">  git rebase &lt;branch&gt;</div>
+                    <div class="log-info">  git reset --hard &lt;hash&gt;</div>
+                    <br/>
+                </div>
+                <div class="terminal-input-line">
+                    <span class="prompt">user@algo-verse:~/repo$</span>
+                    <input type="text" id="terminalInput" autocomplete="off" spellcheck="false" aria-label="Git command input" />
                 </div>
             </div>
         </div>
 
-        <!-- Right Panel: Git Graph -->
-        <div class="panel-graph">
-            
-            <div class="graph-toolbar">
-                <div class="branch-input-group">
-                    <input type="text" id="branchName" placeholder="New branch name..." />
-                    <button type="button" class="btn btn-secondary" id="btnBranch"><i class="fas fa-plus"></i> Branch</button>
-                </div>
-                <button type="button" class="btn btn-outline" id="btnReset" title="Reset everything"><i class="fas fa-trash-alt"></i> Reset Repo</button>
+        <!-- Right Panel: Visualization -->
+        <div class="panel-right">
+            <div class="viz-header">
+                <h2><i class="fas fa-project-diagram"></i> Commit DAG</h2>
+                <div class="head-status">HEAD -&gt; <span id="headTarget" class="text-accent">main</span></div>
             </div>
             
-            <!-- Graph Canvas -->
-            <div class="graph-container" id="graphContainer">
-                <svg class="git-lines" id="gitLines"></svg>
-                <div class="git-nodes" id="gitNodes">
-                    <!-- Nodes and Labels injected by JS -->
-                </div>
-                
-                <!-- Empty State -->
-                <div class="empty-state hidden" id="emptyState">
-                    <i class="fas fa-code-branch"></i>
-                    <p>No commits yet.</p>
-                </div>
+            <div class="canvas-container">
+                <canvas id="dagCanvas"></canvas>
             </div>
-
-            <div class="graph-legend">
-                <span><i class="fas fa-mouse-pointer"></i> Click any node to instantly rollback.</span>
+            
+            <div class="reflog-panel">
+                <h3><i class="fas fa-history"></i> Reflog Time Travel</h3>
+                <input type="range" id="reflogSlider" min="0" max="0" value="0" class="w-100 mt-2" disabled>
+                <div class="reflog-info" id="reflogInfo">No actions yet</div>
             </div>
         </div>
-
     </main>
-    
-    <!-- Node Tooltip -->
-    <div class="git-tooltip hidden" id="gitTooltip">
-        <div class="tt-hash" id="ttHash">a1b2c3</div>
-        <div class="tt-msg" id="ttMsg">Commit message</div>
-        <div class="tt-date" id="ttDate">Just now</div>
-    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
     <script src="git-visualizer.js"></script>
 </body>
 </html>

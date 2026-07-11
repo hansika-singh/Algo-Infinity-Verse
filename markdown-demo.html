@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algo Infinity Verse - Markdown Parser Demo</title>
+  <!-- Optional: Include FontAwesome for icons used in DSA tags -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #f8fafc;
+      --border-color: #334155;
+      --accent-color: #3b82f6;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex: 1;
+      min-height: 0;
+    }
+    .panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #1e293b;
+    }
+    .panel-header {
+      background: #0f172a;
+      padding: 1rem;
+      font-weight: bold;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+    }
+    textarea {
+      flex: 1;
+      background: transparent;
+      color: var(--text-color);
+      border: none;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+    }
+    #preview {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    
+    /* Styled Markdown Elements */
+    #preview pre {
+      background: #000;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    #preview code {
+      font-family: monospace;
+      color: #a78bfa;
+    }
+    #preview blockquote {
+      border-left: 4px solid #3b82f6;
+      margin-left: 0;
+      padding-left: 1rem;
+      color: #94a3b8;
+    }
+    .markdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    .markdown-table th, .markdown-table td {
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      text-align: left;
+    }
+    .markdown-table th { background: #334155; }
+    
+    /* Custom DSA Syntax Styling */
+    .dsa-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin: 0 4px;
+    }
+    .time-complexity { background: #ef444433; color: #fca5a5; border: 1px solid #ef4444; }
+    .space-complexity { background: #3b82f633; color: #93c5fd; border: 1px solid #3b82f6; }
+    .dsa-card {
+      background: #10b98122;
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-weight: bold;
+      text-align: center;
+    }
+    .dsa-visualizer-embed {
+      border: 2px dashed #8b5cf6;
+      background: #8b5cf622;
+      color: #c4b5fd;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    mark { background: #fde047; color: #000; padding: 0 4px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <h1>Client-Side Markdown Parser Demo</h1>
+  <div class="container">
+    <div class="panel">
+      <div class="panel-header">Markdown Input</div>
+      <textarea id="editor" spellcheck="false">
+# Binary Search Tutorial
+
+Binary search is an efficient algorithm for finding an item from a sorted list of items.
+
+## Complexity
+- **Time Complexity**: [time:O(log N)]
+- **Space Complexity**: [space:O(1)]
+
+## Interactive Elements
+[algo:binary-search]
+
+[visualizer:binary-search-tree]
+
+## Comparison Table
+| Algorithm | Time (Worst) | Space |
+| --------- | ------------ | ----- |
+| Linear    | [time:O(N)]  | [space:O(1)] |
+| Binary    | [time:O(log N)] | [space:O(1)] |
+
+## Todo List
+- [x] Write parser
+- [x] Add DSA extensions
+- [ ] Write documentation
+
+> Note: Always ensure your array is sorted before applying binary search! 
+This is ~~not important~~ ==very important==.
+      </textarea>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header">
+        Live Preview (HTML)
+        <span style="font-size: 0.8em; color: #94a3b8; font-weight: normal;">(Sanitization bypassed for demo)</span>
+      </div>
+      <div id="preview"></div>
+    </div>
+  </div>
+
+  <!-- Load our newly updated MarkdownParser script as a module -->
+  <script type="module">
+    import { MarkdownParser } from './utils/markdownParser.js';
+
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+
+    function updatePreview() {
+      const markdownText = editor.value;
+      // In production, wrap this output in a DOMPurify/Sanitizer!
+      const htmlOutput = MarkdownParser.parse(markdownText);
+      preview.innerHTML = htmlOutput;
+    }
+
+    // Update on load
+    updatePreview();
+
+    // Update on typing
+    editor.addEventListener('input', updatePreview);
+  </script>
+</body>
+</html>

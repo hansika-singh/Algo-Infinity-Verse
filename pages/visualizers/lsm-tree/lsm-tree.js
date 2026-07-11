@@ -64,20 +64,20 @@ function bindEvents() {
     els.btnInsert.addEventListener('click', () => {
         const k = parseInt(els.inputKey.value);
         const v = els.inputValue.value.trim();
-        if (isNaN(k) || !v) return console.warn("Alert:", "Valid Key and Value required.");
+        if (isNaN(k) || !v) return void 0;
         handleWrite(k, v, false);
     });
 
     els.btnDelete.addEventListener('click', () => {
         const k = parseInt(els.inputKey.value);
-        if (isNaN(k)) return console.warn("Alert:", "Valid Key required to delete.");
+        if (isNaN(k)) return void 0;
         handleWrite(k, null, true);
     });
 
     els.btnRead.addEventListener('click', async () => {
-        if (state.isCompacting) return console.warn("Alert:", "System busy. Compaction in progress.");
+        if (state.isCompacting) return void 0;
         const k = parseInt(els.inputKey.value);
-        if (isNaN(k)) return console.warn("Alert:", "Valid Key required to read.");
+        if (isNaN(k)) return void 0;
         await handleRead(k);
     });
 
@@ -405,7 +405,7 @@ function renderLevel(tables, container) {
 // 7. SIMULATION UTILITIES
 // ==========================================
 async function simulateWorkload() {
-    if (state.isCompacting) return console.warn("Alert:", "System busy.");
+    if (state.isCompacting) return void 0;
     
     els.btnSimulate.disabled = true;
     els.btnSimulate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Blasting Data...';

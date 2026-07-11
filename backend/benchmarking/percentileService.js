@@ -13,9 +13,14 @@ let thresholdCache = null;
 let lastComputed = 0;
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
-// Helper to simulate a user's total score (combining multiple platform activities)
-// In a real scenario, this would aggregate from quiz results, memory stats, etc.
+let userScoresCache = null;
+let lastScoresComputed = 0;
+
 async function computeUserScores() {
+    const now = Date.now();
+    if (userScoresCache && (now - lastScoresComputed <= CACHE_TTL_MS)) {
+        return userScoresCache;
+    }
     try {
         const raw = await fs.readFile(USERS_FILE, 'utf8');
         const users = JSON.parse(raw || '[]');
@@ -23,14 +28,16 @@ async function computeUserScores() {
         // We will assign a deterministic mock score for the purpose of the benchmark
         // based on the length of their email or a random seed, just to have distribution
         // If there is an actual 'score' field, we'd use it.
-        return users.map(u => ({
+        userScoresCache = users.map(u => ({
             id: u.id,
             // Simple deterministic mock score calculation based on id to simulate realistic data
             score: (u.id.charCodeAt(0) * 10) + (u.name ? u.name.length * 5 : 0) + 100
         }));
+        lastScoresComputed = now;
+        return userScoresCache;
     } catch (err) {
         console.error('Failed to compute user scores:', err);
-        return [];
+        return userScoresCache || [];
     }
 }
 

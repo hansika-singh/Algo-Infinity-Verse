@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Count-Min Sketch | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive Count-Min Sketch frequency estimator with collision demo, heavy hitters, and exact vs estimate comparison." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="count-min-sketch.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="count-min-sketch">
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero cms-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">How Does Twitter Count Trending Terms in Real Time?</span>
+        <span class="main-title cms-gradient">Count-Min Sketch</span>
+        <span class="subtitle">Frequency Estimation at Scale — Visualized</span>
+      </h1>
+      <p class="section-subtitle">
+        A tiny 2D grid of counters and a few hash functions can answer "how often did X appear?" for billions of events — using kilobytes of memory. Watch every hash, every increment, every query, and every collision live.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary cms-btn-primary">
+          <i class="fas fa-table-cells"></i> Open Simulator
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Simulator -->
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <!-- Configuration card -->
+      <div class="cms-control-card">
+
+        <div class="cms-row">
+          <span class="cms-row-label">Depth (d):</span>
+          <input type="range" id="cmsDepthSlider" min="2" max="5" step="1" value="3" class="cms-slider" />
+          <span class="cms-slider-val" id="cmsDepthVal">3 hash functions</span>
+        </div>
+
+        <div class="cms-row">
+          <span class="cms-row-label">Width (w):</span>
+          <input type="range" id="cmsWidthSlider" min="4" max="16" step="1" value="8" class="cms-slider" />
+          <span class="cms-slider-val" id="cmsWidthVal">8 counters / row</span>
+        </div>
+
+        <div class="cms-row">
+          <span class="cms-row-label">Insert item:</span>
+          <input type="text" id="cmsInsertInput" class="cms-text-input" placeholder="e.g. apple" maxlength="20" />
+          <button class="btn cms-btn-primary cms-action-btn" id="cmsInsertBtn">
+            <i class="fas fa-plus"></i> Insert
+          </button>
+        </div>
+
+        <div class="cms-row">
+          <span class="cms-row-label">Query item:</span>
+          <input type="text" id="cmsQueryInput" class="cms-text-input" placeholder="e.g. apple" maxlength="20" />
+          <button class="btn cms-btn-secondary cms-action-btn" id="cmsQueryBtn">
+            <i class="fas fa-magnifying-glass"></i> Query
+          </button>
+        </div>
+
+        <div class="cms-row">
+          <span class="cms-row-label">Scenarios:</span>
+          <button class="btn cms-btn-primary cms-action-btn" id="cmsHeavyBtn">
+            <i class="fas fa-bolt"></i> Heavy Hitters (Zipfian)
+          </button>
+          <button class="btn cms-btn-warning cms-action-btn" id="cmsCollisionBtn">
+            <i class="fas fa-circle-exclamation"></i> Collision Demo
+          </button>
+          <button class="btn btn-secondary cms-action-btn" id="cmsResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Status -->
+      <div class="cms-status" id="cmsStatus">
+        Configure depth and width, then insert items to see the sketch update live.
+      </div>
+
+      <!-- Main layout -->
+      <div class="cms-main-layout">
+
+        <!-- Grid section -->
+        <div class="cms-grid-section">
+          <div class="cms-grid-header">
+            <div class="cms-grid-title">
+              <i class="fas fa-table-cells"></i> Count-Min Sketch Grid
+              <span class="cms-grid-sub">(d rows × w columns)</span>
+            </div>
+            <div class="cms-legend">
+              <span class="cms-legend-item"><span class="cms-ldot cms-ldot-idle"></span>Untouched</span>
+              <span class="cms-legend-item"><span class="cms-ldot cms-ldot-active"></span>Just updated</span>
+              <span class="cms-legend-item"><span class="cms-ldot cms-ldot-query"></span>Query path</span>
+              <span class="cms-legend-item"><span class="cms-ldot cms-ldot-min"></span>Minimum (estimate)</span>
+              <span class="cms-legend-item"><span class="cms-ldot cms-ldot-hot"></span>High count</span>
+            </div>
+          </div>
+          <div class="cms-grid-wrap" id="cmsGridWrap"></div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="cms-info-panel">
+
+          <!-- Estimate vs exact -->
+          <div class="cms-estimate-card" id="cmsEstimateCard" style="display:none">
+            <div class="cms-panel-title"><i class="fas fa-chart-bar"></i> Query Result</div>
+            <div class="cms-estimate-rows" id="cmsEstimateRows"></div>
+          </div>
+
+          <!-- Exact frequency table -->
+          <div class="cms-freq-card">
+            <div class="cms-panel-title"><i class="fas fa-list-ol"></i> Exact Frequencies</div>
+            <div class="cms-freq-table" id="cmsFreqTable">
+              <span class="cms-empty-text">No items inserted yet.</span>
+            </div>
+          </div>
+
+          <!-- Heavy hitters -->
+          <div class="cms-hh-card" id="cmsHHCard" style="display:none">
+            <div class="cms-panel-title"><i class="fas fa-fire"></i> Heavy Hitters (top-5)</div>
+            <div class="cms-hh-list" id="cmsHHList"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Learn -->
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">📊</span> Count-Min Sketch Explained</h2>
+      <div class="cms-learn-grid">
+
+        <div class="cms-learn-card cms-learn-update">
+          <div class="cms-learn-icon">➕</div>
+          <h3>Update: d Hash Functions</h3>
+          <p>
+            To insert item X, compute d independent hash functions h₁(X), h₂(X), …, h_d(X).
+            Each gives a column index in its row. Increment those d cells by 1.
+            That's it — X is never stored; only counters change.
+          </p>
+        </div>
+
+        <div class="cms-learn-card cms-learn-query">
+          <div class="cms-learn-icon">🔍</div>
+          <h3>Query: Take the Minimum</h3>
+          <p>
+            To estimate the frequency of X, read the d cells — one per row at column h_i(X).
+            Return the minimum. Any cell may be inflated by collisions with other items,
+            but the minimum gives the tightest upper bound.
+          </p>
+        </div>
+
+        <div class="cms-learn-card cms-learn-error">
+          <div class="cms-learn-icon">📐</div>
+          <h3>One-Directional Error</h3>
+          <p>
+            The sketch can <em>overestimate</em> but never underestimate.
+            With width w and depth d, the probability that any estimate exceeds the true count
+            by more than ε·N (total items) is at most (1/e)^d — controlled by depth alone.
+          </p>
+        </div>
+
+        <div class="cms-learn-card cms-learn-zipf">
+          <div class="cms-learn-icon">🏆</div>
+          <h3>Heavy Hitters &amp; Zipf's Law</h3>
+          <p>
+            Real-world frequencies follow Zipf's Law — rank-1 items appear far more than rank-2, etc.
+            A Count-Min Sketch paired with a min-heap identifies the top-k most frequent items
+            without storing every distinct element — the technique behind Twitter trending and Google hot-searches.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="count-min-sketch.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

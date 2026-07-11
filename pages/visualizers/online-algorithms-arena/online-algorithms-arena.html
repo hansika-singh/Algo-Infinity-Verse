@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Algorithms Arena | Algo Infinity Verse</title>
+    <meta name="description" content="Ski Rental and Online Interval Scheduling — decide with no knowledge of the future, then compare against the all-knowing offline optimum via competitive ratio." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="online-algorithms-arena.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="online-algorithms-arena">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="oa-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="oa-hero-inner">
+        <div class="oa-hero-eyebrow">⏳ Online Algorithms · Competitive Analysis</div>
+        <h1 class="oa-hero-title">Online Algorithms Arena</h1>
+        <p class="oa-hero-sub">Decide now. You'll never see the future.</p>
+        <p class="oa-hero-desc">Every algorithm elsewhere in this repo knows its full input upfront. Online algorithms don't — every decision is permanent, made the instant new information arrives. Competitive analysis measures how badly this hurts you: the ratio between your online decisions and what an all-knowing offline optimum would have done.</p>
+        <a href="#lab" class="btn btn-primary oa-btn-primary"><i class="fas fa-hourglass-half"></i> Enter the Arena</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section oa-section">
+      <div class="container">
+
+        <div class="oa-mode-tabs" role="tablist">
+          <button class="oa-mode-tab active" role="tab" aria-selected="true" aria-controls="oaPanelSki" data-mode="ski"><i class="fas fa-person-skiing"></i> Ski Rental</button>
+          <button class="oa-mode-tab" role="tab" aria-selected="false" aria-controls="oaPanelInterval" data-mode="interval"><i class="fas fa-calendar-days"></i> Online Interval Scheduling</button>
+        </div>
+
+        <!-- Ski Rental Panel -->
+        <div class="oa-panel active" id="oaPanelSki">
+
+          <div class="oa-control-card">
+            <div class="oa-row">
+              <label class="oa-row-label" for="oaRentCost">Rent cost/day</label>
+              <input type="number" id="oaRentCost" class="oa-num-input" min="1" max="20" value="1" />
+              <label class="oa-row-label" style="margin-left:0.75rem" for="oaBuyCost">Buy cost</label>
+              <input type="number" id="oaBuyCost" class="oa-num-input" min="2" max="100" value="10" />
+              <button class="btn oa-btn-primary oa-apply-btn" id="oaSkiApplyBtn"><i class="fas fa-check"></i> Set Costs</button>
+            </div>
+            <div class="oa-row">
+              <span class="oa-row-label">Strategy</span>
+              <div class="oa-strategy-btns">
+                <button class="oa-strategy-btn" data-strat="rent-forever">Always Rent</button>
+                <button class="oa-strategy-btn" data-strat="buy-immediately">Buy Immediately</button>
+                <button class="oa-strategy-btn active" data-strat="optimal-online">Optimal Online (rent until = buy)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="oa-status" id="oaSkiStatus">Ski days are unknown in advance. Click "Ski One More Day" to advance day by day and watch each strategy's running cost.</div>
+
+          <div class="oa-main-layout">
+
+            <div class="oa-ski-visual-section">
+              <div class="oa-panel-title"><i class="fas fa-chart-line"></i> Cost Accumulation</div>
+              <canvas id="oaSkiCanvas" class="oa-ski-canvas"></canvas>
+              <div class="oa-ski-controls">
+                <button class="btn oa-btn-primary oa-ski-day-btn" id="oaSkiDayBtn"><i class="fas fa-forward"></i> Ski One More Day</button>
+                <button class="btn btn-secondary oa-adversary-btn" id="oaSkiAdversaryBtn"><i class="fas fa-user-secret"></i> Adversary: Stop Right After I Buy</button>
+                <button class="btn btn-secondary oa-reset-btn" id="oaSkiResetBtn"><i class="fas fa-undo"></i> Reset</button>
+              </div>
+            </div>
+
+            <div class="oa-right-panel">
+              <div class="oa-panel-card">
+                <div class="oa-panel-title"><i class="fas fa-gauge-high"></i> Live Stats</div>
+                <div class="oa-stat-rows">
+                  <div class="oa-stat-row"><span>Days skied</span><span id="oaSkiDays">0</span></div>
+                  <div class="oa-stat-row"><span>Online strategy cost</span><span id="oaSkiOnlineCost">0</span></div>
+                  <div class="oa-stat-row"><span>Offline optimal cost</span><span id="oaSkiOptCost">0</span></div>
+                  <div class="oa-stat-row sb-ratio-row"><span>Competitive ratio</span><span id="oaSkiRatio">1.00×</span></div>
+                </div>
+              </div>
+              <div class="oa-panel-card">
+                <div class="oa-panel-title"><i class="fas fa-book-open"></i> The Proof, Made Concrete</div>
+                <p class="oa-proof-text" id="oaSkiProof">With rent=1, buy=10: the optimal online strategy rents for 9 days then buys on day 10. If the adversary stops you the instant after you buy, you paid 9+10=19 vs the offline optimum's 10 — a ratio of 1.90×, approaching the proven worst case of 2×.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Online Interval Scheduling Panel -->
+        <div class="oa-panel" id="oaPanelInterval">
+
+          <div class="oa-control-card">
+            <div class="oa-row">
+              <button class="btn oa-btn-primary oa-apply-btn" id="oaIntervalGenBtn"><i class="fas fa-shuffle"></i> Generate Random Intervals (10)</button>
+              <button class="btn btn-secondary oa-adversary-btn" id="oaIntervalAdversaryBtn"><i class="fas fa-user-secret"></i> Adversary: Construct Worst Case</button>
+              <button class="btn btn-secondary oa-reset-btn" id="oaIntervalResetBtn"><i class="fas fa-undo"></i> Reset</button>
+            </div>
+          </div>
+
+          <div class="oa-status" id="oaIntervalStatus">Intervals arrive one at a time in the order shown. You must accept or reject immediately — no take-backs.</div>
+
+          <div class="oa-main-layout">
+
+            <div class="oa-interval-visual-section">
+              <div class="oa-panel-title"><i class="fas fa-timeline"></i> Timeline — Arrival Order Left to Right</div>
+              <div class="oa-interval-canvas-wrap"><canvas id="oaIntervalCanvas" class="oa-interval-canvas"></canvas></div>
+              <div class="oa-interval-controls">
+                <button class="btn oa-btn-primary oa-interval-next-btn" id="oaIntervalNextBtn"><i class="fas fa-forward"></i> Next Interval Arrives</button>
+                <div class="oa-interval-ctr">Interval <span id="oaIntervalNum">0</span>/<span id="oaIntervalTotal">0</span></div>
+              </div>
+            </div>
+
+            <div class="oa-right-panel">
+              <div class="oa-panel-card">
+                <div class="oa-panel-title"><i class="fas fa-gauge-high"></i> Live Stats</div>
+                <div class="oa-stat-rows">
+                  <div class="oa-stat-row"><span>Online accepted</span><span id="oaIntervalOnlineCount">0</span></div>
+                  <div class="oa-stat-row"><span>Offline optimal</span><span id="oaIntervalOptCount">0</span></div>
+                  <div class="oa-stat-row sb-ratio-row"><span>Competitive ratio</span><span id="oaIntervalRatio">1.00×</span></div>
+                </div>
+              </div>
+              <div class="oa-panel-card">
+                <div class="oa-panel-title"><i class="fas fa-list-ul"></i> Decision Log</div>
+                <div class="oa-log" id="oaIntervalLog"><div class="oa-empty">No decisions yet.</div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">⏳</span> Living Without a Crystal Ball</h2>
+        <div class="oa-learn-grid">
+          <div class="oa-learn-card" style="--lc:#06b6d4">
+            <div class="oa-learn-icon">🎿</div>
+            <h3>Ski Rental's 2x Bound</h3>
+            <p>Rent until cumulative rent cost equals the buy price, then buy — this deterministic strategy guarantees a competitive ratio no worse than 2, and no deterministic algorithm can do better in the worst case. It's a genuinely tight, provable bound.</p>
+          </div>
+          <div class="oa-learn-card" style="--lc:#a855f7">
+            <div class="oa-learn-icon">🎲</div>
+            <h3>Randomization Helps</h3>
+            <p>A randomized ski-rental strategy — buying at a randomly chosen day drawn from a specific distribution — achieves an expected competitive ratio of e/(e-1) ≈ 1.58, provably better than any deterministic algorithm can guarantee against a worst-case adversary.</p>
+          </div>
+          <div class="oa-learn-card" style="--lc:#22c55e">
+            <div class="oa-learn-icon">📅</div>
+            <h3>Real-World Online Decisions</h3>
+            <p>Cloud auto-scaling (rent more servers vs buy reserved capacity), cache eviction (LRU is itself an online algorithm), and ad auction bidding all face this exact "decide now, no take-backs" structure — competitive ratio is how their worst-case performance is actually measured.</p>
+          </div>
+          <div class="oa-learn-card" style="--lc:#f59e0b">
+            <div class="oa-learn-icon">🔒</div>
+            <h3>Adversarial Arrival Order</h3>
+            <p>Competitive ratio assumes a worst-case adversary who knows your algorithm and constructs the input specifically to hurt it. This is deliberately pessimistic — but it's the only way to get a provable, unconditional performance guarantee that holds no matter what happens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="online-algorithms-arena.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

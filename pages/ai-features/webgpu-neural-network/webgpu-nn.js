@@ -1,1 +1,1 @@
-console.log('WebGPU NN feature coming soon');
+void 0;

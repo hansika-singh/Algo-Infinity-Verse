@@ -16,6 +16,9 @@
     <!-- Acorn.js for AST Parsing in Browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.10.0/acorn.min.js"></script>
     
+    <!-- Chart.js for Dynamic Profiling Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link rel="stylesheet" href="Big-O-AST-Linter.css" />
 
     <link rel="stylesheet" href="/styles.css" />
@@ -75,12 +78,12 @@
                 </div>
                 
                 <div class="complexity-legend">
-                    <h4><i class="fas fa-palette"></i> Complexity Legend</h4>
-                    <div class="legend-items">
-                        <span class="legend-item"><span class="legend-dot constant"></span>O(1) Constant</span>
-                        <span class="legend-item"><span class="legend-dot linear"></span>O(N) Linear</span>
-                        <span class="legend-item"><span class="legend-dot quadratic"></span>O(N²) Quadratic</span>
-                        <span class="legend-item"><span class="legend-dot exponential"></span>O(2^N) Exponential</span>
+                    <h4><i class="fas fa-chart-line"></i> Dynamic Profiler</h4>
+                    <button id="runProfilerBtn" class="btn primary-btn" style="width: 100%; margin-bottom: 1rem; padding: 0.8rem; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif;">
+                        <i class="fas fa-play"></i> Run Dynamic Profiler
+                    </button>
+                    <div class="chart-container" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <canvas id="profilerChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -103,8 +106,21 @@
                 </div>
             </div>
 
-            <!-- CodeMirror Container -->
-            <div class="editor-container" id="editorContainer"></div>
+            <!-- CodeMirror Containers -->
+            <div class="split-editors" style="display: flex; flex: 1; overflow: hidden; border-top: 1px solid var(--border-color);">
+                <div class="editor-col" style="flex: 1; border-right: 1px solid var(--border-color); display: flex; flex-direction: column;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 0.5rem 1rem; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--accent); border-bottom: 1px solid var(--border-color);">
+                        <i class="fas fa-code"></i> Editor A (Bubble Sort)
+                    </div>
+                    <div class="editor-container" id="editorContainerA" style="flex: 1; overflow: hidden;"></div>
+                </div>
+                <div class="editor-col" style="flex: 1; display: flex; flex-direction: column;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 0.5rem 1rem; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--o-constant); border-bottom: 1px solid var(--border-color);">
+                        <i class="fas fa-bolt"></i> Editor B (Quick Sort)
+                    </div>
+                    <div class="editor-container" id="editorContainerB" style="flex: 1; overflow: hidden;"></div>
+                </div>
+            </div>
         </div>
     </main>
 

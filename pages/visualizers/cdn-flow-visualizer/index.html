@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CDN Request Flow Visualizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌐 CDN Request Flow Visualizer</h1>
+      <p>See how content is delivered from edge locations to users</p>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-group">
+        <label>User Region:</label>
+        <select id="userRegion">
+          <option value="us-east">🇺🇸 US East</option>
+          <option value="us-west">🇺🇸 US West</option>
+          <option value="eu">🇪🇺 Europe</option>
+          <option value="asia">🌏 Asia</option>
+          <option value="au">🇦🇺 Australia</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>TTL (seconds):</label>
+        <input type="number" id="ttlValue" value="30" min="5" max="120" />
+      </div>
+
+      <div class="control-group">
+        <button id="clearCacheBtn">🗑️ Clear Cache</button>
+        <button id="purgeCacheBtn">🔥 Purge Cache</button>
+      </div>
+
+      <div class="control-group">
+        <button id="simulateTrafficBtn">🚀 Simulate High Traffic</button>
+        <button id="resetBtn">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- Visualization -->
+    <div class="visualization">
+      <svg id="cdnFlow" width="100%" height="500"></svg>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="stats-dashboard">
+      <div class="stat-card">
+        <span class="stat-label">Cache Hits</span>
+        <span class="stat-value" id="cacheHits">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Cache Misses</span>
+        <span class="stat-value" id="cacheMisses">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Hit Ratio</span>
+        <span class="stat-value" id="hitRatio">0%</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Origin Requests</span>
+        <span class="stat-value" id="originRequests">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Avg Latency</span>
+        <span class="stat-value" id="avgLatency">0ms</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Cached Assets</span>
+        <span class="stat-value" id="cachedAssets">0</span>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="log-container">
+      <h3>📋 Request Log</h3>
+      <div id="logMessages"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Towers of Hanoi Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive Towers of Hanoi Visualizer. Visualize the recursive call stack and animated disk movements."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="towers-of-hanoi-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="towers-of-hanoi-visualizer">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Navigation Bar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Interactive</span>
+          <span class="main-title gradient-text">Towers of Hanoi Visualizer</span>
+        </h1>
+        <p style="color: var(--text-secondary); max-width: 600px; margin: 1rem auto">
+          Understand recursion by watching the call stack evolve alongside the physical disk
+          movements.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Visualizer Dashboard -->
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container toh-layout">
+          <!-- LEFT: Controls -->
+          <aside class="visualizer-sidebar toh-sidebar">
+            <div class="visualizer-card" style="position: relative">
+              <h3 style="margin-bottom: 1rem">
+                <i class="fas fa-sliders-h" style="color: var(--primary); margin-right: 0.5rem"></i
+                >Controls
+              </h3>
+
+              <div class="control-group">
+                <label for="toh-disks"
+                  >Number of Disks: <span class="val-display" id="toh-disks-display">3</span></label
+                >
+                <input
+                  type="range"
+                  id="toh-disks"
+                  min="3"
+                  max="6"
+                  value="3"
+                  class="slider-custom"
+                />
+              </div>
+
+              <div class="control-group">
+                <label for="toh-speed">Animation Speed</label>
+                <input
+                  type="range"
+                  id="toh-speed"
+                  min="1"
+                  max="100"
+                  value="50"
+                  class="slider-custom"
+                />
+              </div>
+
+              <div class="btn-control-row">
+                <button type="button" id="toh-play" class="btn btn-primary btn-control">
+                  <i class="fas fa-play"></i> Play
+                </button>
+                <button
+                  type="button"
+                  id="toh-pause"
+                  class="btn btn-secondary btn-control"
+                  disabled
+                  aria-label="Pause"
+                >
+                  <i class="fas fa-pause"></i>
+                </button>
+                <button
+                  type="button"
+                  id="toh-step"
+                  class="btn btn-secondary btn-control"
+                  aria-label="Step forward"
+                >
+                  <i class="fas fa-step-forward"></i>
+                </button>
+                <button
+                  type="button"
+                  id="toh-reset"
+                  class="btn btn-secondary btn-control"
+                  aria-label="Reset"
+                >
+                  <i class="fas fa-undo"></i>
+                </button>
+              </div>
+
+              <div style="margin-top: 0.75rem">
+                <div id="toh-status" class="status-box" style="font-size: 0.8rem">Ready.</div>
+              </div>
+            </div>
+
+            <div class="visualizer-card">
+              <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem">
+                <i
+                  class="fas fa-info-circle"
+                  style="color: var(--primary); margin-right: 0.4rem"
+                ></i
+                >Algorithm Info
+              </h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary)">
+                Towers of Hanoi is a mathematical puzzle where the objective is to move a stack of
+                disks from one peg to another following these rules:
+                <br /><br />
+                1. Move only one disk at a time.<br />
+                2. Only the top disk of a stack can be moved.<br />
+                3. No disk may be placed on top of a smaller disk.
+              </p>
+            </div>
+          </aside>
+
+          <!-- CENTER: Visual Canvas -->
+          <div class="visualizer-main-panel">
+            <div
+              class="visualizer-card"
+              style="position: relative; height: 100%; display: flex; flex-direction: column"
+            >
+              <div class="toh-canvas-container" id="toh-canvas">
+                <div class="toh-pegs-container">
+                  <div class="toh-peg-wrapper" id="peg-A-wrapper">
+                    <div class="toh-peg"></div>
+                    <div class="toh-peg-base"></div>
+                    <div class="toh-peg-label">Source (A)</div>
+                    <div class="toh-disks-container" id="peg-A"></div>
+                  </div>
+                  <div class="toh-peg-wrapper" id="peg-B-wrapper">
+                    <div class="toh-peg"></div>
+                    <div class="toh-peg-base"></div>
+                    <div class="toh-peg-label">Aux (B)</div>
+                    <div class="toh-disks-container" id="peg-B"></div>
+                  </div>
+                  <div class="toh-peg-wrapper" id="peg-C-wrapper">
+                    <div class="toh-peg"></div>
+                    <div class="toh-peg-base"></div>
+                    <div class="toh-peg-label">Target (C)</div>
+                    <div class="toh-disks-container" id="peg-C"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Call Stack & Logs -->
+          <aside class="visualizer-sidebar toh-sidebar">
+            <div class="toh-info-panel toh-stack-panel" style="flex: 1">
+              <div class="toh-panel-title"><i class="fas fa-layer-group"></i> Call Stack</div>
+              <div class="toh-stack-container" id="toh-stack">
+                <div class="toh-empty-msg">Call stack is empty.</div>
+              </div>
+            </div>
+
+            <div class="toh-info-panel" style="flex: 1">
+              <div class="toh-panel-title"><i class="fas fa-list"></i> Execution Log</div>
+              <div class="toh-log-container" id="toh-log">
+                <div class="toh-empty-msg">Log will appear here.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="towers-of-hanoi-visualizer.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

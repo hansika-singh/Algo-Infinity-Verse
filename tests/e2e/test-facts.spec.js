@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('check facts card', async ({ page }) => {
   // Log page console messages
   page.on('console', msg => {
-    console.log('PAGE LOG:', msg.text());
+    void 0;
   });
 
   // Mock API requests to prevent 401 redirect
@@ -26,24 +26,24 @@ test('check facts card', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  console.log('Current Page URL:', page.url());
+  void 0;
   
   const cardCount = await page.locator('.facts-card').count();
   const textElsCount = await page.locator('#factText').count();
   
-  console.log('--- FACTS CARD DIAGNOSTIC INFO ---');
-  console.log('cardCount:', cardCount);
-  console.log('textElsCount:', textElsCount);
+  void 0;
+  void 0;
+  void 0;
 
   if (cardCount > 0) {
     const texts = await page.locator('.facts-card').allInnerTexts();
-    console.log('facts-card innerTexts:', JSON.stringify(texts, null, 2));
+    void 0;
   }
   
   if (textElsCount > 0) {
     const texts = await page.locator('#factText').allTextContents();
-    console.log('#factText contents:', JSON.stringify(texts, null, 2));
+    void 0;
   }
   
-  console.log('-----------------------------------');
+  void 0;
 });

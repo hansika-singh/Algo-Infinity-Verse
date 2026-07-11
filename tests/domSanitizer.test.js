@@ -2,7 +2,7 @@ import { escapeHtml, sanitizeHTML } from '../modules/domSanitizer.js';
 
 describe('DOMSanitizer - escapeHtml', () => {
   it('escapes basic HTML characters', () => {
-    expect(escapeHtml('<script>console.warn("Alert:", "hello")</script>')).toBe('&lt;script&gt;console.warn("Alert:", &quot;hello&quot;)&lt;/script&gt;');
+    expect(escapeHtml('<script>console.warn("Alert:", "hello")</script>')).toBe('&lt;script&gt;console.warn(&quot;Alert:&quot;, &quot;hello&quot;)&lt;/script&gt;');
     expect(escapeHtml('Hello & Welcome')).toBe('Hello &amp; Welcome');
     expect(escapeHtml("John's Book")).toBe('John&#39;s Book');
   });
@@ -26,13 +26,13 @@ describe('DOMSanitizer - sanitizeHTML', () => {
   });
 
   it('strips onerror and other event handlers', () => {
-    const input = '<img src="x" onerror="console.warn("Alert:", 1)" onload="javascript:console.warn("Alert:", 2)">';
+    const input = '<img src="x" onerror="console.warn(\'Alert:\', 1)" onload="javascript:console.warn(\'Alert:\', 2)">';
     const expected = '<img src="x">';
     expect(sanitizeHTML(input)).toBe(expected);
   });
 
   it('removes javascript: URIs', () => {
-    const input = '<a href="javascript:console.warn("Alert:", 1)">Click here</a>';
+    const input = '<a href="javascript:console.warn(\'Alert:\', 1)">Click here</a>';
     const expected = '<a>Click here</a>';
     expect(sanitizeHTML(input)).toBe(expected);
   });

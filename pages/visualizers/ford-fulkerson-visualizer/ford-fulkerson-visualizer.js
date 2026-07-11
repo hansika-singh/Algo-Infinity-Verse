@@ -295,7 +295,7 @@ function renderGraph() {
           renderGraph();
           addLogEntry(`Updated edge ${targetEdge.source} &rarr; ${targetEdge.target} (Capacity: ${cap}).`, "sys");
         } else {
-          console.warn("Alert:", "Invalid capacity value.");
+          addLogEntry('Invalid capacity. Enter a positive integer.', 'warn');
         }
       }
     });
@@ -413,7 +413,7 @@ svg.addEventListener("mousedown", (e) => {
   const y = e.clientY - rect.top;
 
   if (nextLabelCode > 90) {
-    console.warn("Alert:", "Max node letters (A-Z) reached!");
+    addLogEntry('Node limit reached — maximum 26 nodes (A–Z) per graph.', 'warn');
     return;
   }
 
@@ -938,7 +938,7 @@ function runSimulation() {
   const sourceNode = nodes.find((n) => n.isSource);
   const sinkNode = nodes.find((n) => n.isSink);
   if (!sourceNode || !sinkNode) {
-    console.warn("Alert:", "Please set both a Source (S) and a Sink (T) node first!");
+    addLogEntry('Please right-click a node and designate both a Source (S) and a Sink (T) before running.', 'warn');
     return;
   }
 

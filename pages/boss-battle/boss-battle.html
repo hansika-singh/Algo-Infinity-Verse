@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boss Battle Arena | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="boss-battle.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+<body data-page="boss-battle">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <!-- The navbar will be loaded dynamically or can be hardcoded like other pages. Using standard structure. -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="battle-container">
+        
+        <!-- Victory / Defeat Overlay -->
+        <div id="battle-modal" class="modal hidden">
+            <div class="modal-content">
+                <h1 id="modal-title">VICTORY</h1>
+                <p id="modal-desc">You defeated the Boss!</p>
+                <div class="stats-row">
+                    <span>Score: <strong id="modal-score">0</strong></span>
+                    <span>Max Combo: <strong id="modal-combo">0</strong></span>
+                </div>
+                <button id="restartBtn" class="btn primary-btn">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Start Screen Overlay -->
+        <div id="start-modal" class="modal">
+            <div class="modal-content">
+                <h1 class="glitch-text" data-text="BOSS BATTLE">BOSS BATTLE</h1>
+                <p>Survive the algorithmic onslaught. You take damage over time. Solve problems to defeat the boss. Build combos for massive damage!</p>
+                <button id="startBattleBtn" class="btn primary-btn start-btn"><i class="fas fa-play"></i> BEGIN FIGHT</button>
+            </div>
+        </div>
+
+        <!-- Arena Header: Health Bars & Stats -->
+        <header class="arena-header">
+            <div class="player-hud">
+                <div class="avatar-container">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Player" alt="Player" class="avatar" />
+                    <span class="level-badge">LVL 1</span>
+                </div>
+                <div class="health-info">
+                    <div class="name-row">
+                        <span class="name">You</span>
+                        <span class="hp-text" id="playerHpText">100/100</span>
+                    </div>
+                    <div class="health-bar-bg">
+                        <div class="health-bar fill player-hp" id="playerHpBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-stats">
+                <div class="timer" id="timeRemaining">00:00</div>
+                <div class="combo-counter hidden" id="comboCounter">x1 COMBO!</div>
+                <div class="score" id="totalScore">Score: 0</div>
+            </div>
+
+            <div class="boss-hud">
+                <div class="health-info right-align">
+                    <div class="name-row">
+                        <span class="hp-text" id="bossHpText">100/100</span>
+                        <span class="name boss-name">Algorithm Overlord</span>
+                    </div>
+                    <div class="health-bar-bg">
+                        <div class="health-bar fill boss-hp" id="bossHpBar"></div>
+                    </div>
+                </div>
+                <div class="avatar-container boss-avatar-container" id="bossContainer">
+                    <i class="fas fa-robot boss-icon"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Battle Layout -->
+        <div class="battle-grid">
+            <!-- Left Side: Problem Description -->
+            <div class="problem-panel panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-scroll"></i> Current Challenge</h2>
+                    <span class="difficulty-badge" id="problemDifficulty">Medium</span>
+                </div>
+                <div class="panel-body">
+                    <h3 id="problemTitle" class="problem-title">Loading...</h3>
+                    <p id="problemDesc" class="problem-desc"></p>
+                    <div class="examples-section">
+                        <h4>Examples:</h4>
+                        <ul id="problemExamples"></ul>
+                    </div>
+                    <div class="constraints-section">
+                        <h4>Constraints:</h4>
+                        <ul id="problemConstraints"></ul>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Right Side: Code Editor -->
+        <div class="editor-panel panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-code"></i> Spellbook (Editor)</h2>
+            </div>
+            <div class="editor-container" style="position: relative; flex-grow: 1;">
+                <textarea id="codeEditor" spellcheck="false" class="code-textarea">function solve(args) {
+    // Write your code here
+    
+}</textarea>
+            </div>
+            <div class="panel-footer">
+                <div id="feedbackMsg" class="feedback-msg"></div>
+                <button id="submitAttackBtn" class="btn attack-btn">
+                    <i class="fas fa-bolt"></i> Cast Spell (Submit)
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- CodeMirror CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
+<script src="../../js/navbar.js" defer></script>
+<script type="module" src="boss-battle.js"></script>
+</body>
+</html>

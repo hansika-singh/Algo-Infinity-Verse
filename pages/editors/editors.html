@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Editors — Algo Infinity Verse</title>
+  <meta name="description" content="Browse all interactive code editors. Write, run, and experiment with 17 programming languages right in your browser." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="editors.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = t || (p ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="editors" data-no-loading>
+  <div id="loading-screen" class="hidden">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Loading Code Editors...</h2>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section class="ed-hero">
+      <div class="ed-hero-bg">
+        <div class="ed-hero-glow"></div>
+        <div class="ed-hero-orb" aria-hidden="true"></div>
+        <div class="ed-code-scroll" aria-hidden="true"></div>
+      </div>
+      <button type="button" class="ed-back-btn" id="edBackBtn" aria-label="Go back to previous page">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+      <div class="ed-hero-content">
+        <h1 class="ed-hero-title">Code Editors</h1>
+        <p class="ed-hero-subtitle">
+          Pick a language. Open an editor. Start coding. <strong>17</strong> programming environments,<br />
+          ready the instant you need them.
+        </p>
+
+        <!-- SEARCH -->
+        <div class="ed-search-wrapper">
+          <div class="ed-search">
+            <i class="fas fa-search ed-search-icon"></i>
+            <input
+              type="text"
+              id="edSearchInput"
+              class="ed-search-input"
+              placeholder="Search editors..."
+              aria-label="Search editors"
+              autocomplete="off"
+            />
+            <button type="button" id="edClearBtn" class="ed-clear-btn" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+            <span class="ed-search-hint">⌘K</span>
+          </div>
+        </div>
+
+        <!-- FILTER CHIPS -->
+        <div class="ed-filters" id="edFilters" role="tablist" aria-label="Editor categories"></div>
+
+        <p class="ed-result-count" id="edResultCount">Showing <span id="edCountDisplay">0</span> editors</p>
+      </div>
+    </section>
+
+    <!-- CARD GRID -->
+    <section class="ed-section">
+      <div class="ed-container">
+        <div class="ed-grid" id="edGrid" role="list">
+          <!-- Cards rendered by JS -->
+        </div>
+        <div class="ed-empty" id="edEmpty" style="display:none;">
+          <i class="fas fa-search-minus"></i>
+          <h3>No editors found</h3>
+          <p>Try adjusting your search or filter.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/auth.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script src="editors.js"></script>
+</body>
+</html>

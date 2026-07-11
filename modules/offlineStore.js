@@ -122,9 +122,9 @@ class OfflineStore {
             try {
                 const reg = await navigator.serviceWorker.ready;
                 await reg.sync.register('sync-offline-actions');
-                console.log('[OfflineStore] Registered background sync for offline action');
+                void 0;
             } catch (err) {
-                console.warn('[OfflineStore] Background sync could not be registered', err);
+                void 0;
             }
         }
     }
@@ -133,12 +133,12 @@ class OfflineStore {
         const actions = await this.getAll('syncQueue');
         if (actions.length === 0) return;
         
-        console.log(`[OfflineStore] Syncing ${actions.length} queued offline actions...`);
+        void 0;
         for (const action of actions) {
             try {
                 // In a real application, you would send this to the server
                 // e.g. await fetch('/api/sync', { method: 'POST', body: JSON.stringify(action) })
-                console.log('[OfflineStore] Synced action:', action.type);
+                void 0;
                 
                 // Remove from queue after successful sync
                 await this.delete('syncQueue', action.id);

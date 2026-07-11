@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room Lobby | Algo-Infinity-Verse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="cyber-navbar">
+        <a href="../../index.html" class="logo">🚀 Algo-Infinity-Verse</a>
+    </nav>
+
+    <div class="lobby-container">
+        <div class="glitch-wrapper">
+            <h1 class="glitch" data-text="ALGORITHM ESCAPE ROOM">ALGORITHM ESCAPE ROOM</h1>
+        </div>
+        
+        <p class="subtitle">Collaborative Puzzle Solving Environment</p>
+
+        <div class="theme-selection">
+            <h2>Select Mission</h2>
+            <div class="card theme-card active">
+                <h3>Cyber Security Vault</h3>
+                <p>Break into the secure mainframe using string manipulation and cryptography algorithms.</p>
+                <div class="difficulty">Difficulty: Hard</div>
+            </div>
+            <!-- More themes can be added here -->
+        </div>
+
+        <div class="action-panel">
+            <div class="join-section">
+                <h3>Join Existing Team</h3>
+                <input type="text" id="username" placeholder="Enter your alias..." />
+                <input type="text" id="room-code" placeholder="Enter Room Code..." />
+                <button id="join-btn" class="btn primary-btn">Join Mission</button>
+            </div>
+            
+            <div class="divider">OR</div>
+            
+            <div class="host-section">
+                <h3>Start New Mission</h3>
+                <button id="host-btn" class="btn secondary-btn">Generate Room Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('host-btn').addEventListener('click', () => {
+            const alias = document.getElementById('username').value.trim() || 'Hacker' + Math.floor(Math.random() * 1000);
+            const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            window.location.href = `room.html?room=${roomId}&user=${encodeURIComponent(alias)}`;
+        });
+
+        document.getElementById('join-btn').addEventListener('click', () => {
+            const alias = document.getElementById('username').value.trim() || 'Hacker' + Math.floor(Math.random() * 1000);
+            const roomId = document.getElementById('room-code').value.trim().toUpperCase();
+            if (roomId) {
+                window.location.href = `room.html?room=${roomId}&user=${encodeURIComponent(alias)}`;
+            } else {
+                alert('Please enter a room code');
+            }
+        });
+    </script>
+</body>
+</html>

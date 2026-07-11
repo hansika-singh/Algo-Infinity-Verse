@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
 const delay = ms => new Promise(r => setTimeout(r, ms));
 
 server.listen(PORT, async () => {
-    console.log(`Test server running on port ${PORT}`);
+    void 0;
     
     let browser;
     try {
@@ -44,7 +44,7 @@ server.listen(PORT, async () => {
         
         await page.goto(`http://localhost:${PORT}/pages/visualizers/l-system-fractal/l-system-fractal.html`, { waitUntil: 'networkidle0' });
         
-        console.log('\n--- Test Case 1: Preset Expansion (Koch Snowflake) ---');
+        void 0;
         await page.evaluate(() => {
             els.presetSelect.value = 'kochSnowflake';
             els.presetSelect.dispatchEvent(new Event('change'));
@@ -52,14 +52,14 @@ server.listen(PORT, async () => {
         await delay(500); 
         
         const kochString = await page.evaluate(() => currentString);
-        console.log(`Koch Snowflake Iteration 4 Length: ${kochString.length}`);
+        void 0;
         if (kochString.length > 1000) {
-            console.log('✅ Test 1 Passed (Koch Snowflake mathematically expanded to exact length)');
+            void 0;
         } else {
             throw new Error(`Test 1 Failed: Expected > 1000, got ${kochString.length}`);
         }
 
-        console.log('\n--- Test Case 2: Multi-Rule Grammar (Dragon Curve) ---');
+        void 0;
         await page.evaluate(() => {
             els.presetSelect.value = 'dragonCurve';
             els.presetSelect.dispatchEvent(new Event('change'));
@@ -68,12 +68,12 @@ server.listen(PORT, async () => {
 
         const dragonString = await page.evaluate(() => currentString);
         if (dragonString.length > 2000) {
-            console.log('✅ Test 2 Passed (Dragon curve X and Y rules expanded perfectly in tandem without corruption)');
+            void 0;
         } else {
             throw new Error(`Test 2 Failed: Expected > 2000, got ${dragonString.length}`);
         }
 
-        console.log('\n--- Test Case 3: Edge Case - Unknown Chars in Axiom ---');
+        void 0;
         // If an axiom contains letters with no rules, they should persist.
         await page.evaluate(() => {
             els.presetSelect.value = 'custom';
@@ -86,12 +86,12 @@ server.listen(PORT, async () => {
         await delay(500);
         const unknownCharString = await page.evaluate(() => currentString);
         if (unknownCharString === 'ZQF') {
-            console.log('✅ Test 3 Passed (Unknown characters gracefully persist through iterations without crashing)');
+            void 0;
         } else {
             throw new Error(`Test 3 Failed: Expected ZQF, got ${unknownCharString}`);
         }
 
-        console.log('\n--- Test Case 4: Edge Case - Stack Underflow (Too many pops) ---');
+        void 0;
         // Axiom with `]` but no `[`
         await page.evaluate(() => {
             els.axiomInput.value = 'F]F]F';
@@ -103,12 +103,12 @@ server.listen(PORT, async () => {
         // We just verify it didn't throw an unhandled exception and rendered
         const isRendered = await page.evaluate(() => currentString === 'F]F]F');
         if (isRendered) {
-            console.log('✅ Test 4 Passed (Turtle Graphics engine ignores stack underflow pops without breaking the draw loop)');
+            void 0;
         } else {
             throw new Error('Test 4 Failed: Engine crashed on stack underflow');
         }
         
-        console.log('\n--- Test Case 5: Edge Case - Auto-scaling Division by Zero ---');
+        void 0;
         // Blank axiom -> bounds width/height = 0
         await page.evaluate(() => {
             els.axiomInput.value = '';
@@ -117,12 +117,12 @@ server.listen(PORT, async () => {
         await delay(500);
         const emptyCanvas = await page.evaluate(() => currentString === '');
         if (emptyCanvas) {
-            console.log('✅ Test 5 Passed (Auto-scaling algorithm safely handles 0-width bounds without NaN/Infinity canvas exceptions)');
+            void 0;
         } else {
             throw new Error('Test 5 Failed');
         }
 
-        console.log('\nAll tests completed successfully!');
+        void 0;
 
     } catch (error) {
         console.error('\n❌ Test execution failed:', error.message);

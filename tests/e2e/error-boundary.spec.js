@@ -4,7 +4,7 @@ test.describe('Global Error Boundary E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Enable console diagnostics
     page.on('console', msg => {
-      console.log('PAGE LOG:', msg.text());
+      void 0;
     });
 
     // Block ServiceWorker registration

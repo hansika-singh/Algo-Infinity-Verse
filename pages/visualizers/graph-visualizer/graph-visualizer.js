@@ -183,7 +183,7 @@ function initVisualizer() {
     const y = e.clientY - rect.top;
 
     if (nextLabelCode > 90) {
-      console.warn("Alert:", "Maximum node limit (26 nodes) reached!");
+      void 0;
       return;
     }
 
@@ -789,7 +789,7 @@ function initVisualizer() {
   if (startBtn) {
     startBtn.addEventListener("click", () => {
       if (animationSteps.length === 0) {
-        console.warn("Alert:", "Please click a node on the canvas to set start node first!");
+        void 0;
         return;
       }
       playAnimation();
@@ -806,7 +806,7 @@ function initVisualizer() {
   if (stepBtn) {
     stepBtn.addEventListener("click", () => {
       if (animationSteps.length === 0) {
-        console.warn("Alert:", "Please click a node on the canvas to set start node first!");
+        void 0;
         return;
       }
       playStep();

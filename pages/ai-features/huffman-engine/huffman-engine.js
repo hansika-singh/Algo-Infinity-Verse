@@ -45,7 +45,7 @@ function initHuffmanEngine() {
 function processCompression() {
     const text = els.textInput.value;
     if (!text) {
-        console.warn("Alert:", "Please enter some text to compress.");
+        void 0;
         return;
     }
 

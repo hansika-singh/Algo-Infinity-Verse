@@ -10,20 +10,20 @@ async function runTests() {
   ];
 
   for (const url of testUrls) {
-    console.log(`\nTesting: ${url}`);
+    void 0;
     try {
       const provider = VCSFactory.getProvider(url);
       const workflows = await provider.getNormalizedWorkflows();
-      console.log(`Found ${workflows.length} workflows.`);
+      void 0;
       
       let bestScore = 0;
       for (const wf of workflows) {
-        console.log(`- Analyzing: ${wf.name}`);
+        void 0;
         const result = analyzeWorkflow(wf.commands);
-        console.log(`  Result:`, result);
+        void 0;
         if (result.score > bestScore) bestScore = result.score;
       }
-      console.log(`Overall Repository CI/CD Score: ${bestScore}`);
+      void 0;
     } catch (err) {
       console.error("Test failed:", err.message);
     }

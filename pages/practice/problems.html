@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice Problems — Algo Infinity Verse</title>
+  <meta name="description" content="Browse and solve DSA practice problems. Filter by difficulty, category, or search by title and tags. Track your progress across arrays, strings, trees, graphs, DP, and linked lists." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="problems.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = t || (p ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="practice" data-no-loading>
+  <main>
+    <!-- HERO -->
+    <section class="pp-hero">
+      <div class="pp-hero-bg">
+        <div class="pp-hero-glow"></div>
+        <div class="pp-hero-orb" aria-hidden="true"></div>
+      </div>
+      <button type="button" class="pp-back-btn" id="ppBackBtn" aria-label="Go back to previous page">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+      <div class="pp-hero-content">
+        <h1 class="pp-hero-title" aria-label="Practice Problems">
+          <span class="pp-title-word">
+            <span class="pp-title-char" style="--i:0">P</span>
+            <span class="pp-title-char" style="--i:1">r</span>
+            <span class="pp-title-char" style="--i:2">a</span>
+            <span class="pp-title-char" style="--i:3">c</span>
+            <span class="pp-title-char" style="--i:4">t</span>
+            <span class="pp-title-char" style="--i:5">i</span>
+            <span class="pp-title-char" style="--i:6">c</span>
+            <span class="pp-title-char" style="--i:7">e</span>
+          </span>
+          <span class="pp-title-word">
+            <span class="pp-title-char" style="--i:8">P</span>
+            <span class="pp-title-char" style="--i:9">r</span>
+            <span class="pp-title-char" style="--i:10">o</span>
+            <span class="pp-title-char" style="--i:11">b</span>
+            <span class="pp-title-char" style="--i:12">l</span>
+            <span class="pp-title-char" style="--i:13">e</span>
+            <span class="pp-title-char" style="--i:14">m</span>
+            <span class="pp-title-char" style="--i:15">s</span>
+          </span>
+        </h1>
+        <p class="pp-hero-subtitle">
+          Sharpen your DSA skills with curated problems. Filter by difficulty and category, search by title or tags, and track your mastery.
+        </p>
+
+        <!-- SEARCH -->
+        <div class="pp-search-wrapper">
+          <div class="pp-search">
+            <i class="fas fa-search pp-search-icon"></i>
+            <input
+              type="text"
+              id="ppSearchInput"
+              class="pp-search-input"
+              placeholder="Search by title, tag, or description..."
+              aria-label="Search practice problems"
+              autocomplete="off"
+            />
+            <button type="button" id="ppClearBtn" class="pp-clear-btn" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+            <span class="pp-search-hint">&#8984;K</span>
+          </div>
+        </div>
+
+        <!-- FILTER CHIPS: DIFFICULTY -->
+        <div class="pp-filter-group">
+          <span class="pp-filter-label">Difficulty</span>
+          <div class="pp-filters" id="ppDifficultyFilters" role="group" aria-label="Filter by difficulty"></div>
+        </div>
+
+        <!-- FILTER CHIPS: CATEGORY -->
+        <div class="pp-filter-group">
+          <span class="pp-filter-label">Category</span>
+          <div class="pp-filters" id="ppCategoryFilters" role="group" aria-label="Filter by category"></div>
+        </div>
+
+        <p class="pp-result-count" id="ppResultCount">
+          Showing <span id="ppCountDisplay">0</span> problems
+          <span class="pp-result-total" id="ppTotalDisplay">of 0</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- CARD GRID -->
+    <section class="pp-section">
+      <div class="pp-container">
+        <div class="pp-grid" id="ppGrid" role="list">
+          <!-- Cards rendered by JS -->
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div class="pp-empty" id="ppEmpty" style="display:none;">
+          <i class="fas fa-search-minus"></i>
+          <h3>No problems found</h3>
+          <p>Try adjusting your search or filters.</p>
+          <button type="button" class="pp-empty-reset-btn" id="ppEmptyResetBtn">
+            <i class="fas fa-undo"></i> Reset Filters
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Quiz Editor Modal (needed for openQuizEditor) -->
+  <div class="modal quiz-modal" id="quizEditorModal">
+    <div class="quiz-modal-content">
+      <div id="quizLoadingScreen" class="quiz-loading hidden">
+        <div class="quiz-spinner"></div>
+        <h3 id="quizLoadingTopic" class="loading-text">Loading...</h3>
+        <p id="loadingTopicName"></p>
+      </div>
+      <div class="quiz-modal-header">
+        <div class="quiz-problem-info">
+          <span class="quiz-topic-badge" id="quizTopicBadge"></span>
+          <span class="quiz-difficulty" id="quizDifficulty"></span>
+          <h3 id="quizTitle">Problem Title</h3>
+          <button type="button" class="quiz-modal-close" id="quizModalClose" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="quiz-modal-body">
+        <div class="quiz-layout">
+          <div class="quiz-problem-panel">
+            <div class="quiz-panel-tabs" style="display: flex; border-bottom: 1px solid var(--glass-border); margin-bottom: 1rem; gap: 0.5rem;">
+              <button id="btnQuizTabProblem" class="quiz-tab-btn active" onclick="switchQuizTab('problem')" type="button">Description</button>
+              <button id="btnQuizTabNotes" class="quiz-tab-btn" onclick="switchQuizTab('notes')" type="button">Notes &amp; Mnemonics</button>
+            </div>
+            <div id="quizTabProblemContent">
+              <div class="problem-description">
+                <h4>Problem Description</h4>
+                <p id="quizDescription"></p>
+                <div class="problem-examples">
+                  <h5>Examples</h5>
+                  <div id="quizExamples"></div>
+                </div>
+              </div>
+              <div class="test-cases-section">
+                <h5 class="test-cases-heading">Test Cases</h5>
+                <div class="test-cases-container" id="quizTestCasesContainer"></div>
+              </div>
+            </div>
+            <div id="quizTabNotesContent" style="display: none; padding-right: 0.5rem; max-height: 480px; overflow-y: auto;">
+              <h4 style="margin-top:0; font-family:'Orbitron',sans-serif; color:var(--accent);">Problem Study Guide</h4>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom: 1rem;">Attach study hooks, traps, and guidelines below. Notes are saved to your profile.</p>
+              <div class="control-group" style="margin-bottom: 0.75rem;">
+                <label for="noteText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">My Notes</label>
+                <textarea id="noteText" class="control-input" placeholder="General observations, explanations, or approach summaries..." style="height: 70px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+              </div>
+              <div class="control-group" style="margin-bottom: 0.75rem;">
+                <label for="mnemonicText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Mnemonics / Memory Hooks</label>
+                <textarea id="mnemonicText" class="control-input" placeholder="e.g. 'FAST/SLOW pointers: Slow moves 1, Fast moves 2'..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+              </div>
+              <div class="control-group" style="margin-bottom: 0.75rem;">
+                <label for="pitfallsText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Common Pitfalls &amp; Traps</label>
+                <textarea id="pitfallsText" class="control-input" placeholder="What to watch out for (e.g. integer overflow, empty checks)..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+              </div>
+              <div class="control-group" style="margin-bottom: 0.75rem;">
+                <label for="whenToUseText" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">When to use this Pattern?</label>
+                <textarea id="whenToUseText" class="control-input" placeholder="Characteristics of problems that need this solution pattern..." style="height: 60px; resize: vertical; width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;"></textarea>
+              </div>
+              <div class="control-group" style="margin-bottom: 1rem;">
+                <label for="noteTags" style="display:block; font-size:0.8rem; margin-bottom:0.25rem;">Tags (Comma-separated)</label>
+                <input type="text" id="noteTags" class="control-input" placeholder="e.g. sliding-window, hash-map" style="width: 100%; border-radius: 6px; padding: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;">
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem;">
+                <span id="noteSaveStatus" style="font-size:0.8rem; color:#10b981; font-style:italic;"></span>
+                <button id="btnSaveProblemNotes" class="btn btn-primary" onclick="saveActiveProblemNotes()" type="button" style="padding: 0.4rem 0.8rem; font-size: 0.82rem;"><i class="fas fa-save"></i> Save Notes</button>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-editor-panel">
+            <div class="code-editor-container">
+              <div class="editor-header">
+                <div class="problem-details">
+                  <select id="languageSelect" class="language-select">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="c">C</option>
+                    <option value="swift">Swift</option>
+                  </select>
+                </div>
+                <div class="editor-actions">
+                  <button type="button" class="editor-btn" onclick="insertSnippet('function')" title="Insert function">
+                    <i class="fas fa-code"></i><span class="btn-text"> Function</span>
+                  </button>
+                  <button type="button" class="editor-btn" onclick="formatCode()" title="Format code">
+                    <i class="fas fa-indent"></i><span class="btn-text"> Format</span>
+                  </button>
+                  <button class="editor-btn" id="aiInterviewerToggle" type="button" onclick="toggleAiInterviewer()" title="Invite AI Interviewer" aria-pressed="false" style="color: #10b981; border: 1px solid #10b981;">
+                    <i class="fas fa-user-tie"></i><span class="btn-text"> AI Interviewer</span>
+                  </button>
+                  <button type="button" class="editor-btn" onclick="toggleLineComment()" title="Toggle comment">
+                    <i class="fas fa-comment"></i><span class="btn-text"> //</span>
+                  </button>
+                </div>
+              </div>
+              <div class="code-editor">
+                <div class="line-numbers" id="lineNumbers"></div>
+                <textarea id="codeEditor" class="code-textarea" spellcheck="false" placeholder="// Write your solution here...&#10;&#10;function twoSum(nums, target) {&#10;    // Your code here&#10;}"></textarea>
+                <div class="syntax-highlight" id="syntaxHighlight"></div>
+                <div class="current-line-indicator" id="currentLineIndicator"></div>
+              </div>
+              <div class="editor-shortcuts">
+                <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd><span class="shortcut-label"> Run</span></span>
+                <span><kbd>Ctrl</kbd>+<kbd>S</kbd><span class="shortcut-label"> Submit</span></span>
+              </div>
+              <div class="output-panel" id="outputPanel">
+                <button type="button" class="output-header" id="outputHeader" aria-controls="quizOutputContent" aria-expanded="true">
+                  <span>Output</span>
+                  <i class="fas fa-chevron-down" id="outputToggleIcon"></i>
+                </button>
+              </div>
+              <div class="output-content" id="quizOutputContent">
+                <p class="output-placeholder">Run your code to see output...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-modal-footer">
+        <div class="quiz-actions" style="display:flex; justify-content:flex-end; align-items:center; width:100%; gap: 1rem; flex-wrap: wrap;">
+          <div style="display:flex; gap:0.5rem; margin-left: auto;">
+            <button type="button" class="btn btn-outline" id="quizRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button type="button" class="btn btn-primary" id="quizSubmitBtn">
+              <i class="fas fa-paper-plane"></i> Submit
+            </button>
+          </div>
+          <div id="sm2RatingContainer" style="display:none; align-items:center; gap:0.6rem; background:rgba(255,255,255,0.03); padding:0.4rem 0.8rem; border-radius:8px; border:1px solid var(--glass-border);">
+            <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; font-family:'Orbitron',sans-serif;">SM-2 Recall:</span>
+            <button class="btn" style="background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; cursor:pointer;" onclick="rateRecallDifficulty(1)" type="button">Again</button>
+            <button class="btn" style="background:rgba(245, 158, 11, 0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; cursor:pointer;" onclick="rateRecallDifficulty(3)" type="button">Good</button>
+            <button class="btn" style="background:rgba(16, 185, 129, 0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:0.25rem 0.5rem; font-size:0.75rem; cursor:pointer;" onclick="rateRecallDifficulty(5)" type="button">Easy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/data/practice-problems.js"></script>
+  <script src="/auth.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/script.js"></script>
+  <script src="problems.js"></script>
+  <script type="module">
+    import { initEditor } from '../../modules/editor.js';
+
+    // Stub functions for editor modal features not fully loaded on this page
+    // Prevents ReferenceErrors when clicking inline onclick handlers
+    window.switchQuizTab = window.switchQuizTab || function() {};
+    window.toggleAiInterviewer = window.toggleAiInterviewer || function() {};
+    window.saveActiveProblemNotes = window.saveActiveProblemNotes || function() {};
+    window.rateRecallDifficulty = window.rateRecallDifficulty || function() {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initEditor();
+    });
+  </script>
+</body>
+</html>

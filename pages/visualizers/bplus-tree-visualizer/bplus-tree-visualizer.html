@@ -12,7 +12,7 @@
 </head>
 <body data-page="bplus-tree-visualizer">
 
-  <div id="loading-screen">
+  <div id="loading-screen" class="hidden">
     <div class="loader">
       <div class="infinity-loader">∞</div>
       <h2>Algo Infinity Verse</h2>
@@ -176,20 +176,25 @@
 
   <div id="footer-placeholder"></div>
 
-  <script src="../../../auth.js"></script>
+  <script src="/auth.js"></script>
   <script src="/bootstrap-legacy.js"></script>
 
-  <script src="../../../script.js"></script>
+  <script src="/script.js"></script>
     <script type="module" src="/dist/legacy-bundle.mjs"></script>
-  <script src="../../../theme.js"></script>
-  <script src="../../../auth-gate.js"></script>
+  <script src="/theme.js"></script>
+  <script src="/auth-gate.js"></script>
   <script src="bplus-tree-visualizer.js"></script>
   <script>
     if (typeof loadPartial === 'function') {
-      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
-        if (typeof initNavbar === 'function') initNavbar();
+      Promise.all([
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+          if (typeof initNavbar === 'function') initNavbar();
+        }),
+        loadPartial('footer-placeholder', '/partials/footer.html')
+      ]).then(function() {
+        window.partialsLoadedFlag = true;
+        document.dispatchEvent(new Event('partialsLoaded'));
       });
-      loadPartial('footer-placeholder', '/partials/footer.html');
     }
   </script>
 </body>

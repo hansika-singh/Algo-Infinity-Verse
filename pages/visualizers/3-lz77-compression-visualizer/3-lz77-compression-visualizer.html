@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LZ77 Data Compression Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="3-lz77-compression-visualizer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-file-zipper logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>LZ77 Sliding Window Compression <span class="badge badge-algo">Data Compression</span></h1>
+        <p>Lempel-Ziv Dictionary Encoding & Pattern Matching</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-keyboard"></i> Data Input</h2>
+          <div class="input-group">
+            <input type="text" id="input-string" placeholder="e.g. abracadabra" value="abracadabra" maxlength="35">
+            <button id="btn-initialize" class="btn btn-secondary">Load Data</button>
+          </div>
+          <p class="desc-text mt-2">Highly repetitive strings (e.g., 'aacaacabcaba') compress best.</p>
+        </section>
+
+        <section class="glass-panel control-panel mt-3">
+          <h2><i class="fa-solid fa-microchip"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Auto Play
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+          <div class="slider-control">
+            <label for="speed-slider">Engine Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="3.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <section class="glass-panel telemetry-panel mt-3">
+          <h2><i class="fa-solid fa-chart-pie"></i> Compression Telemetry</h2>
+          <div class="metric-grid">
+             <div class="metric-box box-original">
+                <span class="metric-title">Original Size</span>
+                <span class="metric-value" id="val-original">0</span>
+                <span class="metric-sub">Bytes</span>
+             </div>
+             
+             <div class="metric-box box-compressed">
+                <span class="metric-title">Compressed Size</span>
+                <span class="metric-value" id="val-compressed">0</span>
+                <span class="metric-sub">Bytes</span>
+             </div>
+          </div>
+          <div class="ratio-bar-container mt-2">
+            <div class="ratio-bar-fill" id="ratio-bar" style="width: 100%;"></div>
+          </div>
+          <p class="ratio-text" id="ratio-text">Ratio: 100%</p>
+        </section>
+
+        <section class="glass-panel legend-panel mt-3">
+          <h2><i class="fa-solid fa-layer-group"></i> Buffer Windows</h2>
+          <ul class="phase-list">
+            <li class="phase-item">
+              <span class="color-box search-color"></span>
+              <div class="phase-info">
+                <strong>Search Buffer (Dictionary)</strong>
+                <p>Previously seen text used as a reference.</p>
+              </div>
+            </li>
+            <li class="phase-item">
+              <span class="color-box lookahead-color"></span>
+              <div class="phase-info">
+                <strong>Lookahead Buffer</strong>
+                <p>Upcoming text currently being encoded.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Engine Log:</span>
+            <span id="status-text" class="status-message">Engine ready. Press Step or Auto Play to begin.</span>
+          </div>
+        </div>
+
+        <div class="lz77-container">
+            
+            <div class="data-stream-wrapper" id="data-stream-wrapper">
+                <h3 class="panel-title"><i class="fa-solid fa-memory"></i> Active Memory Buffers</h3>
+                
+                <div class="memory-track" id="memory-track">
+                    <svg id="match-svg" class="match-svg-layer"></svg>
+                    
+                    <div id="window-search" class="sliding-window window-search"></div>
+                    <div id="window-lookahead" class="sliding-window window-lookahead"></div>
+                    
+                    <div class="char-row" id="char-row"></div>
+                </div>
+            </div>
+
+            <div class="token-stream-wrapper mt-3">
+                <h3 class="panel-title"><i class="fa-solid fa-barcode"></i> Emitted Tokens <span class="token-format">&lt;Distance, Length, Next Char&gt;</span></h3>
+                <div class="token-container" id="token-container">
+                    <span class="empty-stream">No tokens emitted yet...</span>
+                </div>
+            </div>
+
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="3-lz77-compression-visualizer.js"></script>
+</body>
+</html>

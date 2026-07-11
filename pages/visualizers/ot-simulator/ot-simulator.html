@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Operational Transformation (OT) Simulator | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive simulator for Operational Transformation (OT) algorithms used in collaborative text editing." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="ot-simulator.css" />
+</head>
+<body class="ot-body">
+
+    <nav class="navbar ot-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge">
+            <i class="fas fa-random"></i> OT Simulator
+        </div>
+    </nav>
+
+    <main class="ot-workspace">
+        
+        <!-- Top Visual Area: Clients & Server -->
+        <div class="network-area">
+            
+            <!-- Client A (Alice) -->
+            <div class="node client-node" id="clientA">
+                <div class="node-header">
+                    <i class="fas fa-user-astronaut"></i> Alice
+                </div>
+                <div class="editor-container">
+                    <input type="text" id="inputA" class="ot-input" value="Hello" autocomplete="off" />
+                </div>
+                <div class="state-logs" id="logsA">
+                    <div class="log-title">Pending Operations:</div>
+                </div>
+            </div>
+
+            <!-- Visual Pipes -->
+            <div class="pipes-container">
+                <canvas id="networkCanvas"></canvas>
+            </div>
+
+            <!-- Central Server -->
+            <div class="node server-node" id="serverNode">
+                <div class="node-header">
+                    <i class="fas fa-server"></i> OT Server
+                </div>
+                <div class="editor-container">
+                    <div class="server-text" id="serverText">Hello</div>
+                </div>
+                <div class="state-logs" id="logsServer">
+                    <div class="log-title">Transformation Log:</div>
+                </div>
+            </div>
+
+            <!-- Client B (Bob) -->
+            <div class="node client-node" id="clientB">
+                <div class="node-header">
+                    <i class="fas fa-user-ninja"></i> Bob
+                </div>
+                <div class="editor-container">
+                    <input type="text" id="inputB" class="ot-input" value="Hello" autocomplete="off" />
+                </div>
+                <div class="state-logs" id="logsB">
+                    <div class="log-title">Pending Operations:</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Area: Controls & Explanation -->
+        <div class="control-panel">
+            <div class="panel-section">
+                <h3><i class="fas fa-sliders-h"></i> Network Simulation</h3>
+                <div class="control-row">
+                    <label>Network Speed (Latency):</label>
+                    <input type="range" id="latencySlider" min="1" max="100" value="20" class="w-100" />
+                </div>
+                <div class="btn-group mt-2">
+                    <button class="btn btn-outline" id="btnPause"><i class="fas fa-pause"></i> Pause Network</button>
+                    <button class="btn btn-outline" id="btnStep"><i class="fas fa-step-forward"></i> Step Packet</button>
+                </div>
+                <p class="help-text mt-2">Type simultaneously in Alice and Bob's editors to generate concurrent operations.</p>
+            </div>
+
+            <div class="panel-section flex-2">
+                <h3><i class="fas fa-calculator"></i> Transformation Matrix T(op1, op2) -> op1'</h3>
+                <div class="matrix-display" id="matrixDisplay">
+                    <p class="text-muted">Generate a conflict to view the Transformation calculation here...</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="ot-simulator.js"></script>
+</body>
+</html>

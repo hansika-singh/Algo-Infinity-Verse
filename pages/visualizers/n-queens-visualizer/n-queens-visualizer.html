@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N-Queens Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive visualizer for the N-Queens Backtracking algorithm."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="n-queens-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="n-queens-visualizer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero nq-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">The Classic Backtracking Puzzle.</span>
+          <span class="main-title nq-gradient">N-Queens Problem</span>
+          <span class="subtitle">Algorithm Visualizer</span>
+        </h1>
+        <p class="section-subtitle">
+          Place N chess queens on an N×N chessboard so that no two queens threaten each other. Watch
+          the backtracking algorithm systematically explore the state space to find all valid
+          configurations!
+        </p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary nq-btn-primary"
+            ><i class="fas fa-play"></i> Open Visualizer</a
+          >
+          <a href="#learn" class="btn btn-secondary"
+            ><i class="fas fa-chess-queen"></i> How It Works</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+        <!-- Controls -->
+        <div class="nq-control-card">
+          <!-- Board Size Setup -->
+          <div class="nq-row">
+            <span class="nq-row-label">Board Size (N):</span>
+            <div class="nq-input-group">
+              <input
+                type="range"
+                id="nqSize"
+                class="nq-range"
+                min="4"
+                max="8"
+                value="8"
+                aria-label="Board Size"
+              />
+              <span class="nq-size-val" id="nqSizeVal">8x8</span>
+            </div>
+            <p class="nq-size-hint">
+              Limits: 4 to 8 (larger boards generate too many steps for real-time visualization).
+            </p>
+          </div>
+
+          <!-- Playback -->
+          <div class="nq-playback-row">
+            <button type="button" class="btn nq-btn-primary nq-pb-btn" id="nqRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button type="button" class="btn btn-secondary nq-pb-btn" id="nqStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button type="button" class="btn btn-secondary nq-pb-btn" id="nqPauseBtn" disabled>
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button type="button" class="btn btn-secondary nq-pb-btn" id="nqResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="nq-speed-wrap">
+              <span class="nq-speed-label">Speed:</span>
+              <input
+                type="range"
+                id="nqSpeed"
+                class="nq-range"
+                min="1"
+                max="5"
+                value="4"
+                aria-label="Speed"
+              />
+              <span class="nq-speed-val" id="nqSpeedVal">Fast</span>
+            </div>
+            <div class="nq-step-ctr">
+              Step <span id="nqStepNum">0</span>/<span id="nqStepTotal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="nqStatus" class="nq-status">Select a board size and click Run to begin.</div>
+
+        <!-- Main layout -->
+        <div class="nq-main-layout">
+          <!-- Grid -->
+          <div class="nq-board-wrap">
+            <div id="nqBoard" class="nq-board">
+              <!-- Cells will be generated by JS -->
+            </div>
+          </div>
+
+          <!-- State panel -->
+          <div class="nq-state-panel">
+            <div class="nq-state-title">Action Log</div>
+            <div class="nq-log-wrap" id="nqLogWrap">
+              <div class="nq-log-empty">Waiting to start...</div>
+            </div>
+
+            <div class="nq-state-title" style="margin-top: 1rem">Solutions Found</div>
+            <div class="nq-stats-grid">
+              <div class="nq-stat-box">
+                <div class="nq-stat-label">Valid Configurations</div>
+                <div class="nq-stat-val" id="nqStatSolutions">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn Section -->
+    <section id="learn" class="section bg-light">
+      <div class="container">
+        <h2 class="section-title">How N-Queens Backtracking Works</h2>
+        <div class="nq-learn-grid">
+          <div class="nq-learn-card">
+            <h3>Row by Row Placement</h3>
+            <p>
+              We place queens one row at a time. By guaranteeing only one queen per row, we
+              automatically satisfy the row constraint, reducing the search space significantly.
+            </p>
+          </div>
+          <div class="nq-learn-card">
+            <h3>Constraint Checking</h3>
+            <p>
+              Before placing a queen in a column, we check if it's safe. We ensure no other queen
+              shares the same <strong>column</strong>, <strong>main diagonal</strong>, or
+              <strong>anti-diagonal</strong>.
+            </p>
+          </div>
+          <div class="nq-learn-card">
+            <h3>The Backtrack</h3>
+            <p>
+              If all columns in a row are unsafe, it means a previous placement was wrong. The
+              algorithm undoes the last queen placed (backtracks) and tries the next available
+              column in the previous row.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="n-queens-visualizer.js"></script>
+  </body>
+</html>

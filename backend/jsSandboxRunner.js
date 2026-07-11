@@ -34,6 +34,12 @@ function normalizeTestCase(t) {
   return { name: t.name ?? undefined, input: t.value ?? "", expectedOutput: t.expectedOutput ?? t.expected ?? "", isHidden: Boolean(t.isHidden) };
 }
 
+function sanitizeFilePath(filePath) {
+  const normalized = path.normalize(filePath);
+  if (!normalized.startsWith(os.tmpdir())) throw new Error("Invalid path");
+  return normalized;
+}
+
 async function runWithDocker({ language, sourceCode, tests, timeoutMs, maxOutputChars, showMySteps }) {
   const langIdMap = { python: "python", cpp: "cpp", javascript: "javascript", 'c++': 'cpp', java: 'java' };
   const langKey = langIdMap[language.toLowerCase()] || language.toLowerCase();
@@ -106,9 +112,9 @@ try {
     
     const execId = crypto.randomUUID();
     const fileName = langKey === 'java' ? `Main_${execId.replace(/-/g, '')}${langConfig.ext}` : `${execId}${langConfig.ext}`;
-    const hostFilePath = path.join(tmpDir, fileName);
+    const hostFilePath = sanitizeFilePath(path.join(tmpDir, fileName));
     const containerFilePath = `/tmp/${fileName}`;
-    const hostInputPath = path.join(tmpDir, `${execId}.in`);
+    const hostInputPath = sanitizeFilePath(path.join(tmpDir, `${execId}.in`));
     const containerInputPath = `/tmp/${execId}.in`;
 
     try {
@@ -217,6 +223,10 @@ export async function runUserCode({ language, sourceCode, tests, timeoutMs = 200
   }
 
   const normalizedTests = Array.isArray(tests) ? tests.map(normalizeTestCase) : [];
+
+  if (normalizedTests.length > 20) {
+    return { ok: false, error: "Exceeded maximum allowed test cases (20)." };
+  }
 
   return await runWithDocker({ language, sourceCode, tests: normalizedTests, timeoutMs, maxOutputChars, showMySteps });
 }

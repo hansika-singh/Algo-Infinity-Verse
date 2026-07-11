@@ -201,7 +201,7 @@ function spawnContainerProcess(cmd, baseMemory) {
     // Check cgroup BEFORE spawning
     if (container.memoryUsage + baseMemory > container.memoryLimit) {
         logDmesg(`cgroup memory limit exceeded trying to spawn '${cmd}'.`, 'oom');
-        return console.warn("Alert:", "Cannot spawn process. Container is out of memory (cgroup limit reached).");
+        return void 0;
     }
 
     const proc = new Process(cmd, baseMemory, containerId);

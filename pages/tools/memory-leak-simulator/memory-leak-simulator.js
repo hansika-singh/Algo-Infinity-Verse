@@ -233,7 +233,7 @@ function startSimulation() {
         const fn = new Function(...argNames, userCode);
         fn(...argValues);
     } catch (err) {
-        console.warn("Alert:", "Syntax Error in your code:\n" + err.message);
+        void 0;
         stopSimulation();
         return;
     }

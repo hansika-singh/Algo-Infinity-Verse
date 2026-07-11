@@ -291,9 +291,7 @@ function renderGraph() {
       const targetEdge = edges.find(ed => ed.id === targetId);
       if (!targetEdge) return;
 
-      const val = null /* prompt removed */:`,
-        `${targetEdge.capacity},${targetEdge.cost}`
-      );
+      const val = null;
       
       if (val) {
         const parts = val.split(",");

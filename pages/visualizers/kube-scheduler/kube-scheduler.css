@@ -1,0 +1,294 @@
+/* kube-scheduler.css */
+
+.kube-body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.kube-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent);
+}
+
+.logo-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.engine-badge {
+    background: rgba(var(--accent-rgb), 0.1);
+    color: #326ce5; /* Kubernetes Blue */
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(50, 108, 229, 0.3);
+}
+
+.kube-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.panel-left {
+    width: 350px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.panel-header {
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #326ce5;
+}
+
+.control-section {
+    padding: 1.5rem 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.control-section h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.action-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.btn-primary { background-color: #326ce5; color: white; }
+.btn-warning { background-color: #d73a49; color: white; }
+.btn-accent { background-color: #3fb950; color: white; }
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.w-100 { width: 100%; }
+.mt-2 { margin-top: 0.5rem; }
+
+.queue-container {
+    padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pod-card {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #326ce5;
+    animation: slideIn 0.3s ease-out;
+}
+
+.pod-card.large { border-left-color: #d73a49; }
+
+.pod-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.pod-res {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #8b949e;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Cluster Area */
+.panel-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    overflow-y: auto;
+    background: #0d1117;
+}
+
+.cluster-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.cluster-header h2 { margin: 0; font-size: 1.5rem; color: #c9d1d9; }
+
+.scheduling-status {
+    background: #238636;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.cluster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    flex: 1;
+}
+
+.kube-node {
+    background: var(--bg-secondary);
+    border: 2px solid #30363d;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.kube-node.filtering { border-color: #d29922; box-shadow: 0 0 15px rgba(210, 153, 34, 0.2); }
+.kube-node.filtered-out { opacity: 0.3; filter: grayscale(1); }
+.kube-node.scoring { border-color: #3fb950; box-shadow: 0 0 15px rgba(63, 185, 80, 0.2); }
+.kube-node.selected { border-color: #326ce5; box-shadow: 0 0 25px rgba(50, 108, 229, 0.4); transform: scale(1.02); }
+
+.node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.node-header h3 { margin: 0; font-size: 1.1rem; }
+.node-score {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #3fb950;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.kube-node.scoring .node-score { opacity: 1; }
+
+.resource-bar-container { margin-bottom: 1rem; }
+.resource-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #8b949e;
+    margin-bottom: 0.3rem;
+}
+.resource-bar {
+    height: 8px;
+    background: #30363d;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.resource-fill {
+    height: 100%;
+    background: #326ce5;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+}
+.resource-fill.cpu { background: #3fb950; }
+.resource-fill.mem { background: #d29922; }
+
+.node-pods {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    min-height: 50px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+
+.pod-mini {
+    width: 20px;
+    height: 20px;
+    background: #326ce5;
+    border-radius: 4px;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pod-mini.large { width: 44px; background: #d73a49; }
+
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+.explanation-panel {
+    margin-top: 2rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+.explanation-panel h3 { margin: 0 0 1rem 0; font-size: 1rem; }
+.terminal-log {
+    flex: 1;
+    background-color: #0d1117;
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    overflow-y: auto;
+    color: #c9d1d9;
+}
+.log-entry { margin-bottom: 0.3rem; }
+.log-error { color: #f85149; }
+.log-success { color: #3fb950; }
+.log-warn { color: #d29922; }

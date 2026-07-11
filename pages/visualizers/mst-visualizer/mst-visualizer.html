@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MST Visualizer (Kruskal vs Prim) | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Visualize and compare Kruskal's and Prim's algorithms for Minimum Spanning Tree side-by-side."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="mst-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="mst-visualizer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+    <div id="navbar-placeholder"></div>
+
+    <section id="home" class="hero visualizer-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Compare</span>
+          <span class="main-title gradient-text">MST Algorithms</span>
+          <span class="subtitle">Kruskal's vs Prim's Minimum Spanning Tree Visualizer</span>
+        </h1>
+      </div>
+    </section>
+
+    <section class="section" id="visualizer-section">
+      <div class="container">
+        <div class="visualizer-container">
+          <div class="visualizer-main-panel" style="width: 100%">
+            <div class="visualizer-card" style="padding: 1rem">
+              <div class="controls-container">
+                <div class="control-group">
+                  <button id="addNodeBtn" class="btn btn-primary active">Add Node</button>
+                  <button id="addEdgeBtn" class="btn btn-secondary">Add Edge</button>
+                  <button id="clearBtn" class="btn btn-danger">Clear Graph</button>
+                </div>
+                <div class="control-group">
+                  <label for="speedRange">Animation Speed:</label>
+                  <input type="range" id="speedRange" min="10" max="1000" value="500" dir="rtl" />
+                </div>
+                <div class="control-group">
+                  <button id="startBtn" class="btn btn-primary">Start Visualization</button>
+                </div>
+              </div>
+
+              <div class="split-view-container">
+                <!-- Kruskal Side -->
+                <div class="split-pane">
+                  <h3 class="pane-title">Kruskal's Algorithm</h3>
+                  <div class="canvas-wrapper">
+                    <svg id="kruskalSvg" class="svg-canvas"></svg>
+                  </div>
+                  <div class="log-panel" id="kruskalLog">Waiting to start...</div>
+                </div>
+
+                <!-- Prim Side -->
+                <div class="split-pane">
+                  <h3 class="pane-title">Prim's Algorithm</h3>
+                  <div class="canvas-wrapper">
+                    <svg id="primSvg" class="svg-canvas"></svg>
+                  </div>
+                  <div class="log-panel" id="primLog">Waiting to start...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="mst-visualizer.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

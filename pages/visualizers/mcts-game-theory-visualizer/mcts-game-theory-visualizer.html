@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCTS Game Theory Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="mcts-game-theory-visualizer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-brain logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Monte Carlo Tree Search <span class="badge badge-algo">AI & Game Theory</span></h1>
+        <p>Stochastic Rollouts, Upper Confidence Bounds (UCB1), and Backpropagation</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Left Sidebar: Controls & Live Math -->
+      <aside class="sidebar">
+        <!-- Engine Controls -->
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-microchip"></i> Engine Controls</h2>
+          <div class="btn-group">
+            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+              <i class="fa-solid fa-play"></i> Run Iterations
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Single Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset Tree">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset Simulation
+            </button>
+          </div>
+          <div class="slider-control">
+            <label for="speed-slider">Simulation Speed: <span id="speed-val">1.0x</span></label>
+            <input type="range" id="speed-slider" min="0.5" max="4.0" step="0.5" value="1.0">
+          </div>
+        </section>
+
+        <!-- Live Analytics -->
+        <section class="glass-panel telemetry-panel mt-3">
+          <h2><i class="fa-solid fa-chart-line"></i> Tree Telemetry</h2>
+          <div class="metric-grid">
+             <div class="metric-box">
+                <span class="metric-title">Total Rollouts</span>
+                <span class="metric-value text-cyan" id="val-iterations">0</span>
+             </div>
+             <div class="metric-box">
+                <span class="metric-title">Max Tree Depth</span>
+                <span class="metric-value text-purple" id="val-depth">0</span>
+             </div>
+          </div>
+        </section>
+
+        <!-- UCB1 Formula Dashboard -->
+        <section class="glass-panel math-panel mt-3">
+          <h2><i class="fa-solid fa-square-root-variable"></i> Selection Policy (UCT)</h2>
+          <div class="formula-box">
+             UCT = w<sub>i</sub>/n<sub>i</sub> + c × √( ln(N<sub>p</sub>) / n<sub>i</sub> )
+          </div>
+          <div class="math-stream" id="math-stream">
+            <div class="empty-stream">Awaiting selection phase to display UCB1 evaluations...</div>
+          </div>
+        </section>
+
+        <!-- Phase Legend -->
+        <section class="glass-panel legend-panel mt-3">
+          <h2><i class="fa-solid fa-layer-group"></i> MCTS Loop Phases</h2>
+          <ul class="phase-list">
+            <li class="phase-item" id="phase-selection">
+              <span class="color-box selection-color"></span>
+              <div class="phase-info">
+                <strong>1. Selection</strong>
+                <p>Traverse using UCB1 to balance explore vs exploit.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-expansion">
+              <span class="color-box expansion-color"></span>
+              <div class="phase-info">
+                <strong>2. Expansion</strong>
+                <p>Create a new leaf node node for an unvisited state.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-simulation">
+              <span class="color-box simulation-color"></span>
+              <div class="phase-info">
+                <strong>3. Simulation (Rollout)</strong>
+                <p>Execute rapid random playout to evaluate score.</p>
+              </div>
+            </li>
+            <li class="phase-item" id="phase-backprop">
+              <span class="color-box backprop-color"></span>
+              <div class="phase-info">
+                <strong>4. Backpropagation</strong>
+                <p>Pass rollout outcomes up up to the root node.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <!-- Center Stage: Split Game State & Canvas Tree -->
+      <section class="visualizer-stage glass-panel">
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Current Action:</span>
+            <span id="status-text" class="status-message">Simulation ready. Click single step or run iterations.</span>
+          </div>
+        </div>
+
+        <div class="split-view">
+           <!-- Grid Board Game State Layer -->
+           <div class="game-board-wrapper">
+               <h3 class="panel-title"><i class="fa-solid fa-gamepad"></i> Active Search State</h3>
+               <div class="board-grid" id="board-grid">
+                   <!-- Cells injected via JS -->
+               </div>
+               <p class="board-desc">The visualizer shows the board state of the currently selected/simulated tree path node.</p>
+           </div>
+
+           <!-- Interactive Canvas Decision Tree -->
+           <div class="tree-canvas-wrapper">
+               <h3 class="panel-title"><i class="fa-solid fa-network-wired"></i> Asymmetric Decision Tree</h3>
+               <canvas id="mcts-canvas"></canvas>
+           </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="mcts-game-theory-visualizer.js"></script>
+</body>
+</html>

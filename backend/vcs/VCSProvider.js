@@ -38,7 +38,7 @@ export class VCSProvider {
         const commands = this.normalizeCIConfig(file.content);
         return { name: file.name, commands };
       } catch (err) {
-        console.warn(`Failed to parse ${file.name}: ${err.message}`);
+        void 0;
         return { name: file.name, commands: [] };
       }
     });

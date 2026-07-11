@@ -46,7 +46,7 @@ function request(path, method, body, cookie) {
 }
 
 async function runTests() {
-  console.log("Starting server...");
+  void 0;
   const serverProc = spawn("node", ["server.js"], {
     env: { ...process.env, PORT: PORT.toString(), HOST: "127.0.0.1" },
     stdio: 'inherit'
@@ -58,12 +58,12 @@ async function runTests() {
   let sessionCookie = null;
 
   try {
-    console.log("Test 1: POST /api/audit/history without auth");
+    void 0;
     let res = await request("/api/audit/history", "POST", { repoUrl: "test", overallScore: 50 });
     if (res.status !== 401) { throw new Error(`Expected 401, got ${res.status}`); }
-    console.log("✓ Test 1 passed");
+    void 0;
 
-    console.log("Test 2: Create account");
+    void 0;
     const email = `testuser_${Date.now()}@test.com`;
     res = await request("/api/signup", "POST", {
       name: "Test User",
@@ -75,9 +75,9 @@ async function runTests() {
     const setCookie = res.headers["set-cookie"];
     sessionCookie = setCookie ? setCookie[0].split(";")[0] : null;
     if (!sessionCookie) throw new Error("No session cookie received");
-    console.log("✓ Test 2 passed");
+    void 0;
 
-    console.log("Test 3: POST /api/audit/history with auth");
+    void 0;
     res = await request("/api/audit/history", "POST", {
       repoUrl: "repo1",
       overallScore: 60,
@@ -86,20 +86,20 @@ async function runTests() {
       recommendations: ["fix this"]
     }, sessionCookie);
     if (res.status !== 201) { throw new Error(`Expected 201, got ${res.status}`); }
-    console.log("✓ Test 3 passed");
+    void 0;
 
     await wait(500); // Small delay to ensure timestamp difference
 
-    console.log("Test 4: POST /api/audit/history with auth again");
+    void 0;
     res = await request("/api/audit/history", "POST", {
       repoUrl: "repo1",
       overallScore: 75,
       issuesCount: 2
     }, sessionCookie);
     if (res.status !== 201) { throw new Error(`Expected 201, got ${res.status}`); }
-    console.log("✓ Test 4 passed");
+    void 0;
 
-    console.log("Test 5: GET /api/audit/history");
+    void 0;
     res = await request("/api/audit/history", "GET", null, sessionCookie);
     if (res.status !== 200) { throw new Error(`Expected 200, got ${res.status}`); }
     if (!Array.isArray(res.data) || res.data.length < 2) { throw new Error("Expected at least 2 records"); }
@@ -107,9 +107,9 @@ async function runTests() {
     if (new Date(res.data[0].timestamp) < new Date(res.data[1].timestamp)) {
       throw new Error("Expected descending sort by timestamp");
     }
-    console.log("✓ Test 5 passed");
+    void 0;
 
-    console.log("Test 6: GET /api/audit/trends");
+    void 0;
     res = await request("/api/audit/trends", "GET", null, sessionCookie);
     if (res.status !== 200) { throw new Error(`Expected 200, got ${res.status}`); }
     if (!Array.isArray(res.data) || res.data.length < 2) { throw new Error("Expected at least 2 records"); }
@@ -121,24 +121,24 @@ async function runTests() {
     if (res.data[0].repoUrl !== undefined) {
       throw new Error("Expected only trend data (timestamp, overallScore)");
     }
-    console.log("✓ Test 6 passed");
+    void 0;
 
-    console.log("Test 7: GET /api/audit/history?limit=1");
+    void 0;
     res = await request("/api/audit/history?limit=1", "GET", null, sessionCookie);
     if (res.status !== 200) { throw new Error(`Expected 200, got ${res.status}`); }
     if (res.data.length !== 1) { throw new Error(`Expected length 1, got ${res.data.length}`); }
-    console.log("✓ Test 7 passed");
+    void 0;
 
   } catch (err) {
     console.error("Test failed:", err.message);
     failed = true;
   } finally {
-    console.log("Shutting down server...");
+    void 0;
     serverProc.kill();
     if (failed) {
       process.exit(1);
     } else {
-      console.log("All tests passed!");
+      void 0;
       process.exit(0);
     }
   }

@@ -364,17 +364,21 @@ function showNotification(msg, type = 'info') {
     if (typeof globalNotifier === 'function') {
         globalNotifier(msg, type);
     } else {
-        console.log(`[Notification] ${type}: ${msg}`);
+        // Minimal in-DOM fallback when global notifier hasn't loaded
+        const toast = document.createElement('div');
+        toast.textContent = msg;
+        toast.style.cssText = `
+            position:fixed;bottom:20px;right:20px;z-index:9999;
+            padding:10px 16px;border-radius:8px;font-size:14px;font-weight:600;
+            color:#fff;background:${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#6366f1'};
+            box-shadow:0 4px 12px rgba(0,0,0,.3);animation:fadeIn .2s ease;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
     }
 }
 
 // Standard project page load handler
 document.addEventListener('DOMContentLoaded', () => {
-    const loadingScreen = document.getElementById('loading-screen');
-    
-    // Simulate generation delay for premium feel
-    setTimeout(() => {
-        if (loadingScreen) loadingScreen.classList.add('hidden');
-        initGame();
-    }, 1000);
+    initGame();
 });

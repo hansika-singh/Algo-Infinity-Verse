@@ -48,7 +48,7 @@ window.saveProfileChanges = function() {
     const nameVal = nameInput ? nameInput.value.trim() : "";
     
     if (!nameVal) {
-        console.warn("Alert:", "Please enter a valid display name.");
+        void 0;
         return;
     }
     

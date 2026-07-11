@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svelte Learning Hub - Algo Infinity Verse</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="svelte-learning.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white shadow-xl transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 flex flex-col border-r border-gray-200">
+        <!-- Logo and Academy Title -->
+        <div class="p-5 border-b flex justify-between items-center bg-orange-600 text-white shadow-sm">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-fire text-xl"></i> Svelte Learning Hub
+            </h1>
+            <button id="close-sidebar" class="lg:hidden text-white hover:text-orange-100">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Course Progress Card -->
+        <div class="p-5 border-b bg-orange-50/20">
+            <div class="flex justify-between text-xs mb-1.5 font-bold text-slate-500 uppercase tracking-wider">
+                <span>Course Progress</span>
+                <span id="progress-text" class="text-orange-600">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-orange-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Modules List navigation -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <ul id="module-list" class="space-y-2">
+                <!-- Dynamically injected sidebar items go here -->
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="open-sidebar" class="lg:hidden text-gray-600 hover:text-orange-600 transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <h2 id="active-module-title" class="text-lg md:text-xl font-bold text-slate-800">Module Title</h2>
+            </div>
+            
+            <!-- Tabs Switcher Navigation -->
+            <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <button data-tab="lesson" class="tab-btn active px-3 py-2 md:px-4 text-xs md:text-sm font-bold rounded-md text-gray-700 hover:text-orange-600 transition-colors">
+                    <i class="fa-solid fa-book-open mr-1"></i> <span class="hidden sm:inline">Lesson Viewer</span>
+                </button>
+                <button data-tab="playground" class="tab-btn px-3 py-2 md:px-4 text-xs md:text-sm font-bold rounded-md text-gray-700 hover:text-orange-600 transition-colors">
+                    <i class="fa-solid fa-code mr-1"></i> <span class="hidden sm:inline">Playground & Code</span>
+                </button>
+                <button data-tab="quiz" class="tab-btn px-3 py-2 md:px-4 text-xs md:text-sm font-bold rounded-md text-gray-700 hover:text-orange-600 transition-colors">
+                    <i class="fa-solid fa-list-check mr-1"></i> <span class="hidden sm:inline">Quiz</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Workspace Content -->
+        <div class="flex-1 overflow-hidden bg-gray-50 p-4 md:p-6 relative">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 w-full h-full overflow-hidden relative">
+                
+                <!-- Tab 1: Lesson Content -->
+                <div id="tab-lesson" class="tab-content h-full overflow-y-auto p-6 md:p-10 active">
+                    <!-- Dynamically injected lesson content -->
+                </div>
+
+                <!-- Tab 2: Playground & Live Compiler Sandbox -->
+                <div id="tab-playground" class="tab-content h-full hidden flex-col md:flex-row bg-gray-50">
+                    
+                    <!-- Left: Code Workspace Editor -->
+                    <div class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col border-b md:border-b-0 md:border-r border-gray-300">
+                        <div class="bg-gray-800 text-gray-200 text-xs py-2 px-4 flex justify-between items-center font-mono border-b border-gray-700">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-fire text-orange-500"></i> App.svelte</span>
+                            <button id="run-code-btn" class="bg-orange-600 hover:bg-orange-500 text-white px-3 py-1 rounded shadow-sm text-xs font-sans transition-colors font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-play"></i> Run Code
+                            </button>
+                        </div>
+                        <textarea id="code-editor" class="flex-1 w-full bg-[#1a1a1a] text-[#f5f5f5] p-4 focus:outline-none" spellcheck="false"></textarea>
+                    </div>
+                    
+                    <!-- Right: Dynamic Sandbox IFrame Live Preview -->
+                    <div class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col bg-white">
+                        <div class="bg-gray-100 text-gray-600 text-xs py-2 px-4 border-b border-gray-200 flex items-center font-sans">
+                            <div class="flex space-x-1.5 mr-3">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                            </div>
+                            <div class="bg-white px-3 py-0.5 rounded border text-[10px] flex-1 text-center text-gray-400 mx-2 shadow-inner">
+                                <i class="fa-solid fa-lock text-gray-300 mr-1"></i> localhost:5000
+                            </div>
+                        </div>
+                        <!-- Compiled output iframe -->
+                        <iframe id="preview-frame" class="flex-1 w-full border-none" sandbox="allow-scripts allow-popups allow-modals"></iframe>
+                    </div>
+
+                </div>
+
+                <!-- Tab 3: Module Quiz -->
+                <div id="tab-quiz" class="tab-content h-full overflow-y-auto p-6 md:p-10 hidden">
+                    <!-- Dynamically injected quiz components -->
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Script imports -->
+    <script src="svelte-learning.js"></script>
+</body>
+</html>

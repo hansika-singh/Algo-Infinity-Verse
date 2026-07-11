@@ -26,7 +26,7 @@ document.getElementById('start-btn')?.addEventListener('click', () => {
                 focusTimer = null;
                 timeLeft = 1500; 
                 updateTimerDisplay();
-                console.warn("Alert:", "Session complete! Great work.");
+                void 0;
             }
         }, 1000);
     }

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFS Maze Generation Visualizer</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../../../index.html" class="nav-logo">🚀 Algo-Infinity-Verse</a>
+        <ul class="nav-menu">
+          <li><a href="../../../index.html">Home</a></li>
+          <li><a href="../visualizers.html">Visualizers</a></li>
+          <li><a href="#" class="active">DFS Maze Generator</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <header class="header">
+        <h1><i class="fas fa-map"></i> Randomized DFS Maze Generation</h1>
+        <p>
+          Watch a depth-first search algorithm carve out a perfect maze from a solid grid. The
+          active path (call stack) is highlighted, and backtracking is shown when a dead end is
+          reached.
+        </p>
+      </header>
+
+      <div class="controls-panel panel">
+        <div class="controls-group">
+          <button id="generateBtn" class="btn btn-primary">
+            <i class="fas fa-play"></i> Generate Maze
+          </button>
+          <button id="resetBtn" class="btn btn-secondary">
+            <i class="fas fa-rotate-right"></i> Reset Grid
+          </button>
+        </div>
+
+        <div class="controls-group">
+          <label for="speedSlider">Animation Speed: <span id="speedValue">Fast</span></label>
+          <input type="range" id="speedSlider" min="1" max="100" value="80" />
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <div class="grid-container panel">
+          <div id="mazeGrid" class="maze-grid"></div>
+        </div>
+        <div class="info-panel panel">
+          <h3>Legend</h3>
+          <div class="legend-item">
+            <div class="legend-color wall"></div>
+            <span>Solid Wall</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color unvisited"></div>
+            <span>Unvisited Cell</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color path"></div>
+            <span>Carved Path</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color active"></div>
+            <span>Active Digger (Stack Top)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color backtracked"></div>
+            <span>Backtracked Path</span>
+          </div>
+
+          <h3 style="margin-top: 20px">Algorithm State</h3>
+          <div class="state-info">
+            <p>Stack Size: <span id="stackSize">0</span></p>
+            <p>Status: <span id="algoStatus">Idle</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reused theme toggle script standard for the site if applicable -->
+    <script src="../../../theme.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

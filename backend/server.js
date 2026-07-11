@@ -1,35 +1,50 @@
-import crypto from "crypto";
-import fs from "fs/promises";
-import http from "http";
-import path from "path";
-import { fileURLToPath } from "url";
-import { initializeFirebase, getDb, COLLECTIONS } from "../firebase.js";
-import multer from "multer";
-import { extractResumeText } from "./resume-analyzer/parser.js";
-import { calculateATS } from "./resume-analyzer/atsScore.js";
-import { findMissingSkills } from "./resume-analyzer/skills.js";
-import { getSuggestions } from "./resume-analyzer/suggestions.js";
-import { setupApiRoutes } from "./routes/apiRoutes.js";
+import fs from 'fs/promises';
+import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { initializeFirebase, getDb, COLLECTIONS } from '../firebase.js';
+import multer from 'multer';
+import { extractResumeText } from './resume-analyzer/parser.js';
+import { calculateATS } from './resume-analyzer/atsScore.js';
+import { findMissingSkills } from './resume-analyzer/skills.js';
+import { getSuggestions } from './resume-analyzer/suggestions.js';
+import { setupApiRoutes } from './routes/apiRoutes.js';
+import { CodingPersonalityAnalyzer } from './personalityAnalyzer.js';
+import { applySM2 } from './utils/sm2.js';
+import { getSession, clearSessionCookie } from './utils/sessionToken.js';
+import { validateAndNormalizeEmail } from './utils/emailValidation.js';
+import securityConfig from './config/security.js';
+import { commonPasswords, isPasswordBlacklisted } from './config/passwordBlacklist.js';
 
 const MAX_RESUME_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_RESUME_FILE_SIZE_BYTES, files: 1 },
-}).single("resume");
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = [
+      'application/pdf', // .pdf
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/msword', // .doc
+    ];
+
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true); // Accept file
+    } else {
+      cb(new Error('Invalid file type. Only PDF, DOC, and DOCX files are allowed.'), false); // Reject file
+    }
+  },
+}).single('resume');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = __dirname;
-const DATA_DIR = path.join(ROOT, "data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-const CodingPersonalityAnalyzer = require("./personalityAnalyzer.js");
-const MEMORY_FILE = path.join(DATA_DIR, "memory.json");
-const SESSION_COOKIE = "aiv_session";
-const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
+const DATA_DIR = path.join(ROOT, 'data');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const MEMORY_FILE = path.join(DATA_DIR, 'memory.json');
 
 // ── Rate limiting ────────────────────────────────────────────────────────────
-const SIGNUP_RATE_LIMIT = 5;
-const SIGNUP_WINDOW_MS = 15 * 60 * 1000;
+
 const signupAttempts = new Map();
 
 // Periodic sweeper — runs every SIGNUP_WINDOW_MS and deletes any identifier
@@ -39,14 +54,14 @@ const signupAttempts = new Map();
 const _signupSweeper = setInterval(() => {
   const now = Date.now();
   for (const [identifier, timestamps] of signupAttempts) {
-    const fresh = timestamps.filter((t) => now - t < SIGNUP_WINDOW_MS);
+    const fresh = timestamps.filter((t) => now - t < securityConfig.SIGNUP_WINDOW_MS);
     if (fresh.length === 0) {
       signupAttempts.delete(identifier);
     } else {
       signupAttempts.set(identifier, fresh);
     }
   }
-}, SIGNUP_WINDOW_MS);
+}, securityConfig.SIGNUP_WINDOW_MS);
 
 // Allow the process to exit cleanly even while the interval is live
 // (relevant in test environments and graceful-shutdown scenarios).
@@ -54,28 +69,28 @@ if (_signupSweeper.unref) _signupSweeper.unref();
 
 // IPs of reverse-proxies / load-balancers that are allowed to set
 // X-Forwarded-For.  Add your proxy CIDRs / IPs here or populate via
-// the TRUSTED_PROXIES env let (comma-separated) at startup.
+// the TRUSTED_PROXimport { commonPasswords, isPasswordBlacklisted } from "./config/passwordBlacklist.js";IES env let (comma-separated) at startup.
 const TRUSTED_PROXIES = new Set(
-  (process.env.TRUSTED_PROXIES || "")
-    .split(",")
+  (process.env.TRUSTED_PROXIES || '')
+    .split(',')
     .map((s) => s.trim())
-    .filter(Boolean),
+    .filter(Boolean)
 );
 
 function getClientIdentifier(req) {
-  const remoteAddress = req.socket?.remoteAddress || "unknown";
+  const remoteAddress = req.socket?.remoteAddress || 'unknown';
 
   // Only honour X-Forwarded-For when the immediate TCP caller is a
   // known trusted proxy — otherwise an attacker can supply any value
   // they like and trivially bypass rate limiting.
   if (
-    remoteAddress !== "unknown" &&
+    remoteAddress !== 'unknown' &&
     TRUSTED_PROXIES.has(remoteAddress) &&
-    req.headers["x-forwarded-for"]
+    req.headers['x-forwarded-for']
   ) {
     // The left-most entry is the original client IP added by the
     // first proxy in the chain; everything to the right can be spoofed.
-    const leftmost = req.headers["x-forwarded-for"].split(",")[0].trim();
+    const leftmost = req.headers['x-forwarded-for'].split(',')[0].trim();
     if (leftmost) return leftmost;
   }
 
@@ -87,9 +102,9 @@ function isSignupRateLimited(identifier) {
   const attempts = signupAttempts.get(identifier) || [];
   // Trim stale timestamps on every read so the per-identifier array stays
   // small even between sweeper runs.
-  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  const recentAttempts = attempts.filter((t) => now - t < securityConfig.SIGNUP_WINDOW_MS);
   signupAttempts.set(identifier, recentAttempts);
-  return recentAttempts.length >= SIGNUP_RATE_LIMIT;
+  return recentAttempts.length >= securityConfig.SIGNUP_RATE_LIMIT;
 }
 
 function recordSignupAttempt(identifier) {
@@ -97,31 +112,29 @@ function recordSignupAttempt(identifier) {
   const attempts = signupAttempts.get(identifier) || [];
   // Trim before appending so the array never accumulates beyond
   // SIGNUP_RATE_LIMIT + 1 entries between sweeper passes.
-  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
+  const recentAttempts = attempts.filter((t) => now - t < securityConfig.SIGNUP_WINDOW_MS);
   recentAttempts.push(now);
   signupAttempts.set(identifier, recentAttempts);
 }
 
 async function normalizeAuthDelay() {
-  return new Promise((resolve) => setTimeout(resolve, 500));
+  return new Promise((resolve) => setTimeout(resolve, securityConfig.AUTH_DELAY_MS));
 }
 // ── Login Rate Limiting (failed attempts only) ──────────────────────────────
-const LOGIN_RATE_LIMIT = 5; // max failed attempts before lockout
-const LOGIN_WINDOW_MS = 15 * 60 * 1000; // 15-minute sliding window
 const loginFailures = new Map(); // identifier → [timestamp, ...]
 
 // Periodic sweeper — mirrors the signup sweeper to prevent unbounded growth.
 const _loginSweeper = setInterval(() => {
   const now = Date.now();
   for (const [identifier, timestamps] of loginFailures) {
-    const fresh = timestamps.filter((t) => now - t < LOGIN_WINDOW_MS);
+    const fresh = timestamps.filter((t) => now - t < securityConfig.LOGIN_WINDOW_MS);
     if (fresh.length === 0) {
       loginFailures.delete(identifier);
     } else {
       loginFailures.set(identifier, fresh);
     }
   }
-}, LOGIN_WINDOW_MS);
+}, securityConfig.LOGIN_WINDOW_MS);
 if (_loginSweeper.unref) _loginSweeper.unref();
 
 /**
@@ -131,9 +144,9 @@ if (_loginSweeper.unref) _loginSweeper.unref();
 function isLoginRateLimited(identifier) {
   const now = Date.now();
   const attempts = loginFailures.get(identifier) || [];
-  const recent = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  const recent = attempts.filter((t) => now - t < securityConfig.LOGIN_WINDOW_MS);
   loginFailures.set(identifier, recent); // keep array trimmed
-  return recent.length >= LOGIN_RATE_LIMIT;
+  return recent.length >= securityConfig.LOGIN_RATE_LIMIT;
 }
 
 /**
@@ -143,7 +156,7 @@ function isLoginRateLimited(identifier) {
 function recordLoginFailure(identifier) {
   const now = Date.now();
   const attempts = loginFailures.get(identifier) || [];
-  const recent = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  const recent = attempts.filter((t) => now - t < securityConfig.LOGIN_WINDOW_MS);
   recent.push(now);
   loginFailures.set(identifier, recent);
 }
@@ -158,37 +171,36 @@ function clearLoginFailures(identifier) {
 // ────────────────────────────────────────────────────────────────────────────
 
 const protectedPaths = new Set([
-  "/community",
-  "/community.html",
-  "/support-page",
-  "/support-page/",
-  "/support-page/index.html",
+  '/community',
+  '/community.html',
+  '/support-page',
+  '/support-page/',
+  '/support-page/index.html',
 ]);
 
 const mimeTypes = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".ico": "image/x-icon",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".webp": "image/webp",
-  ".php": "text/html; charset=utf-8",
-  ".pdf": "application/pdf",
-  ".docx":
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  '.css': 'text/css; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.php': 'text/html; charset=utf-8',
+  '.pdf': 'application/pdf',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 };
 
 async function loadEnvFile() {
-  const envPath = path.join(ROOT, ".env");
+  const envPath = path.join(ROOT, '.env');
   try {
-    const raw = await fs.readFile(envPath, "utf8");
+    const raw = await fs.readFile(envPath, 'utf8');
     raw.split(/\r?\n/).forEach((line) => {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#")) return;
+      if (!trimmed || trimmed.startsWith('#')) return;
 
-      const separatorIndex = trimmed.indexOf("=");
+      const separatorIndex = trimmed.indexOf('=');
       if (separatorIndex === -1) return;
 
       const key = trimmed.slice(0, separatorIndex).trim();
@@ -205,103 +217,8 @@ async function loadEnvFile() {
       }
     });
   } catch (error) {
-    if (error.code !== "ENOENT") throw error;
+    if (error.code !== 'ENOENT') throw error;
   }
-}
-
-function base64Url(input) {
-  return Buffer.from(input)
-    .toString("base64")
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
-}
-
-function fromBase64Url(input) {
-  const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(normalized, "base64").toString("utf8");
-}
-
-function sessionSecret() {
-  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("SESSION_SECRET is required in production.");
-  }
-  return "dev-only-change-me-with-SESSION_SECRET-before-deploying";
-}
-
-function sign(value) {
-  return crypto
-    .createHmac("sha256", sessionSecret())
-    .update(value)
-    .digest("base64url");
-}
-
-function createSessionToken(user) {
-  const header = base64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-  const payload = base64Url(
-    JSON.stringify({
-      sub: user.id,
-      name: user.name,
-      email: user.email,
-      exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS,
-    }),
-  );
-  const body = `${header}.${payload}`;
-  return `${body}.${sign(body)}`;
-}
-
-function verifySessionToken(token) {
-  if (!token) return null;
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
-  const [header, payload, signature] = parts;
-  const body = `${header}.${payload}`;
-  const expected = sign(body);
-  const signatureBuffer = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
-  if (
-    signatureBuffer.length !== expectedBuffer.length ||
-    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
-  ) {
-    return null;
-  }
-
-  try {
-    const session = JSON.parse(fromBase64Url(payload));
-    if (!session.exp || session.exp < Math.floor(Date.now() / 1000))
-      return null;
-    return session;
-  } catch {
-    return null;
-  }
-}
-
-function parseCookies(cookieHeader = "") {
-  return cookieHeader.split(";").reduce((cookies, part) => {
-    const [rawName, ...rawValue] = part.trim().split("=");
-    if (!rawName) return cookies;
-    cookies[rawName] = decodeURIComponent(rawValue.join("="));
-    return cookies;
-  }, {});
-}
-
-function sessionCookie(token, req) {
-  const secure = req.headers["x-forwarded-proto"] === "https";
-  return [
-    `${SESSION_COOKIE}=${encodeURIComponent(token)}`,
-    "HttpOnly",
-    "SameSite=Lax",
-    "Path=/",
-    `Max-Age=${SESSION_MAX_AGE_SECONDS}`,
-    secure ? "Secure" : "",
-  ]
-    .filter(Boolean)
-    .join("; ");
-}
-
-function clearSessionCookie() {
-  return `${SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`;
 }
 
 let db = null;
@@ -314,7 +231,7 @@ async function getUserByEmail(email) {
   }
   const snapshot = await db
     .collection(COLLECTIONS.USERS)
-    .where("email", "==", email)
+    .where('email', '==', email)
     .limit(1)
     .get();
   if (snapshot.empty) return null;
@@ -337,14 +254,14 @@ async function ensureUserStore() {
   try {
     await fs.access(USERS_FILE);
   } catch {
-    await fs.writeFile(USERS_FILE, "[]\n");
+    await fs.writeFile(USERS_FILE, '[]\n');
   }
 }
 
 async function readUsers() {
   await ensureUserStore();
-  const raw = await fs.readFile(USERS_FILE, "utf8");
-  return JSON.parse(raw || "[]");
+  const raw = await fs.readFile(USERS_FILE, 'utf8');
+  return JSON.parse(raw || '[]');
 }
 
 async function writeUsers(users) {
@@ -365,14 +282,14 @@ async function ensureMemoryStore() {
   try {
     await fs.access(MEMORY_FILE);
   } catch {
-    await fs.writeFile(MEMORY_FILE, "{}\n");
+    await fs.writeFile(MEMORY_FILE, '{}\n');
   }
 }
 
 async function readMemoryStore() {
   await ensureMemoryStore();
-  const raw = await fs.readFile(MEMORY_FILE, "utf8");
-  return JSON.parse(raw || "{}");
+  const raw = await fs.readFile(MEMORY_FILE, 'utf8');
+  return JSON.parse(raw || '{}');
 }
 
 async function writeMemoryStoreAtomic(filePath, store) {
@@ -387,8 +304,8 @@ async function writeMemoryStoreAtomic(filePath, store) {
 async function updateMemoryStore(mutator) {
   const task = memoryWriteQueue.then(async () => {
     await ensureMemoryStore();
-    const raw = await fs.readFile(MEMORY_FILE, "utf8");
-    const store = JSON.parse(raw || "{}");
+    const raw = await fs.readFile(MEMORY_FILE, 'utf8');
+    const store = JSON.parse(raw || '{}');
     const updated = await mutator(store);
     await writeMemoryStoreAtomic(MEMORY_FILE, store);
     return updated;
@@ -398,119 +315,64 @@ async function updateMemoryStore(mutator) {
   memoryWriteQueue = task.catch(() => {});
   return task;
 }
-// SM-2 algorithm: quality is 0-5 (0 = total blackout, 5 = perfect recall)
-function applySM2(card, quality) {
-  const q = Math.max(0, Math.min(5, Number(quality)));
-  let { repetitions = 0, easeFactor = 2.5, interval = 0 } = card || {};
-
-  if (q < 3) {
-    repetitions = 0;
-    interval = 1;
-  } else {
-    repetitions += 1;
-    if (repetitions === 1) interval = 1;
-    else if (repetitions === 2) interval = 6;
-    else interval = Math.round(interval * easeFactor);
-  }
-
-  easeFactor = easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
-  if (easeFactor < 1.3) easeFactor = 1.3;
-
-  const now = new Date();
-  const nextReviewDate = new Date(now);
-  nextReviewDate.setDate(now.getDate() + interval);
-
-  return {
-    topic: card?.topic,
-    repetitions,
-    easeFactor: Math.round(easeFactor * 100) / 100,
-    interval,
-    lastReviewed: now.toISOString(),
-    nextReviewDate: nextReviewDate.toISOString(),
-    lastQuality: q,
-  };
-}
 // ──────────────────────────────────────────────────────────────────────────
-
 function validateSignup({ name, email, password, confirmPassword }) {
-  const cleanName = String(name || "").trim();
-  const cleanEmail = String(email || "")
-    .trim()
-    .toLowerCase();
-  const rawPassword = String(password || "");
-  const rawConfirm = String(confirmPassword || "");
+  const cleanName = String(name || '').trim();
+  const rawPassword = String(password || '');
+  const rawConfirm = String(confirmPassword || '');
 
-  if (cleanName.length < 2) return "Name must be at least 2 characters.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-    return "Enter a valid email address.";
-  }
+  if (cleanName.length < 2) return { isValid: false, error: 'Name must be at least 2 characters.' };
 
-  // Strong Password Validation
-  if (rawPassword.length < 8) {
-    return "Password must be at least 8 characters long.";
+  // Email validation
+  const emailValidation = validateAndNormalizeEmail(email);
+  if (!emailValidation.valid) {
+    return { isValid: false, error: emailValidation.error };
   }
-  if (rawPassword.length > 64) {
-    return "Password must not exceed 64 characters.";
-  }
-  if (!/[a-z]/.test(rawPassword)) {
-    return "Password must include at least one lowercase letter.";
-  }
-  if (!/[A-Z]/.test(rawPassword)) {
-    return "Password must include at least one uppercase letter.";
-  }
-  if (!/\d/.test(rawPassword)) {
-    return "Password must include at least one number.";
-  }
+  const cleanEmail = emailValidation.normalizedEmail;
+
+  // Password strength checks
+  if (rawPassword.length < 8)
+    return { isValid: false, error: 'Password must be at least 8 characters long.' };
+  if (rawPassword.length > 64)
+    return { isValid: false, error: 'Password must not exceed 64 characters.' };
+  if (!/[a-z]/.test(rawPassword))
+    return { isValid: false, error: 'Password must include at least one lowercase letter.' };
+  if (!/[A-Z]/.test(rawPassword))
+    return { isValid: false, error: 'Password must include at least one uppercase letter.' };
+  if (!/\d/.test(rawPassword))
+    return { isValid: false, error: 'Password must include at least one number.' };
   if (!/[!@#$%^&*()_+\-=\[\]{};:'"|,.<>?/~`]/.test(rawPassword)) {
-    return "Password must include at least one special character (!@#$%^&* etc.).";
+    return {
+      isValid: false,
+      error: 'Password must include at least one special character (!@#$%^&* etc.).',
+    };
   }
 
-  // Common weak passwords check
-  const commonPasswords = [
-    "password123",
-    "password1234",
-    "password12345",
-    "12345678",
-    "123456789",
-    "qwerty123",
-    "qwertyuiop",
-    "admin123",
-    "letmein123",
-    "welcome123",
-    "monkey123",
-    "1234567890",
-    "abcdefgh",
-    "abc12345",
-    "password1",
-    "passw0rd",
-    "p@ssw0rd",
-    "P@ssw0rd",
-    "Password123",
-    "Password123!",
-    "Admin@123",
-    "admin@123",
-  ];
-  if (commonPasswords.includes(rawPassword.toLowerCase())) {
-    return "Password is too common or weak. Please choose a stronger password.";
+  //  Common weak passwords check - O(1) lookup using Set
+  if (isPasswordBlacklisted(rawPassword)) {
+    return {
+      isValid: false,
+      error: 'Password is too common or weak. Please choose a stronger password.',
+    };
   }
 
-  if (rawPassword !== rawConfirm) return "Passwords do not match.";
-  return null;
+  if (rawPassword !== rawConfirm) return { isValid: false, error: 'Passwords do not match.' };
+
+  return { isValid: true, normalizedEmail: cleanEmail, error: null };
 }
 
 async function readJsonBody(req) {
-  let body = "";
+  let body = '';
   for await (const chunk of req) {
     body += chunk;
-    if (body.length > 1024 * 1024)
-      throw new Error("Request body is too large.");
+    if (body.length > 1024 * 1024) throw new Error('Request body is too large.');
   }
   return body ? JSON.parse(body) : {};
 }
 
 function sendJson(res, status, body, headers = {}) {
   res.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
+    'Content-Type': 'application/json; charset=utf-8',
     ...headers,
   });
   res.end(JSON.stringify(body));
@@ -521,14 +383,9 @@ function redirect(res, location, headers = {}) {
   res.end();
 }
 
-function getSession(req) {
-  const cookies = parseCookies(req.headers.cookie || "");
-  return verifySessionToken(cookies[SESSION_COOKIE]);
-}
-
 function normalizePathname(pathname) {
-  if (!pathname) return "/";
-  return pathname.replace(/\/+$/, "") || "/";
+  if (!pathname) return '/';
+  return pathname.replace(/\/+$/, '') || '/';
 }
 
 function isProtectedRoute(pathname) {
@@ -549,7 +406,7 @@ async function authorizeRequest(req, pathname) {
     };
   }
 
-  if (!useFirestore && !String(session.sub).startsWith("guest-")) {
+  if (!useFirestore && !String(session.sub).startsWith('guest-')) {
     const users = await readUsers();
 
     const user = users.find((u) => u.id === session.sub);
@@ -557,7 +414,7 @@ async function authorizeRequest(req, pathname) {
     if (!user || user.isDeactivated) {
       return {
         authorized: false,
-        redirectTo: "/login",
+        redirectTo: '/login',
       };
     }
   }
@@ -569,73 +426,71 @@ async function authorizeRequest(req, pathname) {
 }
 
 function validateRequest(req) {
-  const allowedMethods = ["GET", "POST"];
+  const allowedMethods = ['GET', 'POST'];
 
   if (!allowedMethods.includes(req.method)) {
     return {
       valid: false,
       status: 405,
-      message: "Method not allowed.",
+      message: 'Method not allowed.',
     };
   }
 
   return { valid: true };
 }
 
-
-
 function resolveStaticPath(pathname) {
   const routes = {
-    "/": "index.html",
-    "/login": "login.html",
-    "/signup": "signup.html",
-    "/community": "community.html",
-    "/python-learning": "python-learning.html",
-    "/javascript-learning": "javascript-learning.html",
-    "/dbms-learning": "dbms-learning.html",
-    "/powerbi-learning": "powerbi-learning.html",
-    "/cplusplus-learning": "cplusplus-learning.html",
-    "/learning/php": "php-learning.html",
-    "/php-learning": "php-learning.html",
-    "/learning/oop": "oop-learning.html",
-    "/oop-learning": "oop-learning.html",
-    "/feedback": "feedback.html",
-    "/feedback.html": "feedback.html",
-    "/memory-scanner": "memory-scanner.html",
-    "/memory-scanner.html": "memory-scanner.html",
-    "/algorithm-timeline": "algorithm-timeline.html",
-    "/support-page": "support-page/index.html",
-    "/support-page/": "support-page/index.html",
+    '/': 'index.html',
+    '/login': 'login.html',
+    '/signup': 'signup.html',
+    '/community': 'community.html',
+    '/python-learning': 'python-learning.html',
+    '/javascript-learning': 'javascript-learning.html',
+    '/dbms-learning': 'dbms-learning.html',
+    '/powerbi-learning': 'powerbi-learning.html',
+    '/cplusplus-learning': 'cplusplus-learning.html',
+    '/learning/php': 'php-learning.html',
+    '/php-learning': 'php-learning.html',
+    '/learning/oop': 'oop-learning.html',
+    '/oop-learning': 'oop-learning.html',
+    '/feedback': 'feedback.html',
+    '/feedback.html': 'feedback.html',
+    '/memory-scanner': 'memory-scanner.html',
+    '/memory-scanner.html': 'memory-scanner.html',
+    '/algorithm-timeline': 'algorithm-timeline.html',
+    '/support-page': 'support-page/index.html',
+    '/support-page/': 'support-page/index.html',
   };
   let mapped = routes[pathname];
   if (!mapped) {
     const basePath = pathname.slice(1);
-    mapped = path.extname(basePath) ? basePath : basePath + ".html";
+    mapped = path.extname(basePath) ? basePath : basePath + '.html';
   }
   const filePath = path.resolve(ROOT, mapped);
   const rel = path.relative(ROOT, filePath);
-  if (rel.startsWith("..") || path.isAbsolute(rel)) return null;
+  if (rel.startsWith('..') || path.isAbsolute(rel)) return null;
 
   // ── Arbitrary File Disclosure Prevention ──────────────────────────────────
   const fileName = path.basename(filePath);
 
   // 1. Block hidden files and sensitive directories
   if (
-    fileName.startsWith(".") ||
-    rel.startsWith("data" + path.sep) ||
-    rel.startsWith("api" + path.sep) ||
-    rel.startsWith("node_modules" + path.sep)
+    fileName.startsWith('.') ||
+    rel.startsWith('data' + path.sep) ||
+    rel.startsWith('api' + path.sep) ||
+    rel.startsWith('node_modules' + path.sep)
   ) {
     return null;
   }
 
   // 2. Block specific sensitive root files
   const sensitiveFiles = [
-    "server.js",
-    "firebase.js",
-    "package.json",
-    "package-lock.json",
-    "vercel.json",
+    'server.js',
+    'firebase.js',
+    'package.json',
+    'package-lock.json',
+    'vercel.json',
   ];
   if (sensitiveFiles.includes(fileName)) {
     return null;
@@ -655,30 +510,28 @@ async function serveStatic(req, res, pathname) {
   const filePath = resolveStaticPath(pathname);
   if (!filePath) {
     res.writeHead(403);
-    return res.end("Forbidden");
+    return res.end('Forbidden');
   }
 
   try {
     const stat = await fs.stat(filePath);
-    const target = stat.isDirectory()
-      ? path.join(filePath, "index.html")
-      : filePath;
+    const target = stat.isDirectory() ? path.join(filePath, 'index.html') : filePath;
     const ext = path.extname(target);
     const content = await fs.readFile(target);
     res.writeHead(200, {
-      "Content-Type": mimeTypes[ext] || "application/octet-stream",
-      "X-Content-Type-Options": "nosniff",
+      'Content-Type': mimeTypes[ext] || 'application/octet-stream',
+      'X-Content-Type-Options': 'nosniff',
     });
     res.end(content);
   } catch {
-    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-    res.end("Not found");
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Not found');
   }
 }
 
 const server = http.createServer(async (req, res) => {
   try {
-    const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const pathname = normalizePathname(decodeURIComponent(url.pathname));
 
     const requestValidation = validateRequest(req);
@@ -688,16 +541,16 @@ const server = http.createServer(async (req, res) => {
         error: requestValidation.message,
       });
     }
-    if (pathname.startsWith("/api/")) {
+    if (pathname.startsWith('/api/')) {
       const routeResult = setupApiRoutes(req, res, pathname);
       if (routeResult !== null) {
         return routeResult;
       }
-      return sendJson(res, 404, { error: "Not found." });
+      return sendJson(res, 404, { error: 'Not found.' });
     }
 
-    if (pathname === "/logout") {
-      return redirect(res, "/login", { "Set-Cookie": clearSessionCookie() });
+    if (pathname === '/logout') {
+      return redirect(res, '/login', { 'Set-Cookie': clearSessionCookie() });
     }
 
     const authorization = await authorizeRequest(req, pathname);
@@ -709,66 +562,34 @@ const server = http.createServer(async (req, res) => {
     return await serveStatic(req, res, pathname);
   } catch (error) {
     console.error(error);
-    sendJson(res, 500, { error: "Something went wrong." });
+    sendJson(res, 500, { error: 'Something went wrong.' });
   }
 });
 
 export { server };
-if (process.env.VERCEL === "1") {
+if (process.env.VERCEL === '1') {
   db = initializeFirebase();
   useFirestore = !!db;
 }
 
-if (process.env.VERCEL !== "1") {
+if (process.env.VERCEL !== '1') {
   loadEnvFile()
     .then(() => {
       db = initializeFirebase();
       useFirestore = !!db;
       const port = Number(process.env.PORT || 3000);
-      const host = process.env.HOST || "127.0.0.1";
-
-      // ===== CODING PERSONALITY =====
-      app.get("/api/user/personality", (req, res) => {
-        try {
-          const userId = req.user?.id || req.query.userId;
-
-          if (!userId) {
-            return res.status(401).json({ error: "User not authenticated" });
-          }
-
-          // Get user data - replace with actual DB fetch
-          const userData = {
-            problems: [],
-            submissions: [],
-            topics: [],
-            streak: 0,
-          };
-
-          const analyzer = new CodingPersonalityAnalyzer(userData);
-          const personality = analyzer.analyze();
-
-          res.json({
-            success: true,
-            data: personality,
-          });
-        } catch (error) {
-          console.error("Personality analysis error:", error);
-          res.status(500).json({ error: "Failed to analyze personality" });
-        }
-      });
+      const host = process.env.HOST || '127.0.0.1';
 
       server.listen(port, host, () => {
         const url = `http://${host}:${port}`;
-        console.log(`Server running at ${url}`);
+        void 0;
         if (!process.env.SESSION_SECRET) {
-          console.warn(
-            "Using a development SESSION_SECRET. Set SESSION_SECRET before deploying.",
-          );
+          void 0;
         }
       });
     })
     .catch((error) => {
-      console.error("Failed to load environment configuration:", error);
+      console.error('Failed to load environment configuration:', error);
       process.exit(1);
     });
 }

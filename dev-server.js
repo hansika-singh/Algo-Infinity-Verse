@@ -163,6 +163,6 @@ app.post('/api/execute', async (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Dev proxy running at http://localhost:${PORT}`);
-  console.log(`POST http://localhost:${PORT}/api/execute`);
+  void 0;
+  void 0;
 });

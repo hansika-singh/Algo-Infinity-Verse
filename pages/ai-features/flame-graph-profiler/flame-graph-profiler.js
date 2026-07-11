@@ -63,6 +63,14 @@ fib(5);
     els.btnProfileCode.addEventListener('click', executeAndProfile);
 }
 
+function showProfilerError(msg) {
+    els.emptyState.style.display = 'flex';
+    els.emptyState.innerHTML = `
+        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;margin-bottom:8px;"></i>
+        <p style="color:#ef4444;font-weight:600;text-align:center;max-width:380px;">${msg}</p>
+    `;
+}
+
 function executeAndProfile() {
     els.emptyState.style.display = 'none';
     els.btnProfileCode.disabled = true;
@@ -81,7 +89,7 @@ function executeAndProfile() {
 
     const timeoutId = setTimeout(() => {
         cleanup();
-        console.warn("Alert:", `Execution Error: Timeout / Infinite Loop Detected (exceeded ${timeoutMs}ms)`);
+        showProfilerError(`Timeout / Infinite Loop Detected — execution exceeded ${timeoutMs / 1000}s. Simplify your code and try again.`);
     }, timeoutMs);
 
     worker.onmessage = (e) => {
@@ -92,17 +100,16 @@ function executeAndProfile() {
                 renderFlameGraph(traceData);
                 updateStats(traceData);
             } else {
-                console.warn("Alert:", "No trace data generated. Did you use Tracer.enter() and Tracer.exit()?");
+                showProfilerError('No trace data generated. Did you call Tracer.enter() and Tracer.exit() in your code?');
             }
         } else {
-            console.warn("Alert:", `Execution Error: ${error}`);
+            showProfilerError(`Execution Error: ${error}`);
         }
     };
 
     worker.onerror = (err) => {
         cleanup();
-        console.warn("Alert:", `Worker Error: ${err.message}`);
-        console.error(err);
+        showProfilerError(`Worker Error: ${err.message}`);
     };
 
     worker.postMessage({ code });

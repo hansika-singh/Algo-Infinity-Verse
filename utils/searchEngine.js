@@ -45,7 +45,7 @@ class DSASearchEngine {
         }
       }
     } catch (e) {
-      console.warn("Failed to load search index from cache", e);
+      void 0;
     }
 
     this.buildIndex();
@@ -111,7 +111,7 @@ class DSASearchEngine {
         termIdf: this.termIdf
       }));
     } catch (e) {
-      console.warn("Failed to save search index to cache", e);
+      void 0;
     }
   }
 

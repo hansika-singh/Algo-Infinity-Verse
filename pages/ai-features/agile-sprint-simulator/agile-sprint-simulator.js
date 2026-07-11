@@ -10,19 +10,12 @@
 ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-  _bootLoader();
   _bootScrollTop();
   _bootNavbar();
   initAgileSprintSimulator();
 });
 
 /* ── Boot helpers (project-standard) ──────────────────── */
-function _bootLoader() {
-  setTimeout(() => {
-    const s = document.getElementById("loading-screen");
-    if (s) s.classList.add("hidden");
-  }, 1500);
-}
 function _bootScrollTop() {
   const btn = document.getElementById("scrollTopBtn");
   if (!btn) return;

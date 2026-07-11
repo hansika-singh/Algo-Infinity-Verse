@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECC Finite Field Visualizer | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="ecc-finite-field-visualizer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <div class="logo">
+        <i class="fa-solid fa-key logo-icon"></i>
+        <span>Algo <span class="highlight">Infinity</span> Verse</span>
+      </div>
+      <div class="title-section">
+        <h1>Elliptic Curve Cryptography <span class="badge badge-algo">Math / Crypto</span></h1>
+        <p>Point Addition & Doubling over Finite Fields: y² = x³ + ax + b (mod p)</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="glass-panel control-panel">
+          <h2><i class="fa-solid fa-sliders"></i> Curve Parameters</h2>
+          <div class="param-grid">
+            <div class="input-group-col">
+              <label>a</label>
+              <input type="number" id="input-a" value="2" step="1">
+            </div>
+            <div class="input-group-col">
+              <label>b</label>
+              <input type="number" id="input-b" value="2" step="1">
+            </div>
+            <div class="input-group-col">
+              <label>Prime (p)</label>
+              <select id="input-p">
+                <option value="17" selected>17</option>
+                <option value="23">23</option>
+                <option value="31">31</option>
+                <option value="97">97</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-update-curve" class="btn btn-secondary mt-2 w-100">Update Curve</button>
+          <div id="curve-status" class="status-text mt-2 text-success">Curve is Valid</div>
+        </section>
+
+        <section class="glass-panel control-panel mt-3">
+          <h2><i class="fa-solid fa-location-dot"></i> Point Selection (P + Q = R)</h2>
+          <div class="param-grid">
+            <div class="input-group-col">
+              <label class="text-cyan">Point P</label>
+              <select id="select-p"></select>
+            </div>
+            <div class="input-group-col">
+              <label class="text-purple">Point Q</label>
+              <select id="select-q"></select>
+            </div>
+          </div>
+          
+          <div class="btn-group mt-3">
+            <button id="btn-play" class="btn btn-primary" aria-label="Animate Addition">
+              <i class="fa-solid fa-play"></i> Animate
+            </button>
+            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+              <i class="fa-solid fa-forward-step"></i> Step
+            </button>
+            <button id="btn-reset" class="btn btn-danger" aria-label="Reset">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
+          </div>
+        </section>
+
+        <section class="glass-panel math-panel mt-3">
+          <h2><i class="fa-solid fa-square-root-variable"></i> Math Operations</h2>
+          <div class="math-stream" id="math-stream">
+            <div class="empty-stream">Select points and press animate to view modular arithmetic steps...</div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="visualizer-stage glass-panel">
+        <div class="stage-header">
+          <div class="status-display">
+            <span class="status-label">Operation:</span>
+            <span id="status-text" class="status-message">y² ≡ x³ + 2x + 2 (mod 17)</span>
+          </div>
+          <div class="point-display">
+             <span class="badge-point point-p">P: <span id="val-p">null</span></span>
+             <span class="badge-point point-q">Q: <span id="val-q">null</span></span>
+             <span class="badge-point point-r">R: <span id="val-r">null</span></span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="ecc-canvas"></canvas>
+            
+            <div class="canvas-legend">
+              <div class="legend-item"><span class="dot dot-valid"></span> Valid Curve Point</div>
+              <div class="legend-item"><span class="dot dot-p"></span> Point P</div>
+              <div class="legend-item"><span class="dot dot-q"></span> Point Q</div>
+              <div class="legend-item"><span class="dot dot-neg-r"></span> -R (Intersection)</div>
+              <div class="legend-item"><span class="dot dot-r"></span> R (Result)</div>
+            </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script src="ecc-finite-field-visualizer.js"></script>
+</body>
+</html>

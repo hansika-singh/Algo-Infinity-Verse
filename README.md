@@ -44,16 +44,32 @@
 - Acceptance rate tracking
 - Visual completion badges
 
-#### Favorite Problems (New Feature)
+#### Favorite Problems & Smart Collections
 
 Users can:
 - Mark practice problems as favorites
 - Filter favorite problems
-- Persist favorites using localStorage
+- Organize favorites into custom bookmark collections
+- Search and filter collections by name, description, and contained problems
+- Persist everything using localStorage and the existing user progress store
 
 **How it works:**
-- Click the heart icon on any practice problem
-- Use the "Favorites" filter to view saved problems
+- Click the heart icon on any practice problem to add it to favorites
+- Use the new collection form on the Practice Problems page to create custom collections
+- Choose one or more collections per problem from the collection picker beneath each card
+- Use the collection dashboard on the dashboard/profile views to review collection stats
+
+----
+
+#### Smart Revision Calendar (New Feature)
+
+An interactive DSA study scheduling engine driven by spaced repetition algorithms to aid structured review:
+- **Automatic Scheduling**: Calculates target review check-points at optimized intervals (Day 1, 3, 7, 14, 30).
+- **Personalized Prioritization**: Weights topics based on topic difficulty and historical quiz scores. Low accuracy resets schedule to Day 1, while high scores extend intervals.
+- **Revision Dashboard**: Track memory retention estimates, streaks, average quiz improvements, and weekly completion rates.
+- **Interactive Calendar**: View past, current, and upcoming task grids. Color-coded markers distinguish completed, due, and overdue tasks.
+- **Reschedule & Recall Tools**: Postpone tasks easily or rate concept recall quality to adapt intervals dynamically.
+- **Multi-user Sync**: Automatically registers schedules in localStorage for guest sessions and syncs to Firebase Firestore for authenticated accounts.
 
 ----
 

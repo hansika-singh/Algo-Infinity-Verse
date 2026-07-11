@@ -1,4 +1,4 @@
-class CodingPersonalityAnalyzer{
+export class CodingPersonalityAnalyzer{
     constructor(userData){
         this.userData = userData;
     }
@@ -18,7 +18,7 @@ analyze() {
 }
 
 calculateMetrics() {
-    const {problems, submissions, languages} = this.userData;
+    const {problems, submissions, languages, topics, streak} = this.userData;
     return {
       speed: this.getSpeed(submissions),
       accuracy: this.getAccuracy(submissions),
@@ -46,5 +46,3 @@ calculateMetrics() {
     return traits;
   }
 }
-
-module.exports = CodingPersonalityAnalyzer;

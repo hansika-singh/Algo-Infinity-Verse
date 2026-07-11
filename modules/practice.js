@@ -1,11 +1,12 @@
-let currentPage = 1;
 let currentFilter = 'all';
 let currentSearch = '';
-let paginationInitialized = false;
-const PROBLEMS_PER_PAGE = 6;
 let currentNotesProblemId = null;
+let virtualizedGrid = null;
 let lastFilteredCacheKey = "";
 let lastFilteredProblems = [];
+import { VirtualizedGrid } from './virtualizedGrid.js';
+import { initBookmarkCollections, renderCollectionChooser } from './bookmarkUI.js';
+import { ensureBookmarkCollectionsState, addProblemToCollections, removeProblemFromCollections, getCollectionsForProblem } from './bookmarkCollections.js';
 
 function loadUserData() {
   if (typeof window.loadUserData === 'function') window.loadUserData();
@@ -18,6 +19,18 @@ function initPracticeSection() {
   window.__practiceInitialized = true;
   const problemsGrid = document.querySelector(".problems-grid");
   if (!problemsGrid) return;
+  
+  // Try restoring state before attaching listeners
+  const savedStateStr = sessionStorage.getItem("practiceGridState");
+  let restoredScrollY = 0;
+  if (savedStateStr) {
+    try {
+      const state = JSON.parse(savedStateStr);
+      if (state.filter) currentFilter = state.filter;
+      if (state.search) currentSearch = state.search;
+      restoredScrollY = state.scrollY || 0;
+    } catch (e) {}
+  }
 
   const notesCloseBtn = document.getElementById("notesModalClose");
   const notesSaveBtn = document.getElementById("notesSaveBtn");
@@ -32,9 +45,13 @@ function initPracticeSection() {
       filterButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       currentFilter = btn.dataset.filter;
-      currentPage = 1;
       renderProblems();
     });
+    // Set active state on load if restored
+    if (btn.dataset.filter === currentFilter) {
+      filterButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
   });
 
   const aiRecommendBtn = document.getElementById("ai-recommend-btn");
@@ -49,15 +66,14 @@ function initPracticeSection() {
         if (data.success && data.recommendation) {
           const rec = data.recommendation;
           currentFilter = rec.topic.toLowerCase();
-          currentPage = 1;
           filterButtons.forEach((b) => {
             if(b.dataset.filter === currentFilter) b.classList.add("active");
             else b.classList.remove("active");
           });
           renderProblems();
-          console.warn("Alert:", "AI Recommendation: " + rec.reason + "\n\n" + (rec.aiTip || ""));
-        } else { console.warn("Alert:", "Could not get recommendation."); }
-      } catch (err) { console.error("AI recommend error:", err); console.warn("Alert:", "Failed to fetch recommendation."); }
+          void 0;
+        } else { void 0; }
+      } catch (err) { console.error("AI recommend error:", err); void 0; }
       finally { aiRecommendBtn.innerHTML = '<i class="fas fa-magic"></i> AI Recommend Next'; aiRecommendBtn.disabled = false; }
     });
   }
@@ -67,7 +83,6 @@ function initPracticeSection() {
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       currentSearch = e.target.value.toLowerCase();
-      currentPage = 1;
       renderProblems();
       if (currentSearch.length > 0) clearBtn.classList.add("visible");
       else clearBtn.classList.remove("visible");
@@ -78,14 +93,39 @@ function initPracticeSection() {
       searchInput.value = "";
       currentSearch = "";
       clearBtn.classList.remove("visible");
-      currentPage = 1;
       renderProblems();
       searchInput.focus();
     });
+    if (currentSearch) {
+      searchInput.value = currentSearch;
+      clearBtn.classList.add("visible");
+    }
   }
 
-  initPaginationEvents();
+  const paginationControls = document.getElementById('paginationControls');
+  if (paginationControls) {
+    paginationControls.style.display = 'none';
+  }
+
+  ensureBookmarkCollectionsState(userProgress);
   renderProblems();
+  initBookmarkCollections();
+  
+  if (restoredScrollY > 0) {
+    // Delay scroll slightly to ensure DOM is ready and grid layout updated
+    setTimeout(() => {
+      window.scrollTo({ top: restoredScrollY, behavior: 'instant' });
+    }, 10);
+  }
+
+  // Save state on unload
+  window.addEventListener("beforeunload", () => {
+    sessionStorage.setItem("practiceGridState", JSON.stringify({
+      filter: currentFilter,
+      search: currentSearch,
+      scrollY: window.scrollY
+    }));
+  });
 }
 
 function getFilteredProblems() {
@@ -112,54 +152,67 @@ function getFilteredProblems() {
 function renderProblems() {
   const filtered = getFilteredProblems();
   const totalProblems = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(totalProblems / PROBLEMS_PER_PAGE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * PROBLEMS_PER_PAGE;
-  const end = Math.min(start + PROBLEMS_PER_PAGE, totalProblems);
-  const pageProblems = filtered.slice(start, end);
+  
   const visibleCountEl = document.getElementById('visible-count');
   const totalCountEl = document.getElementById('total-count');
-  if (visibleCountEl) visibleCountEl.textContent = pageProblems.length;
+  if (visibleCountEl) visibleCountEl.textContent = totalProblems; // Without pagination, visible count is all of them
   if (totalCountEl) totalCountEl.textContent = totalProblems;
-  renderProblemCards(pageProblems);
-  updatePaginationControls(currentPage, totalPages);
-}
-
-function renderProblemCards(problems) {
-  const userProgress = window.userProgress || {};
+  
   const problemsGrid = document.querySelector(".problems-grid");
   if (!problemsGrid) return;
+  
+  const emptyState = document.getElementById("emptyState");
+  if (totalProblems === 0) {
+    problemsGrid.style.display = 'none';
+    if (emptyState) emptyState.classList.remove("hidden");
+  } else {
+    problemsGrid.style.display = 'grid';
+    if (emptyState) emptyState.classList.add("hidden");
+  }
 
+  if (!virtualizedGrid) {
+    virtualizedGrid = new VirtualizedGrid({
+      container: problemsGrid,
+      items: filtered,
+      itemHeight: 250,
+      renderItem: renderProblemCardHtml,
+    });
+    virtualizedGrid.onRendered = () => {
+      if (!problemsGrid.dataset.listenersAttached) {
+        attachProblemGridEventDelegation(problemsGrid);
+        problemsGrid.dataset.listenersAttached = "true";
+      }
+    };
+    virtualizedGrid.updateLayout();
+  } else {
+    virtualizedGrid.updateItems(filtered);
+  }
+}
+
+function renderProblemCardHtml(problem) {
+  const userProgress = window.userProgress || {};
   const cpType = userProgress.codingPersonality ? userProgress.codingPersonality.type : "brute-force first";
 
-  const html = problems.map(problem => {
-    let isRec = false, recLabel = "";
-    if (cpType === "brute-force first") {
-      if (problem.difficulty === "easy" || problem.tags.includes("Arrays")) { isRec = true; recLabel = "Plan First!"; }
-    } else if (cpType === "over-optimizer") {
-      if (problem.difficulty === "hard" || problem.tags.includes("Dynamic Programming") || problem.tags.includes("Hash Table")) { isRec = true; recLabel = "Optimize Metrics"; }
-    } else if (cpType === "slow but accurate") {
-      if (problem.difficulty === "medium") { isRec = true; recLabel = "Speed Practice"; }
-    } else if (cpType === "greedy thinker") {
-      if (problem.tags.includes("Greedy") || problem.tags.includes("Divide and Conquer") || problem.tags.includes("Recursion")) { isRec = true; recLabel = "Heuristic Check"; }
-    }
-    const recBadge = isRec ? `<span class="rec-personality-badge"><i class="fas fa-brain"></i> ${recLabel}</span>` : "";
-    const isCompleted = userProgress.completedProblems.includes(problem.id);
-    const isFavorite = userProgress.favoriteProblems.includes(problem.id);
-    const hasNotes = userProgress.problemNotes && userProgress.problemNotes[problem.id];
-
-    const displayTitle = problem.highlightedTitle || problem.title;
-    const snippetHtml = problem.highlightedDescription ? `<div class="problem-snippet" style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${problem.highlightedDescription}</div>` : "";
-
-    return `<div class="problem-card animate-in" data-id="${problem.id}"><div class="problem-header"><h3 class="problem-title">${recBadge}${displayTitle}</h3><div class="problem-actions"><button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${problem.id}" aria-label="Favorite problem"><i class="fas fa-heart"></i></button><button class="notes-btn ${hasNotes ? 'has-notes' : ''}" data-id="${problem.id}" aria-label="Problem notes"><i class="fas fa-sticky-note"></i></button><span class="difficulty-badge ${problem.difficulty}">${problem.difficulty}</span></div></div>${snippetHtml}<div class="problem-tags">${problem.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div><div class="problem-meta"><span class="acceptance-rate"><i class="fas fa-users"></i> ${problem.acceptance} acceptance</span>${isCompleted ? '<span class="completed-badge"><i class="fas fa-check"></i> Completed</span>' : ''}</div></div>`;
-  }).join("");
-
-  problemsGrid.innerHTML = html;
-
-  if (!problemsGrid.dataset.listenersAttached) {
-    attachProblemGridEventDelegation(problemsGrid);
-    problemsGrid.dataset.listenersAttached = "true";
+  let isRec = false, recLabel = "";
+  if (cpType === "brute-force first") {
+    if (problem.difficulty === "easy" || problem.tags.includes("Arrays")) { isRec = true; recLabel = "Plan First!"; }
+  } else if (cpType === "over-optimizer") {
+    if (problem.difficulty === "hard" || problem.tags.includes("Dynamic Programming") || problem.tags.includes("Hash Table")) { isRec = true; recLabel = "Optimize Metrics"; }
+  } else if (cpType === "slow but accurate") {
+    if (problem.difficulty === "medium") { isRec = true; recLabel = "Speed Practice"; }
+  } else if (cpType === "greedy thinker") {
+    if (problem.tags.includes("Greedy") || problem.tags.includes("Divide and Conquer") || problem.tags.includes("Recursion")) { isRec = true; recLabel = "Heuristic Check"; }
   }
+  const recBadge = isRec ? `<span class="rec-personality-badge"><i class="fas fa-brain"></i> ${recLabel}</span>` : "";
+  const isCompleted = userProgress.completedProblems.includes(problem.id);
+  const isFavorite = userProgress.favoriteProblems.includes(problem.id);
+  const hasNotes = userProgress.problemNotes && userProgress.problemNotes[problem.id];
+  const collectionChooser = renderCollectionChooser(problem.id);
+
+  const displayTitle = problem.highlightedTitle || problem.title;
+  const snippetHtml = problem.highlightedDescription ? `<div class="problem-snippet" style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${problem.highlightedDescription}</div>` : "";
+
+  return `<div class="problem-card animate-in" data-id="${problem.id}"><div class="problem-header"><h3 class="problem-title">${recBadge}${displayTitle}</h3><div class="problem-actions"><button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${problem.id}" aria-label="Favorite problem"><i class="fas fa-heart"></i></button><button class="notes-btn ${hasNotes ? 'has-notes' : ''}" data-id="${problem.id}" aria-label="Problem notes"><i class="fas fa-sticky-note"></i></button><span class="difficulty-badge ${problem.difficulty}">${problem.difficulty}</span></div></div>${snippetHtml}<div class="problem-tags">${problem.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div><div class="problem-meta"><span class="acceptance-rate"><i class="fas fa-users"></i> ${problem.acceptance} acceptance</span>${isCompleted ? '<span class="completed-badge"><i class="fas fa-check"></i> Completed</span>' : ''}</div>${collectionChooser}</div>`;
 }
 
 function attachProblemGridEventDelegation(grid) {
@@ -216,40 +269,18 @@ function addProblemCardEventListeners(grid) {
   });
 }
 
-function updatePaginationControls(page, totalPages) {
-  const prevBtn = document.getElementById('prevPageBtn');
-  const nextBtn = document.getElementById('nextPageBtn');
-  const info = document.getElementById('paginationInfo');
-  if (prevBtn) prevBtn.disabled = page <= 1;
-  if (nextBtn) nextBtn.disabled = page >= totalPages;
-  if (info) info.textContent = `Page ${page} of ${totalPages}`;
-}
-
-function changePage(delta) {
-  const filtered = getFilteredProblems();
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PROBLEMS_PER_PAGE));
-  const newPage = currentPage + delta;
-  if (newPage >= 1 && newPage <= totalPages) {
-    currentPage = newPage;
-    renderProblems();
-    document.getElementById('practice')?.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-function initPaginationEvents() {
-  if (paginationInitialized) return;
-  paginationInitialized = true;
-  const prevBtn = document.getElementById('prevPageBtn');
-  const nextBtn = document.getElementById('nextPageBtn');
-  if (prevBtn) prevBtn.addEventListener('click', () => changePage(-1));
-  if (nextBtn) nextBtn.addEventListener('click', () => changePage(1));
-}
-
 function toggleFavorite(problemId) {
   const userProgress = window.userProgress || {};
   const idx = userProgress.favoriteProblems.indexOf(problemId);
-  if (idx > -1) { userProgress.favoriteProblems.splice(idx, 1); if (typeof showNotification === 'function') showNotification("Removed from favorites 💔", "info"); }
-  else { userProgress.favoriteProblems.push(problemId); if (typeof showNotification === 'function') showNotification("Added to favorites ❤️", "success"); }
+  if (idx > -1) {
+    userProgress.favoriteProblems.splice(idx, 1);
+    removeProblemFromCollections(userProgress, problemId, getCollectionsForProblem(userProgress, problemId));
+    if (typeof showNotification === 'function') showNotification("Removed from favorites 💔", "info");
+  } else {
+    userProgress.favoriteProblems.push(problemId);
+    addProblemToCollections(userProgress, problemId, []);
+    if (typeof showNotification === 'function') showNotification("Added to favorites ❤️", "success");
+  }
   if (typeof saveUserData === 'function') saveUserData();
 }
 

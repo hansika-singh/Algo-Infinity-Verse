@@ -45,7 +45,7 @@ const server = http.createServer((req, res) => {
 const delay = ms => new Promise(r => setTimeout(r, ms));
 
 server.listen(PORT, async () => {
-    console.log(`Test server running on port ${PORT}`);
+    void 0;
     
     let browser;
     try {
@@ -62,14 +62,14 @@ server.listen(PORT, async () => {
 
         await page.goto(`http://localhost:${PORT}/pages/visualizers/quadtree-collision/quadtree-collision.html`, { waitUntil: 'networkidle0' });
         
-        console.log('\n--- Test Case 1: Initial State (Quadtree, 500 particles) ---');
+        void 0;
         await delay(500); // Let engine loop run a bit
         let stats1 = await page.evaluate(() => window.engineStats);
-        console.log(`Initial Checks: ${stats1.checks}, Initial Collisions: ${stats1.collisions}`);
-        if(stats1.checks > 0) console.log('✅ Test 1 Passed');
+        void 0;
+        if(stats1.checks > 0) void 0;
         else throw new Error('Test 1 Failed: Engine not running checks.');
 
-        console.log('\n--- Test Case 2: Naive Math Verification (100 particles) ---');
+        void 0;
         await page.evaluate(() => {
             document.getElementById('particleCount').value = 100;
             document.getElementById('particleCount').dispatchEvent(new Event('input'));
@@ -78,11 +78,11 @@ server.listen(PORT, async () => {
         await delay(500);
         let stats2 = await page.evaluate(() => window.engineStats);
         // Math for 100 particles: 100 * 99 / 2 = 4950
-        console.log(`Naive Checks (100 particles): ${stats2.checks}`);
-        if(stats2.checks === 4950) console.log('✅ Test 2 Passed (Math is perfectly O(N²))');
+        void 0;
+        if(stats2.checks === 4950) void 0;
         else throw new Error(`Test 2 Failed: Expected 4950, got ${stats2.checks}`);
 
-        console.log('\n--- Test Case 3: Edge Case - 0/Min Particles ---');
+        void 0;
         await page.evaluate(() => {
             document.getElementById('particleCount').value = 50; // Slider min is 50
             document.getElementById('particleCount').dispatchEvent(new Event('input'));
@@ -90,11 +90,11 @@ server.listen(PORT, async () => {
         });
         await delay(500);
         let stats3 = await page.evaluate(() => window.engineStats);
-        console.log(`Quadtree Checks (50 particles): ${stats3.checks}`);
-        if(stats3.checks < 1225) console.log('✅ Test 3 Passed (Quadtree handles low density without crashing)');
+        void 0;
+        if(stats3.checks < 1225) void 0;
         else throw new Error('Test 3 Failed');
 
-        console.log('\n--- Test Case 4: Extreme Stress Test (2500 particles in Naive) ---');
+        void 0;
         await page.evaluate(() => {
             document.getElementById('particleCount').value = 2500;
             document.getElementById('particleCount').dispatchEvent(new Event('input'));
@@ -103,11 +103,11 @@ server.listen(PORT, async () => {
         await delay(1000); // Let it crunch
         let stats4 = await page.evaluate(() => window.engineStats);
         // Math for 2500 particles: 2500 * 2499 / 2 = 3123750
-        console.log(`Naive Checks (2500 particles): ${stats4.checks}`);
-        if(stats4.checks === 3123750) console.log('✅ Test 4 Passed (UI handles 3M+ checks without breaking)');
+        void 0;
+        if(stats4.checks === 3123750) void 0;
         else throw new Error(`Test 4 Failed: Expected 3123750, got ${stats4.checks}`);
 
-        console.log('\nAll tests completed successfully!');
+        void 0;
 
     } catch (error) {
         console.error('\n❌ Test execution failed:', error.message);

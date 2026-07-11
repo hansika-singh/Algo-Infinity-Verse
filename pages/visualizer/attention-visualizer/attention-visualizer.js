@@ -174,7 +174,7 @@ function resetAll() {
 
 function startProcessing() {
     let text = els.seqInput.value.trim();
-    if (!text) return console.warn("Alert:", "Please enter a sentence.");
+    if (!text) return void 0;
     
     resetAll();
     

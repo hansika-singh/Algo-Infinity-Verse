@@ -1,0 +1,539 @@
+/* 
+   Recursion vs Iteration — page-specific theme
+   Uses shared tokens from /styles/design-tokens.css and
+   global layout from /styles.css
+*/
+ 
+:root {
+    --rvi-primary: var(--secondary);   /* site's blue token */
+    --rvi-secondary: var(--primary);   /* site's purple token */
+    --rvi-gradient: var(--gradient-1); /* site's exact hero gradient */
+    --rvi-bg: rgba(59, 130, 246, 0.06);
+}
+ 
+/* ---------- Hero theme ---------- */
+.hero .title-line {
+    color: var(--rvi-secondary);
+}
+ 
+.hero .main-title {
+    background: var(--rvi-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+ 
+/* ---------- Topic sections ---------- */
+.rvi-topic {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+ 
+.rvi-topic:last-child {
+    border-bottom: none;
+}
+ 
+.rvi-topic-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+ 
+.rvi-badge {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: var(--rvi-bg);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--rvi-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.75rem;
+}
+ 
+.rvi-topic-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin: 0.4rem 0 0.75rem;
+}
+ 
+.rvi-lede {
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+ 
+/* ---------- Compare grid (recursive vs iterative side by side) ---------- */
+.rvi-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+ 
+@media (max-width: 768px) {
+    .rvi-compare-grid {
+        grid-template-columns: 1fr;
+    }
+}
+ 
+.rvi-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+ 
+.rvi-card h3 {
+    margin: 0 0 1rem;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+ 
+.rvi-card-recursive h3 i,
+.rvi-card-recursive { border-color: rgba(124, 58, 237, 0.35); }
+.rvi-card-recursive h3 i { color: var(--rvi-secondary); }
+ 
+.rvi-card-iterative { border-color: rgba(59, 130, 246, 0.35); }
+.rvi-card-iterative h3 i { color: var(--rvi-primary); }
+ 
+.rvi-card-good { border-color: rgba(59, 130, 246, 0.45); }
+.rvi-card-good h3 i { color: var(--rvi-primary); }
+ 
+.rvi-card pre {
+    background: #0d1117;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+ 
+.rvi-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+ 
+.rvi-note {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 10px;
+}
+ 
+.rvi-note i {
+    color: var(--secondary);
+    margin-top: 0.2rem;
+}
+ 
+.rvi-note p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+ 
+.rvi-note-inline {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+ 
+.rvi-note-inline i {
+    color: var(--secondary);
+    margin-top: 0.15rem;
+}
+ 
+/* ---------- Stack simulation ---------- */
+.rvi-sim {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+}
+ 
+.rvi-sim-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+ 
+.rvi-sim-step-label {
+    color: var(--text-secondary);
+    font-family: 'Fira Code', monospace;
+    min-width: 110px;
+    text-align: center;
+}
+ 
+.rvi-sim-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+}
+ 
+@media (max-width: 768px) {
+    .rvi-sim-body {
+        grid-template-columns: 1fr;
+    }
+}
+ 
+.rvi-sim-label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+ 
+.rvi-sim-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.4rem;
+    min-height: 260px;
+    padding: 0.75rem;
+    background: #0d1117;
+    border-radius: 10px;
+}
+ 
+.rvi-sim-frame {
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    color: var(--text-primary);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    animation: rvi-frame-in 0.25s ease;
+}
+ 
+@keyframes rvi-frame-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+ 
+.rvi-sim-explain {
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 1rem;
+    min-height: 260px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+ 
+/* ---------- Performance comparison table ---------- */
+.rvi-perf-table-wrapper {
+    overflow-x: auto;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+ 
+.rvi-perf-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.88rem;
+    min-width: 680px;
+}
+ 
+.rvi-perf-table thead th {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    color: var(--text-primary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), rgba(59, 130, 246, 0.08));
+    border-bottom: 1px solid var(--glass-border);
+}
+ 
+.rvi-perf-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+ 
+.rvi-perf-table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+ 
+.rvi-perf-table tbody td {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    transition: background 0.2s ease;
+}
+ 
+.rvi-perf-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+ 
+.rvi-perf-table tbody tr:last-child td {
+    border-bottom: none;
+}
+ 
+.rvi-perf-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+ 
+.rvi-perf-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+ 
+.rvi-perf-table td:first-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+ 
+.rvi-perf-table td:not(:first-child) {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+}
+ 
+.rvi-perf-sub {
+    display: block;
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+}
+ 
+.rvi-perf-highlight td {
+    background: var(--rvi-bg);
+    color: var(--text-primary);
+    position: relative;
+}
+ 
+.rvi-perf-highlight td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--rvi-gradient);
+}
+ 
+.rvi-perf-highlight:hover td {
+    background: var(--rvi-bg);
+}
+ 
+/* ---------- Recursive tree ---------- */
+.rvi-tree-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+ 
+.rvi-tree-controls input[type="range"] {
+    accent-color: var(--rvi-primary);
+    width: 200px;
+}
+ 
+.rvi-tree-count {
+    font-family: 'Fira Code', monospace;
+    color: var(--rvi-secondary);
+}
+ 
+.rvi-tree-canvas-wrapper,
+.rvi-chart-wrapper {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 1rem;
+}
+ 
+#treeSvg,
+#perfChart {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+ 
+/* ---------- Performance legend ---------- */
+.rvi-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+ 
+.rvi-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+}
+ 
+.rvi-swatch-recursive { background: var(--rvi-secondary); }
+.rvi-swatch-iterative { background: var(--rvi-primary); }
+ 
+/* ---------- Common mistakes (flip cards) ---------- */
+.rvi-mistakes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+ 
+@media (max-width: 900px) {
+    .rvi-mistakes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+ 
+@media (max-width: 600px) {
+    .rvi-mistakes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+ 
+.rvi-mistake-card {
+    position: relative;
+    min-height: 160px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+ 
+.rvi-mistake-front,
+.rvi-mistake-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    backface-visibility: hidden;
+    transition: transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+ 
+.rvi-mistake-front {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+}
+ 
+.rvi-mistake-front i {
+    font-size: 1.8rem;
+    color: var(--rvi-secondary);
+}
+ 
+.rvi-mistake-front h4 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+ 
+.rvi-mistake-back {
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    transform: rotateY(180deg);
+}
+ 
+.rvi-mistake-back p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+ 
+.rvi-mistake-card.flipped .rvi-mistake-front {
+    transform: rotateY(180deg);
+}
+ 
+.rvi-mistake-card.flipped .rvi-mistake-back {
+    transform: rotateY(0deg);
+}
+ 
+/* ---------- Exercises ---------- */
+.rvi-exercise {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+}
+ 
+.rvi-exercise-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+ 
+.rvi-exercise-head h4 {
+    margin: 0;
+    color: var(--text-primary);
+    flex: 1;
+    min-width: 160px;
+}
+ 
+.rvi-diff {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+ 
+.rvi-diff-easy { background: rgba(34,197,94,0.15); color: #22c55e; }
+.rvi-diff-medium { background: rgba(234,179,8,0.15); color: #eab308; }
+.rvi-diff-hard { background: rgba(239,68,68,0.15); color: #ef4444; }
+ 
+.rvi-toggle-btn {
+    background: var(--rvi-bg);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: var(--rvi-primary);
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+ 
+.rvi-toggle-btn:hover {
+    background: rgba(59, 130, 246, 0.15);
+}
+ 
+.rvi-exercise-body {
+    display: none;
+    margin-top: 1.25rem;
+}
+ 
+.rvi-exercise-body.open {
+    display: block;
+}
+ 

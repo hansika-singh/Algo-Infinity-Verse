@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dijkstra's Algorithm Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive visualizer for Dijkstra's Shortest Path algorithm."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="dijkstra-visualizer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="dijkstra-visualizer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero dj-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">The Greedy Path.</span>
+          <span class="main-title dj-gradient">Dijkstra's Algorithm</span>
+          <span class="subtitle">Shortest Path Visualizer</span>
+        </h1>
+        <p class="section-subtitle">
+          Watch how Dijkstra's algorithm uses a Priority Queue to greedily expand the shortest known
+          paths, finding the optimal route to every node in a non-negative weighted graph.
+        </p>
+        <div class="hero-buttons">
+          <a href="#visualizer" class="btn btn-primary dj-btn-primary"
+            ><i class="fas fa-play"></i> Open Visualizer</a
+          >
+          <a href="#learn" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> How It Works</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section id="visualizer" class="section">
+      <div class="container">
+        <!-- Controls -->
+        <div class="dj-control-card">
+          <!-- Graph presets -->
+          <div class="dj-row">
+            <span class="dj-row-label">Graph Preset:</span>
+            <div class="dj-preset-btns">
+              <button type="button" class="dj-preset-btn active" data-preset="basic">
+                Basic Map
+              </button>
+              <button type="button" class="dj-preset-btn" data-preset="dense">Dense Network</button>
+              <button type="button" class="dj-preset-btn" data-preset="star">Star Hub</button>
+            </div>
+          </div>
+
+          <!-- Source Node -->
+          <div class="dj-row">
+            <span class="dj-row-label">Start Node:</span>
+            <input
+              type="number"
+              id="djSource"
+              class="dj-node-input"
+              value="0"
+              min="0"
+              aria-label="Source node"
+            />
+          </div>
+
+          <!-- Playback -->
+          <div class="dj-playback-row">
+            <button type="button" class="btn dj-btn-primary dj-pb-btn" id="djRunBtn">
+              <i class="fas fa-play"></i> Run
+            </button>
+            <button type="button" class="btn btn-secondary dj-pb-btn" id="djStepBtn" disabled>
+              <i class="fas fa-step-forward"></i> Step
+            </button>
+            <button type="button" class="btn btn-secondary dj-pb-btn" id="djPauseBtn" disabled>
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button type="button" class="btn btn-secondary dj-pb-btn" id="djResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <div class="dj-speed-wrap">
+              <span class="dj-speed-label">Speed:</span>
+              <input
+                type="range"
+                id="djSpeed"
+                class="dj-range"
+                min="1"
+                max="5"
+                value="3"
+                aria-label="Speed"
+              />
+              <span class="dj-speed-val" id="djSpeedVal">Normal</span>
+            </div>
+            <div class="dj-step-ctr">
+              Step <span id="djStepNum">0</span>/<span id="djStepTotal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="djStatus" class="dj-status">Select a preset and click Run to begin.</div>
+
+        <div class="dj-legend">
+          <div class="dj-legend-item">
+            <div class="dj-ldot dj-ldot-start"></div>
+            Start Node
+          </div>
+          <div class="dj-legend-item">
+            <div class="dj-ldot dj-ldot-active"></div>
+            Evaluating Node
+          </div>
+          <div class="dj-legend-item">
+            <div class="dj-ldot dj-ldot-queued"></div>
+            In Priority Queue
+          </div>
+          <div class="dj-legend-item">
+            <div class="dj-ldot dj-ldot-settled"></div>
+            Settled (Shortest Path Known)
+          </div>
+        </div>
+
+        <!-- Main layout -->
+        <div class="dj-main-layout">
+          <!-- Canvas -->
+          <div class="dj-canvas-wrap">
+            <canvas id="djCanvas" class="dj-canvas"></canvas>
+          </div>
+
+          <!-- State panel -->
+          <div class="dj-state-panel">
+            <div class="dj-state-title">Priority Queue (Min-Heap)</div>
+            <div class="dj-ds-wrap" id="djQueueWrap">
+              <div class="dj-ds-empty">Empty</div>
+            </div>
+
+            <div class="dj-state-title" style="margin-top: 1rem">Distance Array</div>
+            <div class="dj-dist-wrap" id="djDistWrap">
+              <!-- Distances populated here -->
+            </div>
+
+            <div class="dj-state-title" style="margin-top: 1rem">Action Log</div>
+            <div class="dj-log-wrap" id="djLogWrap">
+              <div class="dj-log-empty">Waiting to start...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn Section -->
+    <section id="learn" class="section bg-light">
+      <div class="container">
+        <h2 class="section-title">How Dijkstra's Algorithm Works</h2>
+        <div class="dj-learn-grid">
+          <div class="dj-learn-card">
+            <h3>1. The Setup</h3>
+            <p>
+              Assign a distance of 0 to the start node and ∞ to all other nodes. Place the start
+              node into a Priority Queue.
+            </p>
+          </div>
+          <div class="dj-learn-card">
+            <h3>2. The Greedy Choice</h3>
+            <p>
+              Extract the node with the minimum distance from the Priority Queue. This node is now
+              considered "settled" – we have found its absolute shortest path.
+            </p>
+          </div>
+          <div class="dj-learn-card">
+            <h3>3. Edge Relaxation</h3>
+            <p>
+              For every neighbor of the extracted node, calculate the distance through the current
+              node. If this new distance is less than the neighbor's known distance, update it and
+              push it to the queue.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="dijkstra-visualizer.js"></script>
+  </body>
+</html>

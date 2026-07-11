@@ -189,7 +189,7 @@ function calculateKeys() {
     const q = BigInt(dom.primeQ.value);
     
     if (p <= 1n || q <= 1n) {
-        console.warn("Alert:", "P and Q must be greater than 1.");
+        void 0;
         return;
     }
     
@@ -288,7 +288,7 @@ function updateKeyCards() {
 
 async function encryptMessage() {
     if (E === 0n || N === 0n) {
-        console.warn("Alert:", "Please generate valid keys first.");
+        void 0;
         return;
     }
     
@@ -298,7 +298,7 @@ async function encryptMessage() {
     let m = BigInt(msgStr);
     
     if (m >= N) {
-        console.warn("Alert:", `Message M (${m}) must be strictly less than Modulus N (${N}).`);
+        void 0;
         return;
     }
     
@@ -315,7 +315,7 @@ async function encryptMessage() {
 
 async function decryptMessage() {
     if (D === 0n || N === 0n) {
-        console.warn("Alert:", "Please generate valid keys first.");
+        void 0;
         return;
     }
     

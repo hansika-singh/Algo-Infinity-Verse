@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aho-Corasick Automaton Builder | Algo Infinity Verse</title>
-    <meta name="description" content="Build an Aho-Corasick automaton from multiple patterns, watch failure links form via BFS, and search text in a single O(n) pass — the algorithm behind antivirus scanners and IDS systems." />
+    <meta
+      name="description"
+      content="Build an Aho-Corasick automaton from multiple patterns, watch failure links form via BFS, and search text in a single O(n) pass — the algorithm behind antivirus scanners and IDS systems."
+    />
     <link rel="stylesheet" href="../../../styles.css" />
     <link rel="stylesheet" href="aho-corasick-visualizer.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body data-page="aho-corasick-visualizer">
-
     <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
       <i class="fas fa-circle-chevron-up"></i>
     </button>
@@ -20,28 +28,44 @@
 
     <section class="ac-hero">
       <div class="hero-background">
-        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
       </div>
       <div class="ac-hero-inner">
         <div class="ac-hero-eyebrow">🛡️ ClamAV · Snort IDS · Cloudflare WAF · grep -F</div>
         <h1 class="ac-hero-title">Aho-Corasick Automaton Builder</h1>
         <p class="ac-hero-sub">Match ALL patterns simultaneously in a single O(n) pass.</p>
-        <p class="ac-hero-desc">KMP and Rabin-Karp find one pattern at a time. Aho-Corasick builds a finite automaton from a trie of many patterns plus failure links — then scans text exactly once, reporting every match at every position. This is the exact algorithm inside every antivirus signature scanner and network intrusion detection system.</p>
-        <a href="#lab" class="btn btn-primary ac-btn-primary"><i class="fas fa-diagram-project"></i> Build the Automaton</a>
+        <p class="ac-hero-desc">
+          KMP and Rabin-Karp find one pattern at a time. Aho-Corasick builds a finite automaton from
+          a trie of many patterns plus failure links — then scans text exactly once, reporting every
+          match at every position. This is the exact algorithm inside every antivirus signature
+          scanner and network intrusion detection system.
+        </p>
+        <a href="#lab" class="btn btn-primary ac-btn-primary"
+          ><i class="fas fa-diagram-project"></i> Build the Automaton</a
+        >
       </div>
     </section>
 
     <section id="lab" class="section ac-section">
       <div class="container">
-
         <div class="ac-phase-nav">
-          <button class="ac-phase-btn active" data-phase="0"><span class="ac-phase-num">01</span><span>Build Trie</span></button>
+          <button class="ac-phase-btn active" data-phase="0">
+            <span class="ac-phase-num">01</span><span>Build Trie</span>
+          </button>
           <div class="ac-phase-connector"></div>
-          <button class="ac-phase-btn" data-phase="1"><span class="ac-phase-num">02</span><span>Failure Links</span></button>
+          <button class="ac-phase-btn" data-phase="1">
+            <span class="ac-phase-num">02</span><span>Failure Links</span>
+          </button>
           <div class="ac-phase-connector"></div>
-          <button class="ac-phase-btn" data-phase="2"><span class="ac-phase-num">03</span><span>Search Text</span></button>
+          <button class="ac-phase-btn" data-phase="2">
+            <span class="ac-phase-num">03</span><span>Search Text</span>
+          </button>
           <div class="ac-phase-connector"></div>
-          <button class="ac-phase-btn" data-phase="3"><span class="ac-phase-num">04</span><span>Pattern Detective</span></button>
+          <button class="ac-phase-btn" data-phase="3">
+            <span class="ac-phase-num">04</span><span>Pattern Detective</span>
+          </button>
         </div>
 
         <!-- Phase 0: Build Trie -->
@@ -49,30 +73,52 @@
           <div class="ac-control-card">
             <div class="ac-row">
               <span class="ac-row-label">Patterns</span>
-              <input type="text" id="acPatternsInput" class="ac-text-input" value="he, she, his, hers" aria-label="Patterns (comma separated)" />
+              <input
+                type="text"
+                id="acPatternsInput"
+                class="ac-text-input"
+                value="he, she, his, hers"
+                aria-label="Patterns (comma separated)"
+              />
               <div class="ac-preset-btns">
                 <button class="ac-preset-btn" data-patterns="he, she, his, hers">Classic</button>
                 <button class="ac-preset-btn" data-patterns="cat, car, cart, art">Overlap</button>
-                <button class="ac-preset-btn" data-patterns="mal, malware, ware, are">Virus Sig</button>
+                <button class="ac-preset-btn" data-patterns="mal, malware, ware, are">
+                  Virus Sig
+                </button>
               </div>
             </div>
             <div class="ac-row">
-              <button class="btn ac-btn-primary ac-build-btn" id="acBuildTrieBtn"><i class="fas fa-hammer"></i> Build Trie</button>
-              <button class="btn btn-secondary ac-step-btn" id="acTrieStepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
-              <div class="ac-char-ctr">Char <span id="acTrieCharNum">0</span>/<span id="acTrieCharTotal">0</span></div>
+              <button class="btn ac-btn-primary ac-build-btn" id="acBuildTrieBtn">
+                <i class="fas fa-hammer"></i> Build Trie
+              </button>
+              <button class="btn btn-secondary ac-step-btn" id="acTrieStepBtn" disabled>
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+              <div class="ac-char-ctr">
+                Char <span id="acTrieCharNum">0</span>/<span id="acTrieCharTotal">0</span>
+              </div>
             </div>
           </div>
 
-          <div class="ac-status" id="acTrieStatus">Enter patterns and click Build Trie to construct it character by character.</div>
+          <div class="ac-status" id="acTrieStatus">
+            Enter patterns and click Build Trie to construct it character by character.
+          </div>
 
           <div class="ac-graph-layout">
             <div class="ac-graph-section">
-              <div class="ac-graph-header"><span class="ac-graph-title"><i class="fas fa-diagram-project"></i> Trie Structure</span></div>
+              <div class="ac-graph-header">
+                <span class="ac-graph-title"
+                  ><i class="fas fa-diagram-project"></i> Trie Structure</span
+                >
+              </div>
               <div class="ac-graph-wrap"><svg id="acTrieSvg" class="ac-svg"></svg></div>
             </div>
             <div class="ac-side-panel">
               <div class="ac-panel-title"><i class="fas fa-list-ol"></i> Build Log</div>
-              <div class="ac-log" id="acTrieLog"><div class="ac-log-empty">No construction yet.</div></div>
+              <div class="ac-log" id="acTrieLog">
+                <div class="ac-log-empty">No construction yet.</div>
+              </div>
             </div>
           </div>
         </div>
@@ -81,29 +127,59 @@
         <div class="ac-phase-panel" id="acPhase1">
           <div class="ac-control-card">
             <div class="ac-row">
-              <button class="btn ac-btn-primary ac-build-btn" id="acBuildFailBtn"><i class="fas fa-link"></i> Compute Failure Links (BFS)</button>
-              <button class="btn btn-secondary ac-step-btn" id="acFailStepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
-              <label class="ac-toggle-label"><input type="checkbox" id="acShowFailLinks" class="ac-check" checked /><span>Show failure links</span></label>
+              <button class="btn ac-btn-primary ac-build-btn" id="acBuildFailBtn">
+                <i class="fas fa-link"></i> Compute Failure Links (BFS)
+              </button>
+              <button class="btn btn-secondary ac-step-btn" id="acFailStepBtn" disabled>
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+              <label class="ac-toggle-label"
+                ><input type="checkbox" id="acShowFailLinks" class="ac-check" checked /><span
+                  >Show failure links</span
+                ></label
+              >
+              <label class="ac-toggle-label"
+                ><input type="checkbox" id="acShowFailTraversal" class="ac-check" checked /><span
+                  >Show traversal</span
+                ></label
+              >
             </div>
           </div>
 
-          <div class="ac-status" id="acFailStatus">Build the trie in phase 1 first, then compute failure links via BFS.</div>
+          <div class="ac-status" id="acFailStatus">
+            Build the trie in phase 1 first, then compute failure links via BFS.
+          </div>
 
           <div class="ac-graph-layout">
             <div class="ac-graph-section">
               <div class="ac-graph-header">
-                <span class="ac-graph-title"><i class="fas fa-diagram-project"></i> Automaton with Failure Links</span>
+                <span class="ac-graph-title"
+                  ><i class="fas fa-diagram-project"></i> Automaton with Failure Links</span
+                >
                 <div class="ac-legend">
-                  <span class="ac-leg"><span class="ac-leg-line ac-leg-goto"></span>Goto (solid)</span>
-                  <span class="ac-leg"><span class="ac-leg-line ac-leg-fail"></span>Failure link (dashed)</span>
-                  <span class="ac-leg"><span class="ac-leg-dot ac-leg-output"></span>Output node (pattern ends)</span>
+                  <span class="ac-leg"
+                    ><span class="ac-leg-line ac-leg-goto"></span>Goto (solid)</span
+                  >
+                  <span class="ac-leg"
+                    ><span class="ac-leg-line ac-leg-fail"></span>Failure link (dashed)</span
+                  >
+                  <span class="ac-leg"
+                    ><span class="ac-leg-dot ac-leg-output"></span>Output node (pattern ends)</span
+                  >
                 </div>
               </div>
               <div class="ac-graph-wrap"><svg id="acFailSvg" class="ac-svg"></svg></div>
             </div>
             <div class="ac-side-panel">
               <div class="ac-panel-title"><i class="fas fa-list-ol"></i> Failure Link Log</div>
-              <div class="ac-log" id="acFailLog"><div class="ac-log-empty">No computation yet.</div></div>
+              <div class="ac-log" id="acFailLog">
+                <div class="ac-log-empty">No computation yet.</div>
+              </div>
+
+              <div class="ac-bfs-queue" aria-label="BFS Queue">
+                <div class="ac-panel-title"><i class="fas fa-queue"></i> BFS Queue</div>
+                <div class="ac-queue" id="acBfsQueue">—</div>
+              </div>
             </div>
           </div>
         </div>
@@ -113,28 +189,62 @@
           <div class="ac-control-card">
             <div class="ac-row">
               <span class="ac-row-label">Search text</span>
-              <input type="text" id="acSearchInput" class="ac-text-input" value="ushers" aria-label="Search text" />
-              <button class="btn ac-btn-primary ac-search-btn" id="acSearchBtn"><i class="fas fa-play"></i> Search</button>
-              <button class="btn btn-secondary ac-step-btn" id="acSearchStepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
+              <input
+                type="text"
+                id="acSearchInput"
+                class="ac-text-input"
+                value="ushers"
+                aria-label="Search text"
+              />
+              <button class="btn ac-btn-primary ac-search-btn" id="acSearchBtn">
+                <i class="fas fa-play"></i> Search
+              </button>
+              <button class="btn btn-secondary ac-step-btn" id="acSearchStepBtn" disabled>
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+              <label class="ac-toggle-label"
+                ><input type="checkbox" id="acShowSearchTraversal" class="ac-check" checked /><span
+                  >Show failure jumps</span
+                ></label
+              >
             </div>
           </div>
 
-          <div class="ac-status" id="acSearchStatus">Build the automaton first (phases 1 & 2), then search text — every pattern is matched in one pass.</div>
+          <div class="ac-status" id="acSearchStatus">
+            Build the automaton first (phases 1 & 2), then search text — every pattern is matched in
+            one pass.
+          </div>
 
           <div class="ac-text-trace" id="acTextTrace"></div>
 
           <div class="ac-graph-layout">
             <div class="ac-graph-section">
-              <div class="ac-graph-header"><span class="ac-graph-title"><i class="fas fa-route"></i> Traversal State</span></div>
+              <div class="ac-graph-header">
+                <span class="ac-graph-title"><i class="fas fa-route"></i> Traversal State</span>
+              </div>
               <div class="ac-graph-wrap"><svg id="acSearchSvg" class="ac-svg"></svg></div>
             </div>
             <div class="ac-side-panel">
               <div class="ac-panel-title"><i class="fas fa-check-double"></i> Matches Found</div>
-              <div class="ac-log" id="acMatchLog"><div class="ac-log-empty">No matches yet.</div></div>
+              <div class="ac-log" id="acMatchLog">
+                <div class="ac-log-empty">No matches yet.</div>
+              </div>
               <div class="ac-compare-card">
+                <div class="ac-compare-title">Work done during search</div>
+                <div class="ac-compare-row">
+                  <span>Failure traversals</span><span id="acCompFailTrav">0</span>
+                </div>
+                <div class="ac-compare-row">
+                  <span>Successful transitions</span><span id="acCompTrans">0</span>
+                </div>
+                <div class="ac-compare-row">
+                  <span>Total steps</span><span id="acCompTotal">0</span>
+                </div>
+                <div class="ac-compare-divider"></div>
                 <div class="ac-compare-title">Naive multi-pattern comparisons</div>
-                <div class="ac-compare-row"><span>Aho-Corasick</span><span id="acCompAc">0</span></div>
-                <div class="ac-compare-row"><span>Naive (all patterns × all positions)</span><span id="acCompNaive">0</span></div>
+                <div class="ac-compare-row">
+                  <span>Naive (all patterns × all positions)</span><span id="acCompNaive">0</span>
+                </div>
               </div>
             </div>
           </div>
@@ -147,45 +257,76 @@
               <i class="fas fa-magnifying-glass"></i>
               <span>Pattern Detective — Deduce the Hidden Patterns</span>
             </div>
-            <p class="ac-detective-desc">An automaton was built from secret patterns. Below is a mystery text with matches highlighted. Figure out which patterns were used, type your guesses, and check your answer.</p>
+            <p class="ac-detective-desc">
+              An automaton was built from secret patterns. Below is a mystery text with matches
+              highlighted. Figure out which patterns were used, type your guesses, and check your
+              answer.
+            </p>
             <div class="ac-detective-controls">
-              <button class="btn ac-btn-primary ac-new-puzzle-btn" id="acNewPuzzleBtn"><i class="fas fa-shuffle"></i> New Puzzle</button>
+              <button class="btn ac-btn-primary ac-new-puzzle-btn" id="acNewPuzzleBtn">
+                <i class="fas fa-shuffle"></i> New Puzzle
+              </button>
             </div>
             <div class="ac-mystery-text" id="acMysteryText"></div>
             <div class="ac-guess-row">
-              <input type="text" id="acGuessInput" class="ac-text-input" placeholder="e.g. cat, art, car" aria-label="Your guess" />
-              <button class="btn ac-btn-primary ac-check-btn" id="acCheckGuessBtn"><i class="fas fa-check"></i> Check Answer</button>
+              <input
+                type="text"
+                id="acGuessInput"
+                class="ac-text-input"
+                placeholder="e.g. cat, art, car"
+                aria-label="Your guess"
+              />
+              <button class="btn ac-btn-primary ac-check-btn" id="acCheckGuessBtn">
+                <i class="fas fa-check"></i> Check Answer
+              </button>
             </div>
             <div class="ac-guess-result hidden" id="acGuessResult"></div>
           </div>
         </div>
-
       </div>
     </section>
 
     <section id="learn" class="section">
       <div class="container">
-        <h2 class="section-title"><span class="title-icon">🛡️</span> How Aho-Corasick Powers Security Tools</h2>
+        <h2 class="section-title">
+          <span class="title-icon">🛡️</span> How Aho-Corasick Powers Security Tools
+        </h2>
         <div class="ac-learn-grid">
-          <div class="ac-learn-card" style="--lc:#ef4444">
+          <div class="ac-learn-card" style="--lc: #ef4444">
             <div class="ac-learn-icon">🦠</div>
             <h3>Antivirus Signature Scanning</h3>
-            <p>ClamAV loads millions of malware signatures as patterns into a single Aho-Corasick automaton, then scans every file in one linear pass — checking against all signatures simultaneously instead of running millions of separate searches.</p>
+            <p>
+              ClamAV loads millions of malware signatures as patterns into a single Aho-Corasick
+              automaton, then scans every file in one linear pass — checking against all signatures
+              simultaneously instead of running millions of separate searches.
+            </p>
           </div>
-          <div class="ac-learn-card" style="--lc:#f59e0b">
+          <div class="ac-learn-card" style="--lc: #f59e0b">
             <div class="ac-learn-icon">🚨</div>
             <h3>Snort Intrusion Detection</h3>
-            <p>Network IDS systems must inspect every packet against thousands of attack signatures in real time. Aho-Corasick's O(n) guarantee — independent of pattern count — makes this feasible at line rate.</p>
+            <p>
+              Network IDS systems must inspect every packet against thousands of attack signatures
+              in real time. Aho-Corasick's O(n) guarantee — independent of pattern count — makes
+              this feasible at line rate.
+            </p>
           </div>
-          <div class="ac-learn-card" style="--lc:#06b6d4">
+          <div class="ac-learn-card" style="--lc: #06b6d4">
             <div class="ac-learn-icon">🔍</div>
             <h3>grep -F (Fixed Strings)</h3>
-            <p>When grep searches for multiple fixed strings at once, it builds an Aho-Corasick automaton internally rather than running each pattern as a separate scan of the input.</p>
+            <p>
+              When grep searches for multiple fixed strings at once, it builds an Aho-Corasick
+              automaton internally rather than running each pattern as a separate scan of the input.
+            </p>
           </div>
-          <div class="ac-learn-card" style="--lc:#a855f7">
+          <div class="ac-learn-card" style="--lc: #a855f7">
             <div class="ac-learn-icon">🔗</div>
             <h3>Why Failure Links Matter</h3>
-            <p>Without failure links, a mismatch means restarting from the root — repeating work already done. A failure link jumps to the longest proper suffix of the current path that is also a prefix of some pattern, preserving partial matches instead of discarding them.</p>
+            <p>
+              Without failure links, a mismatch means restarting from the root — repeating work
+              already done. A failure link jumps to the longest proper suffix of the current path
+              that is also a prefix of some pattern, preserving partial matches instead of
+              discarding them.
+            </p>
           </div>
         </div>
       </div>
@@ -200,7 +341,7 @@
     <script src="aho-corasick-visualizer.js"></script>
     <script>
       if (typeof loadPartial === 'function') {
-        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
           if (typeof initNavbar === 'function') initNavbar();
         });
         loadPartial('footer-placeholder', '/partials/footer.html');

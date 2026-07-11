@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag-and-Drop Flowchart Builder | Algo Infinity Verse</title>
+    <meta name="description" content="Interactive drag-and-drop flowchart builder for algorithm design." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Assuming styles.css is at root for global styles -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="flowchart-builder.css" />
+</head>
+<body class="flowchart-body">
+    <div id="navbar-placeholder"></div>
+
+    <main class="flowchart-workspace" style="margin-top: 80px;">
+        <!-- Left Panel: Block Palette & Controls -->
+        <div class="panel-left" id="sidebar">
+            <div class="panel-header">
+                <h3><i class="fas fa-project-diagram"></i> Builder</h3>
+            </div>
+            
+            <div class="block-palette">
+                <h4><i class="fas fa-shapes"></i> Blocks</h4>
+                <div class="palette-block block-start-end" draggable="true" data-type="start-end">Start / End</div>
+                <div class="palette-block block-process" draggable="true" data-type="process">Process</div>
+                <div class="palette-block block-io" draggable="true" data-type="io"><span class="content">Input / Output</span></div>
+                <div class="palette-block block-decision" draggable="true" data-type="decision">Decision</div>
+                <div class="palette-block block-loop" draggable="true" data-type="loop">Loop</div>
+                <div class="palette-block block-variable" draggable="true" data-type="variable">Variable</div>
+            </div>
+            
+            <div class="operation-panel mt-4">
+                <h4><i class="fas fa-cogs"></i> Actions</h4>
+                <div class="action-grid">
+                    <button class="btn btn-primary" id="btnSave"><i class="fas fa-save"></i> Save</button>
+                    <button class="btn btn-secondary" id="btnRestore"><i class="fas fa-folder-open"></i> Load</button>
+                    <button class="btn btn-outline w-100" style="grid-column: span 2;" id="btnClear"><i class="fas fa-trash-alt"></i> Clear All</button>
+                    <button class="btn btn-accent w-100" style="grid-column: span 2;" id="btnValidate"><i class="fas fa-check-circle"></i> Validate Logic</button>
+                </div>
+            </div>
+            
+            <div class="zoom-controls mt-4">
+                <h4><i class="fas fa-search"></i> View</h4>
+                <div class="d-flex" style="gap: 10px;">
+                    <button class="btn btn-outline flex-1" id="btnZoomIn"><i class="fas fa-search-plus"></i></button>
+                    <button class="btn btn-outline flex-1" id="btnZoomOut"><i class="fas fa-search-minus"></i></button>
+                    <button class="btn btn-outline flex-1" id="btnResetZoom"><i class="fas fa-compress"></i></button>
+                </div>
+            </div>
+
+            <div class="validation-message" id="validationMessage"></div>
+        </div>
+
+        <!-- Right Panel: Canvas -->
+        <div class="panel-right" id="canvas-container">
+            <div id="canvas-wrapper">
+                <svg id="connections-layer">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#888" />
+                        </marker>
+                        <marker id="arrowhead-hover" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#fff" />
+                        </marker>
+                        <marker id="arrowhead-invalid" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#ff3333" />
+                        </marker>
+                    </defs>
+                    <!-- Active drawing line -->
+                    <path id="active-line" stroke-dasharray="5,5" d=""></path>
+                    <!-- Connection paths go here -->
+                </svg>
+                <div id="blocks-layer">
+                    <!-- Dropped blocks go here -->
+                </div>
+            </div>
+            
+            <!-- Instructions Overlay -->
+            <div class="instructions-overlay" id="instructionsOverlay">
+                <i class="fas fa-info-circle"></i> Drag blocks here. Connect ports. Drag background to pan.
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="flowchart-builder.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+</body>
+</html>

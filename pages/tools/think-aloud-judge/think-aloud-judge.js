@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  initLoadingScreen();
   initNavbar();
   initScrollTop();
   try {
@@ -8,13 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("ThinkAloudJudge:", e);
   }
 });
-
-function initLoadingScreen() {
-  setTimeout(() => {
-    const s = document.getElementById("loading-screen");
-    if (s) s.classList.add("hidden");
-  }, 1500);
-}
 
 function initScrollTop() {
   const btn = document.getElementById("scrollTopBtn");

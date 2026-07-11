@@ -40,7 +40,7 @@ class CacheManager {
         req.onerror = () => reject(req.error);
       });
     } catch (e) {
-      console.warn("Cache set error:", e);
+      void 0;
     }
   }
 
@@ -63,7 +63,7 @@ class CacheManager {
         req.onerror = () => reject(req.error);
       });
     } catch (e) {
-      console.warn("Cache get error:", e);
+      void 0;
       return null;
     }
   }
@@ -79,7 +79,7 @@ class CacheManager {
         req.onerror = () => reject(req.error);
       });
     } catch (e) {
-      console.warn("Cache invalidate error:", e);
+      void 0;
     }
   }
 
@@ -95,7 +95,7 @@ class CacheManager {
         return data;
       } catch (e) {
         if (e.name === 'AbortError') throw e;
-        console.warn(`CacheManager fetch failed for ${url}:`, e);
+        void 0;
         if (cached) return cached.data;
         throw e;
       }
@@ -105,7 +105,7 @@ class CacheManager {
       const age = Date.now() - cached.updatedAt;
       if (age > ttlMs / 2) {
         doFetch().catch(e => {
-          if (e.name !== 'AbortError') console.warn('Background revalidate failed:', e);
+          if (e.name !== 'AbortError') void 0;
         });
       }
       return cached.data;

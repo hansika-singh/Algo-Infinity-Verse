@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.roomId) {
           joinRoom(data.roomId);
         } else {
-          console.warn("Alert:", "Failed to create room: " + (data.error || "Unknown error"));
+          void 0;
         }
       } catch (err) {
         console.error("Create room error:", err);
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function joinRoom(roomId) {
     if (!socket) {
-      console.warn("Alert:", "Socket server connection not available.");
+      void 0;
       return;
     }
     

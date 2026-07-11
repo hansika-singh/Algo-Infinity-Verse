@@ -6,7 +6,7 @@
     <title>[Feature] Suffix Array Visualizer with sorting rounds | Algo Infinity Verse</title>
     <meta
       name="description"
-      content="Visualize building suffix arrays using the doubling method. Step through each sorting round and watch ranks + suffix ordering update." 
+      content="Visualize building suffix arrays using the doubling method. Step through each sorting round and watch ranks + suffix ordering update."
     />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="suffix-array-visualizer.css" />
@@ -36,7 +36,7 @@
   </head>
 
   <body data-page="suffix-array-visualizer">
-    <div id="loading-screen">
+    <div id="loading-screen" class="hidden">
       <div class="loader">
         <div class="infinity-loader">∞</div>
         <h2>Algo Infinity Verse</h2>
@@ -106,8 +106,12 @@
                   <span class="explain-value" id="saPhaseLabel">Initialization</span>
                 </div>
                 <div class="explain-row">
-                  <span class="explain-label"><i class="fas fa-sort-amount-down"></i> What happens</span>
-                  <span class="explain-value" id="saExplanation">Enter a string, then step through doubling rounds.</span>
+                  <span class="explain-label"
+                    ><i class="fas fa-sort-amount-down"></i> What happens</span
+                  >
+                  <span class="explain-value" id="saExplanation"
+                    >Enter a string, then step through doubling rounds.</span
+                  >
                 </div>
               </div>
             </div>
@@ -129,8 +133,8 @@
               </div>
               <p class="theory-text">
                 The doubling method sorts suffixes by a pair of ranks:
-                <span class="fira">(rank[i], rank[i + 2^k])</span>. Each round doubles the compared prefix length,
-                until all suffixes become uniquely ranked.
+                <span class="fira">(rank[i], rank[i + 2^k])</span>. Each round doubles the compared
+                prefix length, until all suffixes become uniquely ranked.
               </p>
             </div>
           </div>
@@ -153,6 +157,31 @@
                   value="banana"
                   placeholder="Enter text (e.g., banana)"
                 />
+                <div class="mode-hint" id="saModeHint" aria-live="polite"></div>
+                <div class="warn-box" id="saInputWarning" aria-live="polite"></div>
+              </div>
+
+              <div class="control-group">
+                <label for="saCaseInsensitiveToggle">
+                  <span>Character Mode</span>
+                  <span class="val-display">Toggle rules</span>
+                </label>
+
+                <div class="toggle-row">
+                  <label class="toggle-item" for="saCaseInsensitiveToggle">
+                    <input type="checkbox" id="saCaseInsensitiveToggle" checked />
+                    <span>Case-insensitive</span>
+                  </label>
+
+                  <label class="toggle-item" for="saAllowSpacesToggle">
+                    <input type="checkbox" id="saAllowSpacesToggle" checked />
+                    <span>Allow spaces</span>
+                  </label>
+                </div>
+
+                <div class="mode-subtext">
+                  Changing these options regenerates the character ranking.
+                </div>
               </div>
 
               <div class="control-group">
@@ -197,22 +226,51 @@
               </div>
 
               <div class="btn-control-row sa-btn-row">
-                <button type="button" id="saPlayBtn" class="btn btn-primary btn-control" title="Play rounds">
+                <button
+                  type="button"
+                  id="saPlayBtn"
+                  class="btn btn-primary btn-control"
+                  title="Play rounds"
+                >
                   <i class="fas fa-play"></i> Play
                 </button>
-                <button type="button" id="saPauseBtn" class="btn btn-secondary btn-control" disabled title="Pause">
+                <button
+                  type="button"
+                  id="saPauseBtn"
+                  class="btn btn-secondary btn-control"
+                  disabled
+                  title="Pause"
+                >
                   <i class="fas fa-pause"></i> Pause
                 </button>
               </div>
 
               <div class="btn-control-row sa-btn-row">
-                <button type="button" id="saStepBackBtn" class="btn btn-secondary btn-control-icon" title="Previous round" disabled>
+                <button
+                  type="button"
+                  id="saStepBackBtn"
+                  class="btn btn-secondary btn-control-icon"
+                  title="Previous round"
+                  disabled
+                >
                   <i class="fas fa-step-backward"></i>
                 </button>
-                <button type="button" id="saStepForwardBtn" class="btn btn-secondary btn-control-icon" title="Next round" disabled>
+                <button
+                  type="button"
+                  id="saStepForwardBtn"
+                  class="btn btn-secondary btn-control-icon"
+                  title="Next round"
+                  disabled
+                >
                   <i class="fas fa-step-forward"></i>
                 </button>
-                <button type="button" id="saResetBtn" class="btn btn-secondary btn-control" style="flex: 1;" title="Reset">
+                <button
+                  type="button"
+                  id="saResetBtn"
+                  class="btn btn-secondary btn-control"
+                  style="flex: 1"
+                  title="Reset"
+                >
                   <i class="fas fa-undo"></i> Reset
                 </button>
               </div>
@@ -222,18 +280,172 @@
               </div>
 
               <div class="legend-panel">
-                <div class="legend-item"><span class="legend-color current"></span><span>Active suffix index</span></div>
-                <div class="legend-item"><span class="legend-color updated"></span><span>Ranks updated this round</span></div>
+                <div class="legend-item">
+                  <span class="legend-color current"></span><span>Active suffix index</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color updated"></span><span>Ranks updated this round</span>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label for="saCompareIInput">
+                  Compare suffixes (indices i and j)
+                  <span class="val-display">current round keys</span>
+                </label>
+
+                <div class="compare-grid">
+                  <input
+                    type="number"
+                    id="saCompareIInput"
+                    class="control-input"
+                    min="0"
+                    step="1"
+                    value="0"
+                    placeholder="i"
+                  />
+                  <input
+                    type="number"
+                    id="saCompareJInput"
+                    class="control-input"
+                    min="0"
+                    step="1"
+                    value="1"
+                    placeholder="j"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  id="saCompareBtn"
+                  class="btn btn-secondary"
+                  style="width: 100%; margin-top: 0.5rem"
+                >
+                  <i class="fas fa-scale-balanced"></i> Compare indices
+                </button>
+
+                <div class="warn-box" id="saCompareWarning" aria-live="polite"></div>
+
+                <div class="compare-result" id="saCompareResult" aria-live="polite">
+                  Enter indices and click <b>Compare indices</b>.
+                </div>
+              </div>
+
+              <div class="visualizer-card drilldown-card" id="saDrilldownCard">
+                <h3>
+                  <i
+                    class="fas fa-magnifying-glass"
+                    style="color: var(--accent); margin-right: 0.5rem"
+                  ></i>
+                  Drill-down (Selected Suffix)
+                </h3>
+
+                <div class="drilldown-row">
+                  <span class="drilldown-label">Suffix index i</span>
+                  <span class="drilldown-value" id="saSelectedSuffixIndex">—</span>
+                </div>
+
+                <div class="drilldown-row">
+                  <span class="drilldown-label">First half rank[i]</span>
+                  <span class="drilldown-value" id="saFirstHalfRank">—</span>
+                </div>
+
+                <div class="drilldown-row">
+                  <span class="drilldown-label">Second half rank[i+len]</span>
+                  <span class="drilldown-value" id="saSecondHalfRank">—</span>
+                </div>
+
+                <div class="drilldown-row">
+                  <span class="drilldown-label">Combined key</span>
+                  <span class="drilldown-value" id="saCombinedKey">—</span>
+                </div>
+
+                <div class="drilldown-divider"></div>
+
+                <div class="drilldown-row">
+                  <span class="drilldown-label">Compared vs adjacent suffix</span>
+                  <span class="drilldown-value" id="saAdjacentComparison">—</span>
+                </div>
+
+                <div class="drilldown-reason" id="saDrilldownReason">
+                  Select a row in the table to see reasoning.
+                </div>
               </div>
             </div>
 
             <div class="visualizer-card">
               <h3>
-                <i class="fas fa-wand-magic-sparkles" style="color: var(--accent); margin-right: 0.5rem"></i>
+                <i
+                  class="fas fa-share-nodes"
+                  style="color: var(--accent); margin-right: 0.5rem"
+                ></i>
+                Share & Export Report
+              </h3>
+              <div class="sa-btn-row" style="display: flex; gap: 0.5rem; margin-top: 1rem">
+                <button
+                  type="button"
+                  id="saExportJsonBtn"
+                  class="btn btn-secondary"
+                  style="flex: 1; padding: 0.5rem"
+                  title="Export session data as JSON"
+                >
+                  <i class="fas fa-file-code"></i> JSON
+                </button>
+                <button
+                  type="button"
+                  id="saExportReportBtn"
+                  class="btn btn-secondary"
+                  style="flex: 1; padding: 0.5rem"
+                  title="Export HTML report file"
+                >
+                  <i class="fas fa-file-lines"></i> HTML Report
+                </button>
+              </div>
+              <button
+                type="button"
+                id="saShareBtn"
+                class="btn btn-primary"
+                style="
+                  width: 100%;
+                  margin-top: 0.5rem;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 0.5rem;
+                "
+                title="Copy shareable link"
+              >
+                <i class="fas fa-copy"></i> Copy Share Link
+              </button>
+              <div
+                id="saShareStatus"
+                class="status-box hidden"
+                style="
+                  margin-top: 0.5rem;
+                  text-align: center;
+                  color: #10b981;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                  border-color: rgba(16, 185, 129, 0.2);
+                  background: rgba(16, 185, 129, 0.05);
+                "
+              >
+                📋 Share link copied!
+              </div>
+            </div>
+
+            <div class="visualizer-card">
+              <h3>
+                <i
+                  class="fas fa-wand-magic-sparkles"
+                  style="color: var(--accent); margin-right: 0.5rem"
+                ></i>
                 Suffix Ordering (Final)
               </h3>
               <div class="final-order" id="saFinalOrder">—</div>
-              <div class="final-order-sub">Order shown when rounds finish (after ranks stabilize).</div>
+              <div class="final-order-sub">
+                Order shown when rounds finish (after ranks stabilize).
+              </div>
             </div>
           </aside>
         </div>
@@ -255,11 +467,20 @@
           </button>
         </div>
         <div class="chatbot-messages" id="chatbotMessages">
-          <div class="message bot"><p>Hi! I can help you understand suffix arrays and the doubling method.</p></div>
+          <div class="message bot">
+            <p>Hi! I can help you understand suffix arrays and the doubling method.</p>
+          </div>
         </div>
         <div class="chatbot-input">
-          <input type="text" id="chatbotInput" placeholder="Type your question..." aria-label="Type your chat message" />
-          <button type="button" id="chatbotSend" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your question..."
+            aria-label="Type your chat message"
+          />
+          <button type="button" id="chatbotSend" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -278,4 +499,3 @@
     </script>
   </body>
 </html>
-

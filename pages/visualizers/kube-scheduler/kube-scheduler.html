@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kubernetes Scheduler & Bin Packing Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Simulate Kubernetes Kube-Scheduler logic: Filtering, Scoring, and Bin-Packing of pods onto worker nodes." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="kube-scheduler.css" />
+</head>
+<body class="kube-body">
+
+    <nav class="navbar kube-nav">
+        <div class="nav-logo">
+            <span class="logo-text">∞</span>
+            <span class="logo-title">Algo Infinity Verse</span>
+        </div>
+        <div class="engine-badge">
+            <i class="fas fa-dharmachakra"></i> Kube-Scheduler
+        </div>
+    </nav>
+
+    <main class="kube-workspace">
+        <!-- Left Panel: Controls & Pod Queue -->
+        <div class="panel-left">
+            <div class="panel-header">
+                <h3><i class="fas fa-tasks"></i> Pending Pods Queue</h3>
+            </div>
+            
+            <div class="control-section">
+                <h4><i class="fas fa-plus"></i> Spawn Workload</h4>
+                <div class="action-row">
+                    <button type="button" class="btn btn-primary" id="btnSpawnSmall">
+                        Small (1 CPU / 1G)
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnSpawnLarge">
+                        Large (4 CPU / 8G)
+                    </button>
+                </div>
+                <div class="action-row mt-2">
+                    <button type="button" class="btn btn-accent w-100" id="btnScheduleNext">
+                        <i class="fas fa-play"></i> Schedule Next Pod
+                    </button>
+                </div>
+            </div>
+
+            <div class="queue-container" id="podQueue">
+                <!-- Pending Pods will be injected here -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Cluster & Visualization -->
+        <div class="panel-right">
+            <div class="cluster-header">
+                <h2><i class="fas fa-server"></i> Worker Nodes Cluster</h2>
+                <div class="scheduling-status" id="scheduleStatus">Idle</div>
+            </div>
+            
+            <div class="cluster-grid" id="clusterGrid">
+                <!-- Nodes injected by JS -->
+            </div>
+            
+            <div class="explanation-panel">
+                <h3><i class="fas fa-info-circle"></i> Scheduler Execution Log</h3>
+                <div id="logTerminal" class="terminal-log">
+                    <div class="log-entry">Kube-Scheduler initialized. Cluster has 3 nodes.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="kube-scheduler.js"></script>
+</body>
+</html>

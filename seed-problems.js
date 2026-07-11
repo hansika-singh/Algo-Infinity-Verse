@@ -144,7 +144,7 @@ async function seed() {
     process.exit(1);
   }
 
-  console.log(`Seeding ${problems.length} problems...`);
+  void 0;
 
   const batch = firestore.batch();
   for (const problem of problems) {
@@ -159,7 +159,7 @@ async function seed() {
   }
 
   await batch.commit();
-  console.log("Done. Problems collection is ready in Firestore.");
+  void 0;
   process.exit(0);
 }
 

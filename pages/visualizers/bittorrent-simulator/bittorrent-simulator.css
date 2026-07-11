@@ -1,0 +1,135 @@
+/* bittorrent-simulator.css */
+
+.torrent-body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.torrent-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-logo { display: flex; align-items: center; gap: 0.5rem; }
+.logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--accent); }
+.logo-title { font-weight: 600; font-size: 1.1rem; }
+
+.engine-badge {
+    background: rgba(var(--accent-rgb), 0.1);
+    color: #642b73;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(100, 43, 115, 0.3);
+}
+
+.torrent-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.panel-left {
+    width: 350px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.panel-header { padding: 1.2rem; border-bottom: 1px solid var(--border-color); }
+.panel-header h3 { margin: 0; font-size: 1.1rem; color: #642b73; }
+
+.control-section { padding: 1.5rem 1.2rem; border-bottom: 1px solid var(--border-color); }
+.control-section h4 { margin: 0 0 0.5rem 0; font-size: 0.95rem; }
+.text-secondary { color: #8b949e; font-size: 0.8rem; line-height: 1.4; margin-bottom: 1rem; }
+
+.action-row { display: flex; gap: 0.5rem; }
+.btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+.btn-primary { background-color: #0366d6; color: white; }
+.btn-accent { background-color: #3fb950; color: white; }
+.btn-warning { background-color: #d73a49; color: white; }
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.w-100 { width: 100%; flex: 1; }
+.mt-2 { margin-top: 0.5rem; }
+
+/* Toggles */
+.toggle-container {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    user-select: none;
+}
+.toggle-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+.checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: #30363d; border-radius: 4px; }
+.toggle-container input:checked ~ .checkmark { background-color: #3fb950; }
+.checkmark:after { content: ""; position: absolute; display: none; }
+.toggle-container input:checked ~ .checkmark:after { display: block; }
+.toggle-container .checkmark:after {
+    left: 6px; top: 2px; width: 4px; height: 9px;
+    border: solid white; border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.global-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 1.5rem 1rem;
+    background: var(--bg-main);
+}
+.stat-box { text-align: center; }
+.stat-val { font-family: 'Fira Code', monospace; font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+.stat-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; }
+
+/* Visualization Area */
+.panel-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background: #0d1117;
+}
+
+.viz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.viz-header h2 { margin: 0; font-size: 1.5rem; color: #c9d1d9; }
+
+.legend { display: flex; gap: 1rem; font-size: 0.85rem; color: #8b949e; }
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.dot.seeder { background-color: #3fb950; }
+.dot.leecher { background-color: #0366d6; }
+.dot.choking { background-color: #d73a49; }
+
+.canvas-container { flex: 1; position: relative; background: #161b22; border-radius: 8px; border: 1px solid #30363d; overflow: hidden; }
+canvas { width: 100%; height: 100%; display: block; }
+
+.explanation-panel { margin-top: 1.5rem; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; height: 150px; display: flex; flex-direction: column; }
+.explanation-panel h3 { margin: 0 0 1rem 0; font-size: 1rem; }
+.terminal-log { flex: 1; background-color: #0d1117; border-radius: 6px; padding: 1rem; font-family: 'Fira Code', monospace; font-size: 0.8rem; overflow-y: auto; color: #c9d1d9; }
+.log-entry { margin-bottom: 0.3rem; }
+.log-error { color: #f85149; }
+.log-success { color: #3fb950; }
+.log-warn { color: #d29922; }

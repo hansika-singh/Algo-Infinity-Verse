@@ -21,7 +21,7 @@ const { server } = await import('./server.js');
 const { createAccessToken } = await import('./backend/services/auth.service.js');
 
 async function testConcurrencyUtility() {
-  console.log("=== Testing Concurrency Utility ===");
+  void 0;
   const items = Array.from({ length: 20 }, (_, i) => i + 1);
   
   let activeCount = 0;
@@ -46,8 +46,8 @@ async function testConcurrencyUtility() {
   const results = await processInBatches(items, asyncTask, limit);
   const duration = Date.now() - startTime;
 
-  console.log(`Expected max concurrency: ${limit}`);
-  console.log(`Actual max concurrency:   ${maxActiveCount}`);
+  void 0;
+  void 0;
   
   if (maxActiveCount > limit) {
     throw new Error("Concurrency limit exceeded!");
@@ -60,22 +60,22 @@ async function testConcurrencyUtility() {
     }
   }
 
-  console.log(`Ordered results verified.`);
-  console.log(`Execution time: ${duration}ms\n`);
+  void 0;
+  void 0;
 }
 
 async function testEdgeCases() {
-  console.log("=== Testing Edge Cases ===");
+  void 0;
 
   // Edge Case 1: Empty array
   const emptyRes = await processInBatches([], async () => 1, 5);
   if (emptyRes.length !== 0) throw new Error("Failed Edge Case 1: Empty array should return empty array");
-  console.log("✓ Edge Case 1 passed: Empty array input");
+  void 0;
 
   // Edge Case 2: Array smaller than limit
   const smallRes = await processInBatches([1, 2], async (v) => v * 10, 5);
   if (smallRes.length !== 2 || smallRes[0] !== 10 || smallRes[1] !== 20) throw new Error("Failed Edge Case 2: Array smaller than limit");
-  console.log("✓ Edge Case 2 passed: Array smaller than limit");
+  void 0;
 
   // Edge Case 3: Rejection handling
   try {
@@ -86,29 +86,29 @@ async function testEdgeCases() {
     throw new Error("Failed Edge Case 3: Should have thrown an error");
   } catch (err) {
     if (err.message !== "Simulated Failure") throw new Error("Failed Edge Case 3: Wrong error thrown");
-    console.log("✓ Edge Case 3 passed: Promise rejection propagates correctly");
+    void 0;
   }
 
   // Edge Case 4: Synchronous returns / non-promises
   const syncRes = await processInBatches([1, 2, 3], (v) => v + 1, 2);
   if (syncRes[0] !== 2 || syncRes[2] !== 4) throw new Error("Failed Edge Case 4: Synchronous returns");
-  console.log("✓ Edge Case 4 passed: Synchronous non-promise returns");
+  void 0;
 }
 
 async function testGraphQLFetcher() {
-  console.log("=== Testing GraphQL Fetcher Integration ===");
+  void 0;
   const filePaths = Array.from({ length: 50 }, (_, i) => `src/file_${i}.js`);
   
   const startTime = Date.now();
   const blobs = await fetchBlobsConcurrently(filePaths, "owner", "repo");
   const duration = Date.now() - startTime;
   
-  console.log(`Successfully fetched ${blobs.length} blobs in batches.`);
-  console.log(`Execution time: ${duration}ms`);
+  void 0;
+  void 0;
 }
 
 async function testMemoryStoreConcurrency() {
-  console.log("=== Testing Memory Store Concurrency ===");
+  void 0;
   
   // 1. Generate token
   const token = createAccessToken({ id: "test_concurrency_user", name: "Concurrency Tester", email: "test@example.com" });
@@ -121,7 +121,7 @@ async function testMemoryStoreConcurrency() {
   });
   const port = await listenPromise;
   const url = `http://127.0.0.1:${port}/api/memory/log`;
-  console.log(`Server started on port ${port}`);
+  void 0;
 
   // 3. Setup initial state in MEMORY_FILE
   const DATA_DIR = path.join(process.cwd(), "data");
@@ -151,7 +151,7 @@ async function testMemoryStoreConcurrency() {
   });
 
   await Promise.all(requests);
-  console.log("All concurrent requests completed.");
+  void 0;
 
   // 5. Read MEMORY_FILE and verify it has all topics
   const raw = await fs.readFile(MEMORY_FILE, "utf8");
@@ -163,7 +163,7 @@ async function testMemoryStoreConcurrency() {
   }
 
   const savedTopics = Object.keys(userCards);
-  console.log("Saved topics in store:", savedTopics);
+  void 0;
 
   for (const topic of topics) {
     if (!userCards[topic]) {
@@ -171,7 +171,7 @@ async function testMemoryStoreConcurrency() {
     }
   }
 
-  console.log("✓ Concurrency test passed: All concurrent updates successfully merged and saved!");
+  void 0;
 
   // 6. Close server
   await new Promise((resolve) => server.close(resolve));
@@ -188,7 +188,7 @@ async function runTests() {
     await testEdgeCases();
     await testGraphQLFetcher();
     await testMemoryStoreConcurrency();
-    console.log("\nAll concurrency tests passed successfully!");
+    void 0;
   } catch (err) {
     console.error("Test failed:", err);
     process.exit(1);

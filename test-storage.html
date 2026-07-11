@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StorageDB Tests</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .pass { color: green; }
+        .fail { color: red; font-weight: bold; }
+        #results { white-space: pre-wrap; background: #f0f0f0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>StorageDB Edge Case Tests</h1>
+    <div id="results">Running tests...</div>
+
+    <script src="utils/storage.js"></script>
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('results');
+            let output = [];
+            let passed = 0, failed = 0;
+
+            function log(msg, isPass) {
+                if (isPass === true) {
+                    passed++;
+                    output.push(`<span class="pass">✔ ${msg}</span>`);
+                } else if (isPass === false) {
+                    failed++;
+                    output.push(`<span class="fail">✘ ${msg}</span>`);
+                } else {
+                    output.push(`ℹ ${msg}`);
+                }
+                resultsDiv.innerHTML = output.join('<br>');
+            }
+
+            try {
+                // Wait for DB to be ready
+                await new Promise(r => setTimeout(r, 500)); 
+
+                if (!window.StorageDB) {
+                    log("StorageDB not found on window", false);
+                    return;
+                }
+
+                log("Test 1: Basic Set and Get", null);
+                await window.StorageDB.set(window.DB_STORES.USER_DATA, 'test_key', { foo: 'bar' });
+                let val = await window.StorageDB.get(window.DB_STORES.USER_DATA, 'test_key');
+                log("Basic Set/Get", val && val.foo === 'bar');
+
+                log("Test 2: Get Non-Existent Key", null);
+                let missing = await window.StorageDB.get(window.DB_STORES.USER_DATA, 'missing_key');
+                log("Get Non-Existent", missing === null || missing === undefined);
+
+                log("Test 3: Migrate from LocalStorage", null);
+                localStorage.clear();
+                localStorage.removeItem('idb_migration_complete');
+                localStorage.setItem('algoInfinityVerse', JSON.stringify({ name: 'MigratedUser', xp: 42 }));
+                await window.StorageDB.migrateFromLocalStorage();
+                let migrated = await window.StorageDB.get(window.DB_STORES.USER_DATA, 'algoInfinityVerse');
+                log("Migrate User Data", migrated && migrated.name === 'MigratedUser' && migrated.xp === 42);
+
+                log("Test 4: Migrate Playground Code", null);
+                localStorage.removeItem('idb_migration_complete');
+                localStorage.setItem('playground-code-javascript', 'console.log("hello");');
+                await window.StorageDB.migrateFromLocalStorage();
+                let migratedCode = await window.StorageDB.get(window.DB_STORES.PLAYGROUND, 'playground-code-javascript');
+                log("Migrate Code Snippet", migratedCode === 'console.log("hello");');
+
+                log("Test 5: Clear Store", null);
+                await window.StorageDB.clear(window.DB_STORES.PLAYGROUND);
+                let clearedCode = await window.StorageDB.get(window.DB_STORES.PLAYGROUND, 'playground-code-javascript');
+                log("Clear Store", clearedCode === undefined || clearedCode === null);
+
+                log("Test 6: Remove Key", null);
+                await window.StorageDB.remove(window.DB_STORES.USER_DATA, 'test_key');
+                let removed = await window.StorageDB.get(window.DB_STORES.USER_DATA, 'test_key');
+                log("Remove Key", removed === undefined || removed === null);
+
+                log("Test 7: Offline Sync Queue Handling", null);
+                await window.StorageDB.set(window.DB_STORES.SYNC_QUEUE, 'offlineSyncQueue', []);
+                let q = await window.StorageDB.get(window.DB_STORES.SYNC_QUEUE, 'offlineSyncQueue') || [];
+                q.push({ xp: 10 });
+                await window.StorageDB.set(window.DB_STORES.SYNC_QUEUE, 'offlineSyncQueue', q);
+                let q2 = await window.StorageDB.get(window.DB_STORES.SYNC_QUEUE, 'offlineSyncQueue');
+                log("Sync Queue Operations", q2.length === 1 && q2[0].xp === 10);
+
+                log(`<br><b>Summary: ${passed} passed, ${failed} failed</b>`, null);
+                
+                if(failed === 0) {
+                    resultsDiv.style.background = '#e6ffe6';
+                } else {
+                    resultsDiv.style.background = '#ffe6e6';
+                }
+
+                // Append an element indicating completion
+                const doneEl = document.createElement('div');
+                doneEl.id = 'tests-done';
+                document.body.appendChild(doneEl);
+            } catch (err) {
+                log(`Test execution failed: ${err.message}`, false);
+                console.error(err);
+                const doneEl = document.createElement('div');
+                doneEl.id = 'tests-done';
+                document.body.appendChild(doneEl);
+            }
+        }
+
+        runTests();
+    </script>
+</body>
+</html>

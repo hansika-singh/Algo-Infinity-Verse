@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suffix Trees (Beginner → Advanced) | Algo Infinity Verse</title>
+
+    <meta
+      name="description"
+      content="Learn suffix trees from motivation to Ukkonen's algorithm, with interactive diagrams, practice problems, and a quiz."
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="./suffix-tree-learning.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <meta name="auth-required" content="true" />
+  </head>
+
+  <body data-page="suffix-tree-learning">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">
+      <header class="stl-header">
+        <div>
+          <h1 class="stl-title">
+            <i class="fas fa-tree fa-fw" aria-hidden="true"></i>
+            Suffix Trees
+          </h1>
+          <p class="stl-subtitle">
+            From intuition to Ukkonen — build the idea, then the data structure.
+          </p>
+        </div>
+
+        <div class="stl-quicklinks">
+          <a class="stl-chip" href="#motivation">Motivation</a>
+          <a class="stl-chip" href="#terminology">Terminology</a>
+          <a class="stl-chip" href="#naive">Naive</a>
+          <a class="stl-chip" href="#ukkonen">Ukkonen</a>
+          <a class="stl-chip" href="#practice">Practice</a>
+          <a class="stl-chip" href="#quiz">Quiz</a>
+        </div>
+      </header>
+
+      <div class="stl-layout">
+        <aside class="stl-sidebar">
+          <div class="stl-sidebar-card">
+            <h3><i class="fas fa-bolt" style="color: var(--accent)"></i> Learning Path</h3>
+            <ol class="stl-sidebar-steps">
+              <li>
+                <button type="button" class="stl-side-link" data-jump="#motivation">
+                  Why suffix trees
+                </button>
+              </li>
+              <li>
+                <button type="button" class="stl-side-link" data-jump="#terminology">
+                  Vocabulary
+                </button>
+              </li>
+              <li>
+                <button type="button" class="stl-side-link" data-jump="#naive">
+                  Naive construction
+                </button>
+              </li>
+              <li>
+                <button type="button" class="stl-side-link" data-jump="#ukkonen">
+                  Ukkonen overview
+                </button>
+              </li>
+              <li>
+                <button type="button" class="stl-side-link" data-jump="#practice">
+                  Practice problems
+                </button>
+              </li>
+              <li><button type="button" class="stl-side-link" data-jump="#quiz">Quiz</button></li>
+            </ol>
+          </div>
+
+          <div class="stl-sidebar-card stl-callout">
+            <h3><i class="fas fa-lightbulb" style="color: var(--accent)"></i> Mental model</h3>
+            <p>
+              A suffix tree is a compressed trie of all suffixes, built to answer substring queries
+              fast. Ukkonen’s algorithm builds it incrementally, reusing work via suffix links.
+            </p>
+          </div>
+        </aside>
+
+        <section class="stl-content">
+          <section id="motivation" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-bullseye"></i> Motivation</h2>
+            <p>
+              Suppose you want to answer many questions of the form:
+              <b>“Does pattern P occur in text T?”</b>
+              or <b>“Where does it occur?”</b>. Suffix trees turn these substring problems into
+              traversals of a tree built from T.
+            </p>
+
+            <div class="stl-facts">
+              <div class="stl-fact">
+                <div class="stl-fact-icon"><i class="fas fa-location-dot"></i></div>
+                <div><b>Substring queries</b> reduce to walking edges.</div>
+              </div>
+              <div class="stl-fact">
+                <div class="stl-fact-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                <div><b>Longest common prefixes</b> come “for free” from paths.</div>
+              </div>
+              <div class="stl-fact">
+                <div class="stl-fact-icon"><i class="fas fa-repeat"></i></div>
+                <div><b>Many applications</b>: repeated substrings, LCP, palindrome tricks.</div>
+              </div>
+            </div>
+          </section>
+
+          <section id="terminology" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-tags"></i> Terminology</h2>
+            <div class="stl-terminology-grid">
+              <div class="stl-term">
+                <h3>Suffix</h3>
+                <p>
+                  For text <span class="fira">T</span> of length <span class="fira">n</span>, the
+                  suffix starting at index <span class="fira">i</span> is
+                  <span class="fira">T[i..n-1]</span>.
+                </p>
+              </div>
+              <div class="stl-term">
+                <h3>Suffix trie</h3>
+                <p>A trie containing all suffixes. It’s huge, but conceptually simple.</p>
+              </div>
+              <div class="stl-term">
+                <h3>Edge labels</h3>
+                <p>
+                  In a suffix tree, edges store <b>intervals</b> into T, not explicit strings. This
+                  is why it’s space-efficient.
+                </p>
+              </div>
+              <div class="stl-term">
+                <h3>Suffix link</h3>
+                <p>
+                  A pointer that lets Ukkonen jump between “almost the same” partial matches. It
+                  connects internal nodes representing different active states.
+                </p>
+              </div>
+              <div class="stl-term">
+                <h3>Active point</h3>
+                <p>
+                  Ukkonen’s algorithm tracks where it is in the current construction. (Think: “the
+                  state of the partial suffix being added.”)
+                </p>
+              </div>
+              <div class="stl-term">
+                <h3>Implicit vs explicit</h3>
+                <p>
+                  You may be located within an edge (implicit). Nodes are explicit endpoints
+                  (explicit).
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section id="naive" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-layer-group"></i> Naive Construction</h2>
+            <p>
+              The naive path is:
+              <b>suffix trie</b> → <b>compress edges</b> → obtain a suffix tree.
+            </p>
+
+            <div class="stl-diagram-card">
+              <div class="stl-diagram-header">
+                <h3>
+                  <i class="fas fa-diagram-project"></i> Interactive: Build the compressed suffix
+                  trie (demo)
+                </h3>
+                <div class="stl-diagram-controls">
+                  <label class="stl-label" for="stlTextInput">Text</label>
+                  <input
+                    id="stlTextInput"
+                    class="stl-input"
+                    type="text"
+                    maxlength="60"
+                    value="banana"
+                    placeholder="e.g., banana"
+                    autocomplete="off"
+                  />
+
+                  <button type="button" class="btn btn-primary" id="stlGenerateBtn">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate
+                  </button>
+                </div>
+              </div>
+
+              <div class="stl-diagram-body">
+                <div class="stl-diagram-left">
+                  <div class="stl-stepper">
+                    <div class="stl-stepper-top">
+                      <div class="stl-stepper-title">
+                        <i class="fas fa-steps"></i> Compression steps
+                      </div>
+                      <div class="stl-step-badge" id="stlStepBadge">Step 0 / 0</div>
+                    </div>
+                    <input
+                      type="range"
+                      id="stlStepSlider"
+                      min="0"
+                      max="0"
+                      step="1"
+                      value="0"
+                      aria-label="Compression step"
+                    />
+                    <div class="stl-step-controls">
+                      <button
+                        type="button"
+                        id="stlStepBack"
+                        class="btn btn-secondary btn-control-icon"
+                        disabled
+                      >
+                        <i class="fas fa-step-backward"></i>
+                      </button>
+                      <button
+                        type="button"
+                        id="stlStepForward"
+                        class="btn btn-secondary btn-control-icon"
+                        disabled
+                      >
+                        <i class="fas fa-step-forward"></i>
+                      </button>
+                    </div>
+                    <div class="stl-step-explainer" id="stlStepExplanation">
+                      Generate a string to see how edges compress.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="stl-diagram-right">
+                  <div class="stl-tree-wrap">
+                    <svg
+                      id="stlTreeSvg"
+                      class="stl-tree"
+                      viewBox="0 0 900 520"
+                      preserveAspectRatio="xMidYMid meet"
+                      aria-label="Suffix trie compression diagram"
+                    ></svg>
+                  </div>
+                  <div class="stl-legend">
+                    <div class="stl-legend-item">
+                      <span class="stl-dot stl-dot-node"></span> Node
+                    </div>
+                    <div class="stl-legend-item">
+                      <span class="stl-dot stl-dot-edge"></span> Edge (interval label)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stl-code-block">
+              <div class="stl-code-title">
+                <i class="fas fa-code"></i> Naive idea (high-level pseudo-code)
+              </div>
+              <pre><code class="language-js">buildSuffixTreeNaive(T):
+  trie = emptyTrie()
+  for i in [0..n-1]:
+    insertSuffix(trie, T[i..])
+
+  // Compress chains of degree-1 nodes into single edges
+  tree = compressTrie(trie)
+  return tree</code></pre>
+            </div>
+          </section>
+
+          <section id="ukkonen" class="stl-section">
+            <h2 class="stl-section-title">
+              <i class="fas fa-person-chalkboard"></i> Ukkonen's Algorithm
+            </h2>
+            <p>
+              Ukkonen builds the suffix tree in <b>O(n)</b> time by adding one character at a time
+              while maintaining an <b>active point</b> and using <b>suffix links</b> to avoid
+              recomputation.
+            </p>
+
+            <div class="stl-ukkonen-grid">
+              <div class="stl-ukk-card">
+                <h3><i class="fas fa-route"></i> Big picture loop</h3>
+                <ul>
+                  <li>
+                    For each new prefix <span class="fira">T[0..i]</span>, extend all suffixes that
+                    need it.
+                  </li>
+                  <li>Use the active point to know where to attempt extension.</li>
+                  <li>If extension already exists, stop early (rule 3 in many descriptions).</li>
+                </ul>
+              </div>
+              <div class="stl-ukk-card">
+                <h3><i class="fas fa-link"></i> Role of suffix links</h3>
+                <p>
+                  Suffix links connect internal nodes that represent similar partial substrings.
+                  When you fail to extend from one state, you jump to another state instead of
+                  restarting.
+                </p>
+              </div>
+              <div class="stl-ukk-card stl-ukk-card-accent">
+                <h3><i class="fas fa-wand-magic"></i> Why it’s linear</h3>
+                <p>
+                  Each time you create an edge split or a new leaf, the algorithm progresses. The
+                  number of “expensive” operations is bounded, so total work is O(n).
+                </p>
+              </div>
+            </div>
+
+            <div class="stl-code-block">
+              <div class="stl-code-title">
+                <i class="fas fa-code"></i> Ukkonen (rule-based summary)
+              </div>
+              <pre><code class="language-text">Repeat for each extension i:
+  while extensionsToAdd > 0:
+    try extend from active point
+    if next character matches:
+      (Rule 3) increment showstopper and break
+    else if edge ends / need split:
+      create split node + new leaf (Rule 2)
+      follow suffix link
+    else if node exists but no edge:
+      create new leaf (Rule 1)
+
+  move to next i
+  update active point</code></pre>
+            </div>
+          </section>
+
+          <section id="applications" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-gears"></i> Applications</h2>
+            <div class="stl-app-grid">
+              <div class="stl-app">
+                <h3><i class="fas fa-magnifying-glass"></i> Substring search</h3>
+                <p>Traverse edges by the pattern; all occurrences relate to the subtree.</p>
+              </div>
+              <div class="stl-app">
+                <h3><i class="fas fa-infinity"></i> Repeated substrings</h3>
+                <p>Deep paths correspond to common prefixes among suffixes.</p>
+              </div>
+              <div class="stl-app">
+                <h3><i class="fas fa-feather"></i> LCP / LCS</h3>
+                <p>Compute longest common prefix between suffixes via nearest common ancestor.</p>
+              </div>
+              <div class="stl-app">
+                <h3><i class="fas fa-heart"></i> Palindrome tricks</h3>
+                <p>
+                  With clever transformations (e.g., separators), suffix structures help find
+                  repeats.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section id="complexity" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-chart-simple"></i> Complexity</h2>
+            <table class="stl-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Suffix Tree</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Construction time</td>
+                  <td><span class="fira">O(n)</span> using Ukkonen</td>
+                </tr>
+                <tr>
+                  <td>Construction space</td>
+                  <td><span class="fira">O(n)</span> edges store intervals</td>
+                </tr>
+                <tr>
+                  <td>Pattern match</td>
+                  <td><span class="fira">O(m)</span> (m = pattern length)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="practice" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-list-check"></i> Practice Problems</h2>
+
+            <div class="stl-practice-intro">
+              <p>
+                Practice is the fastest way to internalize suffix trees. Start with tasks that check
+                substring logic, then move to problems involving LCP/LCS and repeated substrings.
+              </p>
+            </div>
+
+            <div class="stl-practice-grid">
+              <div class="stl-practice-card">
+                <h3><i class="fas fa-code"></i> Quick drills</h3>
+                <ul>
+                  <li>Given T and P, reason about how many suffixes start with P.</li>
+                  <li>Compute LCP(T[i..], T[j..]) by hand for small strings.</li>
+                  <li>Find the longest repeated substring in a short string.</li>
+                </ul>
+              </div>
+              <div class="stl-practice-card">
+                <h3><i class="fas fa-question"></i> “Tree thinking” prompts</h3>
+                <ul>
+                  <li>Which internal nodes correspond to prefixes that repeat?</li>
+                  <li>How would suffix links help when you fail to extend?</li>
+                  <li>When does Ukkonen stop early?</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="stl-mini-solver">
+              <h3><i class="fas fa-keyboard"></i> Micro-solver: substring search</h3>
+              <p class="stl-small-muted">
+                Try small examples. This is client-side (no backend needed).
+              </p>
+              <div class="stl-mini-form">
+                <label class="stl-label" for="stlMiniText">T</label>
+                <input
+                  id="stlMiniText"
+                  class="stl-input"
+                  type="text"
+                  value="mississippi"
+                  maxlength="60"
+                />
+
+                <label class="stl-label" for="stlMiniPattern">P</label>
+                <input
+                  id="stlMiniPattern"
+                  class="stl-input"
+                  type="text"
+                  value="issi"
+                  maxlength="60"
+                />
+
+                <button type="button" class="btn btn-secondary" id="stlMiniSearchBtn">
+                  <i class="fas fa-search"></i> Find occurrences
+                </button>
+              </div>
+
+              <div class="stl-mini-result" id="stlMiniResult" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section id="quiz" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-circle-question"></i> Quiz</h2>
+
+            <p class="stl-quiz-intro">
+              Multiple-choice quiz (time-limited). Answers are checked instantly.
+            </p>
+
+            <div id="stlQuizContainer" class="stl-quiz-container"></div>
+            <div class="stl-quiz-styles-note">
+              Uses the repo’s shared <span class="fira">initQuiz</span> module.
+            </div>
+          </section>
+
+          <section id="references" class="stl-section">
+            <h2 class="stl-section-title"><i class="fas fa-book"></i> References</h2>
+            <ul class="stl-ref-list">
+              <li>Ukkonen, E. <i>On-Line Construction of Suffix Trees</i>.</li>
+              <li>Gusfield, D. <i>Algorithms on Strings, Trees, and Sequences</i>.</li>
+              <li>
+                CP-algorithms:
+                <a
+                  href="https://cp-algorithms.com/string/suffix-tree.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  >Suffix Tree</a
+                >.
+              </li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+
+    <script src="/dist/legacy-bundle.mjs"></script>
+
+    <script type="module" src="./suffix-tree-learning.js"></script>
+
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

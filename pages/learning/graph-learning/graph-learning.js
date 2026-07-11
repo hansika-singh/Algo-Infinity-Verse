@@ -1,4 +1,4 @@
-console.log("GRAPH JS STARTED");
+void 0;
 /**
  * graph-learning.js
  * Interactivity for the Graph Learning page:
@@ -383,7 +383,7 @@ function initQuiz() {
       }
 
       if (!allAnswered) {
-        console.warn("Alert:", "Please answer all questions before submitting!");
+        void 0;
         return;
       }
 
@@ -468,4 +468,4 @@ function initQuiz() {
     });
   }
 }
-console.log("GRAPH JS FINISHED");
+void 0;

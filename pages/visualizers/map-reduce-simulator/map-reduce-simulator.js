@@ -81,7 +81,7 @@ class MapReduceSimulator {
         if (window.showToast) {
             window.showToast(message, type);
         } else {
-            console.log(`[${type.toUpperCase()}] ${message}`);
+            void 0;
         }
     }
 

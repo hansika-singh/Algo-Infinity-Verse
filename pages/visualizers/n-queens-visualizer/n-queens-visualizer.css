@@ -1,0 +1,446 @@
+/* ─────────────────────────────────────────────
+   N-Queens Visualizer
+   ───────────────────────────────────────────── */
+
+.nq-gradient {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.nq-btn-primary {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Control Card ── */
+.nq-control-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(10px);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nq-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.nq-row-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.nq-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nq-size-hint {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  margin-left: 140px; /* Align with input */
+  width: 100%;
+}
+
+.nq-size-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ec4899;
+  font-family:
+    Fira Code,
+    monospace;
+}
+
+/* Playback */
+.nq-playback-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.nq-pb-btn {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nq-pb-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nq-speed-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nq-speed-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.nq-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  width: 100px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.nq-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ec4899;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(236, 72, 153, 0.5);
+}
+
+.nq-speed-val {
+  font-size: 0.72rem;
+  color: #ec4899;
+  font-weight: 700;
+  font-family:
+    Fira Code,
+    monospace;
+  min-width: 55px;
+}
+
+.nq-step-ctr {
+  margin-left: auto;
+  font-family:
+    Fira Code,
+    monospace;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.nq-step-ctr span {
+  color: #ec4899;
+  font-weight: 700;
+}
+
+/* ── Status ── */
+.nq-status {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  min-height: 2.4rem;
+  background: rgba(236, 72, 153, 0.05);
+  border: 1px solid rgba(236, 72, 153, 0.2);
+  transition: all 0.25s ease;
+  line-height: 1.5;
+}
+
+.nq-status.trying {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.06);
+  color: #3b82f6;
+}
+.nq-status.backtrack {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+  color: #ef4444;
+}
+.nq-status.done {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+}
+.nq-status.solution {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.08);
+  color: #a855f7;
+  font-weight: 600;
+}
+
+/* ── Main layout ── */
+.nq-main-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+  align-items: start;
+}
+
+/* ── Chess Board ── */
+.nq-board-wrap {
+  display: flex;
+  justify-content: center;
+  background: rgba(10, 10, 26, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.nq-board {
+  display: grid;
+  border: 4px solid #334155;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nq-cell {
+  width: clamp(35px, 6vw, 55px);
+  height: clamp(35px, 6vw, 55px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  transition: background-color 0.15s ease;
+  position: relative;
+}
+
+/* Checkerboard pattern */
+.nq-cell-light {
+  background-color: #cbd5e1;
+  color: #0f172a;
+}
+.nq-cell-dark {
+  background-color: #475569;
+  color: #f8fafc;
+}
+
+.nq-queen {
+  animation: nqPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes nqPopIn {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Visualizer states */
+.nq-cell.nq-trying::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0.5);
+  animation: nqPulse 1s infinite alternate;
+}
+.nq-cell.nq-invalid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(239, 68, 68, 0.6);
+}
+.nq-cell.nq-conflict::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(239, 68, 68, 0.3); /* Lighter red for the attacking path */
+}
+.nq-cell.nq-solution::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(168, 85, 247, 0.4);
+}
+
+@keyframes nqPulse {
+  from {
+    background: rgba(59, 130, 246, 0.3);
+  }
+  to {
+    background: rgba(59, 130, 246, 0.6);
+  }
+}
+
+/* ── State panel ── */
+.nq-state-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 480px;
+}
+
+.nq-state-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+/* Action log */
+.nq-log-wrap {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 180px;
+  background: rgba(10, 10, 26, 0.3);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+}
+
+.nq-log-entry {
+  font-size: 0.72rem;
+  font-family:
+    Fira Code,
+    monospace;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.nq-log-entry.trying {
+  border-left-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+.nq-log-entry.backtrack {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+  color: #fca5a5;
+}
+.nq-log-entry.solution {
+  border-left-color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+  color: #d8b4fe;
+  font-weight: 600;
+}
+.nq-log-entry.done {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  color: #86efac;
+  font-weight: 600;
+}
+.nq-log-empty {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Stats grid */
+.nq-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.nq-stat-box {
+  background: rgba(10, 10, 26, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.nq-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.nq-stat-val {
+  font-family:
+    Fira Code,
+    monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #a855f7;
+}
+
+/* ── Learn cards ── */
+.nq-learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+}
+
+.nq-learn-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.nq-learn-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: #ec4899;
+}
+.nq-learn-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .nq-main-layout {
+    grid-template-columns: 1fr;
+  }
+  .nq-board-wrap {
+    padding: 1rem;
+  }
+  .nq-size-hint {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .nq-playback-row {
+    flex-wrap: wrap;
+  }
+  .nq-step-ctr {
+    margin-left: 0;
+  }
+}

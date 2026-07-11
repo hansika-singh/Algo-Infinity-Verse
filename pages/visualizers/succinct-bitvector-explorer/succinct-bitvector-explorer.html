@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Succinct Bit Vector Explorer | Algo Infinity Verse</title>
+    <meta name="description" content="See how rank/select queries run in O(1) using superblock and block decomposition with only o(n) auxiliary bits — the structure behind FM-index genome search." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="succinct-bitvector-explorer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="succinct-bitvector-explorer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="sb-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="sb-hero-inner">
+        <div class="sb-hero-eyebrow">🧬 FM-Index · BWA · Bowtie · Genome Alignment</div>
+        <h1 class="sb-hero-title">Succinct Bit Vector Explorer</h1>
+        <p class="sb-hero-sub">n + o(n) bits. O(1) rank and select. No decompression step.</p>
+        <p class="sb-hero-desc">A succinct bit vector answers "how many 1s before position i?" (rank) and "where is the k-th 1?" (select) in constant time, using almost no extra space beyond the raw bits themselves. This exact structure is the backbone of the FM-index — the data structure that lets tools like BWA and Bowtie search a human genome for a DNA substring in milliseconds.</p>
+        <a href="#lab" class="btn btn-primary sb-btn-primary"><i class="fas fa-layer-group"></i> Open Explorer</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section sb-section">
+      <div class="container">
+
+        <div class="sb-control-card">
+          <div class="sb-row">
+            <span class="sb-row-label">Bit vector (16 bits)</span>
+            <input type="text" id="sbBitsInput" class="sb-bits-input" value="1011010011010010" maxlength="16" aria-label="Bit vector" />
+            <button class="btn btn-secondary sb-randomize-btn" id="sbRandomizeBtn"><i class="fas fa-shuffle"></i> Randomize</button>
+            <button class="btn ws-btn-primary sb-build-btn" id="sbBuildBtn"><i class="fas fa-hammer"></i> Build Structure</button>
+          </div>
+        </div>
+
+        <div class="sb-status" id="sbStatus">Build the structure to see superblocks and blocks precomputed, then try rank and select queries.</div>
+
+        <div class="sb-bitvector-display">
+          <div class="sb-panel-title"><i class="fas fa-grip-lines"></i> Bit Vector Layout</div>
+          <div class="sb-bits-row" id="sbBitsRow"></div>
+        </div>
+
+        <div class="sb-main-layout">
+
+          <div class="sb-left-col">
+
+            <div class="sb-panel-card">
+              <div class="sb-panel-title"><i class="fas fa-boxes-stacked"></i> Superblocks &amp; Blocks (precomputed)</div>
+              <div class="sb-structure-grid" id="sbStructureGrid"></div>
+            </div>
+
+            <div class="sb-panel-card">
+              <div class="sb-panel-title"><i class="fas fa-table-cells"></i> Popcount Lookup Table (4-bit patterns)</div>
+              <div class="sb-popcount-table" id="sbPopcountTable"></div>
+            </div>
+
+          </div>
+
+          <div class="sb-right-col">
+
+            <div class="sb-panel-card">
+              <div class="sb-panel-title"><i class="fas fa-magnifying-glass"></i> Query</div>
+              <div class="sb-query-type-row">
+                <button class="sb-query-type active" data-qtype="rank">rank(i)</button>
+                <button class="sb-query-type" data-qtype="select">select(k)</button>
+              </div>
+              <div class="sb-query-input-row">
+                <input type="number" id="sbQueryInput" class="sb-num-input" min="0" max="16" value="10" aria-label="Query parameter" />
+                <button class="btn ws-btn-primary sb-run-query-btn" id="sbRunQueryBtn"><i class="fas fa-bolt"></i> Run Query</button>
+              </div>
+              <div class="sb-query-trace" id="sbQueryTrace"><div class="sb-empty">Run a query to see the O(1) computation trace.</div></div>
+            </div>
+
+            <div class="sb-panel-card">
+              <div class="sb-panel-title"><i class="fas fa-scale-balanced"></i> Naive vs Succinct</div>
+              <div class="sb-compare-rows">
+                <div class="sb-compare-row"><span>Naive linear scan</span><span id="sbCompNaive">—</span></div>
+                <div class="sb-compare-row"><span>Succinct (this structure)</span><span id="sbCompSuccinct">—</span></div>
+              </div>
+            </div>
+
+            <div class="sb-panel-card">
+              <div class="sb-panel-title"><i class="fas fa-weight-hanging"></i> Space Overhead</div>
+              <div class="sb-space-rows">
+                <div class="sb-space-row"><span>Raw bit vector</span><span id="sbSpaceRaw">—</span></div>
+                <div class="sb-space-row"><span>Superblock ranks</span><span id="sbSpaceSuper">—</span></div>
+                <div class="sb-space-row"><span>Block ranks</span><span id="sbSpaceBlock">—</span></div>
+                <div class="sb-space-row"><span>Popcount table (shared)</span><span id="sbSpacePop">—</span></div>
+                <div class="sb-space-row sb-space-total"><span>Total overhead</span><span id="sbSpaceTotal">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="sb-fm-card">
+          <div class="sb-fm-header"><i class="fas fa-dna"></i> FM-Index Teaser</div>
+          <p class="sb-fm-desc">Apply a Burrows-Wheeler Transform to a short DNA sequence, then watch rank queries on the transformed string answer "how many times does this substring occur?" without ever building an index proportional to genome size.</p>
+          <div class="sb-fm-row">
+            <input type="text" id="sbFmInput" class="sb-bits-input" value="ACGTACGT" maxlength="12" aria-label="DNA sequence" />
+            <button class="btn ws-btn-primary sb-fm-run-btn" id="sbFmRunBtn"><i class="fas fa-play"></i> Show BWT + Rank Search</button>
+          </div>
+          <div class="sb-fm-result" id="sbFmResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🧬</span> How O(1) Rank Actually Works</h2>
+        <div class="sb-learn-grid">
+          <div class="sb-learn-card" style="--lc:#06b6d4">
+            <div class="sb-learn-icon">📦</div>
+            <h3>Two-Level Decomposition</h3>
+            <p>Split n bits into superblocks (e.g. 8 bits), each split into blocks (e.g. 4 bits). Precompute the cumulative rank at the start of every superblock and every block. This costs O(n / log n) extra bits total — sublinear, hence "succinct."</p>
+          </div>
+          <div class="sb-learn-card" style="--lc:#a855f7">
+            <div class="sb-learn-icon">⚡</div>
+            <h3>The Popcount Table</h3>
+            <p>Within a block, don't count bits one by one — look up the popcount of the entire block pattern in a precomputed table (only 16 entries for 4-bit blocks). This lookup is O(1), completing the rank query in constant time overall.</p>
+          </div>
+          <div class="sb-learn-card" style="--lc:#22c55e">
+            <div class="sb-learn-icon">🔍</div>
+            <h3>Select via Binary Search</h3>
+            <p>select(k) finds the position of the k-th 1 bit. Binary search over superblock ranks locates the right superblock in O(log(n/superblock_size)), then a linear or binary scan within the block finds the exact bit — still effectively O(1) for fixed block sizes.</p>
+          </div>
+          <div class="sb-learn-card" style="--lc:#f59e0b">
+            <div class="sb-learn-icon">🧬</div>
+            <h3>FM-Index for Genomics</h3>
+            <p>The FM-index applies rank/select to a Burrows-Wheeler transformed genome. Searching for a DNA substring of length m takes O(m) rank queries — regardless of genome size — which is why aligning short reads to a 3-billion-base human genome takes milliseconds, not hours.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="succinct-bitvector-explorer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

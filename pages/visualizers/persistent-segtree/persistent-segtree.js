@@ -171,8 +171,8 @@ function handleUpdate() {
     const idx = parseInt(els.updateIndex.value);
     const val = parseInt(els.updateValue.value);
 
-    if (isNaN(idx) || idx < 0 || idx >= ARRAY_SIZE) return console.warn("Alert:", "Index must be between 0 and 7.");
-    if (isNaN(val)) return console.warn("Alert:", "Value must be a number.");
+    if (isNaN(idx) || idx < 0 || idx >= ARRAY_SIZE) return void 0;
+    if (isNaN(val)) return void 0;
 
     const currentVersion = versions.length;
     const prevRoot = versions[currentVersion - 1];
@@ -223,7 +223,7 @@ async function handleQuery() {
     const l = parseInt(els.queryL.value);
     const r = parseInt(els.queryR.value);
 
-    if (l > r || l < 0 || r >= ARRAY_SIZE) return console.warn("Alert:", "Invalid range. Ensure L <= R and within 0-7.");
+    if (l > r || l < 0 || r >= ARRAY_SIZE) return void 0;
 
     els.btnQuery.disabled = true;
     els.engineBadge.classList.add('querying');

@@ -524,8 +524,6 @@ function smRun() {
   let text = smGetText();
   let pat  = smGetPattern();
 
-  if (text.length === 0 || pat.length === 0) {
-
   if (!text || !pat) {
     let el = document.getElementById('smStatus');
     if (el) { el.textContent = 'Enter both text and pattern.'; el.className = 'sm-status mismatch'; }
@@ -662,4 +660,10 @@ function smInit() {
 
   // Initial render
   smReset();
-}}
+
+  // Hide loading screen
+  setTimeout(() => {
+    const loader = document.getElementById("loading-screen");
+    if (loader) loader.classList.add("hidden");
+  }, 300);
+}

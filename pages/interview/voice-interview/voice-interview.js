@@ -37,7 +37,7 @@ let animationId;
 function initVoiceInterview() {
     // 1. Check Browser Support
     if (!SpeechRecognition) {
-        console.warn("Alert:", "Your browser does not support the Web Speech API. Please use Google Chrome.");
+        void 0;
         return;
     }
 
@@ -92,7 +92,7 @@ function setupWorkerListeners() {
 
 async function startInterview() {
     if (!isModelReady) {
-        console.warn("Alert:", "Please wait for the AI model to finish loading.");
+        void 0;
         return;
     }
 
@@ -114,7 +114,7 @@ async function startInterview() {
 
     } catch (err) {
         console.error("Mic Error:", err);
-        console.warn("Alert:", "Microphone access is required for the mock interview.");
+        void 0;
     }
 }
 

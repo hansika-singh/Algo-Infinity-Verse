@@ -157,7 +157,7 @@ function handleRouteCustomKey() {
     if (!text) return;
     
     if (state.servers.length === 0) {
-        console.warn("Alert:", "Build/Add servers first!");
+        logMsg('No servers on the ring. Add a server first!', 'warn');
         return;
     }
     
@@ -194,7 +194,7 @@ function bindEvents() {
     });
     
     els.btnKillServer.addEventListener('click', () => {
-        if (state.servers.length <= 1) return console.warn("Alert:", "Cannot kill the last server.");
+        if (state.servers.length <= 1) { logMsg('Cannot kill the last server — at least one must remain.', 'warn'); return; }
         const idx = Math.floor(Math.random() * state.servers.length);
         const serverToKill = state.servers[idx];
         removeServer(serverToKill.id);
@@ -267,7 +267,7 @@ function bindEvents() {
         els.btnKillSpecificServer.addEventListener('click', () => {
             const targetId = els.selKillServer ? els.selKillServer.value : null;
             if (!targetId) return;
-            if (state.servers.length <= 1) return console.warn("Alert:", "Cannot kill the last server.");
+            if (state.servers.length <= 1) { logMsg('Cannot kill the last server — at least one must remain.', 'warn'); return; }
             removeServer(targetId);
         });
     }

@@ -28,7 +28,7 @@
 </head>
   <body data-page="segment-tree-simulator">
 
-    <div id="loading-screen">
+    <div id="loading-screen" class="hidden">
       <div class="loader">
         <div class="infinity-loader">∞</div>
         <h2>Algo Infinity Verse</h2>
@@ -245,10 +245,15 @@
     <script src="segment-tree-simulator.js"></script>
     <script>
       if (typeof loadPartial === 'function') {
-        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
-          if (typeof initNavbar === 'function') initNavbar();
+        Promise.all([
+          loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+            if (typeof initNavbar === 'function') initNavbar();
+          }),
+          loadPartial('footer-placeholder', '/partials/footer.html')
+        ]).then(function() {
+          window.partialsLoadedFlag = true;
+          document.dispatchEvent(new Event('partialsLoaded'));
         });
-        loadPartial('footer-placeholder', '/partials/footer.html');
       }
     </script>
   </body>

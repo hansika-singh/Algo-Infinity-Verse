@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Rate Limiting Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Simulate and visualize Token Bucket, Leaky Bucket, Fixed Window, and Sliding Window rate limiting algorithms."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="api-rate-limiter-visualizer.css" />
+  </head>
+  <body class="gw-body">
+    <nav class="navbar gw-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-tachometer-alt"></i> Rate Limiter Simulator</div>
+    </nav>
+
+    <main class="gw-workspace">
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-sliders-h"></i> Configuration</h3>
+        </div>
+
+        <div class="control-section">
+          <div class="target-selector">
+            <label for="algorithmSelect">Algorithm</label>
+            <select id="algorithmSelect">
+              <option value="token_bucket">Token Bucket</option>
+              <option value="leaky_bucket">Leaky Bucket</option>
+              <option value="fixed_window">Fixed Window</option>
+              <option value="sliding_window">Sliding Window</option>
+            </select>
+          </div>
+
+          <div class="config-grid">
+            <div class="target-selector">
+              <label id="capacityLabel">Bucket Capacity / Limit</label>
+              <input
+                type="number"
+                id="capacityInput"
+                value="5"
+                min="1"
+                max="50"
+                style="
+                  padding: 0.5rem;
+                  background: #0f172a;
+                  color: #f8fafc;
+                  border: 1px solid #334155;
+                  border-radius: 4px;
+                  font-family: 'Fira Code', monospace;
+                  width: 100%;
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+
+            <div class="target-selector" id="refillRateContainer">
+              <label id="refillLabel">Refill Rate (tokens/sec)</label>
+              <input
+                type="number"
+                id="refillRateInput"
+                value="2"
+                min="1"
+                max="20"
+                style="
+                  padding: 0.5rem;
+                  background: #0f172a;
+                  color: #f8fafc;
+                  border: 1px solid #334155;
+                  border-radius: 4px;
+                  font-family: 'Fira Code', monospace;
+                  width: 100%;
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="btnSendRequest" class="btn-primary">
+              <i class="fas fa-paper-plane"></i> Send Request
+            </button>
+            <button id="btnBurst" class="btn-primary" style="background: #8b5cf6">
+              <i class="fas fa-bolt"></i> Burst (5x)
+            </button>
+            <button id="btnReset" class="btn-secondary">
+              <i class="fas fa-rotate-left"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-header" style="margin-top: 2rem">
+          <h3><i class="fas fa-terminal"></i> Traffic Logs</h3>
+          <span id="requestStatus" class="state-badge">IDLE</span>
+        </div>
+        <div class="log-console" id="logOutput">Ready to receive requests...</div>
+      </div>
+
+      <div class="panel-right">
+        <div class="visualization-area">
+          <div class="bucket-container" id="bucketContainer">
+            <div class="bucket">
+              <div class="bucket-fill" id="bucketFill"></div>
+            </div>
+            <div class="bucket-label" id="bucketStatus">Tokens: 5 / 5</div>
+          </div>
+
+          <div class="requests-track" id="requestsTrack">
+            <!-- Animated requests will appear here -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="api-rate-limiter-visualizer.js"></script>
+  </body>
+</html>

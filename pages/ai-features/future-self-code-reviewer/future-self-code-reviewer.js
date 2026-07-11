@@ -110,15 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
   btnRunReview.addEventListener('click', () => {
     const code = codeEditor.value.trim();
     if (!code) {
-      console.warn("Alert:", 'Please enter or select some code first.');
+      void 0;
       return;
-    }
-
-    // Hide loader screen if visible (standard page behavior helper)
-    const loader = document.getElementById('loading-screen');
-    if (loader) {
-      loader.style.opacity = '0';
-      setTimeout(() => loader.style.display = 'none', 500);
     }
 
     const presetKey = problemPreset.value;

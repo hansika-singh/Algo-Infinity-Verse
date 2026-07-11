@@ -41,7 +41,7 @@ server.on('error', (err) => {
 const delay = ms => new Promise(r => setTimeout(r, ms));
 
 server.listen(PORT, async () => {
-    console.log(`Test server running on port ${PORT}`);
+    void 0;
     
     let browser;
     try {
@@ -50,18 +50,18 @@ server.listen(PORT, async () => {
         
         await page.goto(`http://localhost:${PORT}/pages/visualizers/network-routing-simulator/network-routing-simulator.html`, { waitUntil: 'networkidle0' });
         
-        console.log('\n--- Test Case 1: Initial Default Topology Routing ---');
+        void 0;
         await delay(500); 
         
         const r1RoutingTable = await page.evaluate(() => globalRoutingTables["R1"]);
-        console.log("R1 Table Distances:", r1RoutingTable.dist);
+        void 0;
         if (r1RoutingTable.dist["R2"] === 5 && r1RoutingTable.dist["R3"] === 2 && r1RoutingTable.dist["R4"] === 1) {
-            console.log('✅ Test 1 Passed (Initial Dijkstra computes correctly)');
+            void 0;
         } else {
             throw new Error("Test 1 Failed: Initial routing table is incorrect.");
         }
 
-        console.log('\n--- Test Case 2: Topology Change (Break optimal link) ---');
+        void 0;
         await page.evaluate(() => {
             const linkToDelete = links.find(l => (l.source.id === "R1" && l.target.id === "R3") || (l.source.id === "R3" && l.target.id === "R1"));
             deleteLink(linkToDelete);
@@ -70,12 +70,12 @@ server.listen(PORT, async () => {
 
         const r1UpdatedTable = await page.evaluate(() => globalRoutingTables["R1"]);
         if (r1UpdatedTable.dist["R3"] === 13 && r1UpdatedTable.nextHop["R3"] === "R2") {
-            console.log('✅ Test 2 Passed (Reroutes via backup path correctly)');
+            void 0;
         } else {
             throw new Error("Test 2 Failed");
         }
 
-        console.log('\n--- Test Case 3: Edge Case - Unreachable Node (Split Brain) ---');
+        void 0;
         // Delete link R2->R3 to isolate R3 entirely from R1
         await page.evaluate(() => {
             const linkToDelete = links.find(l => (l.source.id === "R2" && l.target.id === "R3") || (l.source.id === "R3" && l.target.id === "R2"));
@@ -85,19 +85,19 @@ server.listen(PORT, async () => {
 
         const r1SplitTable = await page.evaluate(() => globalRoutingTables["R1"]);
         if (r1SplitTable.dist["R3"] === null || r1SplitTable.dist["R3"] === Infinity || r1SplitTable.dist["R3"] === undefined) {
-            console.log('✅ Test 3 Passed (Properly handles Unreachable/Infinity distances for split networks)');
+            void 0;
         } else {
             throw new Error(`Test 3 Failed: R3 should be unreachable, got dist ${r1SplitTable.dist["R3"]}`);
         }
 
-        console.log('\n--- Test Case 4: Edge Case - Self Routing (Localhost) ---');
+        void 0;
         if (r1SplitTable.dist["R1"] === 0 && r1SplitTable.nextHop["R1"] === "Local") {
-            console.log('✅ Test 4 Passed (Local node resolves as 0 distance)');
+            void 0;
         } else {
             throw new Error("Test 4 Failed: Local node routing error.");
         }
 
-        console.log('\n--- Test Case 5: Stress Test (100 Random Routers & Links) ---');
+        void 0;
         await page.evaluate(() => {
             // Clear net
             nodes = []; links = []; routerCounter = 1;
@@ -117,12 +117,12 @@ server.listen(PORT, async () => {
         await delay(1000); // Give graph time to compute
         const r1StressTable = await page.evaluate(() => globalRoutingTables["R1"]);
         if (r1StressTable && typeof r1StressTable.dist === 'object') {
-            console.log('✅ Test 5 Passed (Dijkstra efficiently calculated 100-node graph without thread lock)');
+            void 0;
         } else {
             throw new Error("Test 5 Failed: Engine failed under stress.");
         }
         
-        console.log('\nAll tests completed successfully!');
+        void 0;
 
     } catch (error) {
         console.error('\n❌ Test execution failed:', error.message);

@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadProblem() {
         const problemId = problemSelect.value;
         if (!problemId) {
-            console.warn("Alert:", 'Please select a problem');
+            void 0;
             return;
         }
 
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const optimal = optimalCode.textContent.trim();
         
         if (!user || user === '// Write your solution here...') {
-            console.warn("Alert:", 'Please write your solution first!');
+            void 0;
             return;
         }
 
@@ -259,10 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Theme toggle
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const icon = document.getElementById('themeToggle').querySelector('i');
-        icon.classList.toggle('fa-moon');
-        icon.classList.toggle('fa-sun');
-    });
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-moon');
+                icon.classList.toggle('fa-sun');
+            }
+        });
+    }
 });

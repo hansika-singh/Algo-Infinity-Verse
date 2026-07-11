@@ -303,7 +303,7 @@ class PushRelabelVisualizer {
     // --- Push Relabel Algorithm Core ---
     *algorithmGenerator() {
         if (this.sourceId === null || this.sinkId === null) {
-            console.warn("Alert:", "Please designate a Source (S) and Sink (T) by double clicking nodes.");
+            void 0;
             return;
         }
 

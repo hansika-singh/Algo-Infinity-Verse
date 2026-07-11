@@ -37,7 +37,7 @@ function initAiInterviewer() {
         workspaceSocket = io();
     }
     if (!editor || !workspaceSocket) {
-        console.warn('AI Interviewer: editor or socket not ready', { editor: !!editor, socket: !!workspaceSocket });
+        void 0;
         return;
     }
 

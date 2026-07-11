@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Revision Calendar | Algo Infinity Verse</title>
+    <meta name="description" content="Personalized study scheduling and spaced repetition tracking dashboard for mastering DSA concepts." />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="revision.css" />
+  
+    <!-- Theme Initialization Script -->
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="revision">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Header Section -->
+    <section class="hero revision-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-text-block">
+          <h1 class="hero-title">
+            <span class="title-line">Smart Revision</span>
+            <span class="main-title gradient-text">Study Calendar</span>
+          </h1>
+          <p class="section-subtitle">
+            Leverage optimized spaced repetition algorithms to lock in key computer science concepts and ace technical interviews.
+          </p>
+        </div>
+
+        <!-- Mini Stats Widget -->
+        <div class="visualizer-card header-streak-widget">
+          <div class="header-stat-item">
+            <div class="stat-icon fire"><i class="fas fa-fire"></i></div>
+            <div class="stat-info">
+              <span id="streakCount">0</span>
+              <small>Streak Days</small>
+            </div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="header-stat-item">
+            <div class="stat-icon check"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span id="completionToday">0%</span>
+              <small>Completed Today</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Page Section -->
+    <section class="visualizer-section">
+      <div class="revision-main-container">
+        
+        <!-- Left Side: Task Lists & Timeline -->
+        <div class="revision-left-pane">
+          
+          <!-- Card tabs switcher -->
+          <div class="revision-tabs-container">
+            <div class="revision-tabs" role="tablist">
+              <button id="tabToday" class="revision-tab active" role="tab" aria-selected="true" aria-controls="panelToday">
+                Today's Tasks (<span id="countToday">0</span>)
+              </button>
+              <button id="tabOverdue" class="revision-tab" role="tab" aria-selected="false" aria-controls="panelOverdue">
+                Overdue (<span id="countOverdue">0</span>)
+              </button>
+              <button id="tabUpcoming" class="revision-tab" role="tab" aria-selected="false" aria-controls="panelUpcoming">
+                Upcoming (<span id="countUpcoming">0</span>)
+              </button>
+            </div>
+            <div class="quick-start-wrapper">
+              <button id="quickStartBtn" class="btn btn-secondary btn-icon-only" title="Quick start next due revision" aria-label="Quick start next due revision">
+                <i class="fas fa-forward-fast"></i> Quick Start
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs Panels -->
+          <div class="revision-panels">
+            <div id="panelToday" class="tab-panel active" role="tabpanel" aria-labelledby="tabToday">
+              <div id="listToday" class="tasks-list">
+                <div class="loading-placeholder">Evaluating today's scheduled revision tasks...</div>
+              </div>
+            </div>
+            <div id="panelOverdue" class="tab-panel" role="tabpanel" aria-labelledby="tabOverdue" style="display:none;">
+              <div id="listOverdue" class="tasks-list">
+                <div class="loading-placeholder">Scanning for overdue checkpoints...</div>
+              </div>
+            </div>
+            <div id="panelUpcoming" class="tab-panel" role="tabpanel" aria-labelledby="tabUpcoming" style="display:none;">
+              <div id="listUpcoming" class="tasks-list">
+                <div class="loading-placeholder">Building upcoming learning trajectory...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline View / Weekly Summary -->
+          <div class="visualizer-card timeline-card">
+            <h3><i class="fas fa-chart-line"></i> Weekly Revision Summary</h3>
+            <div id="weeklyTimeline" class="weekly-timeline-grid">
+              <!-- Dynamically populated weekdays summary cards -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Calendar & Statistics -->
+        <div class="revision-right-pane">
+
+          <!-- Calendar Visualizer Card -->
+          <div class="visualizer-card calendar-card">
+            <div id="revisionCalendarContainer">
+              <!-- Injected by RevisionCalendar module -->
+              <div class="loading-placeholder">Building calendar parameters...</div>
+            </div>
+            
+            <!-- Selected date detail drawer -->
+            <div id="selectedDateDrawer" class="date-detail-drawer hidden">
+              <h4 id="drawerDateTitle">Revisions on Selected Date</h4>
+              <div id="drawerTasksContainer" class="drawer-tasks"></div>
+            </div>
+          </div>
+
+          <!-- Statistics & Analytics Widget -->
+          <div class="visualizer-card stats-card">
+            <h3><i class="fas fa-chart-pie"></i> Study Statistics</h3>
+            
+            <div class="retention-score-widget">
+              <div class="dial-container">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path id="retentionProgressPath" class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <text x="18" y="20.35" class="percentage" id="retentionScoreText">80%</text>
+                </svg>
+              </div>
+              <div class="retention-info">
+                <strong>Memory Retention</strong>
+                <p>Spaced decay model estimate based on study history intervals.</p>
+              </div>
+            </div>
+
+            <div class="statistics-breakdown">
+              <div class="stat-row">
+                <span>Total Revisions Completed</span>
+                <strong id="totalRevisionsCount">0</strong>
+              </div>
+              <div class="stat-row">
+                <span>Longest Consistent Streak</span>
+                <strong id="longestStreakCount">0</strong>
+              </div>
+              <div class="stat-row">
+                <span>Current Revision Level</span>
+                <strong id="revisionLevelText">Level 1</strong>
+              </div>
+              <div class="stat-row">
+                <span>Avg. Quiz Improvement</span>
+                <strong id="quizImprovementText" class="positive">+0%</strong>
+              </div>
+            </div>
+
+            <div class="topics-summary-grid">
+              <div class="summary-section">
+                <h4><i class="fas fa-circle-check text-success"></i> Mastered Topics</h4>
+                <ul id="masteredTopicsList" class="topics-bullet-list">
+                  <li class="empty-state">No topics fully mastered yet. Keep practicing!</li>
+                </ul>
+              </div>
+              <div class="summary-section">
+                <h4><i class="fas fa-circle-exclamation text-danger"></i> Weakest Areas</h4>
+                <ul id="weakestTopicsList" class="topics-bullet-list">
+                  <li class="empty-state">Scan clean! No weak areas found.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Reschedule Modal popup -->
+    <div id="rescheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rescheduleTitle">
+      <div class="modal-content reschedule-modal-content">
+        <div class="modal-header">
+          <h3 id="rescheduleTitle">📅 Postpone Revision Task</h3>
+          <button class="modal-close" id="closeRescheduleBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Delay this review session by a custom interval:</p>
+          <div class="reschedule-options">
+            <button class="btn btn-outline reschedule-opt-btn" data-days="1">Postpone 1 Day</button>
+            <button class="btn btn-outline reschedule-opt-btn" data-days="3">Postpone 3 Days</button>
+            <button class="btn btn-outline reschedule-opt-btn" data-days="7">Postpone 1 Week</button>
+          </div>
+          <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <label for="customDatePicker" style="font-size: 0.9rem; font-weight: 500;">Or select custom date:</label>
+            <input type="date" id="customDatePicker" class="control-input" style="width:100%;" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelRescheduleBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmRescheduleBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete Task Recall Modal -->
+    <div id="completeRecallModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="recallTitle">
+      <div class="modal-content complete-modal-content">
+        <div class="modal-header">
+          <h3 id="recallTitle">🔄 Rate Recall Difficulty</h3>
+          <button class="modal-close" id="closeRecallBtn">&times;</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <p>How easily did you recall the material for <strong id="recallTopicName">this topic</strong>?</p>
+          <div class="recall-choices">
+            <button class="recall-btn recall-again" data-quality="1">
+              <strong>Again</strong>
+              <small>Reset schedule (1d)</small>
+            </button>
+            <button class="recall-btn recall-good" data-quality="3">
+              <strong>Good</strong>
+              <small>Review in schedule</small>
+            </button>
+            <button class="recall-btn recall-easy" data-quality="5">
+              <strong>Easy</strong>
+              <small>Increase interval (1.5x)</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Script Bundles -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script type="module" src="revision.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>
