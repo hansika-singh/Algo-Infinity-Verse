@@ -19,7 +19,6 @@ const CONNECTIONS = [
 ];
 
 let services = [];
-let errorCount = 0;
 let errorLog = [];
 
 // Initialize

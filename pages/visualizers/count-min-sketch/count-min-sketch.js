@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
    STATE
 ════════════════════════════════════════════ */
 
-var cmsDepth  = 3;   // number of hash functions (rows)
-var cmsWidth  = 8;   // number of counters per row (columns)
-var cmsGrid   = [];  // 2D array [d][w] of counts
-var cmsExact  = {};  // exact frequency map { item: count }
-var cmsTotal  = 0;   // total items inserted
+var cmsDepth = 3; // number of hash functions (rows)
+var cmsWidth = 8; // number of counters per row (columns)
+var cmsGrid = []; // 2D array [d][w] of counts
+var cmsExact = {}; // exact frequency map { item: count }
+var cmsTotal = 0; // total items inserted
 
 // Stable hash seeds — one per possible row (up to 5)
 var CMS_SEEDS = [1000003, 999983, 999979, 999961, 999931];
@@ -67,7 +67,7 @@ function cmsUpdate(item) {
 // Returns { estimate, cells } where cells = [{row, col}]
 function cmsQuery(item) {
   var minVal = Infinity;
-  var cells  = [];
+  var cells = [];
 
   for (var r = 0; r < cmsDepth; r++) {
     var col = cmsHash(item, r);
@@ -106,7 +106,7 @@ function cmsRenderGrid(highlightCells, queryMode) {
   if (!wrap) return;
 
   // Build a lookup for highlights
-  var hlMap = {};   // "r,c" -> 'cms-active' | 'cms-query' | 'cms-min'
+  var hlMap = {}; // "r,c" -> 'cms-active' | 'cms-query' | 'cms-min'
   if (highlightCells) {
     highlightCells.forEach(function (h) {
       var key = h.row + ',' + h.col;
@@ -126,7 +126,7 @@ function cmsRenderGrid(highlightCells, queryMode) {
   for (var r = 0; r < cmsDepth; r++) {
     tableHtml += '<tr><td class="cms-row-hdr">h' + (r + 1) + '</td>';
     for (var cc = 0; cc < cmsWidth; cc++) {
-      var hlClass  = hlMap[r + ',' + cc] || '';
+      var hlClass = hlMap[r + ',' + cc] || '';
       var heatClass = hlClass ? '' : cmsGetCellClass(r, cc);
       var cls = 'cms-cell ' + heatClass + ' ' + hlClass;
       tableHtml += '<td class="' + cls.trim() + '">' + cmsGrid[r][cc] + '</td>';
@@ -153,19 +153,27 @@ function cmsRenderFreqTable() {
   }
 
   // Sort by count descending
-  keys.sort(function (a, b) { return cmsExact[b] - cmsExact[a]; });
+  keys.sort(function (a, b) {
+    return cmsExact[b] - cmsExact[a];
+  });
 
   var maxCount = cmsExact[keys[0]];
   var html = '';
 
   keys.forEach(function (key) {
     var count = cmsExact[key];
-    var pct   = Math.round((count / maxCount) * 100);
+    var pct = Math.round((count / maxCount) * 100);
     html +=
       '<div class="cms-freq-row">' +
-        '<span class="cms-freq-key">' + cmsEscapeHtml(key) + '</span>' +
-        '<div class="cms-freq-bar-wrap"><div class="cms-freq-bar" style="width:' + pct + '%"></div></div>' +
-        '<span class="cms-freq-count">' + count + '</span>' +
+      '<span class="cms-freq-key">' +
+      cmsEscapeHtml(key) +
+      '</span>' +
+      '<div class="cms-freq-bar-wrap"><div class="cms-freq-bar" style="width:' +
+      pct +
+      '%"></div></div>' +
+      '<span class="cms-freq-count">' +
+      count +
+      '</span>' +
       '</div>';
   });
 
@@ -182,10 +190,15 @@ function cmsRenderHeavyHitters() {
   if (!card || !list) return;
 
   var keys = Object.keys(cmsExact);
-  if (keys.length === 0) { card.style.display = 'none'; return; }
+  if (keys.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
 
   // Top-5 by exact count
-  keys.sort(function (a, b) { return cmsExact[b] - cmsExact[a]; });
+  keys.sort(function (a, b) {
+    return cmsExact[b] - cmsExact[a];
+  });
   var top = keys.slice(0, 5);
   var maxCount = cmsExact[top[0]];
 
@@ -193,15 +206,23 @@ function cmsRenderHeavyHitters() {
 
   var html = '';
   top.forEach(function (key, idx) {
-    var exact   = cmsExact[key];
-    var sketch  = cmsQuery(key).estimate;
-    var pct     = Math.round((exact / maxCount) * 100);
+    var exact = cmsExact[key];
+    var sketch = cmsQuery(key).estimate;
+    var pct = Math.round((exact / maxCount) * 100);
     html +=
       '<div class="cms-hh-row">' +
-        '<span class="cms-hh-rank">#' + (idx + 1) + '</span>' +
-        '<span class="cms-hh-key">' + cmsEscapeHtml(key) + '</span>' +
-        '<div class="cms-hh-bar-wrap"><div class="cms-hh-bar" style="width:' + pct + '%"></div></div>' +
-        '<span class="cms-hh-count">≈' + sketch + '</span>' +
+      '<span class="cms-hh-rank">#' +
+      (idx + 1) +
+      '</span>' +
+      '<span class="cms-hh-key">' +
+      cmsEscapeHtml(key) +
+      '</span>' +
+      '<div class="cms-hh-bar-wrap"><div class="cms-hh-bar" style="width:' +
+      pct +
+      '%"></div></div>' +
+      '<span class="cms-hh-count">≈' +
+      sketch +
+      '</span>' +
       '</div>';
   });
 
@@ -219,25 +240,34 @@ function cmsShowEstimate(item, result) {
 
   card.style.display = 'block';
 
-  var exact     = cmsExact[item] || 0;
-  var estimate  = result.estimate;
+  var exact = cmsExact[item] || 0;
+  var estimate = result.estimate;
   var overcount = estimate - exact;
 
   var html =
     '<div class="cms-estimate-row">' +
-      '<span class="cms-est-item">"' + cmsEscapeHtml(item) + '"</span>' +
-      '<div class="cms-est-nums">' +
-        '<span>True:&nbsp;<span class="cms-est-true">' + exact + '</span></span>' +
-        '<span>Sketch:&nbsp;<span class="cms-est-sketch">' + estimate + '</span></span>' +
-      '</div>' +
-      (overcount > 0
-        ? '<span class="cms-est-err">Over-estimate by ' + overcount + ' (collision noise)</span>'
-        : '<span style="font-size:.7rem;color:#22c55e">✓ Exact match — no collision on minimum path</span>') +
-      '<div style="font-size:.7rem;color:var(--text-secondary);margin-top:.3rem">' +
-        'Cells checked: ' + result.cells.map(function (c) {
-          return 'h' + (c.row + 1) + '[c' + c.col + ']=' + c.val;
-        }).join(', ') +
-      '</div>' +
+    '<span class="cms-est-item">"' +
+    cmsEscapeHtml(item) +
+    '"</span>' +
+    '<div class="cms-est-nums">' +
+    '<span>True:&nbsp;<span class="cms-est-true">' +
+    exact +
+    '</span></span>' +
+    '<span>Sketch:&nbsp;<span class="cms-est-sketch">' +
+    estimate +
+    '</span></span>' +
+    '</div>' +
+    (overcount > 0
+      ? '<span class="cms-est-err">Over-estimate by ' + overcount + ' (collision noise)</span>'
+      : '<span style="font-size:.7rem;color:#22c55e">✓ Exact match — no collision on minimum path</span>') +
+    '<div style="font-size:.7rem;color:var(--text-secondary);margin-top:.3rem">' +
+    'Cells checked: ' +
+    result.cells
+      .map(function (c) {
+        return 'h' + (c.row + 1) + '[c' + c.col + ']=' + c.val;
+      })
+      .join(', ') +
+    '</div>' +
     '</div>';
 
   rows.innerHTML = html;
@@ -250,8 +280,8 @@ function cmsShowEstimate(item, result) {
 function cmsSetStatus(msg, cls) {
   var el = document.getElementById('cmsStatus');
   if (!el) return;
-  el.textContent  = msg;
-  el.className    = 'cms-status ' + (cls || '');
+  el.textContent = msg;
+  el.className = 'cms-status ' + (cls || '');
 }
 
 /* ════════════════════════════════════════════
@@ -273,7 +303,7 @@ function cmsFlashInsert(item) {
 function cmsFlashQuery(item, result) {
   // Mark minimum cells
   var minVal = result.estimate;
-  var cells  = result.cells.map(function (c) {
+  var cells = result.cells.map(function (c) {
     return { row: c.row, col: c.col, isMin: c.val === minVal };
   });
   cmsRenderGrid(cells, true);
@@ -294,8 +324,16 @@ function cmsDoInsert(item) {
   cmsRenderFreqTable();
   cmsRenderHeavyHitters();
   cmsSetStatus(
-    'Inserted "' + item + '" — incremented ' + cmsDepth + ' cells (one per hash function). ' +
-    'Total items: ' + cmsTotal + '. True count: ' + cmsExact[item] + '.',
+    'Inserted "' +
+      item +
+      '" — incremented ' +
+      cmsDepth +
+      ' cells (one per hash function). ' +
+      'Total items: ' +
+      cmsTotal +
+      '. True count: ' +
+      cmsExact[item] +
+      '.',
     'ok'
   );
 }
@@ -315,7 +353,8 @@ function cmsDoQuery(item) {
   cmsShowEstimate(item, result);
 
   var exact = cmsExact[item] || 0;
-  var msg   = 'Query "' + item + '": sketch estimate = ' + result.estimate + ', true count = ' + exact + '.';
+  var msg =
+    'Query "' + item + '": sketch estimate = ' + result.estimate + ', true count = ' + exact + '.';
 
   if (result.estimate > exact) {
     msg += ' Over-estimate by ' + (result.estimate - exact) + ' due to collisions.';
@@ -331,10 +370,26 @@ function cmsDoQuery(item) {
 ════════════════════════════════════════════ */
 
 var CMS_WORDS = [
-  'react', 'python', 'javascript', 'typescript', 'rust',
-  'golang', 'java', 'kotlin', 'swift', 'cpp',
-  'docker', 'kubernetes', 'linux', 'git', 'sql',
-  'redis', 'nginx', 'webpack', 'vite', 'node'
+  'react',
+  'python',
+  'javascript',
+  'typescript',
+  'rust',
+  'golang',
+  'java',
+  'kotlin',
+  'swift',
+  'cpp',
+  'docker',
+  'kubernetes',
+  'linux',
+  'git',
+  'sql',
+  'redis',
+  'nginx',
+  'webpack',
+  'vite',
+  'node',
 ];
 
 function cmsRunHeavyHitters() {
@@ -342,7 +397,7 @@ function cmsRunHeavyHitters() {
 
   // Zipfian: rank-k item appears proportional to 1/k
   var totalItems = 200;
-  var stream     = [];
+  var stream = [];
 
   CMS_WORDS.forEach(function (word, idx) {
     var count = Math.max(1, Math.round(totalItems / (idx + 1)));
@@ -354,7 +409,9 @@ function cmsRunHeavyHitters() {
   // Shuffle the stream to simulate arrival order
   for (var i = stream.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
-    var tmp = stream[i]; stream[i] = stream[j]; stream[j] = tmp;
+    var tmp = stream[i];
+    stream[i] = stream[j];
+    stream[j] = tmp;
   }
 
   // Insert all items without animation (batch)
@@ -367,8 +424,12 @@ function cmsRunHeavyHitters() {
   cmsRenderHeavyHitters();
 
   cmsSetStatus(
-    'Streamed ' + stream.length + ' items with Zipfian distribution (' + CMS_WORDS.length + ' distinct words). ' +
-    'Top-5 heavy hitters identified using sketch estimates — no per-item exact counts stored.',
+    'Streamed ' +
+      stream.length +
+      ' items with Zipfian distribution (' +
+      CMS_WORDS.length +
+      ' distinct words). ' +
+      'Top-5 heavy hitters identified using sketch estimates — no per-item exact counts stored.',
     'info'
   );
 }
@@ -381,7 +442,7 @@ function cmsRunHeavyHitters() {
 function cmsRunCollisionDemo() {
   // Step 1: shrink to w=4 and insert 10 items
   var widthSlider = document.getElementById('cmsWidthSlider');
-  var widthVal    = document.getElementById('cmsWidthVal');
+  var widthVal = document.getElementById('cmsWidthVal');
 
   cmsWidth = 4;
   if (widthSlider) widthSlider.value = 4;
@@ -389,7 +450,18 @@ function cmsRunCollisionDemo() {
 
   cmsFullReset(false);
 
-  var words = ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa'];
+  var words = [
+    'alpha',
+    'beta',
+    'gamma',
+    'delta',
+    'epsilon',
+    'zeta',
+    'eta',
+    'theta',
+    'iota',
+    'kappa',
+  ];
 
   // Insert 3 times each so there's a real count to compare against
   words.forEach(function (w) {
@@ -406,13 +478,21 @@ function cmsRunCollisionDemo() {
   cmsFlashQuery('alpha', firstResult);
   cmsShowEstimate('alpha', firstResult);
 
-  var exact    = cmsExact['alpha'] || 0;
+  var exact = cmsExact['alpha'] || 0;
   var estimate = firstResult.estimate;
 
   cmsSetStatus(
-    'Collision demo (w=' + cmsWidth + '): "alpha" true count = ' + exact + ', sketch estimate = ' + estimate + '. ' +
-    'Over-estimate = ' + (estimate - exact) + ' caused by hash collisions with other items sharing the same cell. ' +
-    'Increase width to reduce collisions.',
+    'Collision demo (w=' +
+      cmsWidth +
+      '): "alpha" true count = ' +
+      exact +
+      ', sketch estimate = ' +
+      estimate +
+      '. ' +
+      'Over-estimate = ' +
+      (estimate - exact) +
+      ' caused by hash collisions with other items sharing the same cell. ' +
+      'Increase width to reduce collisions.',
     'warn'
   );
 
@@ -433,17 +513,23 @@ function cmsRunCollisionDemo() {
     cmsRenderGrid(null, false);
     cmsRenderFreqTable();
 
-    var wideResult   = cmsQuery('alpha');
+    var wideResult = cmsQuery('alpha');
     var wideEstimate = wideResult.estimate;
-    var wideExact    = cmsExact['alpha'] || 0;
+    var wideExact = cmsExact['alpha'] || 0;
 
     cmsFlashQuery('alpha', wideResult);
     cmsShowEstimate('alpha', wideResult);
 
     cmsSetStatus(
-      'Width increased to 16: "alpha" true count = ' + wideExact + ', sketch estimate now = ' + wideEstimate + '. ' +
-      'Over-estimate dropped to ' + (wideEstimate - wideExact) + '. ' +
-      'Wider grid → fewer collisions → tighter estimates.',
+      'Width increased to 16: "alpha" true count = ' +
+        wideExact +
+        ', sketch estimate now = ' +
+        wideEstimate +
+        '. ' +
+        'Over-estimate dropped to ' +
+        (wideEstimate - wideExact) +
+        '. ' +
+        'Wider grid → fewer collisions → tighter estimates.',
       'ok'
     );
   }, 2200);
@@ -464,8 +550,8 @@ function cmsFullReset(resetSliders) {
 
     var depthSlider = document.getElementById('cmsDepthSlider');
     var widthSlider = document.getElementById('cmsWidthSlider');
-    var depthVal    = document.getElementById('cmsDepthVal');
-    var widthVal    = document.getElementById('cmsWidthVal');
+    var depthVal = document.getElementById('cmsDepthVal');
+    var widthVal = document.getElementById('cmsWidthVal');
 
     if (depthSlider) depthSlider.value = 3;
     if (widthSlider) widthSlider.value = 8;
@@ -482,7 +568,10 @@ function cmsFullReset(resetSliders) {
   var estCard = document.getElementById('cmsEstimateCard');
   if (estCard) estCard.style.display = 'none';
 
-  cmsSetStatus('Sketch reset. Grid is ' + cmsDepth + '×' + cmsWidth + '. Insert items to begin.', 'info');
+  cmsSetStatus(
+    'Sketch reset. Grid is ' + cmsDepth + '×' + cmsWidth + '. Insert items to begin.',
+    'info'
+  );
 }
 
 /* ════════════════════════════════════════════
@@ -505,23 +594,24 @@ function cmsInit() {
   cmsInitGrid();
   cmsRenderGrid(null, false);
 
-  var depthSlider  = document.getElementById('cmsDepthSlider');
-  var widthSlider  = document.getElementById('cmsWidthSlider');
-  var depthVal     = document.getElementById('cmsDepthVal');
-  var widthVal     = document.getElementById('cmsWidthVal');
-  var insertInput  = document.getElementById('cmsInsertInput');
-  var insertBtn    = document.getElementById('cmsInsertBtn');
-  var queryInput   = document.getElementById('cmsQueryInput');
-  var queryBtn     = document.getElementById('cmsQueryBtn');
-  var heavyBtn     = document.getElementById('cmsHeavyBtn');
+  var depthSlider = document.getElementById('cmsDepthSlider');
+  var widthSlider = document.getElementById('cmsWidthSlider');
+  var depthVal = document.getElementById('cmsDepthVal');
+  var widthVal = document.getElementById('cmsWidthVal');
+  var insertInput = document.getElementById('cmsInsertInput');
+  var insertBtn = document.getElementById('cmsInsertBtn');
+  var queryInput = document.getElementById('cmsQueryInput');
+  var queryBtn = document.getElementById('cmsQueryBtn');
+  var heavyBtn = document.getElementById('cmsHeavyBtn');
   var collisionBtn = document.getElementById('cmsCollisionBtn');
-  var resetBtn     = document.getElementById('cmsResetBtn');
+  var resetBtn = document.getElementById('cmsResetBtn');
 
   // Depth slider
   if (depthSlider) {
     depthSlider.addEventListener('input', function () {
       cmsDepth = parseInt(depthSlider.value, 10);
-      if (depthVal) depthVal.textContent = cmsDepth + ' hash function' + (cmsDepth !== 1 ? 's' : '');
+      if (depthVal)
+        depthVal.textContent = cmsDepth + ' hash function' + (cmsDepth !== 1 ? 's' : '');
       cmsFullReset(false);
     });
   }
@@ -538,7 +628,7 @@ function cmsInit() {
   // Insert button
   if (insertBtn) {
     insertBtn.addEventListener('click', function () {
-      var item = (insertInput ? insertInput.value.trim().toLowerCase() : '');
+      var item = insertInput ? insertInput.value.trim().toLowerCase() : '';
       cmsDoInsert(item);
     });
   }
@@ -555,7 +645,7 @@ function cmsInit() {
   // Query button
   if (queryBtn) {
     queryBtn.addEventListener('click', function () {
-      var item = (queryInput ? queryInput.value.trim().toLowerCase() : '');
+      var item = queryInput ? queryInput.value.trim().toLowerCase() : '';
       cmsDoQuery(item);
     });
   }
@@ -570,7 +660,10 @@ function cmsInit() {
   }
 
   // Scenario buttons
-  if (heavyBtn)     heavyBtn.addEventListener('click', cmsRunHeavyHitters);
+  if (heavyBtn) heavyBtn.addEventListener('click', cmsRunHeavyHitters);
   if (collisionBtn) collisionBtn.addEventListener('click', cmsRunCollisionDemo);
-  if (resetBtn)     resetBtn.addEventListener('click', function () { cmsFullReset(true); });
+  if (resetBtn)
+    resetBtn.addEventListener('click', function () {
+      cmsFullReset(true);
+    });
 }

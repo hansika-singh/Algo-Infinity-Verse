@@ -1,6 +1,63 @@
 // backend/battle/battleService.js
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getDb, COLLECTIONS } from "../../firebase.js";
+import vm from 'vm';
+
+export const TEST_CASES = {
+  "Two Sum": {
+    func: "twoSum",
+    cases: [
+      { args: [[2,7,11,15], 9], expected: [0,1] },
+      { args: [[3,2,4], 6], expected: [1,2] }
+    ]
+  },
+  "Valid Parentheses": {
+    func: "isValid",
+    cases: [
+      { args: ["()[]{}"], expected: true },
+      { args: ["(]"], expected: false }
+    ]
+  },
+  "Binary Search": {
+    func: "search",
+    cases: [
+      { args: [[-1,0,3,5,9,12], 9], expected: 4 },
+      { args: [[-1,0,3,5,9,12], 2], expected: -1 }
+    ]
+  },
+  "Longest Substring Without Repeating Characters": {
+    func: "lengthOfLongestSubstring",
+    cases: [
+      { args: ["abcabcbb"], expected: 3 },
+      { args: ["bbbbb"], expected: 1 }
+    ]
+  }
+};
+
+export function runTestCases(title, code) {
+  const problem = TEST_CASES[title];
+  if (!problem) {
+    throw new Error(`Unsupported battle problem: ${title}`);
+  }
+  const sandbox = { console, result: null };
+  const context = vm.createContext(sandbox);
+
+  try {
+    vm.runInContext(code, context, { timeout: 1000 });
+    
+    let passed = 0;
+    for (const test of problem.cases) {
+      const argsStr = JSON.stringify(test.args).slice(1, -1);
+      vm.runInContext(`result = ${problem.func}(${argsStr});`, context, { timeout: 1000 });
+      if (JSON.stringify(sandbox.result) === JSON.stringify(test.expected)) {
+        passed++;
+      }
+    }
+    return passed === problem.cases.length;
+  } catch (err) {
+    return false;
+  }
+}
 
 // Add these two entries to COLLECTIONS in firebase.js:
 //   BATTLES:  "battles",
@@ -160,9 +217,21 @@ export async function submitSolution(battleId, playerId, code) {
       throw new Error("Time is up — battle expired");
     }
 
-    // v1 scope: first non-empty submission wins.
-    // Code execution/grading is out of scope for issue #542.
-    const xp = XP_BY_DIFFICULTY[battle.difficulty] ?? 50;
+    // Evaluate code via vm
+    const isCorrect = runTestCases(battle.problemTitle, code);
+    if (!isCorrect) {
+      throw new Error("Incorrect solution or syntax error. Keep trying!");
+    }
+
+    let xp = XP_BY_DIFFICULTY[battle.difficulty] ?? 50;
+    
+    // Add bonus XP based on time remaining (up to 50% bonus)
+    const timeRemaining = battle.expiresAt.toMillis() - now.toMillis();
+    const totalTime = BATTLE_DURATION_SECONDS * 1000;
+    if (timeRemaining > 0) {
+      const bonus = Math.floor((timeRemaining / totalTime) * (xp * 0.5));
+      xp += bonus;
+    }
 
     tx.update(battleRef, {
       [`submissions.${playerId}`]: { code, submittedAt: now },

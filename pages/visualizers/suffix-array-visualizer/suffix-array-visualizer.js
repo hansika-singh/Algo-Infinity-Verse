@@ -1,4 +1,18 @@
 (() => {
+  // Utility to prevent XSS when embedding user input into the generated HTML report
+  // (delegating to centralized DOMSanitizer if available)
+  function escapeHtml(unsafe) {
+    if (typeof window !== 'undefined' && window.DOMSanitizer) {
+      return window.DOMSanitizer.escapeHtml(unsafe);
+    }
+    return String(unsafe == null ? '' : unsafe)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // ===== State =====
   const state = {
     s: 'banana',
@@ -468,16 +482,16 @@
           <tr>
             <td>${rowIdx}</td>
             <td>${suffixIndex}</td>
-            <td class="suffix">${suffixSubDisplay}</td>
+            <td class="suffix">${escapeHtml(suffixSubDisplay)}</td>
             <td>${rank}</td>
-            <td class="fira">${keyDisplay}</td>
+            <td class="fira">${escapeHtml(keyDisplay)}</td>
           </tr>
         `;
       });
 
       roundsHtml += `
         <div class="card">
-          <h3>${round.roundName} (len = ${round.len})</h3>
+          <h3>${escapeHtml(round.roundName)} (len = ${round.len})</h3>
           <table>
             <thead>
               <tr>
@@ -503,7 +517,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suffix Array Visualization Report - ${state.s}</title>
+  <title>Suffix Array Visualization Report - ${escapeHtml(state.s)}</title>
   <style>
     body {
       font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -604,7 +618,7 @@
   <header>
     <h1>Suffix Array Report</h1>
     <div class="metadata">
-      <span>String: <strong>"${state.s}"</strong></span>
+      <span>String: <strong>"${escapeHtml(state.s)}"</strong></span>
       <span>Length: <strong>${state.s.length}</strong></span>
       <span>Case-Insensitive: <strong>${state.caseInsensitive}</strong></span>
       <span>Allow Spaces: <strong>${state.allowSpaces}</strong></span>

@@ -1925,16 +1925,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initLoadingScreen();
   initNavbar();
-  initHeroSection();
-  initTopicsSection();
-  initQuizSection();
-  initPracticeSection();
-  initRoadmap();
-  initDashboard();
-  initGamification();
-  initChatbot();
-  initProfile();
-  initScrollEffects();
+  if (typeof initHeroSection === 'function') initHeroSection();
+  if (typeof initTopicsSection === 'function') initTopicsSection();
+  if (typeof initQuizSection === 'function') initQuizSection();
+  if (typeof initPracticeSection === 'function') initPracticeSection();
+  if (typeof initRoadmap === 'function') initRoadmap();
+  if (typeof initDashboard === 'function') initDashboard();
+  if (typeof initGamification === 'function') initGamification();
+  if (typeof initChatbot === 'function') initChatbot();
+  if (typeof initProfile === 'function') initProfile();
+  if (typeof initScrollEffects === 'function') initScrollEffects();
   console.log('App initialization complete');
 });
 
@@ -1943,29 +1943,29 @@ document.addEventListener('DOMContentLoaded', () => {
     import('./modules/revisionScheduler.js')
       .then(({ buildRevisionTasks, toggleRevisionTaskCompletion }) => {
         window.revisionScheduler = { buildRevisionTasks, toggleRevisionTaskCompletion };
-        renderRevisionSchedulerCard();
+        if (typeof renderRevisionSchedulerCard === 'function') renderRevisionSchedulerCard();
       })
       .catch(() => {});
   }
-  loadUserData();
-  initLoadingScreen();
-  initNavbar();
-  initHeroSection();
-  initTopicOfTheDay();
-  initTopicsSection();
-  initQuizSection();
-  initPracticeSection();
-  initRoadmap();
-  initDashboard();
-  initGamification();
-  initDailyChallenge();
-  initChatbot();
-  initProfile();
-  initAiInterviewer();
-  initNewsletterValidation();
-  initScrollEffects();
-  initFooterCurrentDate();
-  updateProfile();
+  if (typeof loadUserData === 'function') loadUserData();
+  if (typeof initLoadingScreen === 'function') initLoadingScreen();
+  if (typeof initNavbar === 'function') initNavbar();
+  if (typeof initHeroSection === 'function') initHeroSection();
+  if (typeof initTopicOfTheDay === 'function') initTopicOfTheDay();
+  if (typeof initTopicsSection === 'function') initTopicsSection();
+  if (typeof initQuizSection === 'function') initQuizSection();
+  if (typeof initPracticeSection === 'function') initPracticeSection();
+  if (typeof initRoadmap === 'function') initRoadmap();
+  if (typeof initDashboard === 'function') initDashboard();
+  if (typeof initGamification === 'function') initGamification();
+  if (typeof initDailyChallenge === 'function') initDailyChallenge();
+  if (typeof initChatbot === 'function') initChatbot();
+  if (typeof initProfile === 'function') initProfile();
+  if (typeof initAiInterviewer === 'function') initAiInterviewer();
+  if (typeof initNewsletterValidation === 'function') initNewsletterValidation();
+  if (typeof initScrollEffects === 'function') initScrollEffects();
+  if (typeof initFooterCurrentDate === 'function') initFooterCurrentDate();
+  if (typeof updateProfile === 'function') updateProfile();
 });
 
 // ============================================
@@ -2200,6 +2200,7 @@ function initNavbar() {
     const parent = toggle.closest('.has-dropdown');
     const menu = parent?.querySelector('.dropdown-menu');
     if (!parent || !menu) return;
+    const isSettingsToggle = toggle.classList.contains('settings-toggle');
 
     let hoverTimeout;
 
@@ -2216,26 +2217,37 @@ function initNavbar() {
       }, 250);
     };
 
-    parent.addEventListener('mouseenter', () => {
-      if (!isMobile()) showMenu();
-    });
-    parent.addEventListener('mouseleave', () => {
-      if (!isMobile()) hideMenu();
-    });
-    toggle.addEventListener('focus', () => {
-      if (!isMobile()) showMenu();
-    });
-    menu.addEventListener('focusin', () => {
-      if (!isMobile()) showMenu();
-    });
-    parent.addEventListener('focusout', () => {
-      if (!isMobile()) hideMenu();
-    });
+    // Hover behavior: only for non-settings dropdowns on desktop
+    if (!isSettingsToggle) {
+      parent.addEventListener('mouseenter', () => {
+        if (!isMobile()) showMenu();
+      });
+      parent.addEventListener('mouseleave', () => {
+        if (!isMobile()) hideMenu();
+      });
+      toggle.addEventListener('focus', () => {
+        if (!isMobile()) showMenu();
+      });
+      menu.addEventListener('focusin', () => {
+        if (!isMobile()) showMenu();
+      });
+      parent.addEventListener('focusout', () => {
+        if (!isMobile()) hideMenu();
+      });
+    }
 
+    // Click behavior: always for settings, mobile-only for others
     toggle.addEventListener('click', (e) => {
-      if (isMobile()) {
+      if (isSettingsToggle || isMobile()) {
         e.preventDefault();
         e.stopPropagation();
+        // Close other open dropdowns first
+        document.querySelectorAll('.has-dropdown.open').forEach((el) => {
+          if (el !== parent) {
+            el.classList.remove('open');
+            el.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+          }
+        });
         const isOpen = parent.classList.toggle('open');
         toggle.setAttribute('aria-expanded', isOpen);
       }
@@ -2243,13 +2255,25 @@ function initNavbar() {
 
     menu.querySelectorAll('.dropdown-item').forEach((item) => {
       item.addEventListener('click', () => {
-        if (isMobile()) {
+        if (isSettingsToggle || isMobile()) {
           parent.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
         }
       });
     });
   });
+
+  // Close settings dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-settings-dropdown.open').forEach((el) => {
+      if (!el.contains(e.target)) {
+        el.classList.remove('open');
+        el.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+
 
   window.addEventListener('resize', () => {
     if (!isMobile()) {
@@ -4451,7 +4475,7 @@ function loadUserData() {
       updateProfile();
       saveUserData();
     }
-    initProfile();
+    if (typeof initProfile === 'function') initProfile();
   });
 }
 
@@ -5496,7 +5520,7 @@ document.addEventListener('keydown', function (e) {
   // Alt+P: Practice
   if (e.altKey && e.key === 'p') {
     e.preventDefault();
-    window.location.href = '#practice';
+    window.location.href = '/practice';
   }
 
   // Alt+Q: Quiz

@@ -171,7 +171,6 @@ This is ~~not important~~ ==very important==.
     <div class="panel">
       <div class="panel-header">
         Live Preview (HTML)
-        <span style="font-size: 0.8em; color: #94a3b8; font-weight: normal;">(Sanitization bypassed for demo)</span>
       </div>
       <div id="preview"></div>
     </div>
@@ -180,15 +179,15 @@ This is ~~not important~~ ==very important==.
   <!-- Load our newly updated MarkdownParser script as a module -->
   <script type="module">
     import { MarkdownParser } from './utils/markdownParser.js';
+    import { sanitizeHTML } from './modules/domSanitizer.js';
 
     const editor = document.getElementById('editor');
     const preview = document.getElementById('preview');
 
     function updatePreview() {
       const markdownText = editor.value;
-      // In production, wrap this output in a DOMPurify/Sanitizer!
       const htmlOutput = MarkdownParser.parse(markdownText);
-      preview.innerHTML = htmlOutput;
+      preview.innerHTML = sanitizeHTML(htmlOutput);
     }
 
     // Update on load

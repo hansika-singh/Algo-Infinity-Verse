@@ -25,7 +25,7 @@ async function startWorker() {
   });
 
   auditWorker = new Worker('bulk-audit-queue', async (job) => {
-    const { batchId, repoUrl } = job.data;
+    const { repoUrl } = job.data;
 
     let parsedRepoUrl;
     try {
@@ -61,7 +61,7 @@ async function startWorker() {
     concurrency: 5,
   });
 
-  auditWorker.on('error', (err) => {
+  auditWorker.on('error', (_err) => {
     void 0;
   });
 
@@ -107,7 +107,7 @@ async function startWorker() {
 // Kick off worker startup as a module side effect. Errors are swallowed so a
 // Redis hiccup at boot doesn't crash the importing process; jobs fall back to
 // the in-process path in queue.js.
-const workerReady = startWorker().catch((err) => {
+const workerReady = startWorker().catch((_err) => {
   void 0;
   return null;
 });

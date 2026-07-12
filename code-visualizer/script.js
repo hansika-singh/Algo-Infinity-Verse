@@ -627,6 +627,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ====== INITIAL SETUP ======
+/* global defaultCode, updateLineNumbers */
 document.addEventListener('DOMContentLoaded', () => {
     // Set default code
     const editor = document.getElementById('codeEditor');
@@ -677,7 +678,7 @@ document.getElementById('codeEditor').addEventListener('input', () => {
 });
 
 window.addEventListener("resize", () => {
-  if (typeof updateLineNumbers === 'function') updateLineNumbers();
+  if (typeof window.updateLineNumbers === 'function') window.updateLineNumbers();
 });
 
 /**

@@ -10,7 +10,7 @@ export class RevisionEngine {
   /**
    * Calculates the next review stage, interval in days, and review date.
    * FIXED: Now handles last stage properly with isComplete flag
-   * 
+   *
    * @param {Object} currentSchedule - { currentStage, history }
    * @param {Object} options - { scorePercentage, isIncorrect, isSkip, difficulty }
    * @param {Object} config - { passThreshold, perfectThreshold, markCompleteAfterLast, maxStages }
@@ -18,11 +18,11 @@ export class RevisionEngine {
    */
   calculateNext(currentSchedule = {}, options = {}, config = {}) {
     const stage = Number(currentSchedule.currentStage || 0);
-    const { 
-      scorePercentage = 100, 
-      isIncorrect = false, 
-      isSkip = false, 
-      difficulty = "Medium" 
+    const {
+      scorePercentage = 100,
+      isIncorrect = false,
+      isSkip = false,
+      difficulty = 'Medium',
     } = options;
 
     //  Configuration with defaults
@@ -40,7 +40,7 @@ export class RevisionEngine {
         intervalDays: 1,
         nextReviewDate: nextDate.toISOString(),
         isComplete: false,
-        message: ' Review postponed by 1 day'
+        message: ' Review postponed by 1 day',
       };
     }
 
@@ -53,7 +53,7 @@ export class RevisionEngine {
         intervalDays: 1,
         nextReviewDate: nextDate.toISOString(),
         isComplete: false,
-        message: ` Score ${scorePercentage}% below ${passThreshold}%, resetting to stage 0`
+        message: ` Score ${scorePercentage}% below ${passThreshold}%, resetting to stage 0`,
       };
     }
 
@@ -65,13 +65,13 @@ export class RevisionEngine {
       if (markCompleteAfterLast) {
         const nextDate = new Date();
         nextDate.setDate(nextDate.getDate() + 30); // 30 days for completion review
-        
+
         return {
           nextStage: stage,
           intervalDays: 30,
           nextReviewDate: nextDate.toISOString(),
           isComplete: true, //  KEY FIX: Mark as complete!
-          message: ' All revision stages completed successfully! You\'ve mastered this topic! 🏆'
+          message: " All revision stages completed successfully! You've mastered this topic! 🏆",
         };
       } else {
         // Alternative: Continue with increasing intervals
@@ -79,37 +79,37 @@ export class RevisionEngine {
         const increasedInterval = lastInterval * 2;
         const nextDate = new Date();
         nextDate.setDate(nextDate.getDate() + increasedInterval);
-        
+
         return {
           nextStage: stage,
           intervalDays: increasedInterval,
           nextReviewDate: nextDate.toISOString(),
           isComplete: false,
-          message: ` Perfect score! Next review in ${increasedInterval} days (doubled interval)`
+          message: ` Perfect score! Next review in ${increasedInterval} days (doubled interval)`,
         };
       }
     }
 
-    //  PERFECT SCORE: Fast track - skip ahead! 
+    //  PERFECT SCORE: Fast track - skip ahead!
     if (scorePercentage >= perfectThreshold) {
       const skipAhead = Math.floor((scorePercentage - perfectThreshold) / 10) + 1;
       const nextStage = Math.min(stage + skipAhead, maxStages - 1);
       const baseInterval = this.intervals[nextStage] || 1;
-      
+
       const nextDate = new Date();
       nextDate.setDate(nextDate.getDate() + baseInterval);
-      
+
       const isComplete = nextStage >= maxStages - 1 && markCompleteAfterLast;
-      
+
       return {
         nextStage: nextStage,
         intervalDays: baseInterval,
         nextReviewDate: nextDate.toISOString(),
         isComplete: isComplete,
-        message: isComplete 
-          ? ' Perfect score! You\'ve completed all stages!' 
+        message: isComplete
+          ? " Perfect score! You've completed all stages!"
           : ` Excellent! Skipping to stage ${nextStage + 1} (skipped ${skipAhead} stages)`,
-        skippedStages: nextStage - stage - 1
+        skippedStages: nextStage - stage - 1,
       };
     }
 
@@ -120,9 +120,9 @@ export class RevisionEngine {
     //  Apply difficulty weights: Easy = 1.3x gap, Hard = 0.7x gap
     let difficultyMultiplier = 1.0;
     const normalizedDifficulty = String(difficulty).toLowerCase();
-    if (normalizedDifficulty.includes("easy")) {
+    if (normalizedDifficulty.includes('easy')) {
       difficultyMultiplier = 1.3;
-    } else if (normalizedDifficulty.includes("hard")) {
+    } else if (normalizedDifficulty.includes('hard')) {
       difficultyMultiplier = 0.7;
     }
 
@@ -134,11 +134,14 @@ export class RevisionEngine {
       scoreMultiplier = 1.2;
     }
 
-    const intervalDays = Math.max(1, Math.round(baseInterval * difficultyMultiplier * scoreMultiplier));
+    const intervalDays = Math.max(
+      1,
+      Math.round(baseInterval * difficultyMultiplier * scoreMultiplier)
+    );
 
     const nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + intervalDays);
-    
+
     const isComplete = nextStage >= maxStages - 1 && markCompleteAfterLast;
 
     return {
@@ -146,9 +149,9 @@ export class RevisionEngine {
       intervalDays,
       nextReviewDate: nextDate.toISOString(),
       isComplete: isComplete,
-      message: isComplete 
-        ? 'All stages complete! You\'re done! ' 
-        : ` Moving to stage ${nextStage + 1} of ${maxStages} (${Math.round((nextStage + 1) / maxStages * 100)}% complete)`
+      message: isComplete
+        ? "All stages complete! You're done! "
+        : ` Moving to stage ${nextStage + 1} of ${maxStages} (${Math.round(((nextStage + 1) / maxStages) * 100)}% complete)`,
     };
   }
 
@@ -160,7 +163,7 @@ export class RevisionEngine {
     return {
       currentStage: 0,
       history: [],
-      isComplete: false
+      isComplete: false,
     };
   }
 }

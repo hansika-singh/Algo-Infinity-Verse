@@ -71,687 +71,155 @@
     </script>
 
     <style>
-
-          /* Activity Feed Styles */
-          .card-header-with-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-          }
-
-          .btn-clear-activity {
-          /* Search Autocomplete Styles */
-          .search-wrapper {
-            position: relative;
-            flex: 1;
-            min-width: 200px;
-          }
-
-          .search-bar {
-            display: flex;
-            align-items: center;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0 16px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-          }
-
-          .search-bar:focus-within {
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
-          }
-
-          .search-bar i {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            transition: color 0.3s ease;
-          }
-
-          .search-bar:focus-within i {
-            color: #7c3aed;
-          }
-
-          .search-bar input {
-            flex: 1;
-            padding: 12px 12px;
-            border: none;
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            outline: none;
-            width: 100%;
-          }
-
-          .search-bar input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
-          }
-
-          .clear-search-btn {
-
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 6px;
-
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-          }
-
-          .btn-clear-activity:hover {
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            opacity: 0;
-            visibility: hidden;
-          }
-
-          .clear-search-btn.visible {
-            opacity: 1;
-            visibility: visible;
-          }
-
-          .clear-search-btn:hover {
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-          }
-
-
-          .activity-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 4px;
-          }
-
-          .activity-feed::-webkit-scrollbar {
-            width: 4px;
-          }
-
-          .activity-feed::-webkit-scrollbar-track {
-
-          .search-suggestions {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            max-height: 320px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-            padding: 8px 0;
-          }
-
-          .search-suggestions::-webkit-scrollbar {
-            width: 4px;
-          }
-
-          .search-suggestions::-webkit-scrollbar-track {
-
-            background: var(--bg-primary);
-            border-radius: 2px;
-          }
-
-
-          .activity-feed::-webkit-scrollbar-thumb {
-          .search-suggestions::-webkit-scrollbar-thumb {
-
-            background: var(--border-color);
-            border-radius: 2px;
-          }
-
-
-          .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-            animation: activitySlideIn 0.3s ease;
-          }
-
-          .activity-item:hover {
-            border-color: var(--primary);
-            transform: translateX(4px);
-          }
-
-          .activity-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 16px;
-          }
-
-          .activity-icon.solved {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-          }
-
-          .activity-icon.quiz {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-          }
-
-          .activity-icon.badge {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-          }
-
-          .activity-icon.streak {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-          }
-
-          .activity-icon.level {
-
-          .search-suggestions.visible {
-            display: block;
-            animation: suggestionsSlideIn 0.2s ease;
-          }
-
-          @keyframes suggestionsSlideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-8px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .suggestion-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            color: var(--text-primary);
-            text-decoration: none;
-          }
-
-          .suggestion-item:hover,
-          .suggestion-item:focus {
-            background: rgba(124, 58, 237, 0.08);
-          }
-
-          .suggestion-item.active {
-            background: rgba(124, 58, 237, 0.12);
-            border-left: 3px solid #7c3aed;
-          }
-
-          .suggestion-icon {
-            font-size: 1rem;
-            flex-shrink: 0;
-            width: 24px;
-            text-align: center;
-          }
-
-          .suggestion-text {
-            flex: 1;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .suggestion-text .highlight {
-            background-color: #fbbf24;
-            color: #1e293b;
-            padding: 0 2px;
-            border-radius: 2px;
-            font-weight: 600;
-          }
-
-          .suggestion-type {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            flex-shrink: 0;
-          }
-
-          .suggestion-type.title {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-          }
-
-          .suggestion-type.tag {
-
-            background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
-          }
-
-
-          .activity-icon.xp {
-          .suggestion-type.topic {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-          }
-
-          .suggestion-type.description {
-            background: rgba(251, 191, 36, 0.15);
-            color: #f59e0b;
-          }
-
-
-          .activity-icon.practice {
-            background: rgba(6, 182, 212, 0.15);
-            color: #06b6d4;
-          }
-
-          .activity-content {
-            flex: 1;
-            min-width: 0;
-          }
-
-          .activity-content .activity-message {
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            margin: 0 0 2px 0;
-            line-height: 1.4;
-          }
-
-          .activity-content .activity-detail {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin: 0;
-          }
-
-          .activity-time {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            flex-shrink: 0;
-            margin-top: 2px;
-          }
-
-          .activity-empty {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--text-secondary);
-          }
-
-          .activity-empty i {
-            font-size: 32px;
-            color: var(--border-color);
-            display: block;
-            margin-bottom: 12px;
-          }
-
-          .activity-empty p {
-            margin: 0;
-            font-size: 0.9rem;
-          }
-
-          .activity-feed-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 12px;
-            margin-top: 12px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-          }
-
-          .btn-view-all {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.8rem;
-            transition: color 0.2s ease;
-          }
-
-          .btn-view-all:hover {
-            color: var(--accent);
-            text-decoration: underline;
-          }
-
-          @keyframes activitySlideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .activity-item.new {
-            border-left: 3px solid var(--primary);
-          }
-
-          .dark .activity-item {
-            background: #0f172a;
-            border-color: #334155;
-          }
-
-          .dark .activity-item:hover {
-            border-color: #7c3aed;
-          }
-
-          .dark .activity-empty i {
-            color: #334155;
-          }
-
-          .dark .activity-feed-footer {
-          .suggestion-group-header {
-            padding: 6px 16px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 4px;
-          }
-
-          .suggestion-no-results {
-            padding: 16px;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-          }
-
-          .suggestion-no-results i {
-            display: block;
-            font-size: 24px;
-            margin-bottom: 8px;
-            color: var(--border-color);
-          }
-
-
-          /* Tag Clickable Styles */
-          .tag {
-            cursor: pointer;
-            transition: all 0.25s ease;
-            user-select: none;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-          }
-
-          .tag:hover {
-
-          /* ===== KEYBOARD SHORTCUTS STYLES ===== */
-
-          .shortcuts-toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 998;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            font-family: 'Poppins', sans-serif;
-          }
-
-          .shortcuts-toggle-btn:hover {
-
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-          }
-
-          .tag:active {
-            transform: scale(0.95);
-          }
-
-          .tag:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-          }
-
-          .tag::after {
-            content: ' 🔍';
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            font-size: 0.6rem;
-          }
-
-          .tag:hover::after {
-            opacity: 1;
-          }
-
-          .dark .tag {
-            background: #1e293b;
-            border-color: #334155;
-            color: #94a3b8;
-          }
-
-          .dark .tag:hover {
-            background: #7c3aed;
-            color: white;
-            border-color: #7c3aed;
-          }
-
-          @media (max-width: 768px) {
-            .tag {
-              padding: 6px 14px;
-              font-size: 0.8rem;
-              min-height: 32px;
-            }
-            .tag::after {
-              content: '';
-
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
-          }
-
-          .shortcuts-toggle-btn i {
-            font-size: 1rem;
-          }
-
-          .shortcuts-toggle-btn .shortcut-hint {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            font-weight: 400;
-          }
-
-          .shortcuts-modal .modal-content {
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-          }
-
-          .shortcuts-modal-content {
-            padding: 0 !important;
-          }
-
-          .shortcuts-modal .modal-header {
-            padding: 20px 24px 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-
-          .shortcuts-modal .modal-header h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-          }
-
-          .shortcuts-modal .modal-header h3 i {
-            color: var(--primary);
-          }
-
-          .shortcuts-modal .modal-body {
-            padding: 20px 24px 16px;
-          }
-
-          .shortcuts-intro {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-          }
-
-          .shortcuts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-          }
-
-
-      <!-- Theme Initialization Script -->
-      <script>
-        (function () {
-          try {
-            var storedTheme = localStorage.getItem('theme');
-            var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-            var theme = storedTheme || (prefersLight ? 'light' : 'dark');
-            if (theme === 'light') {
-              document.documentElement.classList.add('light-mode');
-            } else {
-              document.documentElement.classList.remove('light-mode');
-            }
-          } catch (e) { }
-        })();
-      </script>
-
-
-          .dark .suggestion-type.description {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fcd34d;
-          }
-
-          .dark .suggestion-group-header {
-            color: #94a3b8;
-
-            border-color: #334155;
-          }
-
-          @media (max-width: 768px) {
-
-            .activity-item {
-              padding: 8px 10px;
-              gap: 10px;
-            }
-
-            .activity-icon {
-              width: 30px;
-              height: 30px;
-              font-size: 13px;
-            }
-
-            .activity-content .activity-message {
-              font-size: 0.85rem;
-            }
-
-            .activity-time {
-              font-size: 0.65rem;
-
-            .search-wrapper {
-              min-width: 150px;
-            }
-
-            .search-bar input {
-              font-size: 0.85rem;
-              padding: 10px 10px;
-            }
-
-            .search-suggestions {
-              max-height: 260px;
-              border-radius: 10px;
-            }
-
-            .suggestion-item {
-              padding: 8px 14px;
-              font-size: 0.85rem;
-            }
-
-            .suggestion-icon {
-              font-size: 0.85rem;
-              width: 20px;
-
-            }
-          }
-
-          @media (max-width: 480px) {
-
-            .activity-item {
-              flex-wrap: wrap;
-              gap: 6px;
-            }
-
-            .activity-time {
-              width: 100%;
-              margin-left: 42px;
-
-            .search-wrapper {
-              min-width: 120px;
-              width: 100%;
-            }
-
-            .search-suggestions {
-              max-height: 220px;
-              margin-top: 2px;
-            }
-
-            .suggestion-item {
-              padding: 6px 12px;
-              font-size: 0.8rem;
-              gap: 8px;
-            }
-
-            .suggestion-type {
-              font-size: 0.55rem;
-              padding: 1px 6px;
-
-            }
-          }
+      /* ===== ACTIVITY FEED STYLES ===== */
+      .card-header-with-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .btn-clear-activity {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+      }
+
+      .btn-clear-activity:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+      .activity-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .activity-feed::-webkit-scrollbar { width: 4px; }
+      .activity-feed::-webkit-scrollbar-track { background: var(--bg-primary); border-radius: 2px; }
+      .activity-feed::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+        animation: activitySlideIn 0.3s ease;
+      }
+
+      .activity-item:hover {
+        border-color: var(--primary);
+        transform: translateX(4px);
+      }
+
+      .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 16px;
+      }
+
+      .activity-icon.solved { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+      .activity-icon.quiz { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+      .activity-icon.badge { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+      .activity-icon.streak { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+      .activity-icon.level { background: rgba(124, 58, 237, 0.15); color: #a78bfa; }
+      .activity-icon.xp { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+      .activity-icon.practice { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+
+      .activity-content { flex: 1; min-width: 0; }
+
+      .activity-content .activity-message {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin: 0 0 2px 0;
+        line-height: 1.4;
+      }
+
+      .activity-content .activity-detail {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .activity-time {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .activity-empty {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--text-secondary);
+      }
+
+      .activity-empty i {
+        font-size: 32px;
+        color: var(--border-color);
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .activity-empty p { margin: 0; font-size: 0.9rem; }
+
+      .activity-feed-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        margin-top: 12px;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .btn-view-all {
+        background: none;
+        border: none;
+        color: var(--primary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.8rem;
+        transition: color 0.2s ease;
+      }
+
+      .btn-view-all:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+
+      @keyframes activitySlideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .activity-item.new { border-left: 3px solid var(--primary); }
+
+      .dark .activity-item { background: #0f172a; border-color: #334155; }
+      .dark .activity-item:hover { border-color: #7c3aed; }
+      .dark .activity-empty i { color: #334155; }
     </style>
   </head>
-
-
-</head>
 
   <body data-page="index">
     <!-- PWA Storage Usage -->
@@ -774,14 +242,13 @@
       Checking storage...
     </div>
 
-
     <!-- Offline Status Banner -->
     <div id="offline-banner" class="offline-banner hidden" aria-live="polite">
       <i class="fas fa-wifi-slash"></i> You are currently offline. Some features may be limited, but
       cached content is available.
     </div>
-  
-  <!-- Loading Screen -->
+
+    <!-- Loading Screen -->
     <div id="loading-screen">
       <div class="loader">
         <div class="infinity-loader">∞</div>
@@ -1120,7 +587,10 @@
                       <li>Dynamic Programming</li>
                       <li>Greedy Algorithms</li>
                     </ul>
-                    <a href="/pages/learning/intermediate-roadmap/intermediate-roadmap.html" class="btn btn-primary">
+                    <a
+                      href="/pages/learning/intermediate-roadmap/intermediate-roadmap.html"
+                      class="btn btn-primary"
+                    >
                       Explore Roadmap
                     </a>
                   </div>
@@ -1142,7 +612,6 @@
           </div>
         </div>
       </section>
-      <div id="roadmap-placeholder"></div>
 
       <!-- Interview Prep Section -->
       <div id="interview-placeholder"></div>
@@ -1341,8 +810,6 @@
         </div>
       </section>
 
-      <div id="dashboard-placeholder"></div>
-
       <!-- Did You Know? Section -->
       <div id="did-you-know-placeholder"></div>
 
@@ -1426,7 +893,6 @@
           </div>
         </div>
       </section>
-      <div id="gamification-placeholder"></div>
 
       <!-- Game Modal -->
       <div id="game-modal-placeholder"></div>
@@ -1563,11 +1029,8 @@
           loadPartial('flashcards-placeholder', '/partials/flashcards.html'),
           loadPartial('rust-playground-placeholder', '/partials/rust-playground.html'),
           loadPartial('quiz-placeholder', '/partials/quiz.html'),
-          loadPartial('roadmap-placeholder', '/partials/roadmap.html'),
           loadPartial('interview-placeholder', '/partials/interview.html'),
-          loadPartial('dashboard-placeholder', '/partials/dashboard.html'),
           loadPartial('did-you-know-placeholder', '/partials/did-you-know.html'),
-          loadPartial('gamification-placeholder', '/partials/gamification.html'),
           loadPartial('game-modal-placeholder', '/partials/game-modal.html'),
           loadPartial('shortcuts-panel-placeholder', '/partials/shortcuts-panel.html'),
           loadPartial('topic-modal-placeholder', '/partials/topic-modal.html'),
@@ -1587,21 +1050,7 @@
       })();
     </script>
 
-    <!-- Footer Shortcut Trigger -->
-    <footer>
-      <button
-        onclick="openShortcutModal()"
-        style="
-          background: none;
-          border: none;
-          color: #6b7280;
-          cursor: pointer;
-          text-decoration: underline;
-        "
-      >
-        ⌨️ Keyboard Shortcuts
-      </button>
-    </footer>
+
     <script type="module" src="./modules/aiHintsBootstrap.js"></script>
   </body>
 </html>

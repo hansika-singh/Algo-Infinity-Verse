@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { sendJson, readJsonBody, getSession } from '../../server.js';
+import { sendJson, readJsonBody } from '../utils/helpers.js';
+import { getSession } from '../utils/sessionToken.js';
 
-import { DATA_DIR } from '../../server.js';
+import { DATA_DIR } from '../utils/helpers.js';
 
 // NOTE: We store session timelines in Firestore only if initialized in server.js.
 // server.js exposes a single boolean (useFirestore) only in runtime, so for this

@@ -9,16 +9,23 @@ class CacheManager {
   }
 
   initDB() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, 1);
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-      request.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          db.createObjectStore(this.storeName, { keyPath: 'url' });
-        }
-      };
+  async set(url, data, type = 'json', ttlMs = 3600000) {
+    try {
+      const db = await this.dbPromise;
+      if (!db) return;
+      return new Promise((resolve, reject) => {
+
+  async get(url) {
+    try {
+      const db = await this.dbPromise;
+      if (!db) return null;
+      return new Promise((resolve, reject) => {
+
+  async invalidate(url) {
+    try {
+      const db = await this.dbPromise;
+      if (!db) return;
+      return new Promise((resolve, reject) => {
     });
   }
 
