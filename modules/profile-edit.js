@@ -4,9 +4,11 @@ let selectedProfileAvatar = "";
 window.openProfileModal = function() {
     const modal = document.getElementById("profileEditModal");
     const nameInput = document.getElementById("profileNameInput");
+    const bioInput = document.getElementById("profileBioInput");
     const userProgress = window.userProgress || {};
     
     if (nameInput) nameInput.value = userProgress.name || "Learner";
+    if (bioInput) bioInput.value = userProgress.bio || "";
     selectedProfileAvatar = userProgress.avatar || "🚀";
     
     renderAvatarOptions();
@@ -51,7 +53,8 @@ window.saveProfileChanges = function() {
         void 0;
         return;
     }
-    
+    const bioInput = document.getElementById("profileBioInput");
+const bioVal = bioInput ? bioInput.value.trim().slice(0, 120) : "";
     const userLangs = [];
     const checkboxes = document.querySelectorAll(".lang-edit-checkbox");
     checkboxes.forEach(cb => {
@@ -60,6 +63,7 @@ window.saveProfileChanges = function() {
     
     userProgress.name = nameVal;
     userProgress.avatar = selectedProfileAvatar;
+    userProgress.bio = bioVal;
     userProgress.languages = userLangs;
     
     if (typeof saveUserData === 'function') {
@@ -132,6 +136,16 @@ function updateProfileViews() {
     if (profileName) profileName.textContent = userProgress.name;
     const profileSectionName = document.getElementById("profileSectionName");
     if (profileSectionName) profileSectionName.textContent = userProgress.name;
+    const profileBio = document.getElementById("profileBio");
+if (profileBio) {
+    if (userProgress.bio) {
+        profileBio.textContent = userProgress.bio;
+        profileBio.classList.remove("empty-state");
+    } else {
+        profileBio.textContent = "No bio yet. Click edit to add one!";
+        profileBio.classList.add("empty-state");
+    }
+}
     
     const userNameEl = document.getElementById("userName");
     if (userNameEl) userNameEl.textContent = userProgress.name;

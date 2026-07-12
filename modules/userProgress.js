@@ -4,6 +4,7 @@
 window.userProgress = {
   name: "Learner",
   avatar: "🚀",
+  bio: '',
   completedProblems: [],
   completedDailyChallenges: [],
   codingPersonality: { type: "brute-force first", bruteForceCount: 1, slowAccurateCount: 0, greedyCount: 0, overOptimizerCount: 0 },
