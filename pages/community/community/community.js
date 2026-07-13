@@ -638,3 +638,91 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
 }
+// ===== COMMUNITY STATS =====
+function updateCommunityStats() {
+    const posts = getPosts();
+    const totalPosts = posts.length;
+    const totalComments = posts.reduce((sum, p) => sum + (p.comments?.length || 0), 0);
+    const totalVotes = posts.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+    const totalPostsEl = document.getElementById('totalPostsCount');
+    const totalCommentsEl = document.getElementById('totalCommentsCount');
+    const totalVotesEl = document.getElementById('totalVotesCount');
+
+    if (totalPostsEl) totalPostsEl.textContent = totalPosts;
+    if (totalCommentsEl) totalCommentsEl.textContent = totalComments;
+    if (totalVotesEl) totalVotesEl.textContent = totalVotes;
+}
+
+// ===== TOP CONTRIBUTORS =====
+function updateTopContributors() {
+    const posts = getPosts();
+    const container = document.getElementById('contributorsList');
+    if (!container) return;
+
+    // Calculate contributor scores
+    const contributors = {};
+    posts.forEach(post => {
+        const author = post.author || 'Anonymous';
+        if (!contributors[author]) {
+            contributors[author] = { posts: 0, votes: 0 };
+        }
+        contributors[author].posts++;
+        contributors[author].votes += post.votes || 0;
+    });
+
+    // Sort by votes
+    const sorted = Object.entries(contributors)
+        .sort((a, b) => b[1].votes - a[1].votes)
+        .slice(0, 5);
+
+    const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+    const avatars = ['🚀', '⭐', '🔥', '💎', '🏆'];
+
+    if (sorted.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem;">No contributors yet. Be the first!</p>`;
+        return;
+    }
+
+    container.innerHTML = sorted.map(([name, data], i) => `
+        <div class="contributor-item">
+            <span class="contributor-rank">${medals[i] || i + 1}</span>
+            <div class="contributor-avatar">${avatars[i] || '👤'}</div>
+            <div class="contributor-info">
+                <div class="contributor-name">${name}</div>
+                <div class="contributor-posts">${data.posts} posts</div>
+            </div>
+            <span class="contributor-votes">+${data.votes}</span>
+        </div>
+    `).join('');
+}
+
+// ===== TOPIC FILTERS =====
+function initTopicFilters() {
+    const filterBtns = document.querySelectorAll('.topic-filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const topic = btn.dataset.topic;
+            filterPostsByTopic(topic);
+        });
+    });
+}
+
+function filterPostsByTopic(topic) {
+    const posts = getPosts();
+    const filtered = topic === 'all'
+        ? posts
+        : posts.filter(p => p.tags?.some(tag =>
+            tag.toLowerCase().includes(topic.toLowerCase())
+        ));
+    renderPosts(filtered);
+}
+
+// Initialize new features
+document.addEventListener('DOMContentLoaded', () => {
+    updateCommunityStats();
+    updateTopContributors();
+    initTopicFilters();
+});
