@@ -3,7 +3,7 @@ import * as yaml from 'js-yaml';
 
 export class GitLabProvider extends VCSProvider {
   async getCIConfigFiles() {
-    const match = this.repoUrl.match(/gitlab\.com\/([^\/]+)\/([^\/]+)/);
+    const match = this.repoUrl.match(/gitlab\.com\/([^/]+)\/([^/]+)/);
     if (!match) throw new Error("Invalid GitLab URL");
 
     const namespace = match[1];

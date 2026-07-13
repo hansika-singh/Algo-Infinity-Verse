@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manacher's Algorithm · Algo Infinity Verse</title>
+<meta name="description" content="A Mirror-Symmetry Engine visualizer for Manacher's Algorithm — watch palindrome radii get borrowed via mirror symmetry to find the longest palindromic substring in linear time.">
+<link rel="stylesheet" href="manacher.css">
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <span class="logo-mark">🪞</span>
+      <span class="name">Algo Infinity Verse</span>
+    </a>
+
+    <div class="page-title">
+      <h1>Manacher's Algorithm</h1>
+      <p>Mirror-symmetry engine · Longest Palindromic Substring in O(N)</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="crumb">Visualizers / <strong>Manacher's Algorithm</strong></span>
+      <button class="icon-btn" id="pauseBtn" title="Pause / resume auto-play">⏸</button>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace">
+
+    <!-- ---------- Left panel: input + playback ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Input</h2></div>
+      <div class="panel-body">
+
+        <div class="control-group">
+          <div class="control-label"><span>Source string</span></div>
+          <input type="text" class="text-input" id="sourceInput" value="forgeeksskeegfor" maxlength="26" spellcheck="false" autocomplete="off">
+          <p class="error-text" id="inputError"></p>
+        </div>
+
+        <div class="control-group">
+          <button class="btn primary full" id="applyBtn">▶ Build &amp; Run</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="toggle-row">
+          <span>Race vs. naive O(N²)</span>
+          <label class="switch">
+            <input type="checkbox" id="toggleRace">
+            <span class="track"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Playback speed</span><span class="val" id="speedVal">400ms/step</span></div>
+          <input type="range" id="speedSlider" min="60" max="900" step="20" value="400">
+        </div>
+
+        <div class="btn-row" style="margin-bottom:10px;">
+          <button class="btn" id="stepBackBtn">⏮ Restart</button>
+          <button class="btn" id="stepNextBtn">Step ⏭</button>
+        </div>
+        <button class="btn primary full" id="playBtn">▶ Play</button>
+
+        <div class="divider"></div>
+
+        <div class="legend-item"><span class="swatch copy"></span> Mirror-copy — radius borrowed for free</div>
+        <div class="legend-item"><span class="swatch compare"></span> Real character comparison</div>
+        <div class="legend-item"><span class="swatch boundary"></span> Right boundary R extended</div>
+        <div class="legend-item"><span class="swatch best"></span> Longest palindrome so far</div>
+
+      </div>
+    </aside>
+
+    <!-- ---------- Center: transformed string stage ---------- -->
+    <section class="panel viewport-panel">
+      <div id="viewport">
+        <div class="viewport-overlay">
+          <span class="chip">i <strong id="chipI">0</strong></span>
+          <span class="chip">C, R <strong id="chipCR">0, 0</strong></span>
+          <span class="chip">Comparisons <strong id="chipComparisons">0</strong></span>
+          <span class="chip">Best len <strong id="chipBest">0</strong></span>
+        </div>
+
+        <div class="phase-badge phase-init" id="phaseBadge">Ready</div>
+
+        <div class="stage" id="stage">
+          <div class="strip-wrap" id="stripWrap">
+            <svg id="mirrorSvg"></svg>
+            <div class="guide-line c-line" id="cLine"><span class="guide-label c-label" id="cLabel">C</span></div>
+            <div class="guide-line r-line" id="rLine"><span class="guide-label r-label" id="rLabel">R</span></div>
+            <div class="orig-row" id="origRow"></div>
+            <div class="trans-row" id="transRow"></div>
+            <div class="radius-chart" id="radiusChart"></div>
+          </div>
+        </div>
+
+        <div class="loading-veil" id="loadingVeil">
+          <div class="spinner"></div>
+          <p>transforming the string…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right panel: telemetry + race ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Telemetry</h2></div>
+      <div class="panel-body">
+
+        <div class="result-box" id="resultBox">
+          <div class="rtitle">Longest Palindromic Substring</div>
+          <div class="rval" id="resultVal">—</div>
+          <div class="rmeta" id="resultMeta"></div>
+          <div class="rcallout" id="resultCallout"></div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num" id="statPi">0</div><div class="lbl">P[i] radius</div></div>
+          <div class="stat-box"><div class="num" id="statMirror">—</div><div class="lbl">Mirror index</div></div>
+        </div>
+
+        <div class="readout" id="stepReadout">
+          <div><span class="k">Current index i</span> <span class="v" id="roI">0</span></div>
+          <div><span class="k">Inside [C, R)?</span> <span class="v" id="roInside">no</span></div>
+          <div><span class="k">Initial guess</span> <span class="v" id="roGuess">0</span></div>
+          <div><span class="k">Comparisons (Manacher)</span> <span class="v" id="roComparisons">0</span></div>
+        </div>
+
+        <div class="race-chart-wrap" id="raceChartWrap">
+          <div class="lbl">Comparisons so far — O(N) vs O(N²)</div>
+          <svg id="raceChart" viewBox="0 0 300 90" preserveAspectRatio="none"></svg>
+          <div class="race-legend">
+            <span class="item"><span class="dot manacher"></span> Manacher</span>
+            <span class="item"><span class="dot naive"></span> Naive expand-around-center</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <p class="hint">Whenever <strong>i</strong> falls inside the current right boundary <strong>R</strong>, its radius starts as a copy of its mirror position's radius around center <strong>C</strong> — free information, zero comparisons. Real comparisons only happen to extend past what's already known, which is what bounds the total work to O(N).</p>
+      </div>
+    </aside>
+
+  </main>
+</div>
+
+<script src="manacher.js"></script>
+</body>
+</html>

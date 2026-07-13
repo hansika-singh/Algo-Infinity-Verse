@@ -8,10 +8,10 @@ const { addDocument, search } = require('./vectorStore');
 const { generateStatsSection } = require('./compressionEngine/summaryGenerator');
 
 function slugify(str) {
-  return str.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '').replace(/\-\-+/g, '-').replace(/^\-+/, '').replace(/\-+$/, '');
+  return str.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
 }
 
-async function fetchUserSnippets(topic) {
+async function fetchUserSnippets(_topic) {
   // TODO: integrate with user's notes, submissions, flashcards, etc.
   return [];
 }

@@ -1,14 +1,23 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Git Version Control DAG Simulator | Algo Infinity Verse</title>
-    <meta name="description" content="Interactive Directed Acyclic Graph simulator for Git. Visualize rebase, merge, and detached HEAD states." />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
+    <meta
+      name="description"
+      content="Interactive Directed Acyclic Graph simulator for Git. Visualize rebase, merge, and detached HEAD states."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="git-visualizer.css" />
 
@@ -30,64 +39,82 @@
   <script src="/theme.js"></script>
 </head>
 <body class="git-body">
-
     <nav class="navbar git-nav">
-        <div class="nav-logo">
-            <span class="logo-text">∞</span>
-            <span class="logo-title">Algo Infinity Verse</span>
-        </div>
-        <div class="engine-badge">
-            <i class="fas fa-code-branch"></i> Git DAG Simulator
-        </div>
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-code-branch"></i> Git DAG Simulator</div>
     </nav>
 
     <main class="git-workspace">
-        <!-- Left Panel: Interactive Terminal -->
-        <div class="panel-left">
-            <div class="panel-header">
-                <h3><i class="fas fa-terminal"></i> Git Terminal</h3>
-                <span class="badge">Bash</span>
-            </div>
-            
-            <div class="terminal-container" id="terminalContainer">
-                <div class="terminal-output" id="terminalOutput" aria-live="polite" aria-relevant="additions">
-                    <div class="log-info">Welcome to the Git DAG Simulator!</div>
-                    <div class="log-info">Available commands:</div>
-                    <div class="log-info">  git commit -m "msg"</div>
-                    <div class="log-info">  git branch &lt;name&gt;</div>
-                    <div class="log-info">  git checkout &lt;name&gt;</div>
-                    <div class="log-info">  git merge &lt;branch&gt;</div>
-                    <div class="log-info">  git rebase &lt;branch&gt;</div>
-                    <div class="log-info">  git reset --hard &lt;hash&gt;</div>
-                    <br/>
-                </div>
-                <div class="terminal-input-line">
-                    <span class="prompt">user@algo-verse:~/repo$</span>
-                    <input type="text" id="terminalInput" autocomplete="off" spellcheck="false" aria-label="Git command input" />
-                </div>
-            </div>
+      <!-- Left Panel: Interactive Terminal -->
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-terminal"></i> Git Terminal</h3>
+          <span class="badge">Bash</span>
         </div>
 
-        <!-- Right Panel: Visualization -->
-        <div class="panel-right">
-            <div class="viz-header">
-                <h2><i class="fas fa-project-diagram"></i> Commit DAG</h2>
-                <div class="head-status">HEAD -&gt; <span id="headTarget" class="text-accent">main</span></div>
-            </div>
-            
-            <div class="canvas-container">
-                <canvas id="dagCanvas"></canvas>
-            </div>
-            
-            <div class="reflog-panel">
-                <h3><i class="fas fa-history"></i> Reflog Time Travel</h3>
-                <input type="range" id="reflogSlider" min="0" max="0" value="0" class="w-100 mt-2" disabled>
-                <div class="reflog-info" id="reflogInfo">No actions yet</div>
-            </div>
+        <div class="terminal-container" id="terminalContainer">
+          <div
+            class="terminal-output"
+            id="terminalOutput"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
+            <div class="log-info">Welcome to the Git DAG Simulator!</div>
+            <div class="log-info">Available commands:</div>
+            <div class="log-info">git commit -m "msg"</div>
+            <div class="log-info">git branch &lt;name&gt;</div>
+            <div class="log-info">git checkout &lt;name&gt;</div>
+            <div class="log-info">git merge &lt;branch&gt;</div>
+            <div class="log-info">git rebase &lt;branch&gt;</div>
+            <div class="log-info">git reset --hard &lt;hash&gt;</div>
+            <br />
+          </div>
+          <div class="terminal-input-line">
+            <span class="prompt">user@algo-verse:~/repo$</span>
+            <input
+              type="text"
+              id="terminalInput"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Git command input"
+            />
+          </div>
         </div>
+      </div>
+
+      <!-- Right Panel: Visualization -->
+      <div class="panel-right">
+        <div class="viz-header">
+          <h2><i class="fas fa-project-diagram"></i> Commit DAG</h2>
+          <div class="head-status">
+            HEAD -&gt; <span id="headTarget" class="text-accent">main</span>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="dagCanvas"></canvas>
+        </div>
+
+        <div class="reflog-panel">
+          <h3><i class="fas fa-history"></i> Reflog Time Travel</h3>
+          <input
+            type="range"
+            id="reflogSlider"
+            min="0"
+            max="0"
+            value="0"
+            class="w-100 mt-2"
+            disabled
+          />
+          <div class="reflog-info" id="reflogInfo">No actions yet</div>
+        </div>
+      </div>
     </main>
 
     <script src="git-visualizer.js"></script>
-</body>
+  </body>
 </html>
 

@@ -38,7 +38,7 @@ function publicUser(user) {
     name: user.name || "Learner",
     xp: Number(user.xp || user.progress?.xp || 0),
     level: Number(user.level || user.progress?.level || 1),
-    avatar: user.avatar || user.progress?.avatar || "🚀",
+    avatar: user.avatar || user.progress?.avatar || '{"initial":"L","bg":"#7c3aed"}',
     updatedAt: user.progressUpdatedAt || user.updatedAt || user.createdAt || null,
   };
 }

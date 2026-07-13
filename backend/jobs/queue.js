@@ -28,7 +28,7 @@ async function checkRedis() {
       enableOfflineQueue: false,
     });
     bulkAuditQueue = new Queue('bulk-audit-queue', { connection: redisClient });
-    bulkAuditQueue.on('error', (err) => {
+    bulkAuditQueue.on('error', (_err) => {
       void 0;
     });
   } catch {

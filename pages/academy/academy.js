@@ -58,6 +58,24 @@ const academies = [
     difficulty: 'Beginner',
     desc: 'Master utility-first CSS with Tailwind for rapid, customizable UI development.',
   },
+  {
+    id: 'bootstrap',
+    name: 'Bootstrap Academy',
+    path: '/pages/bootstrap-learning/bootstrap-learning.html',
+    category: 'Frontend',
+    icon: 'fa-brands fa-bootstrap',
+    difficulty: 'Beginner',
+    desc: 'Build responsive, mobile-first sites quickly with Bootstrap\'s grid system and components.',
+  },
+  {
+    id: 'mui',
+    name: 'Material UI Academy',
+    path: '/pages/mui-learning/mui-learning.html',
+    category: 'Frontend',
+    icon: 'mui',
+    difficulty: 'Intermediate',
+    desc: 'Create polished React apps with Material Design components, theming, and customization.',
+  },
 
   // ── Backend ──
   {
@@ -104,6 +122,24 @@ const academies = [
     icon: 'kafka',
     difficulty: 'Advanced',
     desc: 'Master event-driven architecture with Apache Kafka for scalable data pipelines.',
+  },
+  {
+    id: 'fastapi',
+    name: 'FastAPI Academy',
+    path: '/pages/fastapi-learning/fastapi-learning.html',
+    category: 'Backend',
+    icon: 'fastapi',
+    difficulty: 'Intermediate',
+    desc: 'Build high-performance Python APIs with FastAPI, async support, and automatic docs.',
+  },
+  {
+    id: 'nodejs',
+    name: 'Node.js Academy',
+    path: '/pages/nodejs-learning/nodejs-learning.html',
+    category: 'Backend',
+    icon: 'fa-brands fa-node-js',
+    difficulty: 'Beginner',
+    desc: 'Learn server-side JavaScript with Node.js, event-driven architecture, and npm ecosystem.',
   },
 
   // ── Cloud & DevOps ──
@@ -163,6 +199,15 @@ const academies = [
     difficulty: 'Beginner',
     desc: 'Lightweight embedded SQL databases for mobile, edge, and local-first applications.',
   },
+  {
+    id: 'postgresql',
+    name: 'PostgreSQL Academy',
+    path: '/pages/postgresql-learning/postgresql-learning.html',
+    category: 'Databases',
+    icon: 'postgresql',
+    difficulty: 'Intermediate',
+    desc: 'Master PostgreSQL for relational databases, advanced queries, indexing, and data integrity.',
+  },
 
   // ── AI / Misc ──
   {
@@ -179,10 +224,10 @@ const academies = [
 /* ─── Categories with counts ─── */
 const categoryDefs = [
   { label: 'All', key: 'all', count: academies.length },
-  { label: 'Frontend', key: 'frontend', count: 6 },
-  { label: 'Backend', key: 'backend', count: 5 },
+  { label: 'Frontend', key: 'frontend', count: 8 },
+  { label: 'Backend', key: 'backend', count: 7 },
   { label: 'Cloud & DevOps', key: 'cloud-devops', count: 2 },
-  { label: 'Databases', key: 'databases', count: 4 },
+  { label: 'Databases', key: 'databases', count: 5 },
   { label: 'AI / Misc', key: 'ai-misc', count: 1 },
 ];
 
@@ -322,6 +367,12 @@ const svgIcons = {
     'M21.56 12.06c.143-.374.568-.564.945-.423.376.14.567.564.426.944-1.39 3.738-4.99 6.323-9.1 6.323-5.385 0-9.75-4.364-9.75-9.75 0-5.27 4.195-9.563 9.43-9.742.4-.012.72.288.732.69.012.404-.29.72-.69.732-4.544.15-8.23 3.904-8.23 8.32 0 4.558 3.712 8.27 8.27 8.27 3.633 0 6.758-2.388 7.9-5.658zM14.5 9c0 1.38-1.12 2.5-2.5 2.5S9.5 10.38 9.5 9 10.62 6.5 12 6.5s2.5 1.12 2.5 2.5z',
   svelte:
     'M23.953 4.57a10 10 0 0 1-2.825.775a4.4 4.4 0 0 0-1.896-1.78a10.2 10.2 0 0 0-3.35-.851a11.1 11.1 0 0 0-3.66.082a9.6 9.6 0 0 0-3.415 1.488a8.9 8.9 0 0 0-2.6 2.656a8.5 8.5 0 0 0-1.076 3.031a9.3 9.3 0 0 0 .151 3.518a8.8 8.8 0 0 0 1.259 3.064a9.7 9.7 0 0 0 2.508 2.607a9.7 9.7 0 0 0 3.324 1.577a10.8 10.8 0 0 0 3.486.208a10.1 10.1 0 0 0 3.125-1.036V17.01l-4.48-2.613l-1.042.606a2.8 2.8 0 0 1-1.065.344a3.1 3.1 0 0 1-1.096-.065a2.6 2.6 0 0 1-1.007-.367a2.1 2.1 0 0 1-.723-1.424a2.7 2.7 0 0 1 .158-1.577a2.4 2.4 0 0 1 1.056-1.127l8.6-5.016Z',
+  fastapi:
+    'M12.023 0L2.93 4.394v8.789l9.093 4.394 9.093-4.394V4.394zm0 10.556L4.325 6.64v4.393l7.698 3.916 7.698-3.916V6.64zm0 7.832l-7.698-3.917v4.394l7.698 3.916 7.698-3.916v-4.394z',
+  mui:
+    'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
+  postgresql:
+    'M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698z',
 };
 
 function iconHtml(icon) {
@@ -383,12 +434,16 @@ document.getElementById('acBackBtn')?.addEventListener('click', () => {
 /* ─── Flip Animation ─── */
 function initFlipAnimation() {
   const flipItems = [
+    { name: 'Bootstrap', cat: 'frontend' },
+    { name: 'Material UI', cat: 'frontend' },
     { name: 'Next.js', cat: 'frontend' },
     { name: 'Angular', cat: 'frontend' },
     { name: 'React', cat: 'frontend' },
     { name: 'Svelte', cat: 'frontend' },
     { name: 'Vue.js', cat: 'frontend' },
     { name: 'Tailwind', cat: 'frontend' },
+    { name: 'FastAPI', cat: 'backend' },
+    { name: 'Node.js', cat: 'backend' },
     { name: 'Express', cat: 'backend' },
     { name: 'NestJS', cat: 'backend' },
     { name: 'Firebase', cat: 'backend' },
@@ -396,6 +451,7 @@ function initFlipAnimation() {
     { name: 'Kafka', cat: 'backend' },
     { name: 'AWS', cat: 'cloud-devops' },
     { name: 'Docker & K8s', cat: 'cloud-devops' },
+    { name: 'PostgreSQL', cat: 'databases' },
     { name: 'MongoDB', cat: 'databases' },
     { name: 'Elasticsearch', cat: 'databases' },
     { name: 'Neo4j', cat: 'databases' },

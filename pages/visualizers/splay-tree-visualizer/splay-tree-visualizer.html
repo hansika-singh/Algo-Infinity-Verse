@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Splay Tree Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Watch a self-adjusting splay tree move accessed nodes to the root via zig, zig-zig, and zig-zag rotations — frequently used items get faster automatically." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="splay-tree-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="splay-tree-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="sp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="sp-hero-inner">
+        <div class="sp-hero-eyebrow">🌳 GCC Optimizer · Network Routing Tables · Amortized Analysis</div>
+        <h1 class="sp-hero-title">Splay Tree Visualizer</h1>
+        <p class="sp-hero-sub">No balance invariant. Just move what you touch to the top.</p>
+        <p class="sp-hero-desc">Every access — insert, search, even delete — ends with the touched node splayed all the way to the root via rotations. No explicit caching logic, no balance factors to maintain. Access the same few items repeatedly and watch them cluster near the root, getting faster automatically, purely as a side effect of the splay operation.</p>
+        <a href="#lab" class="btn btn-primary sp-btn-primary"><i class="fas fa-arrows-rotate"></i> Open Explorer</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section sp-section">
+      <div class="container">
+
+        <div class="sp-control-card">
+          <div class="sp-row">
+            <span class="sp-row-label">Value</span>
+            <input type="number" id="spValueInput" class="sp-num-input" value="50" min="1" max="99" />
+            <button class="btn sp-btn-primary sp-op-btn" id="spInsertBtn"><i class="fas fa-plus"></i> Insert</button>
+            <button class="btn btn-secondary sp-op-btn" id="spSearchBtn"><i class="fas fa-magnifying-glass"></i> Search (splays)</button>
+            <button class="btn btn-secondary sp-op-btn" id="spDeleteBtn"><i class="fas fa-minus"></i> Delete</button>
+          </div>
+          <div class="sp-row">
+            <span class="sp-row-label">Presets</span>
+            <div class="sp-preset-btns">
+              <button class="sp-preset-btn" data-preset="balanced">Balanced tree</button>
+              <button class="sp-preset-btn" data-preset="hotpath">Hot-path demo (access same 3 nodes repeatedly)</button>
+            </div>
+            <button class="btn btn-secondary sp-reset-btn" id="spResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+        </div>
+
+        <div class="sp-status" id="spStatus">Insert or search values to see splaying in action. Every touched node moves all the way to the root.</div>
+
+        <div class="sp-main-layout">
+
+          <div class="sp-tree-section">
+            <div class="sp-panel-title"><i class="fas fa-sitemap"></i> Splay Tree</div>
+            <div class="sp-tree-wrap"><svg id="spTreeSvg" class="sp-tree-svg"></svg></div>
+            <div class="sp-legend">
+              <span class="sp-leg"><span class="sp-leg-dot sp-leg-normal"></span>Normal node</span>
+              <span class="sp-leg"><span class="sp-leg-dot sp-leg-splaying"></span>Currently splaying</span>
+              <span class="sp-leg"><span class="sp-leg-dot sp-leg-root"></span>Root</span>
+            </div>
+          </div>
+
+          <div class="sp-right-panel">
+
+            <div class="sp-panel-card">
+              <div class="sp-panel-title"><i class="fas fa-list-ol"></i> Splay Step Log</div>
+              <div class="sp-log" id="spLog"><div class="sp-empty">No operations yet.</div></div>
+            </div>
+
+            <div class="sp-panel-card">
+              <div class="sp-panel-title"><i class="fas fa-gauge-high"></i> Amortized Cost Tracker</div>
+              <canvas id="spAmortizedCanvas" class="sp-amortized-canvas"></canvas>
+              <div class="sp-stat-rows">
+                <div class="sp-stat-row"><span>Total rotations</span><span id="spTotalRotations">0</span></div>
+                <div class="sp-stat-row"><span>Total operations</span><span id="spTotalOps">0</span></div>
+                <div class="sp-stat-row"><span>Running avg rotations/op</span><span id="spAvgRotations">0.0</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="sp-compare-card">
+          <div class="sp-compare-header"><i class="fas fa-scale-balanced"></i> Splay Tree vs Static BST — Skewed Access Pattern</div>
+          <p class="sp-compare-desc">Run the same skewed access sequence (a few "hot" nodes accessed far more often than others) on both a splay tree and a plain static BST. Compare total rotation/comparison cost.</p>
+          <button class="btn sp-btn-primary sp-run-compare-btn" id="spRunCompareBtn"><i class="fas fa-play"></i> Run Skewed Access Comparison (200 accesses)</button>
+          <div class="sp-compare-result hidden" id="spCompareResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🌳</span> The Three Splay Cases</h2>
+        <div class="sp-learn-grid">
+          <div class="sp-learn-card" style="--lc:#06b6d4">
+            <div class="sp-learn-icon">1️⃣</div>
+            <h3>Zig</h3>
+            <p>The accessed node's parent is the root. A single rotation brings the node to the root directly — the base case, used only when the node is one step from the top.</p>
+          </div>
+          <div class="sp-learn-card" style="--lc:#a855f7">
+            <div class="sp-learn-icon">2️⃣</div>
+            <h3>Zig-Zig</h3>
+            <p>The node and its parent are both left children (or both right children) of their respective parents. Rotate the grandparent first, then the parent — same direction, twice.</p>
+          </div>
+          <div class="sp-learn-card" style="--lc:#22c55e">
+            <div class="sp-learn-icon">3️⃣</div>
+            <h3>Zig-Zag</h3>
+            <p>The node and its parent are on opposite sides (one left child, one right child). Rotate the node's parent, then rotate the node again the other direction — a double rotation in different directions.</p>
+          </div>
+          <div class="sp-learn-card" style="--lc:#f59e0b">
+            <div class="sp-learn-icon">📊</div>
+            <h3>Amortized O(log n)</h3>
+            <p>Any single splay operation can cost O(n) in the worst case — but Sleator and Tarjan proved that any sequence of m operations costs O(m log n) total, giving an amortized O(log n) per operation, the same asymptotic guarantee as AVL or Red-Black trees, with none of the explicit balance bookkeeping.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="splay-tree-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

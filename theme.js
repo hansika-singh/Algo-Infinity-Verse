@@ -5,7 +5,6 @@
   let themeObserver = null;
   let isInitialized = false;
   const SCROLL_THRESHOLD = 100;
-  const DEBOUNCE_DELAY = 100;
 
   function getNavbar() {
     if (!cachedNavbar) {
@@ -41,16 +40,16 @@
     if (scrolled) {
       navbar.classList.add('scrolled');
       navbar.style.background = isLight
-        ? 'rgba(255, 255, 255, 0.98)'
-        : 'rgba(10, 10, 26, 0.95)';
-      navbar.style.backdropFilter = 'blur(16px)';
-      navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        ? 'rgba(255, 255, 255, 0.80)'
+        : 'rgba(10, 10, 26, 0.80)';
+      navbar.style.backdropFilter = 'blur(24px)';
+      navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.12)';
     } else {
       navbar.classList.remove('scrolled');
       navbar.style.background = isLight
-        ? 'rgba(255, 255, 255, 0.85)'
-        : 'rgba(10, 10, 26, 0.85)';
-      navbar.style.backdropFilter = 'blur(16px)';
+        ? 'rgba(255, 255, 255, 0.68)'
+        : 'rgba(10, 10, 26, 0.65)';
+      navbar.style.backdropFilter = 'blur(24px)';
       navbar.style.boxShadow = 'none';
     }
   }

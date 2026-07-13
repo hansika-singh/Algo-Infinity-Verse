@@ -28,7 +28,15 @@ async function fetchProfile() {
 function renderProfile(data) {
     const { user, stats, badges, languages, projects, recentActivity } = data;
     
-    document.getElementById('profileAvatar').textContent = user.avatar || '🚀';
+    const avatarEl = document.getElementById('profileAvatar');
+    const av = user.avatar;
+    if (typeof av === 'string' && av.startsWith('data:image')) {
+      avatarEl.innerHTML = `<img src="${av}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    } else {
+      const initial = (av && av.initial) ? av.initial : (user.name || 'L').charAt(0).toUpperCase();
+      const bg = (av && av.bg) ? av.bg : '#7c3aed';
+      avatarEl.innerHTML = `<span style="display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:${bg};color:#fff;font-size:2rem;font-weight:600;font-family:'Poppins',sans-serif;">${initial}</span>`;
+    }
     document.getElementById('profileName').textContent = user.name;
     document.getElementById('profileUsername').textContent = `@${user.username}`;
     document.getElementById('profileBio').textContent = user.bio || 'No bio yet';

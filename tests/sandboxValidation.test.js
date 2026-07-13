@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 
 // Define Mock Worker and Browser Globals for Node/Jest environment
 if (typeof Worker === 'undefined') {

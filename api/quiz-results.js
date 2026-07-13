@@ -61,7 +61,7 @@ function validateQuizResult(payload) {
  * POST /api/quiz-results
  * Save a quiz attempt to Firestore under users/{userId}/quizResults/{attemptId}
  */
-export async function saveQuizResult(req, res) {
+export async function saveQuizResult(req, _res) {
   const cookies = parseCookies(req.headers.cookie || "");
   const session = verifySessionToken(cookies[SESSION_COOKIE]);
   if (!session) return { status: 401, body: { error: "Authentication required." } };
@@ -120,7 +120,7 @@ export async function saveQuizResult(req, res) {
  * Fetch quiz history for the authenticated user, sorted by completedAt descending.
  * Optional query params: ?limit=20&topic=Arrays
  */
-export async function getQuizResults(req, res) {
+export async function getQuizResults(req, _res) {
   const cookies = parseCookies(req.headers.cookie || "");
   const session = verifySessionToken(cookies[SESSION_COOKIE]);
   if (!session) return { status: 401, body: { error: "Authentication required." } };

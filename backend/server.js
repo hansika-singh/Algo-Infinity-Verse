@@ -603,13 +603,7 @@ if (process.env.VERCEL !== '1') {
       const port = Number(process.env.PORT || 3000);
       const host = process.env.HOST || '127.0.0.1';
 
-      server.listen(port, host, () => {
-        const url = `http://${host}:${port}`;
-        void 0;
-        if (!process.env.SESSION_SECRET) {
-          void 0;
-        }
-      });
+      server.listen(port, host, () => {});
     })
     .catch((error) => {
       console.error('Failed to load environment configuration:', error);

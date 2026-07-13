@@ -1,9 +1,9 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 import {
   hashPassword as hashPasswordSecure,
   passwordMatches as passwordMatchesSecure,
-} from "../services/auth.service.js";
+} from '../services/auth.service.js';
 import {
   SESSION_COOKIE,
   SESSION_MAX_AGE_SECONDS,
@@ -17,11 +17,11 @@ import {
   getSession,
   sessionCookie,
   clearSessionCookie,
-} from "./sessionToken.js";
-import { COLLECTIONS } from "../../firebase.js";
+} from './sessionToken.js';
+import { COLLECTIONS } from '../../firebase.js';
 let userWriteQueue = Promise.resolve();
 
-export const DATA_DIR = path.join(process.cwd(), "data");
+export const DATA_DIR = path.join(process.cwd(), 'data');
 
 export {
   SESSION_COOKIE,
@@ -41,7 +41,7 @@ export {
 // Response Helpers
 export function sendJson(res, status, body, headers = {}) {
   res.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
+    'Content-Type': 'application/json; charset=utf-8',
     ...headers,
   });
   res.end(JSON.stringify(body));
@@ -53,41 +53,40 @@ export function redirect(res, location, headers = {}) {
 }
 
 export async function readJsonBody(req) {
-  let body = "";
+  let body = '';
   for await (const chunk of req) {
     body += chunk;
-    if (body.length > 1024 * 1024)
-      throw new Error("Request body is too large.");
+    if (body.length > 1024 * 1024) throw new Error('Request body is too large.');
   }
   return body ? JSON.parse(body) : {};
 }
 
 // Path Helpers
 export function normalizePathname(pathname) {
-  if (!pathname) return "/";
-  return pathname.replace(/\/+$/, "") || "/";
+  if (!pathname) return '/';
+  return pathname.replace(/\/+$/, '') || '/';
 }
 
 // Protected Routes
 export function isProtectedRoute(pathname) {
   const protectedPaths = new Set([
-    "/community",
-    "/community.html",
-    "/support-page",
-    "/support-page/",
-    "/support-page/index.html",
+    '/community',
+    '/community.html',
+    '/support-page',
+    '/support-page/',
+    '/support-page/index.html',
   ]);
   return protectedPaths.has(pathname);
 }
 
 // Request Validation
 export function validateRequest(req) {
-  const allowedMethods = ["GET", "POST"];
+  const allowedMethods = ['GET', 'POST'];
   if (!allowedMethods.includes(req.method)) {
     return {
       valid: false,
       status: 405,
-      message: "Method not allowed.",
+      message: 'Method not allowed.',
     };
   }
   return { valid: true };
@@ -95,7 +94,7 @@ export function validateRequest(req) {
 
 // Rate Limiting Helpers
 export function getClientIdentifier(req) {
-  const remoteAddress = req.socket?.remoteAddress || "unknown";
+  const remoteAddress = req.socket?.remoteAddress || 'unknown';
   return remoteAddress;
 }
 
@@ -105,12 +104,12 @@ export async function normalizeAuthDelay() {
 
 // User Functions
 export async function readUsers() {
-  const DATA_DIR = path.join(process.cwd(), "data");
-  const USERS_FILE = path.join(DATA_DIR, "users.json");
+  const DATA_DIR = path.join(process.cwd(), 'data');
+  const USERS_FILE = path.join(DATA_DIR, 'users.json');
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
-    const raw = await fs.readFile(USERS_FILE, "utf8");
-    return JSON.parse(raw || "[]");
+    const raw = await fs.readFile(USERS_FILE, 'utf8');
+    return JSON.parse(raw || '[]');
   } catch {
     return [];
   }
@@ -118,13 +117,13 @@ export async function readUsers() {
 
 export async function writeUsers(users) {
   const task = userWriteQueue.then(async () => {
-    const DATA_DIR = path.join(process.cwd(), "data");
-    const USERS_FILE = path.join(DATA_DIR, "users.json");
+    const DATA_DIR = path.join(process.cwd(), 'data');
+    const USERS_FILE = path.join(DATA_DIR, 'users.json');
     await fs.mkdir(DATA_DIR, { recursive: true });
     await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`);
   });
   // Update the queue synchronously so next write waits for this one
-  userWriteQueue = task.catch(() => { });
+  userWriteQueue = task.catch(() => {});
   return task;
 }
 
@@ -135,7 +134,7 @@ export async function getUserByEmail(email, useFirestore = false, db = null) {
   }
   const snapshot = await db
     .collection(COLLECTIONS.USERS)
-    .where("email", "==", email)
+    .where('email', '==', email)
     .limit(1)
     .get();
   if (snapshot.empty) return null;
@@ -202,15 +201,15 @@ export async function createUserAtomic(userData, useFirestore = false, db = null
   });
 
   // Update the lock synchronously so the next caller queues behind this write.
-  _createUserLock = run.catch(() => { });
+  _createUserLock = run.catch(() => {});
   return run;
 }
 export async function ensureUserStore() {
-  const DATA_DIR = path.join(process.cwd(), "data");
+  const DATA_DIR = path.join(process.cwd(), 'data');
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
-    await fs.access(path.join(DATA_DIR, "users.json"));
+    await fs.access(path.join(DATA_DIR, 'users.json'));
   } catch {
-    await fs.writeFile(path.join(DATA_DIR, "users.json"), "[]\n");
+    await fs.writeFile(path.join(DATA_DIR, 'users.json'), '[]\n');
   }
 }

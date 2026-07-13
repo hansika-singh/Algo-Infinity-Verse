@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - Solved Algorithms</title>
-    
+    <title>Profile — Algo Infinity Verse</title>
+
     <!-- Core Styles -->
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="identity-card.css">
-    
+
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Firebase (Same as index.html) -->
     <script type="importmap">
     {
@@ -22,133 +22,13 @@
       }
     }
     </script>
-
-    <style>
-        /* Back Button Styles - Inline for quick fix */
-        .profile-nav {
-            display: flex;
-            align-items: center;
-            padding: 8px 0 16px 0;
-            margin-bottom: 8px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: 'Poppins', sans-serif;
-            text-decoration: none;
-        }
-
-        .back-btn i {
-            font-size: 1rem;
-            transition: transform 0.25s ease;
-        }
-
-        .back-btn:hover {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            transform: translateX(-4px);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        }
-
-        .back-btn:hover i {
-            transform: translateX(-2px);
-        }
-
-        .back-btn:active {
-            transform: scale(0.97);
-        }
-
-        .back-btn:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Dark Theme */
-        .dark .back-btn {
-            background: #1e293b;
-            border-color: #334155;
-            color: #f1f5f9;
-        }
-
-        .dark .back-btn:hover {
-            background: #334155;
-            border-color: #7c3aed;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .profile-nav {
-                padding: 4px 0 12px 0;
-            }
-            
-            .back-btn {
-                padding: 8px 14px;
-                font-size: 0.85rem;
-                border-radius: 8px;
-                gap: 6px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-nav {
-                padding: 2px 0 10px 0;
-            }
-            
-            .back-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-                border-radius: 6px;
-                gap: 4px;
-            }
-            
-            .back-btn span {
-                display: none;
-            }
-            
-            .back-btn i {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Reduced Motion */
-        @media (prefers-reduced-motion: reduce) {
-            .back-btn {
-                transition: none;
-            }
-            
-            .back-btn:hover {
-                transform: none;
-            }
-            
-            .back-btn:hover i {
-                transform: none;
-            }
-            
-            .back-btn:active {
-                transform: none;
-            }
-        }
-    </style>
 </head>
 <body data-page="profile">
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="hidden">
       <div class="loader">
-        <div class="infinity-loader">∞</div>
+        <div class="infinity-loader">&infin;</div>
         <h2>Loading Profile...</h2>
       </div>
     </div>
@@ -156,30 +36,30 @@
     <!-- Navigation Bar -->
     <div id="navbar-placeholder"></div>
 
-    <main class="profile-container container section">
-        
-        <!-- === BACK BUTTON === -->
-        <div class="profile-nav">
+    <main class="profile-container">
+
+        <!-- Back button -->
+        <nav class="profile-nav">
             <button type="button" class="back-btn" id="profileBackBtn" aria-label="Back to Dashboard">
                 <i class="fas fa-arrow-left"></i>
                 <span>Back to Dashboard</span>
             </button>
-        </div>
+        </nav>
 
-        <!-- Profile Header -->
-        <header class="profile-header glass-card" style="position: relative;">
-            <!-- Avatar Container - FIXED for mobile -->
+        <!-- Profile header -->
+        <header class="profile-hero">
+
+            <!-- Avatar -->
             <div class="profile-avatar-wrapper">
                 <div class="profile-avatar-large" id="profileAvatarWrapper">
-                    <img 
-                        id="profileAvatarImage" 
-                        class="avatar-preview" 
+                    <img
+                        id="profileAvatarImage"
+                        class="avatar-preview"
                         alt="Profile avatar"
                         style="display: none;"
                     >
-                    <span class="avatar-icon" id="profileAvatarEmoji">🚀</span>
+                    <span class="avatar-icon" id="profileAvatarEmoji"></span>
                 </div>
-                <!-- Upload Overlay (clickable) -->
                 <button
                     type="button"
                     class="avatar-upload-overlay"
@@ -188,148 +68,171 @@
                     title="Change avatar"
                 >
                     <i class="fas fa-camera"></i>
-                    <span>Change</span>
                 </button>
-                <!-- Hidden file input -->
-                <input 
-                    type="file" 
-                    id="avatarFileInput" 
-                    class="avatar-file-input" 
+                <input
+                    type="file"
+                    id="avatarFileInput"
+                    class="avatar-file-input"
                     accept="image/*"
                     aria-label="Upload profile picture"
                 >
             </div>
-            <div class="profile-user-info">
+
+            <!-- Info -->
+            <div class="profile-info-group">
                 <h1 id="userName">Learner</h1>
-                <p class="profile-level" id="userLevel">Level 1 - Beginner</p>
-                
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-icon fire">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <div class="stat-value"><span id="userStreak">0</span></div>
-                        <div class="stat-label">Day Streak</div>
+                <p class="profile-level-text" id="userLevel">Level 1 &mdash; Beginner</p>
+
+                <!-- XP progress -->
+                <div class="profile-xp-bar">
+                    <div class="xp-bar-track">
+                        <div class="xp-bar-fill" id="profileProgressBar"></div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon star">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="stat-value"><span id="userXP">0</span></div>
-                        <div class="stat-label">Total XP</div>
+                    <span class="xp-bar-label" id="profileLevelProgress">0%</span>
+                </div>
+
+                <!-- Stats -->
+                <div class="profile-stats-row">
+                    <div class="profile-stat">
+                        <span class="stat-value" id="userStreak">0</span>
+                        <span class="stat-label">Streak</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-value" id="userXP">0</span>
+                        <span class="stat-label">XP</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-value" id="profileProblems">0</span>
+                        <span class="stat-label">Problems</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-value" id="profileBadges">0</span>
+                        <span class="stat-label">Badges</span>
                     </div>
                 </div>
             </div>
 
-
+            <!-- Edit -->
             <button class="profile-edit-btn" id="profilePageEditBtn" title="Edit Profile" aria-label="Edit Profile">
                 <i class="fas fa-pen"></i>
             </button>
         </header>
 
-        <!-- Languages Section -->
-        <div class="languages-section glass-card" style="margin-bottom: 2rem; padding: 1.5rem; border-radius: var(--border-radius); border: 1px solid var(--glass-border); background: var(--dark-card);">
-            <h4 style="margin: 0 0 1rem 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--text-light); display: flex; align-items: center; gap: 0.5rem;">
-                <span>💻</span> Known Languages
-            </h4>
-            <div id="profileLanguages" class="languages-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <!-- Dynamic chips -->
-            </div>
-        </div>
-
-        <!-- Coding Identity Card Section -->
-        <section class="identity-card-section glass-card">
-            <div class="section-header">
-                <h2><i class="fas fa-id-card"></i> Coding Identity Card</h2>
-            </div>
-            
-            <div class="theme-selector-container">
-                <label>Select Card Theme:</label>
-                <div class="theme-buttons">
-                    <button type="button" class="theme-btn active" data-theme="cyberpunk">Cyberpunk Neon</button>
-                    <button type="button" class="theme-btn" data-theme="cosmic">Cosmic Aurora</button>
-                    <button type="button" class="theme-btn" data-theme="obsidian">Dark Obsidian</button>
-                    <button type="button" class="theme-btn" data-theme="emerald">Emerald Forest</button>
-                </div>
-            </div>
-
-            <div class="card-display-container">
-                <div id="codingIdentityCard" class="coding-card theme-cyberpunk">
-                    <div class="card-glow"></div>
-                    <div class="card-grid"></div>
-                    
-                    <div class="card-header">
-                        <div class="logo-area">
-                            <span class="logo-icon">∞</span>
-                            <span class="logo-text">ALGO INFINITY</span>
-                        </div>
-                        <div class="card-type">DEVELOPER PASS</div>
-                    </div>
-                    
-                    <div class="card-body">
-                        <div class="user-section">
-                            <div class="card-avatar-container">
-                                <div class="card-avatar avatar-icon" id="cardAvatar">🚀</div>
-                                <div class="card-chip"></div>
-                            </div>
-                            <div class="user-details">
-                                <div class="user-name" id="cardUserName">Learner</div>
-                                <div class="user-level-badge" id="cardUserLevelBadge">Level 1</div>
-                                <div class="user-title" id="cardUserTitle">Beginner</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-section">
-                            <div class="stat-item">
-                                <div class="stat-label">GLOBAL RANK</div>
-                                <div class="stat-value" id="cardRank">#1</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">TOTAL XP</div>
-                                <div class="stat-value" id="cardXP">0</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">DAY STREAK</div>
-                                <div class="stat-value" id="cardStreak">0</div>
-                            </div>
-                        </div>
-                        
-                        <div class="footer-section">
-                            <div class="skills-area">
-                                <div class="section-label">TOP SKILLS</div>
-                                <div class="skills-list" id="cardSkills">
-                                    <span class="skill-pill">General</span>
-                                </div>
-                            </div>
-                            
-                            <div class="qr-area">
-                                <div id="cardQrCode" class="qr-code"></div>
-                                <div class="qr-label">SCAN PROFILE</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-download-actions">
-                <button type="button" id="downloadPngBtn" class="btn btn-primary"><i class="fas fa-file-image"></i> Export PNG</button>
-                <button type="button" id="downloadPdfBtn" class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <!-- Languages -->
+        <section class="profile-languages-section">
+            <span class="section-label">Languages</span>
+            <button type="button" class="lang-edit-btn" id="languagesEditBtn" title="Edit Languages" aria-label="Edit Languages">
+                <i class="fas fa-pen"></i> Edit
+            </button>
+            <div id="profileLanguages" class="languages-list">
+                <!-- Populated by profile-edit.js -->
             </div>
         </section>
 
-        <!-- Solved Algorithms Section -->
+        <!-- Two-column: identity card + leaderboard -->
+        <div class="profile-split">
+
+            <!-- Identity Card -->
+            <section class="identity-card-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-id-card"></i> Coding Identity Card</h2>
+                </div>
+
+                <div class="theme-selector-container">
+                    <button type="button" class="theme-btn active" data-theme="cyberpunk">Cyberpunk</button>
+                    <button type="button" class="theme-btn" data-theme="cosmic">Cosmic</button>
+                    <button type="button" class="theme-btn" data-theme="obsidian">Obsidian</button>
+                    <button type="button" class="theme-btn" data-theme="emerald">Emerald</button>
+                </div>
+
+                <div class="card-display-container">
+                    <div id="codingIdentityCard" class="coding-card theme-cyberpunk">
+                        <div class="card-glow"></div>
+                        <div class="card-grid"></div>
+
+                        <div class="card-header">
+                            <div class="logo-area">
+                                <span class="logo-icon">&infin;</span>
+                                <span class="logo-text">ALGO INFINITY</span>
+                            </div>
+                            <div class="card-type">DEVELOPER PASS</div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="user-section">
+                                <div class="card-avatar-container">
+                                    <div class="card-avatar avatar-icon" id="cardAvatar"></div>
+                                    <div class="card-chip"></div>
+                                </div>
+                                <div class="user-details">
+                                    <div class="user-name" id="cardUserName">Learner</div>
+                                    <div class="user-level-badge" id="cardUserLevelBadge">Level 1</div>
+                                    <div class="user-title" id="cardUserTitle">Beginner</div>
+                                </div>
+                            </div>
+
+                            <div class="stats-section">
+                                <div class="stat-item">
+                                    <div class="stat-label">GLOBAL RANK</div>
+                                    <div class="stat-value" id="cardRank">#1</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">TOTAL XP</div>
+                                    <div class="stat-value" id="cardXP">0</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">DAY STREAK</div>
+                                    <div class="stat-value" id="cardStreak">0</div>
+                                </div>
+                            </div>
+
+                            <div class="footer-section">
+                                <div class="skills-area">
+                                    <div class="section-label">TOP SKILLS</div>
+                                    <div class="skills-list" id="cardSkills">
+                                        <span class="skill-pill">General</span>
+                                    </div>
+                                </div>
+                                <div class="qr-area">
+                                    <div id="cardQrCode" class="qr-code"></div>
+                                    <div class="qr-label">SCAN PROFILE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-download-actions">
+                    <button type="button" id="downloadPngBtn" class="btn"><i class="fas fa-file-image"></i> Export PNG</button>
+                    <button type="button" id="downloadPdfBtn" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                </div>
+            </section>
+
+            <!-- Leaderboard -->
+            <aside class="profile-leaderboard">
+                <div class="section-header">
+                    <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
+                </div>
+                <div class="leaderboard-list" id="profileLeaderboardList">
+                    <!-- Populated by modules/profile.js -->
+                </div>
+            </aside>
+
+        </div>
+
+        <!-- Solved Algorithms -->
         <section class="solved-section">
             <div class="section-header">
                 <h2><i class="fas fa-check-circle"></i> Solved Algorithms</h2>
                 <div class="stats-counter">
-                    <span id="solvedCount">0</span> Problems Completed
+                    <span id="solvedCount">0</span> problems
                 </div>
             </div>
-            
+
             <div class="controls-bar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchSolved" placeholder="Search solved problems...">
+                    <input type="text" id="searchSolved" placeholder="Search solved problems..." autocomplete="off">
                 </div>
                 <div class="filter-box">
                     <select id="difficultyFilter">
@@ -341,20 +244,20 @@
                 </div>
             </div>
 
-            <!-- Grid for Solved Problems -->
+            <!-- Grid -->
             <div id="solvedGrid" class="solved-grid">
                 <!-- Populated by JS -->
             </div>
 
-            <!-- Empty State -->
+            <!-- Empty state -->
             <div id="emptyState" class="empty-state hidden">
                 <i class="fas fa-ghost"></i>
                 <h3>No algorithms solved yet</h3>
-                <p>Start practicing to fill up your profile!</p>
-                <a href="../../pages/practice/problems.html" class="btn btn-primary">Start Practicing</a>
+                <p>Start practicing to fill up your profile.</p>
+                <a href="../../pages/practice/problems.html" class="btn">Start Practicing</a>
             </div>
 
-            <!-- Pagination Controls -->
+            <!-- Pagination -->
             <div class="pagination-controls hidden" id="profilePagination">
                 <button type="button" class="pagination-btn" id="prevPageBtn" disabled><i class="fas fa-chevron-left"></i> Prev</button>
                 <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
@@ -373,17 +276,12 @@
             class="modal-close"
             id="profileModalClose"
             aria-label="Close edit profile modal"
-            onclick="closeProfileModal()"
           >
             &times;
           </button>
         </div>
         <div class="modal-body">
           <div class="profile-edit-form">
-            <div class="avatar-selector">
-              <h4>Choose Avatar</h4>
-              <div class="avatar-options" id="avatarOptions"></div>
-            </div>
             <div class="name-editor">
               <label for="profileNameInput">Display Name</label>
               <input
@@ -393,40 +291,60 @@
                 maxlength="20"
               />
             </div>
-            <div class="languages-selector" style="margin-top: 1.5rem;">
-              <h4 style="margin-bottom: 0.5rem;">Programming Languages Known</h4>
-              <div class="languages-edit-options" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <label class="lang-edit-label" style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--text-light);">
+            <div class="languages-selector">
+              <h4>Programming Languages</h4>
+              <div class="languages-edit-options">
+                <label class="lang-edit-label">
                   <input type="checkbox" class="lang-edit-checkbox" value="C++" /> C++
                 </label>
-                <label class="lang-edit-label" style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--text-light);">
+                <label class="lang-edit-label">
                   <input type="checkbox" class="lang-edit-checkbox" value="Java" /> Java
                 </label>
-                <label class="lang-edit-label" style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--text-light);">
+                <label class="lang-edit-label">
                   <input type="checkbox" class="lang-edit-checkbox" value="Python" /> Python
                 </label>
-                <label class="lang-edit-label" style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--text-light);">
+                <label class="lang-edit-label">
                   <input type="checkbox" class="lang-edit-checkbox" value="JavaScript" /> JavaScript
                 </label>
-                <label class="lang-edit-label" style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; color: var(--text-light);">
+                <label class="lang-edit-label">
                   <input type="checkbox" class="lang-edit-checkbox" value="Rust" /> Rust
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="TypeScript" /> TypeScript
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="Go" /> Go
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="Kotlin" /> Kotlin
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="Swift" /> Swift
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="C#" /> C#
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="Ruby" /> Ruby
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="PHP" /> PHP
+                </label>
+                <label class="lang-edit-label">
+                  <input type="checkbox" class="lang-edit-checkbox" value="SQL" /> SQL
                 </label>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">
-            Cancel
-          </button>
-          <button type="button" class="btn btn-primary" onclick="saveProfileChanges()">
-            <i class="fas fa-save"></i> Save Changes
-          </button>
+<button type="button" class="btn" id="profileCancelBtn">Cancel</button>
+           <button type="button" class="btn btn-primary" id="profileSaveBtn">
+             <i class="fas fa-save"></i> Save Changes
+           </button>
         </div>
       </div>
     </div>
-
-    <div id="footer-placeholder"></div>
 
     <!-- Core Scripts -->
     <script type="module" src="../../modules/supabase-auth-client.js"></script>
@@ -438,32 +356,31 @@
 
     <!-- Export Markdown Utility -->
     <script src="../../scripts/export-markdown.js"></script>
-    
+
     <!-- External Libraries for Coding Card -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- Profile Avatars -->
+    <script src="../../data/profile-avatars.js"></script>
+
     <!-- Profile Script -->
     <script src="profile.js"></script>
 
     <script>
-      // Load partials
       if(typeof loadPartial === 'function') {
-          loadPartial("navbar-placeholder", "../../partials/navbar.html").then(() => {
+          loadPartial("navbar-placeholder", "../../partials/navbar.html").then(function() {
               if (typeof initNavbar === "function") initNavbar();
           });
-          loadPartial("footer-placeholder", "../../partials/footer.html");
       }
 
-      // Back button functionality
       document.addEventListener('DOMContentLoaded', function() {
-          const backBtn = document.getElementById('profileBackBtn');
+          var backBtn = document.getElementById('profileBackBtn');
           if (backBtn) {
               backBtn.addEventListener('click', function(e) {
                   e.preventDefault();
-                  // Try to go back, fallback to dashboard
-                  if (document.referrer && document.referrer.includes(window.location.host)) {
+                  if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
                       window.history.back();
                   } else {
                       window.location.href = '/index.html#dashboard';

@@ -1,79 +1,116 @@
-import { getSession, sendJson, readJsonBody } from "../utils/helpers.js";
-import { updateMemoryStore, readMemoryStore, applySM2 } from "../utils/memoryUtils.js";
+import {
+  handleGuestLogin,
+  handleSignup,
+  handleLogin,
+  handleLogout,
+  handleDeactivateAccount,
+  handleSession,
+} from '../handlers/authHandlers.js';
+import { handleAnalyzeResume } from '../handlers/resumeHandlers.js';
+import { handleSubmitFeedback } from '../handlers/feedbackHandlers.js';
+import { handleSubmitInterviewExperience } from '../handlers/interviewHandlers.js';
+import {
+  handleMemoryLog,
+  handleMemoryDue,
+  handleMemoryAll,
+  handleMemoryDelete,
+  handleMemoryStats,
+  handleMemoryReset,
+} from '../handlers/memoryHandlers.js';
+import { handleUserPersonality } from '../handlers/personalityHandlers.js';
 
-const MAX_TOPIC_LENGTH = 100;
-
-export async function handleMemoryLog(req, res) {
-  const session = getSession(req);
-  if (!session) return sendJson(res, 401, { error: "Login required." });
-
-  let payload;
-  try {
-    payload = await readJsonBody(req);
-  } catch {
-    return sendJson(res, 400, { error: "Invalid JSON body." });
+export function setupApiRoutes(req, res, pathname) {
+  // Guest Login
+  if (pathname === '/api/guest' && req.method === 'POST') {
+    return handleGuestLogin(req, res);
   }
 
-  const { topic, quality } = payload;
-
-  if (!topic || typeof topic !== "string" || topic.trim().length < 1) {
-    return sendJson(res, 400, { error: "Topic is required." });
+  // Session
+  if (pathname === '/api/session' && req.method === 'GET') {
+    return handleSession(req, res);
   }
 
-  const trimmedTopic = topic.trim();
-
-  if (trimmedTopic.length > MAX_TOPIC_LENGTH) {
-    return sendJson(res, 400, {
-      error: `Topic cannot exceed ${MAX_TOPIC_LENGTH} characters. Current length: ${trimmedTopic.length}`
-    });
+  // Signup
+  if (pathname === '/api/signup' && req.method === 'POST') {
+    return handleSignup(req, res);
   }
 
-  if (
-    quality === undefined ||
-    isNaN(Number(quality)) ||
-    Number(quality) < 0 ||
-    Number(quality) > 5
-  ) {
-    return sendJson(res, 400, {
-      error: "Quality must be a number between 0 and 5.",
-    });
+  // Login
+  if (pathname === '/api/login' && req.method === 'POST') {
+    return handleLogin(req, res);
   }
 
-  const updatedCard = await updateMemoryStore((store) => {
-    const userCards = store[session.sub] || {};
-    const existing = userCards[trimmedTopic] || { topic: trimmedTopic };
-    const updated = applySM2(existing, quality);
-    userCards[trimmedTopic] = updated;
-    store[session.sub] = userCards;
-    return updated;
-  });
+  // Deactivate Account
+  if (pathname === '/api/deactivate-account' && req.method === 'POST') {
+    return handleDeactivateAccount(req, res);
+  }
 
-  return sendJson(res, 200, { success: true, card: updatedCard });
-}
+  // Logout
+  if (pathname === '/api/logout' && req.method === 'POST') {
+    return handleLogout(req, res);
+  }
 
-export async function handleMemoryDue(req, res) {
-  const session = getSession(req);
-  if (!session) return sendJson(res, 401, { error: "Login required." });
+  // Resume Analysis
+  if (pathname === '/api/analyze-resume' && req.method === 'POST') {
+    return handleAnalyzeResume(req, res);
+  }
 
-  const store = await readMemoryStore();
-  const userCards = store[session.sub] || {};
-  const now = new Date();
-  const due = Object.values(userCards).filter(
-    (card) => new Date(card.nextReviewDate) <= now,
-  );
+  // Feedback
+  if (pathname === '/api/feedback' && req.method === 'POST') {
+    return handleSubmitFeedback(req, res);
+  }
 
-  return sendJson(res, 200, { success: true, due });
-}
+  // Interview Experiences
+  if (pathname === '/api/interview-experiences' && req.method === 'POST') {
+    return handleSubmitInterviewExperience(req, res);
+  }
 
-export async function handleMemoryAll(req, res) {
-  const session = getSession(req);
-  if (!session) return sendJson(res, 401, { error: "Login required." });
+  // ============================================
+  // MEMORY ROUTES (Spaced Repetition System)
+  // ============================================
 
-  const store = await readMemoryStore();
-  const userCards = store[session.sub] || {};
+  // POST /api/memory/log - Log a memory review
+  if (pathname === '/api/memory/log' && req.method === 'POST') {
+    return handleMemoryLog(req, res);
+  }
 
-  return sendJson(res, 200, {
-    success: true,
-    cards: Object.values(userCards),
-  });
+  // GET /api/memory/due - Get due cards
+  if (pathname === '/api/memory/due' && req.method === 'GET') {
+    return handleMemoryDue(req, res);
+  }
+
+  // GET /api/memory/all - Get all cards
+  if (pathname === '/api/memory/all' && req.method === 'GET') {
+    return handleMemoryAll(req, res);
+  }
+
+  // DELETE /api/memory/:topic - Delete a card
+  if (pathname.startsWith('/api/memory/') && req.method === 'DELETE') {
+    const topic = pathname.replace('/api/memory/', '');
+    if (topic && topic.length > 0) {
+      req.params = req.params || {};
+      req.params.topic = decodeURIComponent(topic);
+      return handleMemoryDelete(req, res);
+    }
+  }
+
+  // GET /api/memory/stats - Get statistics
+  if (pathname === '/api/memory/stats' && req.method === 'GET') {
+    return handleMemoryStats(req, res);
+  }
+
+  // POST /api/memory/reset - Reset all cards
+  if (pathname === '/api/memory/reset' && req.method === 'POST') {
+    return handleMemoryReset(req, res);
+  }
+
+  // Coding Personality
+  if (pathname === '/api/user/personality' && req.method === 'GET') {
+    return handleUserPersonality(req, res);
+  }
+
+  // Learning Session Replay & Timeline
+  // handled by api/[...path].js catch-all for these routes.
+
+  return null;
 }

@@ -4,23 +4,72 @@ import { execFile } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 
-// These are imported from server.js to reuse existing utilities
-import {
-  sendJson,
-  readJsonBody,
-  getSession,
-  updateExecutionStore,
-  applyRateLimit,
-  logErrorLimiter,
-  appendToJsonArrayFile,
-  CLIENT_ERRORS_FILE,
-  DATA_DIR,
-  MAX_CLIENT_ERROR_ENTRIES,
-} from '../../server.js';
+import { sendJson, readJsonBody, DATA_DIR } from '../utils/helpers.js';
+import { getSession } from '../utils/sessionToken.js';
+import { applyRateLimit, logErrorLimiter } from '../utils/rateLimiter.js';
 
 import { instrumentJS } from '../../modules/code-tracer.js';
 
-const MAX_STDIN_LENGTH = 10000;
+const CLIENT_ERRORS_FILE = path.join(DATA_DIR, 'client_errors.json');
+const MAX_CLIENT_ERROR_ENTRIES = 1000;
+const MAX_STDIN_LENGTH = 5000;
+
+let executionWriteQueue = Promise.resolve();
+const EXECUTIONS_FILE = path.join(DATA_DIR, 'executions.json');
+
+async function ensureExecutionStore() {
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  try {
+    await fs.access(EXECUTIONS_FILE);
+  } catch {
+    await fs.writeFile(EXECUTIONS_FILE, '[]\n');
+  }
+}
+
+async function writeExecutionsAtomic(filePath, store) {
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmpPath, `${JSON.stringify(store, null, 2)}\n`);
+  await fs.rename(tmpPath, filePath);
+}
+
+async function updateExecutionStore(mutator) {
+  const task = executionWriteQueue.then(async () => {
+    await ensureExecutionStore();
+    const raw = await fs.readFile(EXECUTIONS_FILE, 'utf8');
+    const store = JSON.parse(raw || '[]');
+    const updated = await mutator(store);
+    await writeExecutionsAtomic(EXECUTIONS_FILE, store);
+    return updated;
+  });
+  executionWriteQueue = task.catch(() => {});
+  return task;
+}
+
+const jsonArrayWriteQueues = new Map();
+
+async function appendToJsonArrayFile(filePath, entry, maxEntries = 1000) {
+  const queue = jsonArrayWriteQueues.get(filePath) || Promise.resolve();
+  const task = queue.then(async () => {
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    let entries = [];
+    try {
+      const raw = await fs.readFile(filePath, 'utf8');
+      entries = JSON.parse(raw || '[]');
+    } catch {
+      entries = [];
+    }
+    entries.push(entry);
+    if (entries.length > maxEntries) {
+      entries = entries.slice(-maxEntries);
+    }
+    await fs.writeFile(filePath, `${JSON.stringify(entries)}\n`);
+  });
+  jsonArrayWriteQueues.set(
+    filePath,
+    task.catch(() => {})
+  );
+  return task;
+}
 
 const JUDGE0_LANGUAGE_IDS = {
   python: 71,
@@ -51,9 +100,7 @@ export async function getCsrfToken(req, res) {
 }
 
 export async function logError(req, res) {
-  if (
-    !applyRateLimit(req, res, logErrorLimiter, 'Too many error reports. Please try again later.')
-  ) {
+  if (!applyRateLimit(req, res, logErrorLimiter, 'Too many error reports. Please try again later.')) {
     return;
   }
   try {
@@ -218,6 +265,48 @@ export async function executeCode(req, res) {
   }
 }
 
+// Injected as a top-level prelude ahead of the user's instrumented code inside the
+// sandboxed child process (see executeTracedCode below). The child already gets no
+// server secrets (its env is stripped to just PATH/SystemRoot) and Node's permission
+// model already denies fs writes, child-process spawning, worker threads, and native
+// addons by default -- but the permission model does *not* cover network APIs, so a
+// submitted snippet could otherwise still make outbound requests (e.g. to a cloud
+// metadata endpoint, or to exfiltrate data). This blocks the network entry points a
+// submission is realistically going to use: the global fetch/WebSocket, and the
+// http/https default-export objects (covers `import http from 'node:http'` and
+// `require('http')`, which share the same underlying exports object). Node
+// synthesizes ES module named imports (`import { get } from 'node:http'`) as
+// immutable bindings captured at load time, so that specific import style can't be
+// intercepted this way -- this is defense in depth on top of the process isolation
+// and stripped env below, not a hard network boundary.
+const NETWORK_SANDBOX_PRELUDE = `
+for (const __name of ['fetch', 'WebSocket']) {
+  if (__name in globalThis) {
+    try {
+      Object.defineProperty(globalThis, __name, {
+        value: () => { throw new Error('Network access is disabled in this sandbox.'); },
+        writable: false,
+        configurable: false,
+      });
+    } catch {}
+  }
+}
+for (const __mod of ['http', 'https']) {
+  try {
+    const __m = await import('node:' + __mod);
+    const __blocked = () => { throw new Error('Network access is disabled in this sandbox.'); };
+    for (const __key of Object.keys(__m.default || {})) {
+      try { __m.default[__key] = __blocked; } catch {}
+    }
+  } catch {}
+}
+`;
+
+// Node renamed --experimental-permission to the stable --permission in v23; support both
+// so the sandbox works regardless of which Node version this runs on.
+const PERMISSION_FLAG =
+  Number(process.versions.node.split('.')[0]) >= 23 ? '--permission' : '--experimental-permission';
+
 export async function executeTracedCode(req, res) {
   try {
     const session = getSession(req);
@@ -229,13 +318,6 @@ export async function executeTracedCode(req, res) {
     const sourceCode = payload.sourceCode ?? payload.source_code;
     const originalCode = payload.originalCode;
     const stdin = payload.stdin ?? '';
-
-    if (typeof stdin === 'string' && stdin.length > MAX_STDIN_LENGTH) {
-      return sendJson(res, 400, {
-        success: false,
-        message: 'stdin payload exceeds maximum allowed length.',
-      });
-    }
 
     if (!sourceCode || typeof sourceCode !== 'string') {
       return sendJson(res, 400, { success: false, message: 'Source code is required.' });
@@ -284,7 +366,6 @@ export async function executeTracedCode(req, res) {
               if (snapshots.length === 0) {
                 reject(new Error(stderr || err.message));
               } else {
-                traceError = stderr || err.message;
                 resolve();
               }
             } else {
@@ -297,8 +378,9 @@ export async function executeTracedCode(req, res) {
       traceError = execError.message;
       userOutput = `Execution error: ${traceError}`;
     } finally {
-      await fs.unlink(tmpFile).catch(() => {});
+      await fs.unlink(tmpFile).catch(() => { });
     }
+
     const executionId = uuidv4();
     const execution = {
       id: executionId,

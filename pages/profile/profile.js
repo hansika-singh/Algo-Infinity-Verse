@@ -25,39 +25,202 @@ document.addEventListener('DOMContentLoaded', () => {
     const userXPEl = document.getElementById('userXP');
     const solvedCountEl = document.getElementById('solvedCount');
 
+    // Profile Image Upload Elements
+    const avatarUploadOverlay = document.getElementById('avatarUploadOverlay');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+    const profileAvatarImage = document.getElementById('profileAvatarImage');
+    const profileAvatarEmoji = document.getElementById('profileAvatarEmoji');
+
     // Wait a brief moment to ensure script.js has loaded userProgress from localStorage
     setTimeout(() => {
         initProfile();
     }, 100);
 
-    function initProfile() {
-        // Populate Header Data
-        if (typeof userProgress !== 'undefined') {
-            userNameEl.textContent = userProgress.name || "Learner";
-            userLevelEl.textContent = `Level ${userProgress.level || 1}`;
-            userStreakEl.textContent = userProgress.streak || 0;
-            userXPEl.textContent = userProgress.xp || 0;
-            
-            // Map completed IDs to actual problem objects
-            const solvedIds = userProgress.completedProblems || [];
-            
-            if (typeof practiceProblems !== 'undefined') {
-                filteredProblems = solvedIds.map(id => {
-                    const prob = practiceProblems.find(p => p.id === id);
-                    if (prob) {
-                        return { ...prob, completedAt: "Unknown" }; // Add mock completion date for now
-                    }
-                    return null;
-                }).filter(Boolean); // remove nulls
-            }
-            
-            solvedCountEl.textContent = filteredProblems.length;
-            
-            // Initial render
-            applyFilters();
+    // Bug 1: Wire up camera button to trigger file input
+    if (avatarUploadOverlay && avatarFileInput) {
+        avatarUploadOverlay.addEventListener('click', () => {
+            avatarFileInput.click();
+        });
 
-            // Initialize Coding Identity Card
-            initIdentityCard();
+        avatarFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Please select an image file.', 'error');
+                }
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                if (profileAvatarImage) {
+                    profileAvatarImage.src = dataUrl;
+                    profileAvatarImage.style.display = 'block';
+                }
+                if (profileAvatarEmoji) {
+                    profileAvatarEmoji.style.display = 'none';
+                }
+
+                // Save to userProgress
+                if (typeof userProgress !== 'undefined') {
+                    userProgress.avatar = dataUrl;
+                    if (typeof saveUserData === 'function') {
+                        saveUserData();
+                    } else {
+                        localStorage.setItem('algoInfinityVerse', JSON.stringify(userProgress));
+                    }
+                }
+
+                // Sync card avatar
+                const cardAvatar = document.getElementById('cardAvatar');
+                if (cardAvatar) {
+                    cardAvatar.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = dataUrl;
+                    img.alt = 'Avatar';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '50%';
+                    cardAvatar.appendChild(img);
+                }
+
+                if (typeof showNotification === 'function') {
+                    showNotification('Avatar updated!', 'success');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Wire up languages edit button
+    const languagesEditBtn = document.getElementById('languagesEditBtn');
+    if (languagesEditBtn) {
+        languagesEditBtn.addEventListener('click', () => {
+            if (typeof window.openProfileModal === 'function') {
+                window.openProfileModal();
+            }
+        });
+    }
+
+    // Wire up profile page save/cancel buttons
+    const profileSaveBtn = document.getElementById('profileSaveBtn');
+    const profileCancelBtn = document.getElementById('profileCancelBtn');
+    
+    if (profileSaveBtn) {
+        profileSaveBtn.addEventListener('click', () => {
+            if (typeof window.saveProfileChanges === 'function') {
+                window.saveProfileChanges();
+            }
+        });
+    }
+    
+    if (profileCancelBtn) {
+        profileCancelBtn.addEventListener('click', () => {
+            if (typeof window.closeProfileModal === 'function') {
+                window.closeProfileModal();
+            }
+        });
+    }
+
+    function initProfile() {
+        // Check if userProgress is available
+        if (typeof userProgress === 'undefined') {
+            console.error("userProgress is not defined");
+            return;
+        }
+        
+        // Populate Header Data
+        userNameEl.textContent = userProgress.name || "Learner";
+        userLevelEl.textContent = `Level ${userProgress.level || 1}`;
+        userStreakEl.textContent = userProgress.streak || 0;
+        userXPEl.textContent = userProgress.xp || 0;
+
+        // Render profile avatar (image upload or initial-based circle)
+        if (userProgress.avatar && typeof userProgress.avatar === 'string' && userProgress.avatar.startsWith('data:image')) {
+            if (profileAvatarImage) {
+                profileAvatarImage.src = userProgress.avatar;
+                profileAvatarImage.style.display = 'block';
+            }
+            if (profileAvatarEmoji) {
+                profileAvatarEmoji.style.display = 'none';
+            }
+        } else if (profileAvatarEmoji && typeof window.renderAvatarElement === 'function') {
+            // Hide the <img> tag if no uploaded image
+            if (profileAvatarImage) profileAvatarImage.style.display = 'none';
+            // Use initial-based colored circle
+            const av = userProgress.avatar || (typeof window.getInitialAvatar === 'function' ? window.getInitialAvatar(userProgress.name) : { initial: (userProgress.name || 'L').charAt(0).toUpperCase(), bg: '#7c3aed' });
+            profileAvatarEmoji.style.display = '';
+            profileAvatarEmoji.innerHTML = '';
+            window.renderAvatarElement(profileAvatarEmoji, av, 80);
+        }
+        
+        // Map completed IDs to actual problem objects
+        const solvedIds = userProgress.completedProblems || [];
+        
+        if (typeof practiceProblems !== 'undefined') {
+            filteredProblems = solvedIds.map(id => {
+                const prob = practiceProblems.find(p => p.id === id);
+                if (prob) {
+                    return { ...prob, completedAt: "Unknown" };
+                }
+                return null;
+            }).filter(Boolean);
+        }
+        
+        solvedCountEl.textContent = filteredProblems.length;
+        
+        // Initial render
+        applyFilters();
+
+        // Initialize Coding Identity Card
+        initIdentityCard();
+
+        // Populate Leaderboard
+        populateLeaderboard();
+
+        // Show saved languages
+        if (typeof window.renderLanguageChips === 'function') {
+            window.renderLanguageChips();
+        }
+    }
+
+    // Simple save profile changes function for the profile page
+    function simpleSaveProfileChanges() {
+        if (typeof userProgress === 'undefined') return;
+        
+        // Clear any existing errors
+        const errorMsg = document.getElementById('errorMessage');
+        if (errorMsg) errorMsg.remove();
+        
+        const nameVal = userNameEl.textContent || "Learner";
+        
+        // Update userProgress
+        userProgress.name = nameVal;
+        
+        // Save to storage
+        if (typeof window.saveUserData === 'function') {
+            window.saveUserData();
+        } else {
+            localStorage.setItem('algoInfinityVerse', JSON.stringify(userProgress));
+        }
+        
+        // Update UI
+        if (typeof window.updateProfileViews === 'function') {
+            window.updateProfileViews();
+        }
+        
+        // Close modal
+        if (typeof window.closeProfileModal === 'function') {
+            window.closeProfileModal();
+        }
+        
+        // Show success notification
+        if (typeof showNotification === 'function') {
+            showNotification("Profile updated successfully!", "success");
         }
     }
 
@@ -206,12 +369,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const levelNames = ["Beginner", "Novice", "Intermediate", "Advanced", "Expert", "Master", "Grandmaster", "Legend"];
         const levelTitle = levelNames[Math.min(userProgress.level - 1, levelNames.length - 1)] || "Beginner";
 
-        if (cardAvatar) cardAvatar.textContent = userProgress.avatar || "🚀";
+        if (cardAvatar) {
+            cardAvatar.textContent = '';
+            cardAvatar.style.fontSize = '0';
+            const rawAv = userProgress.avatar;
+            if (rawAv && typeof rawAv === 'string' && rawAv.startsWith('data:image')) {
+                const img = document.createElement('img');
+                img.src = rawAv;
+                img.alt = 'Avatar';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '50%';
+                cardAvatar.appendChild(img);
+            } else {
+                const av = (rawAv && typeof rawAv === 'object') ? rawAv : { initial: (userProgress.name || 'L').charAt(0).toUpperCase(), bg: '#7c3aed' };
+                const initial = av.initial || 'L';
+                const bg = av.bg || '#7c3aed';
+                const span = document.createElement('span');
+                span.textContent = initial;
+                span.style.cssText = `display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:${bg};color:#fff;font-size:1.8rem;font-weight:600;font-family:'Poppins',sans-serif;`;
+                cardAvatar.style.fontSize = '0';
+                cardAvatar.appendChild(span);
+            }
+        }
         if (cardUserName) cardUserName.textContent = userProgress.name || "Learner";
         if (cardUserLevelBadge) cardUserLevelBadge.textContent = `Level ${userProgress.level || 1}`;
         if (cardUserTitle) cardUserTitle.textContent = levelTitle;
-        if (cardXP) cardXP.textContent = (userProgress.xp || 0).toLocaleString();
-        if (cardStreak) cardStreak.textContent = userProgress.streak || 0;
+        if (cardXP) {
+            const xpVal = userProgress.xp || 0;
+            cardXP.textContent = xpVal > 0 ? xpVal.toLocaleString() : "-";
+        }
+        if (cardStreak) {
+            const streakVal = userProgress.streak || 0;
+            cardStreak.textContent = streakVal > 0 ? streakVal : "-";
+        }
 
         // Fetch Leaderboard Rank
         if (cardRank) {
@@ -248,6 +440,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function getLeaderboardRank() {
+        const hasProgress = (userProgress.xp || 0) > 0 || (userProgress.streak || 0) > 0;
+        if (!hasProgress) return "-";
+
         try {
             let leaders = [];
             let currentUserId = "local-user";
@@ -270,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             void 0;
         }
-        return "#1";
+        return "-";
     }
 
     function getTopSkills() {
@@ -312,6 +507,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
+    // LEADERBOARD
+    // ============================================
+
+    function populateLeaderboard() {
+        const container = document.getElementById('profileLeaderboardList');
+        if (!container) return;
+
+        const mockLeaderboard = [
+            { name: 'CodeNinja', xp: 12450, avatar: 'C' },
+            { name: 'AlgoMaster', xp: 9800, avatar: 'A' },
+            { name: 'ByteWizard', xp: 7200, avatar: 'B' },
+            { name: 'DevHero', xp: 5100, avatar: 'D' },
+            { name: 'PixelForge', xp: 3600, avatar: 'P' },
+            { name: 'QuantumCoder', xp: 2500, avatar: 'Q' },
+            { name: 'SyntaxSage', xp: 1800, avatar: 'S' },
+            { name: 'DebugDruid', xp: 1200, avatar: 'D' },
+            { name: 'LogicLynx', xp: 900, avatar: 'L' },
+            { name: 'HashHawk', xp: 650, avatar: 'H' },
+            { name: 'StackSage', xp: 400, avatar: 'S' },
+            { name: 'RecursionRaven', xp: 200, avatar: 'R' },
+        ];
+
+        const userName = (userProgress.name || 'Learner').trim();
+        const userXp = userProgress.xp || 0;
+        const rawAv = userProgress.avatar;
+        const userAvatar = (rawAv && typeof rawAv === 'object') ? rawAv.initial : (rawAv && rawAv.startsWith('data:image') ? 'img' : (userName.charAt(0).toUpperCase()));
+
+        // Insert user into the correct rank position
+        let inserted = false;
+        const allEntries = [];
+        for (const entry of mockLeaderboard) {
+            if (!inserted && userXp >= entry.xp) {
+                allEntries.push({ name: userName, xp: userXp, avatar: userAvatar, isUser: true });
+                inserted = true;
+            }
+            allEntries.push(entry);
+        }
+        if (!inserted) {
+            allEntries.push({ name: userName, xp: userXp, avatar: userAvatar, isUser: true });
+        }
+
+        const ranked = allEntries.slice(0, 9).map((e, i) => ({ ...e, rank: i + 1 }));
+
+        function esc(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        container.innerHTML = ranked.map(user => {
+            const cls = user.isUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+            const displayName = user.isUser ? `${user.name} (You)` : user.name;
+            return `<div class="${cls}">
+                <span class="leader-rank">#${user.rank}</span>
+                <span class="leader-avatar" aria-hidden="true">${esc(user.avatar)}</span>
+                <span class="leader-name">${esc(displayName)}</span>
+                <span class="leader-xp">${user.xp.toLocaleString()} XP</span>
+            </div>`;
+        }).join('');
+    }
+
+    // ============================================
     // CARD INTERACTIVE ACTIONS
     // ============================================
 
@@ -330,65 +587,106 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Setup 3D Tilt Effect
-    const card = document.getElementById("codingIdentityCard");
-    if (card) {
-        card.addEventListener("mousemove", (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (centerY - y) / 15;
-            const rotateY = (x - centerX) / 15;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            
-            const glow = card.querySelector(".card-glow");
-            if (glow) {
-                const glowX = (x / rect.width) * 100;
-                const glowY = (y / rect.height) * 100;
-                glow.style.background = `radial-gradient(circle at ${glowX}% ${glowY}%, var(--card-glow-color) 0%, transparent 70%)`;
+    // Expose initIdentityCard globally for legacy bundle
+    window.initIdentityCard = initIdentityCard;
+
+    // Setup 3D Tilt Effect — replaced with CSS holographic sheen
+    // (animation is now pure CSS via ::before pseudo-element)
+
+    // Shared capture helper — clones the card, strips decorative overlays,
+    // and renders via html2canvas on the clean clone
+    async function captureCardImage() {
+        const original = document.getElementById('codingIdentityCard');
+        if (!original) return null;
+
+        const clone = original.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.classList.add('exporting');
+
+        // Copy canvas contents (like QR code) since cloneNode doesn't copy canvas drawings
+        const originalCanvases = original.querySelectorAll('canvas');
+        const clonedCanvases = clone.querySelectorAll('canvas');
+        originalCanvases.forEach((origCanvas, idx) => {
+            const destCanvas = clonedCanvases[idx];
+            if (destCanvas) {
+                const ctx = destCanvas.getContext('2d');
+                if (ctx) {
+                    destCanvas.width = origCanvas.width;
+                    destCanvas.height = origCanvas.height;
+                    ctx.drawImage(origCanvas, 0, 0);
+                }
             }
         });
-        
-        card.addEventListener("mouseleave", () => {
-            card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-            const glow = card.querySelector(".card-glow");
-            if (glow) {
-                glow.style.background = `radial-gradient(circle at center, var(--card-glow-color) 0%, transparent 70%)`;
-            }
+
+
+        // Remove decorative overlays that html2canvas renders poorly
+        const glow = clone.querySelector('.card-glow');
+        if (glow) glow.remove();
+        const grid = clone.querySelector('.card-grid');
+        if (grid) grid.remove();
+
+        // Strip backdrop-filter from all elements using !important inline style
+        const allEls = clone.querySelectorAll('*');
+        allEls.forEach(el => {
+            el.setAttribute('style', (el.getAttribute('style') || '') + ';backdrop-filter: none !important;-webkit-backdrop-filter: none !important;');
         });
+
+        // Make the card background fully opaque so html2canvas doesn't render transparency artifacts
+        const cs = getComputedStyle(original);
+        const rawBg = cs.backgroundColor;
+        const parts = rawBg.replace(/[^\d,.]/g, '').split(',').map(Number);
+        clone.style.backgroundColor = parts.length >= 3 ? `rgb(${parts[0]}, ${parts[1]}, ${parts[2]})` : '#0c0c1a';
+
+        // Convert gradient logo-icon to solid color
+        const logoIcon = clone.querySelector('.logo-icon');
+        if (logoIcon) {
+            logoIcon.style.background = 'none';
+            logoIcon.style.webkitBackgroundClip = 'unset';
+            logoIcon.style.webkitTextFillColor = 'unset';
+        }
+
+
+
+        // Position off-screen
+        clone.style.position = 'fixed';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-1';
+        clone.style.width = '480px';
+        clone.style.height = '380px';
+
+        document.body.appendChild(clone);
+
+        try {
+            const canvas = await html2canvas(clone, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: null,
+                logging: false,
+            });
+            return canvas;
+        } finally {
+            if (clone.parentNode) {
+                clone.parentNode.removeChild(clone);
+            }
+        }
     }
 
     // Setup PNG Export
     const downloadPngBtn = document.getElementById("downloadPngBtn");
     if (downloadPngBtn) {
         downloadPngBtn.addEventListener("click", async () => {
-            const idCard = document.getElementById("codingIdentityCard");
-            if (!idCard) return;
-            
             const prevText = downloadPngBtn.innerHTML;
             downloadPngBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Generating...`;
             downloadPngBtn.disabled = true;
-            
+
             try {
-                // Temporarily disable tilt transform
-                const prevTransform = idCard.style.transform;
-                idCard.style.transform = "none";
-                
-                const canvas = await html2canvas(idCard, {
-                    scale: 3,
-                    useCORS: true,
-                    backgroundColor: null,
-                    logging: false
-                });
-                
-                // Restore transform
-                idCard.style.transform = prevTransform;
-                
+                window.getSelection().removeAllRanges();
+                document.activeElement && document.activeElement.blur();
+
+                const canvas = await captureCardImage();
+                if (!canvas) return;
+
                 const image = canvas.toDataURL("image/png");
                 const link = document.createElement("a");
                 link.download = `${(typeof userProgress !== 'undefined' ? userProgress.name : 'learner')}_coding_card.png`;
@@ -396,7 +694,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
             } catch (e) {
                 console.error("Error generating PNG:", e);
-                void 0;
             } finally {
                 downloadPngBtn.innerHTML = prevText;
                 downloadPngBtn.disabled = false;
@@ -408,41 +705,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadPdfBtn = document.getElementById("downloadPdfBtn");
     if (downloadPdfBtn) {
         downloadPdfBtn.addEventListener("click", async () => {
-            const idCard = document.getElementById("codingIdentityCard");
-            if (!idCard) return;
-            
             const prevText = downloadPdfBtn.innerHTML;
             downloadPdfBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Generating...`;
             downloadPdfBtn.disabled = true;
-            
+
             try {
-                const prevTransform = idCard.style.transform;
-                idCard.style.transform = "none";
-                
-                const canvas = await html2canvas(idCard, {
-                    scale: 3,
-                    useCORS: true,
-                    backgroundColor: null,
-                    logging: false
-                });
-                
-                idCard.style.transform = prevTransform;
-                
+                window.getSelection().removeAllRanges();
+                document.activeElement && document.activeElement.blur();
+
+                const canvas = await captureCardImage();
+                if (!canvas) return;
+
                 const imgData = canvas.toDataURL("image/png");
                 const { jsPDF } = window.jspdf;
-                
+
                 const pdf = new jsPDF("l", "mm", "a4");
                 const imgWidth = 200;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
+
                 const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
                 const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2;
-                
+
                 pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
                 pdf.save(`${(typeof userProgress !== 'undefined' ? userProgress.name : 'learner')}_coding_card.pdf`);
             } catch (e) {
                 console.error("Error generating PDF:", e);
-                void 0;
             } finally {
                 downloadPdfBtn.innerHTML = prevText;
                 downloadPdfBtn.disabled = false;

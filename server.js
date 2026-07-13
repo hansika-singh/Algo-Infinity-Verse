@@ -1,26 +1,26 @@
-import { startTelemetry } from "./backend/utils/telemetry.js";
+import { startTelemetry } from './backend/utils/telemetry.js';
 startTelemetry();
-import { setupWebRTCSignaling } from "./backend/services/webrtc.service.js";
-import crypto from "crypto";
-import fs from "fs/promises";
-import http from "http";
-import express from "express";
-import apiRouter from "./backend/routes/api.js";
-import { execFile } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
-import { FieldValue } from "firebase-admin/firestore";
-import { initializeFirebase, getDb, COLLECTIONS } from "./firebase.js";
-import { verifyCsrfToken } from "./utils/csrf-verify.js";
-import multer from "multer";
-import { extractResumeText } from "./backend/resume-analyzer/parser.js";
-import { calculateATS } from "./backend/resume-analyzer/atsScore.js";
-import { findMissingSkills } from "./backend/resume-analyzer/skills.js";
-import { getSuggestions } from "./backend/resume-analyzer/suggestions.js";
-import { analyzeWorkflow } from "./backend/repository-analyzer/cicdValidator.js";
-import { VCSFactory } from "./backend/vcs/VCSFactory.js";
-import { enqueueBulkAudit, getBatchProgress, MAX_BULK_AUDIT_URLS } from "./backend/jobs/queue.js";
-import "./backend/jobs/worker.js"; // Initialize worker
+import { setupWebRTCSignaling } from './backend/services/webrtc.service.js';
+import crypto from 'crypto';
+import fs from 'fs/promises';
+import http from 'http';
+import express from 'express';
+import apiRouter from './backend/routes/api.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { FieldValue } from 'firebase-admin/firestore';
+import { initializeFirebase, COLLECTIONS } from './firebase.js';
+import { verifyCsrfToken } from './utils/csrf-verify.js';
+import { validateEnv } from './utils/envValidator.js';
+import multer from 'multer';
+import { extractResumeText } from './backend/resume-analyzer/parser.js';
+import { calculateATS } from './backend/resume-analyzer/atsScore.js';
+import { findMissingSkills } from './backend/resume-analyzer/skills.js';
+import { getSuggestions } from './backend/resume-analyzer/suggestions.js';
+import { analyzeWorkflow } from './backend/repository-analyzer/cicdValidator.js';
+import { VCSFactory } from './backend/vcs/VCSFactory.js';
+import { enqueueBulkAudit, getBatchProgress, MAX_BULK_AUDIT_URLS } from './backend/jobs/queue.js';
+import './backend/jobs/worker.js'; // Initialize worker
 
 import { parse as csvParse } from 'csv-parse/sync';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,22 +28,6 @@ import { generateSdlcAdvice } from './sdlcAdvisor.js';
 import lockfile from 'proper-lockfile';
 import { fileTypeFromBuffer } from 'file-type';
 
-const JUDGE0_LANGUAGE_IDS = {
-  python: 71,
-  javascript: 63,
-  java: 62,
-  'c++': 54,
-  cpp: 54,
-  c: 50,
-  typescript: 74,
-  go: 60,
-  rust: 73,
-  ruby: 72,
-  swift: 83,
-  dart: 98,
-  haskell: 89,
-  kotlin: 78,
-};
 import { handleReportRequest } from './backend/reports/reportGenerator.js';
 import { getUserBenchmark } from './backend/benchmarking/percentileService.js';
 import { Server as SocketIOServer } from 'socket.io';
@@ -51,8 +35,6 @@ import {
   ACCESS_TOKEN_MAX_AGE_SECONDS,
   REFRESH_TOKEN_MAX_AGE_SECONDS,
   getClientIdentifier,
-  isSignupRateLimited,
-  recordSignupAttempt,
   normalizeAuthDelay,
   createAccessToken,
   verifyAccessToken,
@@ -62,7 +44,6 @@ import {
   createRefreshToken,
   verifyRefreshToken,
   revokeTokenFamily,
-  activeRefreshFamilies,
 } from './backend/services/auth.service.js';
 import {
   applyRateLimit,
@@ -88,9 +69,11 @@ import {
   submitSolution,
   getBattle,
   getHistory,
+  TEST_CASES,
+  runTestCases,
 } from './pages/Dsa-Battle/Battleservice.js';
 
-import { instrumentJS } from './modules/code-tracer.js';
+// import { instrumentJS } from './modules/code-tracer.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -145,7 +128,6 @@ const MAX_INTERVIEW_EXPERIENCE_ENTRIES = 5000;
 const MAX_AUDIT_HISTORY_ENTRIES = 1000;
 const MAX_EXECUTIONS_ENTRIES = 5000;
 const SESSION_COOKIE = 'aiv_session';
-const ACCESS_COOKIE = 'aiv_access';
 const REFRESH_COOKIE = 'aiv_refresh';
 
 const DELETION_LOG_FILE = path.join(DATA_DIR, 'account-deletions.json');
@@ -346,11 +328,6 @@ async function readAudits() {
   await ensureAuditsStore();
   const raw = await fs.readFile(AUDITS_FILE, 'utf8');
   return JSON.parse(raw || '[]');
-}
-
-async function writeAudits(audits) {
-  await ensureAuditsStore();
-  await fs.writeFile(AUDITS_FILE, `${JSON.stringify(audits, null, 2)}\n`);
 }
 
 // ── Execution History Store ─────────────────────────────────────────────────
@@ -877,7 +854,7 @@ async function handleApi(req, res, pathname) {
     const vars = {};
     keys.forEach((k) => {
       const v = process.env[k];
-      vars[k] = Boolean(process.env[k]);
+      vars[k] = Boolean(v);
     });
     return sendJson(res, 200, vars);
   }
@@ -1186,7 +1163,9 @@ async function handleApi(req, res, pathname) {
         try {
           const snapshot = await db.collection('users').doc(decoded.sub).get();
           if (snapshot.exists) user = { ...snapshot.data(), id: snapshot.id };
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       }
     } else {
       user = users.find((u) => u.id === decoded.sub);
@@ -1770,7 +1749,9 @@ async function handleApi(req, res, pathname) {
       const raw = await fs.readFile(DELETION_LOG_FILE, 'utf8');
 
       logs = JSON.parse(raw || '[]');
-    } catch {}
+    } catch {
+      // ignore
+    }
 
     logs.push(deletionEvent);
 
@@ -1920,7 +1901,7 @@ async function handleApi(req, res, pathname) {
       user: {
         name: session?.name || 'John Doe',
         username: session?.email?.split('@')[0] || 'johndoe',
-        avatar: '🚀',
+        avatar: { initial: 'L', bg: '#7c3aed' },
         bio: 'Passionate about DSA and building cool stuff!',
         joinedDate: '2024-01-15',
       },
@@ -2526,7 +2507,7 @@ async function handleApi(req, res, pathname) {
   // ── Collaborative Study Rooms endpoints ──────────────────────────────────
   if (pathname === '/api/study-rooms' && req.method === 'GET') {
     const roomsList = [];
-    for (const [id, r] of studyRooms.entries()) {
+    for (const r of studyRooms.values()) {
       roomsList.push({
         id: r.id,
         hostName: r.hostName,
@@ -2854,7 +2835,7 @@ async function handleApi(req, res, pathname) {
     }
 
     try {
-      const analysis = analyzeCode(code, language, problemId);
+      const analysis = analyzeCode(code, language);
       return sendJson(res, 200, { success: true, data: analysis });
     } catch (error) {
       console.error('Error predicting acceptance:', error);
@@ -3153,6 +3134,8 @@ function resolveStaticPath(pathname) {
     '/memory-scanner': 'pages/tools/memory-scanner/memory-scanner.html',
     '/memory-scanner.html': 'pages/tools/memory-scanner/memory-scanner.html',
     '/algorithm-timeline': 'pages/visualizers/algorithm-timeline/algorithm-timeline.html',
+    '/practice': 'pages/practice/problems.html',
+    '/practice.html': 'pages/practice/problems.html',
     '/support-page': 'support-page/index.html',
     '/support-page/': 'support-page/index.html',
   };
@@ -3353,7 +3336,7 @@ const server = http.createServer(app);
 
 // ===== CODE ANALYSIS ENGINE =====
 // Used by the POST /api/predict-acceptance route in handleApi().
-function analyzeCode(code, language, problemId) {
+function analyzeCode(code, language) {
   let score = 100;
   const risks = [];
   const suggestions = [];
@@ -3383,7 +3366,7 @@ function analyzeCode(code, language, problemId) {
   }
 
   // 4. Check for Syntax errors
-  if (checkSyntaxErrors(code, language)) {
+  if (checkSyntaxErrors(code)) {
     score -= 25;
     risks.push('❌ Syntax errors detected');
     suggestions.push('Fix syntax errors before submitting');
@@ -3446,7 +3429,6 @@ function checkTimeComplexity(code) {
 
 function checkOverflowRisk(code) {
   const intTypes = ['int', 'long', 'number'];
-  const largeOperations = ['*', '+', '-', '/'];
 
   for (const type of intTypes) {
     if (code.includes(type) && code.includes('*')) {
@@ -3472,7 +3454,7 @@ function checkEdgeCases(code) {
   return { missing };
 }
 
-function checkSyntaxErrors(code, language) {
+function checkSyntaxErrors(code) {
   // Basic syntax check
   const openBraces = (code.match(/{/g) || []).length;
   const closeBraces = (code.match(/}/g) || []).length;
@@ -3535,6 +3517,10 @@ function getSummary(score) {
 
 // --- PHASE 1 ADDITION: SOCKET.IO LOGIC ---
 const io = new SocketIOServer(server);
+
+// --- BATTLE MODE STATE ---
+const matchmakingQueue = { Easy: [], Medium: [], Hard: [] };
+const activeBattles = new Map();
 
 function serializeRoom(room) {
   return {
@@ -3629,7 +3615,7 @@ io.on('connection', (socket) => {
 
       if (result.candidates && result.candidates.length > 0) {
         let aiHint = result.candidates[0].content.parts[0].text;
-        aiHint = aiHint.replace(/\*/g, '').replace(/\`/g, ''); // Clean markdown
+        aiHint = aiHint.replace(/\*/g, '').replace(/`/g, ''); // Clean markdown
         socket.emit('ai-interviewer-feedback', { hint: aiHint });
       } else {
         socket.emit('ai-interviewer-feedback', {
@@ -3659,6 +3645,7 @@ io.on('connection', (socket) => {
         if (rules.type && (val === null || typeof val !== rules.type)) return null;
         if (rules.string && typeof val === 'string') {
           val = val.slice(0, rules.maxLength || MAX_TEXT_LENGTH);
+          // eslint-disable-next-line no-control-regex
           val = val.replace(/[\x00-\x1F\x7F]/g, '');
         }
         result[key] = val;
@@ -3807,6 +3794,99 @@ io.on('connection', (socket) => {
     });
     if (!valid) return;
     socket.to(`battle_${valid.battleId}`).emit('battle-progress-update', valid);
+  });
+
+  // ── IN-MEMORY MATCHMAKING LOGIC ──
+  socket.on('find-match', (data) => {
+    const valid = validateSocketInput(data, {
+      userId: { type: 'string', required: true },
+      userName: { type: 'string', required: true },
+      difficulty: { type: 'string', required: true },
+    });
+    if (!valid) return;
+
+    const diff = valid.difficulty;
+    if (!matchmakingQueue[diff]) matchmakingQueue[diff] = [];
+    
+    // Check if someone is already waiting
+    const queue = matchmakingQueue[diff];
+    const opponentIdx = queue.findIndex(u => u.userId !== valid.userId);
+    
+    if (opponentIdx !== -1) {
+      // Match found!
+      const opponent = queue.splice(opponentIdx, 1)[0];
+      const battleId = crypto.randomUUID();
+      
+      const problemKeys = Object.keys(TEST_CASES);
+      const chosenTitle = problemKeys[Math.floor(Math.random() * problemKeys.length)];
+      const problem = TEST_CASES[chosenTitle];
+
+      const battleData = {
+        id: battleId,
+        difficulty: diff,
+        status: 'active',
+        problemTitle: chosenTitle,
+        problemDescription: `Implement ${problem.func}. Test cases await.`,
+        participants: {
+          [valid.userId]: { name: valid.userName, progress: 0, status: 'active' },
+          [opponent.userId]: { name: opponent.userName, progress: 0, status: 'active' }
+        },
+        winner: null
+      };
+
+      activeBattles.set(battleId, battleData);
+
+      // Join both to the socket room
+      socket.join(`battle_${battleId}`);
+      const opponentSocket = io.sockets.sockets.get(opponent.socketId);
+      if (opponentSocket) opponentSocket.join(`battle_${battleId}`);
+
+      // Emit match-found to both
+      io.to(`battle_${battleId}`).emit('match-found', {
+        battleId,
+        battleData,
+        opponentName: { [valid.userId]: opponent.userName, [opponent.userId]: valid.userName }
+      });
+    } else {
+      // Add to queue
+      // Remove existing entries for this user first
+      matchmakingQueue[diff] = queue.filter(u => u.userId !== valid.userId);
+      matchmakingQueue[diff].push({
+        userId: valid.userId,
+        userName: valid.userName,
+        socketId: socket.id
+      });
+    }
+  });
+
+  socket.on('battle-submit', (data) => {
+    const valid = validateSocketInput(data, {
+      battleId: { type: 'string', required: true },
+      userId: { type: 'string', required: true },
+      code: { type: 'string', required: true },
+    });
+    if (!valid) return;
+
+    const battle = activeBattles.get(valid.battleId);
+    if (!battle || battle.status !== 'active') {
+      socket.emit('battle-submit-result', { error: 'Battle not active.' });
+      return;
+    }
+
+    const passed = runTestCases(battle.problemTitle, valid.code);
+    
+    if (passed) {
+      battle.status = 'completed';
+      battle.winner = valid.userId;
+      io.to(`battle_${valid.battleId}`).emit('battle-over', {
+        winnerId: valid.userId,
+        winnerName: battle.participants[valid.userId].name,
+        badge: "Speed Demon",
+        xpAwarded: 100 // Mock XP
+      });
+    } else {
+      socket.emit('battle-submit-result', { success: false, message: 'Tests failed. Keep trying!' });
+    }
   });
 
   // ── ESCAPE ROOM MODE ──
@@ -4138,11 +4218,7 @@ export {
 if (process.env.VERCEL === '1') {
   db = initializeFirebase();
   useFirestore = !!db;
-  if (!process.env.SESSION_SECRET) {
-    throw new Error(
-      'FATAL: SESSION_SECRET is required on Vercel. Set it in the Vercel dashboard under Project Settings > Environment Variables.'
-    );
-  }
+  validateEnv();
 }
 
 const vercelHandler =
@@ -4153,22 +4229,14 @@ export default vercelHandler;
 if (process.env.VERCEL !== '1' && process.env.NODE_ENV !== 'test') {
   loadEnvFile()
     .then(() => {
+      validateEnv();
       db = initializeFirebase();
       useFirestore = !!db;
       const port = Number(process.env.PORT || 3000);
       const host = process.env.HOST || '127.0.0.1';
 
       server.listen(port, host, () => {
-        const url = `http://${host}:${port}`;
-        void 0;
-        if (!process.env.SESSION_SECRET) {
-          // Fail closed in every environment — a missing secret means tokens
-          // would be signed with a forgeable, hardcoded fallback.
-          console.error(
-            'FATAL: SESSION_SECRET is required. Set it in the environment before starting the server.'
-          );
-          process.exit(1);
-        }
+        // listening started
       });
 
       server.on('error', (err) => {

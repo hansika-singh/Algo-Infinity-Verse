@@ -1,8 +1,9 @@
 // backend/knowledge-base/llmClient.js
 // Stub LLM client for embedding generation and markdown creation.
-// Replace with real LLM integration (Docker container running Llama 3.1) later.
+// Replace with real LLM integration (Docker container running Llama 3.1) later.
 
 const crypto = require('crypto');
+
 
 // Deterministic pseudo‑random embedding from text (placeholder).
 function getEmbedding(text) {

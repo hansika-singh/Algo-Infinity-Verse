@@ -9,46 +9,48 @@
 /* ─── Category mapping (display → data key) ─── */
 
 const categoryDisplayToKey = {
-  'All':          'all',
-  'Arrays':       'arrays',
-  'Strings':      'strings',
-  'Linked List':  'linkedlist',
-  'Trees':        'trees',
-  'Graphs':       'graphs',
-  'DP':           'dp',
+  All: 'all',
+  Arrays: 'arrays',
+  Strings: 'strings',
+  'Linked List': 'linkedlist',
+  Trees: 'trees',
+  Graphs: 'graphs',
+  DP: 'dp',
 };
 
 const difficulties = ['All', 'Easy', 'Medium', 'Hard'];
-const categories    = Object.keys(categoryDisplayToKey);
+const categories = Object.keys(categoryDisplayToKey);
 
 /* ─── DOM refs ─── */
-const grid           = document.getElementById('ppGrid');
-const searchInput    = document.getElementById('ppSearchInput');
-const clearBtn       = document.getElementById('ppClearBtn');
-const diffContainer  = document.getElementById('ppDifficultyFilters');
-const catContainer   = document.getElementById('ppCategoryFilters');
-const emptyState     = document.getElementById('ppEmpty');
-const countDisplay   = document.getElementById('ppCountDisplay');
-const totalDisplay   = document.getElementById('ppTotalDisplay');
-const resetEmptyBtn  = document.getElementById('ppEmptyResetBtn');
+const grid = document.getElementById('ppGrid');
+const searchInput = document.getElementById('ppSearchInput');
+const clearBtn = document.getElementById('ppClearBtn');
+const diffContainer = document.getElementById('ppDifficultyFilters');
+const catContainer = document.getElementById('ppCategoryFilters');
+const emptyState = document.getElementById('ppEmpty');
+const countDisplay = document.getElementById('ppCountDisplay');
+const totalDisplay = document.getElementById('ppTotalDisplay');
+const resetEmptyBtn = document.getElementById('ppEmptyResetBtn');
 
 /* ─── State ─── */
 let activeDifficulty = 'all';
-let activeCategory   = 'all';
-let searchQuery      = '';
-const pageReferrer   = document.referrer;
+let activeCategory = 'all';
+let searchQuery = '';
+const pageReferrer = document.referrer;
 
 /* ─── Build filter chips ─── */
 function buildFilters() {
   // Difficulty chips
-  difficulties.forEach(d => {
+  difficulties.forEach((d) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'pp-filter-chip' + (d === 'All' ? ' active' : '');
     btn.dataset.difficulty = d === 'All' ? 'all' : d.toLowerCase();
     btn.textContent = d;
     btn.addEventListener('click', () => {
-      diffContainer.querySelectorAll('.pp-filter-chip').forEach(c => c.classList.remove('active'));
+      diffContainer
+        .querySelectorAll('.pp-filter-chip')
+        .forEach((c) => c.classList.remove('active'));
       btn.classList.add('active');
       activeDifficulty = btn.dataset.difficulty;
       render();
@@ -57,14 +59,14 @@ function buildFilters() {
   });
 
   // Category chips
-  categories.forEach(c => {
+  categories.forEach((c) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'pp-filter-chip' + (c === 'All' ? ' active' : '');
     btn.dataset.category = categoryDisplayToKey[c] || c.toLowerCase().replace(/\s+/g, '');
     btn.textContent = c;
     btn.addEventListener('click', () => {
-      catContainer.querySelectorAll('.pp-filter-chip').forEach(c => c.classList.remove('active'));
+      catContainer.querySelectorAll('.pp-filter-chip').forEach((c) => c.classList.remove('active'));
       btn.classList.add('active');
       activeCategory = btn.dataset.category;
       render();
@@ -80,8 +82,8 @@ function getProblems() {
     return window.practiceProblems;
   }
   // Fallback: try the global variable from script.js
-  if (typeof practiceProblems !== 'undefined' && Array.isArray(practiceProblems)) {
-    return practiceProblems;
+  if (typeof window.practiceProblems !== 'undefined' && Array.isArray(window.practiceProblems)) {
+    return window.practiceProblems;
   }
   return [];
 }
@@ -91,12 +93,13 @@ function getFiltered() {
   const problems = getProblems();
   const q = searchQuery.toLowerCase().trim();
 
-  return problems.filter(p => {
+  return problems.filter((p) => {
     const matchDiff = activeDifficulty === 'all' || p.difficulty === activeDifficulty;
-    const matchCat  = activeCategory === 'all' || p.category === activeCategory;
-    const matchSearch = !q ||
+    const matchCat = activeCategory === 'all' || p.category === activeCategory;
+    const matchSearch =
+      !q ||
       p.title.toLowerCase().includes(q) ||
-      (p.tags || []).some(t => t.toLowerCase().includes(q)) ||
+      (p.tags || []).some((t) => t.toLowerCase().includes(q)) ||
       (p.description || '').toLowerCase().includes(q);
 
     return matchDiff && matchCat && matchSearch;
@@ -136,23 +139,24 @@ function render() {
   emptyState.style.display = 'none';
 
   // Render all filtered cards (no pagination)
-  grid.innerHTML = allFiltered.map((p, i) => {
-    const tags = (p.tags || []).slice(0, 3);
-    const extraTags = (p.tags || []).length - 3;
-    const diffClass = p.difficulty.toLowerCase();
+  grid.innerHTML = allFiltered
+    .map((p, i) => {
+      const tags = (p.tags || []).slice(0, 3);
+      const extraTags = (p.tags || []).length - 3;
+      const diffClass = p.difficulty.toLowerCase();
 
-    return `
+      return `
       <div class="pp-card" role="listitem" tabindex="0"
            data-id="${p.id}"
            data-difficulty="${diffClass}"
            style="animation-delay:${reducedMotion ? '0s' : Math.min(i * 0.02, 0.4)}s">
         <div class="pp-card-header">
           <span class="pp-card-title">${escHtml(p.title)}</span>
-          <span class="pp-card-difficulty ${diffClass}">${getDifficultyIcon(p.difficulty)} ${escHtml(p.difficulty)}</span>
+          <span class="pp-card-difficulty ${diffClass}">${escHtml(p.difficulty)}</span>
         </div>
         <span class="pp-card-desc">${escHtml(p.description || '')}</span>
         <div class="pp-card-tags">
-          ${tags.map(t => `<span class="pp-card-tag" data-category="${escHtml(p.category)}">${escHtml(t)}</span>`).join('')}
+          ${tags.map((t) => `<span class="pp-card-tag" data-category="${escHtml(p.category)}">${escHtml(t)}</span>`).join('')}
           ${extraTags > 0 ? `<span class="pp-card-tag">+${extraTags}</span>` : ''}
         </div>
         <div class="pp-card-footer">
@@ -165,7 +169,8 @@ function render() {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
 function escHtml(str) {
@@ -195,7 +200,7 @@ grid.addEventListener('click', (e) => {
   const card = e.target.closest('.pp-card');
   if (!card) return;
   const id = parseInt(card.dataset.id, 10);
-  const problem = getProblems().find(p => p.id === id);
+  const problem = getProblems().find((p) => p.id === id);
   if (problem && typeof window.openQuizEditor === 'function') {
     sessionStorage.setItem('_ppSkipLoading', '1');
     window.openQuizEditor(problem);
@@ -212,7 +217,7 @@ grid.addEventListener('click', (e) => {
 });
 
 /* ─── History API: browser back closes modal instead of leaving page ─── */
-window.addEventListener('popstate', (e) => {
+window.addEventListener('popstate', () => {
   const modal = document.getElementById('quizEditorModal');
   if (modal && modal.classList.contains('active')) {
     // Back pressed while modal is open — close it and stay on this page
@@ -243,10 +248,10 @@ resetEmptyBtn.addEventListener('click', () => {
   activeDifficulty = 'all';
   activeCategory = 'all';
 
-  diffContainer.querySelectorAll('.pp-filter-chip').forEach(c => {
+  diffContainer.querySelectorAll('.pp-filter-chip').forEach((c) => {
     c.classList.toggle('active', c.dataset.difficulty === 'all');
   });
-  catContainer.querySelectorAll('.pp-filter-chip').forEach(c => {
+  catContainer.querySelectorAll('.pp-filter-chip').forEach((c) => {
     c.classList.toggle('active', c.dataset.category === 'all');
   });
 
@@ -272,7 +277,9 @@ document.getElementById('ppBackBtn')?.addEventListener('click', () => {
       window.location.href = pageReferrer;
       return;
     }
-  } catch (e) { /* invalid referrer URL, fall through */ }
+  } catch (e) {
+    /* invalid referrer URL, fall through */
+  }
 
   if (window.history.length > 1) {
     history.back();
