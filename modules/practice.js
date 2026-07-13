@@ -47,6 +47,21 @@ function initPracticeSection() {
       currentFilter = btn.dataset.filter;
       renderProblems();
     });
+    // Topic filter buttons
+  let currentTopic = 'all';
+  const topicButtons = document.querySelectorAll(".topic-btn");
+  topicButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      topicButtons.forEach((b) => b.classList.remove("active-topic"));
+      btn.classList.add("active-topic");
+      currentTopic = btn.dataset.topic;
+      renderProblems();
+    });
+  });
+
+  // Override renderProblems to include topic filter
+  const originalRenderProblems = window.renderProblems;
+  window.currentTopic = 'all';
     // Set active state on load if restored
     if (btn.dataset.filter === currentFilter) {
       filterButtons.forEach((b) => b.classList.remove("active"));
@@ -93,7 +108,18 @@ function initPracticeSection() {
       searchInput.value = "";
       currentSearch = "";
       clearBtn.classList.remove("visible");
+      // Topic filter buttons
+  const topicButtons = document.querySelectorAll(".topic-btn");
+  topicButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      topicButtons.forEach((b) => b.classList.remove("active-topic"));
+      btn.classList.add("active-topic");
+      currentTopic = btn.dataset.topic;
       renderProblems();
+    });
+  });
+
+  renderProblems();
       searchInput.focus();
     });
     if (currentSearch) {
@@ -128,13 +154,11 @@ function initPracticeSection() {
   });
 }
 
-function getFilteredProblems() {
-  const practiceProblems = window.practiceProblems || [];
-  const userProgress = window.userProgress || {};
-  if (!window.dsaSearchEngine && typeof DSASearchEngine !== 'undefined') {
-    window.dsaSearchEngine = new DSASearchEngine(practiceProblems);
-  }
+let currentTopic = 'all';
 
+function getFilteredProblems() {
+  const userProgress = window.userProgress || {};
+  const practiceProblems = window.practiceProblems || [];
   let filtered = practiceProblems;
   if (currentSearch && window.dsaSearchEngine) {
     filtered = window.dsaSearchEngine.search(currentSearch);
@@ -143,8 +167,15 @@ function getFilteredProblems() {
     filtered = filtered.filter(p => p.title.toLowerCase().includes(searchLower) || p.tags.some(tag => tag.toLowerCase().includes(searchLower)));
   }
   if (currentFilter !== 'all') {
-    if (currentFilter === 'favorites') filtered = filtered.filter(p => userProgress.favoriteProblems.includes(p.id));
+    if (currentFilter === 'favorites') filtered = filtered.filter(p => userProgress.favoriteProblems?.includes(p.id));
     else filtered = filtered.filter(p => p.difficulty === currentFilter);
+  }
+  // Topic filter
+  if (currentTopic !== 'all') {
+    filtered = filtered.filter(p =>
+      p.category === currentTopic ||
+      p.tags?.some(tag => tag.toLowerCase().includes(currentTopic.toLowerCase()))
+    );
   }
   return filtered;
 }
