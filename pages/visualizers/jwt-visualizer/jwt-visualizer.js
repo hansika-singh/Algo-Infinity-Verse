@@ -78,6 +78,20 @@ async function generateSignature(headerB64, payloadB64, secretStr, isBase64Secre
   }
 }
 
+// Utility to prevent XSS when writing user-editable content into innerHTML
+// (delegating to centralized DOMSanitizer if available)
+function escapeHtml(unsafe) {
+  if (typeof window !== 'undefined' && window.DOMSanitizer) {
+    return window.DOMSanitizer.escapeHtml(unsafe);
+  }
+  return String(unsafe == null ? '' : unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ─── State ─── */
 let jwtState = {
   headerObj: { alg: 'HS256', typ: 'JWT' },
@@ -227,7 +241,7 @@ function renderEncoded() {
   // unless we are updating FROM decoded.
   // To handle this nicely, we'll just set innerHTML
 
-  let html = `<span class="part-header">${jwtState.headerB64}</span><span class="part-dot">.</span><span class="part-payload">${jwtState.payloadB64}</span><span class="part-dot">.</span><span class="part-signature">${jwtState.signatureB64}</span>`;
+  let html = `<span class="part-header">${escapeHtml(jwtState.headerB64)}</span><span class="part-dot">.</span><span class="part-payload">${escapeHtml(jwtState.payloadB64)}</span><span class="part-dot">.</span><span class="part-signature">${escapeHtml(jwtState.signatureB64)}</span>`;
   el.innerHTML = html;
 }
 

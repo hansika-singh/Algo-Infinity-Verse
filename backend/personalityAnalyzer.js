@@ -18,7 +18,7 @@ analyze() {
 }
 
 calculateMetrics() {
-    const {problems, submissions, languages, topics, streak} = this.userData;
+    const {submissions, topics, streak} = this.userData;
     return {
       speed: this.getSpeed(submissions),
       accuracy: this.getAccuracy(submissions),

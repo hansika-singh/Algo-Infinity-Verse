@@ -63,7 +63,7 @@ router.post('/event', async (req, res) => {
 });
 
 // Helper functions (replace with actual DB queries)
-async function getSnapshots(userId, problemId) {
+async function getSnapshots(_userId, _problemId) {
   // Return sample data for now
   return [
     {
@@ -90,7 +90,7 @@ async function getSnapshots(userId, problemId) {
   ];
 }
 
-async function getEditorEvents(userId, problemId) {
+async function getEditorEvents(_userId, _problemId) {
   return [
     { type: 'typing', timestamp: new Date(Date.now() - 300000) },
     { type: 'typing', timestamp: new Date(Date.now() - 280000) },
@@ -98,7 +98,7 @@ async function getEditorEvents(userId, problemId) {
   ];
 }
 
-async function getSubmissions(userId, problemId) {
+async function getSubmissions(_userId, _problemId) {
   return [
     { status: 'failed', timestamp: new Date(Date.now() - 200000) },
     { status: 'accepted', timestamp: new Date(Date.now() - 60000) }

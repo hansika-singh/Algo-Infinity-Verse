@@ -80,9 +80,7 @@
             lastMatchedProtected = null;
           }
         } else {
-          const text = JSON.stringify(payload);
-          void 0;
-          void 0;
+          JSON.stringify(payload);
         }
       } catch (error) {
         console.error("Guest auth error:", error);
@@ -124,14 +122,6 @@
     {
       selector: ".hero-buttons .btn-primary",
       message: "Login to start practising problems and track your progress.",
-    },
-    {
-      selector: ".nav-cta-btn",
-      message: "Login to start your DSA learning journey.",
-    },
-    {
-      selector: ".nav-cta a",
-      message: "Login to start your learning journey.",
     },
     {
       selector: "#totdBtn",
@@ -199,6 +189,8 @@
     ".nav-logo",
     ".nav-link[href='#home']",
     "#darkModeToggle",
+    "#navSettingsBtn",
+    ".settings-toggle",
     "#menuToggle",
     "#scrollTopBtn",
     "#backToTopBtn",

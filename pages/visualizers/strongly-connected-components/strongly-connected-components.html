@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strongly Connected Components · Algo Infinity Verse</title>
+<meta name="description" content="A Dual-Algorithm SCC Engine — watch Tarjan's low-link bookkeeping and Kosaraju's three-phase transpose approach both partition a directed graph into identical strongly connected components.">
+<link rel="stylesheet" href="strongly-connected-components.css">
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <span class="logo-mark">🔗</span>
+      <span class="name">Algo Infinity Verse</span>
+    </a>
+
+    <div class="page-title">
+      <h1>Strongly Connected Components</h1>
+      <p>Dual-Algorithm SCC Engine · Tarjan's vs. Kosaraju's</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="crumb">Visualizers / <strong>SCC</strong></span>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace">
+
+    <!-- ---------- Left panel: graph setup + playback ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Graph</h2></div>
+      <div class="panel-body">
+
+        <div class="control-group">
+          <button class="btn primary full" id="loadClassicBtn">📖 Load example graph</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="randomizeBtn">🎲 Randomize graph</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Nodes</span><span class="val" id="nodeCountVal">8</span></div>
+          <input type="range" id="nodeCountSlider" min="4" max="12" step="1" value="8">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Edge density</span><span class="val" id="densityVal">0.22</span></div>
+          <input type="range" id="densitySlider" min="0.1" max="0.4" step="0.02" value="0.22">
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Playback speed</span><span class="val" id="speedVal">450ms/step</span></div>
+          <input type="range" id="speedSlider" min="80" max="1200" step="20" value="450">
+        </div>
+
+        <div class="btn-row" style="margin-bottom:10px;">
+          <button class="btn" id="restartBtn">⏮ Restart</button>
+          <button class="btn" id="stepBtn">Step ⏭</button>
+        </div>
+        <button class="btn primary full" id="playBtn">▶ Play</button>
+
+        <div class="divider"></div>
+
+        <div class="legend-item"><span class="swatch-dot discover"></span> Discovered (index / low-link assigned)</div>
+        <div class="legend-item"><span class="swatch-dot onstack"></span> On the auxiliary stack</div>
+        <div class="legend-item"><span class="swatch tree"></span> Tree edge (DFS recursion)</div>
+        <div class="legend-item"><span class="swatch back"></span> Back edge (updates low-link)</div>
+        <div class="legend-item"><span class="swatch-dot scc"></span> Popped as a completed SCC</div>
+
+      </div>
+    </aside>
+
+    <!-- ---------- Center: algorithm tabs ---------- -->
+    <section class="panel viewport-panel">
+      <div id="viewport">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabTarjanBtn" data-tab="tarjan">Tarjan's</button>
+          <button class="tab-btn" id="tabKosarajuBtn" data-tab="kosaraju">Kosaraju's</button>
+          <button class="tab-btn" id="tabCompareBtn" data-tab="compare">Compare</button>
+        </div>
+
+        <div class="viewport-overlay">
+          <span class="chip">V <strong id="chipV">8</strong></span>
+          <span class="chip">E <strong id="chipE">0</strong></span>
+          <span class="chip">SCCs found <strong id="chipSccCount">0</strong></span>
+        </div>
+        <div class="phase-badge" id="phaseBadge">Idle</div>
+
+        <!-- Tarjan's tab -->
+        <div class="tab-view active" id="tarjanView">
+          <div class="algo-layout">
+            <div class="graph-stage">
+              <svg class="graph-svg" id="tarjanSvg" viewBox="0 0 560 460">
+                <defs>
+                  <marker id="arrowDefault" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.3)"></path></marker>
+                  <marker id="arrowTree" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#06b6d4"></path></marker>
+                  <marker id="arrowBack" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#facc15"></path></marker>
+                  <marker id="arrowReversed" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#fb923c"></path></marker>
+                </defs>
+                <g class="edge-layer" id="tarjanEdgeLayer"></g>
+                <g class="node-layer" id="tarjanNodeLayer"></g>
+              </svg>
+            </div>
+            <div class="side-rail">
+              <h4>Call stack (simulated recursion)</h4>
+              <div class="frame-stack" id="tarjanFrameStack"></div>
+              <h4>Node stack (S)</h4>
+              <div class="node-stack" id="tarjanNodeStack"></div>
+              <h4>SCCs found</h4>
+              <div class="scc-list" id="tarjanSccList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kosaraju's tab -->
+        <div class="tab-view" id="kosarajuView">
+          <div class="algo-layout">
+            <div class="graph-stage">
+              <svg class="graph-svg" id="kosarajuSvg" viewBox="0 0 560 460">
+                <defs>
+                  <marker id="arrowDefault2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.3)"></path></marker>
+                  <marker id="arrowTree2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#06b6d4"></path></marker>
+                  <marker id="arrowReversed2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#fb923c"></path></marker>
+                </defs>
+                <g class="edge-layer" id="kosarajuEdgeLayer"></g>
+                <g class="node-layer" id="kosarajuNodeLayer"></g>
+              </svg>
+            </div>
+            <div class="side-rail">
+              <h4>Finish-order stack</h4>
+              <div class="finish-stack" id="finishStack"></div>
+              <h4>SCCs found (pass 2)</h4>
+              <div class="scc-list" id="kosarajuSccList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compare tab -->
+        <div class="tab-view" id="compareView">
+          <div class="compare-wrap">
+            <div class="compare-col">
+              <h4>Tarjan's — single DFS pass</h4>
+              <svg class="graph-svg" id="compareTarjanSvg" viewBox="0 0 400 400">
+                <defs><marker id="arrowC1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.3)"></path></marker></defs>
+                <g id="compareTarjanEdgeLayer"></g><g id="compareTarjanNodeLayer"></g>
+              </svg>
+            </div>
+            <div class="compare-col">
+              <h4>Kosaraju's — DFS + transpose + DFS</h4>
+              <svg class="graph-svg" id="compareKosarajuSvg" viewBox="0 0 400 400">
+                <defs><marker id="arrowC2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.3)"></path></marker></defs>
+                <g id="compareKosarajuEdgeLayer"></g><g id="compareKosarajuNodeLayer"></g>
+              </svg>
+            </div>
+          </div>
+          <div class="match-banner" id="matchBanner"></div>
+        </div>
+
+        <div class="loading-veil" id="loadingVeil">
+          <div class="spinner"></div>
+          <p>building the graph…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right panel: telemetry ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Telemetry</h2></div>
+      <div class="panel-body">
+
+        <div class="result-box" id="resultBox">
+          <div class="rtitle">Status</div>
+          <div id="resultVal">Pick a tab and press Play to run an algorithm.</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num" id="statVisited">0</div><div class="lbl">Nodes visited</div></div>
+          <div class="stat-box"><div class="num" id="statEdgesUsed">0</div><div class="lbl">Edges traversed</div></div>
+        </div>
+
+        <div class="control-label"><span>Step log</span></div>
+        <div class="step-log" id="stepLog"><div class="log-line">Waiting for a run…</div></div>
+
+        <div class="divider"></div>
+        <p class="hint" id="algoHint">Tarjan's assigns each node a discovery <strong>index</strong> and a <strong>low-link</strong> value — the smallest index reachable via tree edges and at most one back edge. When a node's low-link equals its own index, it's the root of a completed SCC, and everything above it on the auxiliary stack pops off together.</p>
+      </div>
+    </aside>
+
+  </main>
+</div>
+
+<script src="strongly-connected-components.js"></script>
+</body>
+</html>

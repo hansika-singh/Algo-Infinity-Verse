@@ -1,5 +1,4 @@
 import { MarkdownParser } from '../utils/markdownParser.js';
-import assert from 'assert';
 
 function runTests() {
   console.log('Running Next-Level Feature Tests for MarkdownParser...');

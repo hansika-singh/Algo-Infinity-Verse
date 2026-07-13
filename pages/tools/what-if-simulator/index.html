@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=""UTF-8"/>
+        <meta name="viewport"content="width=device-width, initial-scale=1.0" />
+        <title>Algorithm What-If Simulator</title>
+        <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧪 Algorithm "What-If" Simulator</h1>
+      <p>Tweak parameters and see real-time changes</p>
+    </header>
+
+    <!-- Algorithm Selector -->
+    <div class="controls">
+      <select id="algorithmSelect">
+        <option value="bubble">Bubble Sort</option>
+        <option value="quick">Quick Sort</option>
+        <option value="merge">Merge Sort</option>
+        <option value="binary">Binary Search</option>
+      </select>
+      <button id="runBtn">▶️ Run</button>
+      <button id="resetBtn">🔄 Reset</button>
+      <button id="compareBtn">📊 Compare</button>
+    </div>
+
+    <!-- Parameters -->
+    <div class="params">
+      <div class="param-group">
+        <label>Array Size: <span id="sizeValue">50</span></label>
+        <input type="range" id="sizeSlider" min="10" max="200" value="50" />
+      </div>
+      <div class="param-group">
+        <label>Speed: <span id="speedValue">1x</span></label>
+        <input type="range" id="speedSlider" min="1" max="5" value="1" step="0.5" />
+      </div>
+      <div class="param-group">
+        <label>Data Type: <span id="dataTypeValue">Random</span></label>
+        <input type="range" id="dataTypeSlider" min="0" max="2" value="0" step="1" />
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Visualization -->
+      <div class="panel visualization-panel">
+        <h3>📊 Visualization</h3>
+        <div class="visualization" id="visualization">
+          <canvas id="canvas" width="800" height="300"></canvas>
+        </div>
+        <div class="status" id="status">Ready</div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="panel metrics-panel">
+        <h3>📈 Metrics</h3>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">Comparisons</span>
+            <span class="metric-value" id="comparisons">0</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Swaps</span>
+            <span class="metric-value" id="swaps">0</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Time</span>
+            <span class="metric-value" id="time">0ms</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Memory</span>
+            <span class="metric-value" id="memory">0KB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Panel -->
+    <div class="panel comparison-panel" id="comparisonPanel" style="display:none;">
+      <h3>📊 Side-by-Side Comparison</h3>
+      <div class="comparison-grid">
+        <div class="compare-item">
+          <h4>Bubble Sort</h4>
+          <span class="compare-time" id="bubbleTime">0ms</span>
+        </div>
+        <div class="compare-item">
+          <h4>Quick Sort</h4>
+          <span class="compare-time" id="quickTime">0ms</span>
+        </div>
+        <div class="compare-item">
+          <h4>Merge Sort</h4>
+          <span class="compare-time" id="mergeTime">0ms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenarios -->
+    <div class="scenarios">
+      <h3>💾 Saved Scenarios</h3>
+      <div id="scenarioList"></div>
+      <button id="saveScenarioBtn">💾 Save Current Scenario</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

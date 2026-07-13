@@ -10,12 +10,11 @@ import { processInBatches } from '../utils/concurrency.js';
  * @param {string} repoName - Repository name.
  * @returns {Promise<Array>} - Array of fetched blob contents.
  */
-export async function fetchBlobsConcurrently(filePaths, repoOwner, repoName) {
+export async function fetchBlobsConcurrently(filePaths, _repoOwner, _repoName) {
   // Simulate GraphQL endpoint
-  const graphqlEndpoint = 'https://api.github.com/graphql';
 
   // Async function to fetch a single blob
-  const fetchSingleBlob = async (filePath, index) => {
+  const fetchSingleBlob = async (filePath, _index) => {
     // In a real scenario, this would use a GraphQL Query, e.g.,
     // query { repository(owner: "owner", name: "repo") { object(expression: "HEAD:path") { ... on Blob { text } } } }
     

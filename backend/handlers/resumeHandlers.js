@@ -4,7 +4,6 @@ import { extractResumeText } from "../resume-analyzer/parser.js";
 import { calculateATS } from "../resume-analyzer/atsScore.js";
 import { findMissingSkills } from "../resume-analyzer/skills.js";
 import { getSuggestions } from "../resume-analyzer/suggestions.js";
-import { applyRateLimit, resumeAnalysisLimiter } from "../utils/rateLimiter.js";
 
 const MAX_RESUME_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 const upload = multer({

@@ -13,10 +13,10 @@ class CacheManager {
       const request = indexedDB.open(this.dbName, 1);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
-      request.onupgradeneeded = (e) => {
-        const db = e.target.result;
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
         if (!db.objectStoreNames.contains(this.storeName)) {
-          db.createObjectStore(this.storeName, { keyPath: 'url' });
+          db.createObjectStore(this.storeName);
         }
       };
     });

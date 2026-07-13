@@ -110,67 +110,35 @@
 
   function renderAuthNav() {
     function inject() {
-      document.querySelectorAll('.nav-links').forEach((navLinks) => {
-        let slot = navLinks.querySelector('.auth-nav-item');
+      const header = document.getElementById('settingsProfileHeader');
+      if (!header) return;
 
-        if (!slot) {
-          slot = document.createElement('li');
-          slot.className = 'auth-nav-item';
-          navLinks.appendChild(slot);
-        }
-
-        if (currentSession?.authenticated) {
-          slot.innerHTML = '';
-
-          const chip = document.createElement('span');
-          chip.className = 'nav-user-chip';
-          chip.title = currentSession.user.email;
-          const nameEl = document.createElement('span');
-          nameEl.textContent = currentSession.user.name;
-          if (currentSession.user.avatar) {
-            const avatarEl = document.createElement('img');
-            avatarEl.className = 'nav-avatar';
-            avatarEl.alt = '';
-            avatarEl.setAttribute('data-auth-avatar', '');
-            avatarEl.src = currentSession.user.avatar;
-            chip.append(avatarEl, nameEl);
-          } else {
-            const iconEl = document.createElement('i');
-            iconEl.className = 'fas fa-user-circle';
-            chip.append(iconEl, nameEl);
-          }
-          chip.querySelector('span').textContent = currentSession.user.name;
-
-          const btn = document.createElement('button');
-          btn.className = 'nav-auth-link';
-          btn.type = 'button';
-          btn.setAttribute('data-auth-logout', '');
-          btn.innerHTML = `<i class="fas fa-right-from-bracket"></i> Logout`;
-
-          slot.append(chip, btn);
-        } else {
-          slot.innerHTML = `
-            <a class="nav-auth-link" href="${authUrl('/login')}">
-              <i class="fas fa-right-to-bracket"></i>
-              Login
-            </a>
-            <button class="nav-auth-link nav-auth-guest" data-auth-guest type="button">
-              <i class="fas fa-user-astronaut"></i>
-              Continue as Guest
-            </button>
-            <a class="nav-auth-link nav-auth-primary" href="${authUrl('/signup')}">
-              Sign Up
-            </a>
-          `;
-        }
-      });
+      if (currentSession?.authenticated) {
+        header.style.display = '';
+        header.innerHTML = `
+          <div class="settings-profile-info">
+            <div class="settings-avatar-wrapper">
+              <img class="settings-avatar" src="" alt="" data-auth-avatar style="display: none;" />
+              <i class="fas fa-user-circle settings-avatar-fallback"></i>
+            </div>
+            <div class="settings-user-details">
+              <div class="settings-user-name" data-auth-user-name>Learner</div>
+              <div class="settings-user-email" data-auth-user-email></div>
+            </div>
+          </div>
+        `;
+        updateProfileNames(currentSession.user);
+      } else {
+        header.style.display = 'none';
+        header.innerHTML = '';
+      }
     }
 
-    if (document.querySelector('.nav-links')) {
+    if (document.getElementById('settingsProfileHeader')) {
       inject();
     } else {
       const observer = new MutationObserver(() => {
-        if (document.querySelector('.nav-links')) {
+        if (document.getElementById('settingsProfileHeader')) {
           observer.disconnect();
           inject();
         }

@@ -113,7 +113,7 @@ function onPointerDown(event) {
 
     if (intersects.length > 0) {
         const object = intersects[0].object;
-        showPopup(object.userData.value, object.userData.height);
+        showPopup(object.userData.value);
     } else {
         hidePopup();
     }
@@ -123,7 +123,7 @@ window.addEventListener('pointerdown', onPointerDown);
 // --- UI Logic ---
 const popup = document.getElementById('node-info-popup');
 const popupValue = document.getElementById('popup-value');
-function showPopup(val, height) {
+function showPopup(val) {
     popupValue.innerText = `Node: ${val}`;
     popup.classList.remove('hidden');
 }

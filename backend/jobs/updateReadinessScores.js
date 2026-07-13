@@ -23,7 +23,7 @@ class BatchProcessor {
     this.maxRetries = config.maxRetries || BATCH_CONFIG.MAX_RETRIES;
     this.progressInterval = config.progressInterval || BATCH_CONFIG.PROGRESS_REPORT_INTERVAL;
     this.userTimeout = config.userTimeout || BATCH_CONFIG.USER_TIMEOUT_MS;
-    
+
     this.processedCount = 0;
     this.failedCount = 0;
     this.successCount = 0;
@@ -41,14 +41,16 @@ class BatchProcessor {
     this.failedUsers = [];
 
     const totalUsers = users.length;
-    
+
     if (totalUsers === 0) {
       console.log('No users to process');
       return this.getFinalReport(totalUsers);
     }
 
     console.log(`Starting batch processing: ${totalUsers} users in batches of ${this.batchSize}`);
-    console.log(`Config: Retries=${this.maxRetries}, Delay=${this.batchDelay}ms, Timeout=${this.userTimeout}ms`);
+    console.log(
+      `Config: Retries=${this.maxRetries}, Delay=${this.batchDelay}ms, Timeout=${this.userTimeout}ms`
+    );
 
     for (let i = 0; i < totalUsers; i += this.batchSize) {
       this.batchNumber++;
@@ -56,12 +58,16 @@ class BatchProcessor {
       const batchEnd = Math.min(i + this.batchSize, totalUsers);
       const batch = users.slice(batchStart, batchEnd);
 
-      console.log(`\nBatch ${this.batchNumber}: Processing ${batch.length} users (${batchStart + 1}-${batchEnd}/${totalUsers})`);
+      console.log(
+        `\nBatch ${this.batchNumber}: Processing ${batch.length} users (${batchStart + 1}-${batchEnd}/${totalUsers})`
+      );
 
       await this.processBatchWithRetry(batch, processFn, this.batchNumber);
 
-      if (this.processedCount % this.progressInterval < this.batchSize || 
-          this.processedCount === totalUsers) {
+      if (
+        this.processedCount % this.progressInterval < this.batchSize ||
+        this.processedCount === totalUsers
+      ) {
         this.reportProgress(totalUsers);
       }
 
@@ -80,7 +86,7 @@ class BatchProcessor {
     while (attempts < this.maxRetries) {
       try {
         const results = await Promise.allSettled(
-          batch.map((user, index) => 
+          batch.map((user, index) =>
             this.processUserWithTimeout(processFn, user, this.userTimeout, batchNumber, index)
           )
         );
@@ -94,9 +100,11 @@ class BatchProcessor {
             this.failedCount++;
             this.failedUsers.push({
               userId: user.id || user.name,
-              error: result.reason?.message || 'Unknown error'
+              error: result.reason?.message || 'Unknown error',
             });
-            console.log(`User ${user.id || user.name} failed: ${result.reason?.message || 'Unknown error'}`);
+            console.log(
+              `User ${user.id || user.name} failed: ${result.reason?.message || 'Unknown error'}`
+            );
           }
         });
 
@@ -105,8 +113,10 @@ class BatchProcessor {
       } catch (error) {
         attempts++;
         lastError = error;
-        console.warn(`Batch ${batchNumber} failed (attempt ${attempts}/${this.maxRetries}): ${error.message}`);
-        
+        console.warn(
+          `Batch ${batchNumber} failed (attempt ${attempts}/${this.maxRetries}): ${error.message}`
+        );
+
         if (attempts < this.maxRetries) {
           const waitTime = 1000 * Math.pow(2, attempts - 1);
           console.log(`Waiting ${waitTime}ms before retry...`);
@@ -116,17 +126,17 @@ class BatchProcessor {
     }
 
     console.error(`Batch ${batchNumber} failed after ${this.maxRetries} attempts`);
-    batch.forEach(user => {
+    batch.forEach((user) => {
       this.failedCount++;
       this.failedUsers.push({
         userId: user.id || user.name,
-        error: `Batch failed after ${this.maxRetries} retries: ${lastError?.message || 'Unknown error'}`
+        error: `Batch failed after ${this.maxRetries} retries: ${lastError?.message || 'Unknown error'}`,
       });
     });
     this.processedCount += batch.length;
   }
 
-  async processUserWithTimeout(processFn, user, timeoutMs, batchNumber, index) {
+  async processUserWithTimeout(processFn, user, timeoutMs) {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error(`Timeout: User ${user.id || user.name} took more than ${timeoutMs}ms`));
@@ -146,20 +156,20 @@ class BatchProcessor {
     const eta = rate > 0 ? Math.round(remaining / rate) : 0;
 
     const percentComplete = Math.round((this.processedCount / totalUsers) * 100);
-    const successRate = this.processedCount > 0 
-      ? Math.round((this.successCount / this.processedCount) * 100) 
-      : 0;
+    const successRate =
+      this.processedCount > 0 ? Math.round((this.successCount / this.processedCount) * 100) : 0;
 
     console.log(`\nProgress: ${this.processedCount}/${totalUsers} (${percentComplete}%)`);
-    console.log(`Success: ${this.successCount} | Failed: ${this.failedCount} (${successRate}% success rate)`);
+    console.log(
+      `Success: ${this.successCount} | Failed: ${this.failedCount} (${successRate}% success rate)`
+    );
     console.log(`Speed: ${rate} users/sec | ETA: ${eta}s`);
   }
 
   getFinalReport(totalUsers) {
     const duration = (Date.now() - this.startTime) / 1000;
-    const successRate = this.processedCount > 0 
-      ? Math.round((this.successCount / this.processedCount) * 100) 
-      : 0;
+    const successRate =
+      this.processedCount > 0 ? Math.round((this.successCount / this.processedCount) * 100) : 0;
 
     const report = {
       totalUsers,
@@ -169,13 +179,15 @@ class BatchProcessor {
       successRate,
       duration: Math.round(duration),
       averageSpeed: this.processedCount > 0 ? Math.round(this.processedCount / duration) : 0,
-      failedUsers: this.failedUsers.slice(0, 10)
+      failedUsers: this.failedUsers.slice(0, 10),
     };
 
     console.log(`\n${'='.repeat(60)}`);
     console.log(`BATCH PROCESSING COMPLETE`);
     console.log(`${'='.repeat(60)}`);
-    console.log(`Successfully processed: ${report.success}/${report.totalUsers} users (${report.successRate}%)`);
+    console.log(
+      `Successfully processed: ${report.success}/${report.totalUsers} users (${report.successRate}%)`
+    );
     console.log(`Failed: ${report.failed} users`);
     console.log(`Duration: ${report.duration}s | Speed: ${report.averageSpeed} users/sec`);
     console.log(`${'='.repeat(60)}`);
@@ -194,7 +206,7 @@ class BatchProcessor {
   }
 
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -213,18 +225,54 @@ export async function processUserReadinessScores(options = {}) {
   try {
     // 1. Fetch users who need their scores updated
     // const users = await db.User.findAll({ active: true });
-    
+
     const mockUsers = [
-      { id: 1, name: "Alice", quizPerformance: 75, problemsSolved: 20, coveredTopics: ['DSA'] },
-      { id: 2, name: "Bob", quizPerformance: 90, problemsSolved: 60, coveredTopics: ['DSA', 'System Design'] },
-      { id: 3, name: "Charlie", quizPerformance: 45, problemsSolved: 5, coveredTopics: ['DSA'] },
-      { id: 4, name: "David", quizPerformance: 85, problemsSolved: 45, coveredTopics: ['DSA', 'System Design'] },
-      { id: 5, name: "Eve", quizPerformance: 95, problemsSolved: 80, coveredTopics: ['DSA', 'System Design', 'Algorithms'] },
-      { id: 6, name: "Frank", quizPerformance: 60, problemsSolved: 30, coveredTopics: ['DSA'] },
-      { id: 7, name: "Grace", quizPerformance: 70, problemsSolved: 35, coveredTopics: ['System Design'] },
-      { id: 8, name: "Henry", quizPerformance: 88, problemsSolved: 55, coveredTopics: ['DSA', 'Algorithms'] },
-      { id: 9, name: "Ivy", quizPerformance: 50, problemsSolved: 10, coveredTopics: ['DSA'] },
-      { id: 10, name: "Jack", quizPerformance: 92, problemsSolved: 70, coveredTopics: ['DSA', 'System Design', 'Algorithms'] }
+      { id: 1, name: 'Alice', quizPerformance: 75, problemsSolved: 20, coveredTopics: ['DSA'] },
+      {
+        id: 2,
+        name: 'Bob',
+        quizPerformance: 90,
+        problemsSolved: 60,
+        coveredTopics: ['DSA', 'System Design'],
+      },
+      { id: 3, name: 'Charlie', quizPerformance: 45, problemsSolved: 5, coveredTopics: ['DSA'] },
+      {
+        id: 4,
+        name: 'David',
+        quizPerformance: 85,
+        problemsSolved: 45,
+        coveredTopics: ['DSA', 'System Design'],
+      },
+      {
+        id: 5,
+        name: 'Eve',
+        quizPerformance: 95,
+        problemsSolved: 80,
+        coveredTopics: ['DSA', 'System Design', 'Algorithms'],
+      },
+      { id: 6, name: 'Frank', quizPerformance: 60, problemsSolved: 30, coveredTopics: ['DSA'] },
+      {
+        id: 7,
+        name: 'Grace',
+        quizPerformance: 70,
+        problemsSolved: 35,
+        coveredTopics: ['System Design'],
+      },
+      {
+        id: 8,
+        name: 'Henry',
+        quizPerformance: 88,
+        problemsSolved: 55,
+        coveredTopics: ['DSA', 'Algorithms'],
+      },
+      { id: 9, name: 'Ivy', quizPerformance: 50, problemsSolved: 10, coveredTopics: ['DSA'] },
+      {
+        id: 10,
+        name: 'Jack',
+        quizPerformance: 92,
+        problemsSolved: 70,
+        coveredTopics: ['DSA', 'System Design', 'Algorithms'],
+      },
     ];
 
     const generateMoreUsers = options.generateMockData || false;
@@ -236,7 +284,10 @@ export async function processUserReadinessScores(options = {}) {
           name: `User${i}`,
           quizPerformance: Math.floor(Math.random() * 100),
           problemsSolved: Math.floor(Math.random() * 80),
-          coveredTopics: ['DSA', 'System Design', 'Algorithms'].slice(0, Math.floor(Math.random() * 3) + 1)
+          coveredTopics: ['DSA', 'System Design', 'Algorithms'].slice(
+            0,
+            Math.floor(Math.random() * 3) + 1
+          ),
         });
       }
     }
@@ -247,7 +298,7 @@ export async function processUserReadinessScores(options = {}) {
     const processUser = async (user) => {
       try {
         const analytics = calculateReadinessScore(user);
-        
+
         // Save the computed metrics back to the database
         // await db.ReadinessDashboard.upsert({
         //   userId: user.id,
@@ -259,13 +310,13 @@ export async function processUserReadinessScores(options = {}) {
         // });
 
         console.log(`User ${user.id} (${user.name}): Score = ${analytics.overallPercentage}%`);
-        
+
         return {
           userId: user.id,
           name: user.name,
           score: analytics.overallPercentage,
           breakdown: analytics.breakdown,
-          suggestions: analytics.suggestions
+          suggestions: analytics.suggestions,
         };
       } catch (error) {
         console.error(`Error processing user ${user.id}:`, error);
@@ -279,14 +330,13 @@ export async function processUserReadinessScores(options = {}) {
       batchDelay: options.batchDelay || BATCH_CONFIG.BATCH_DELAY_MS,
       maxRetries: options.maxRetries || BATCH_CONFIG.MAX_RETRIES,
       progressInterval: options.progressInterval || BATCH_CONFIG.PROGRESS_REPORT_INTERVAL,
-      userTimeout: options.userTimeout || BATCH_CONFIG.USER_TIMEOUT_MS
+      userTimeout: options.userTimeout || BATCH_CONFIG.USER_TIMEOUT_MS,
     });
 
     const results = await processor.processInBatches(users, processUser);
 
     console.log('\nUser readiness score processing job completed');
     return results;
-
   } catch (error) {
     console.error('Error running readiness score job:', error);
     throw error;

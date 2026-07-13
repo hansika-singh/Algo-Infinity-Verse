@@ -93,100 +93,92 @@
       </div>
     </section>
 
-    <!-- Battle Lobby -->
+    <!-- Matchmaking Lobby -->
     <section id="battle-lobby" class="battle-lobby">
-      <h2 class="section-title">Battle Royale Lobby</h2>
-
-      <div class="battle-card">
-        <!-- Lobby Header -->
+      <h2 class="section-title">Battle Matchmaking</h2>
+      <div class="battle-card" style="text-align: center; max-width: 600px; margin: 0 auto;">
         <div class="lobby-header">
-          <i class="fas fa-trophy"></i>
-          <h3>Host a Lobby</h3>
-          <p>Create a room, share the code, and battle your friends!</p>
+          <i class="fas fa-search"></i>
+          <h3>Find a Match</h3>
+          <p>Get paired with an opponent of similar skill to battle in real-time!</p>
         </div>
 
-        <!-- Difficulty Selection -->
-        <div class="input-group">
-          <label for="difficultySelect">Difficulty Level</label>
-          <select id="difficultySelect" class="search-bar">
+        <div class="input-group" style="text-align: left;">
+          <label for="difficultySelect">Select Difficulty</label>
+          <select id="difficultySelect" class="search-bar" style="width: 100%; padding: 0.8rem;">
             <option value="Easy">🟢 Easy • 50 XP</option>
             <option value="Medium">🟡 Medium • 100 XP</option>
             <option value="Hard">🔴 Hard • 150 XP</option>
           </select>
         </div>
 
-        <button type="button" id="startBattleBtn" class="btn btn-primary">Create Lobby</button>
-      </div>
-
-      <div class="battle-card" style="margin-top: 2rem">
-        <div class="lobby-header">
-          <i class="fas fa-sign-in-alt"></i>
-          <h3>Join a Lobby</h3>
-        </div>
-        <div class="input-group">
-          <label for="joinBattleId">Enter Lobby Code</label>
-          <input type="text" id="joinBattleId" class="search-bar" placeholder="e.g. A1B2C3" />
-        </div>
-        <button type="button" id="joinBattleBtn" class="btn btn-secondary">Join Lobby</button>
-      </div>
-
-      <div id="waitingRoom" class="battle-card" style="display: none; margin-top: 2rem">
-        <h3>Waiting Room</h3>
-        <p>
-          Lobby Code:
-          <strong
-            id="lobbyCodeDisplay"
-            style="font-size: 1.2rem; color: var(--primary-color)"
-          ></strong>
-        </p>
-        <ul
-          id="participantsList"
-          class="participants-list"
-          style="list-style: none; padding: 0; margin: 1rem 0"
-        >
-          <!-- Participants injected here -->
-        </ul>
-        <button
-          type="button"
-          id="hostStartBtn"
-          class="btn btn-primary"
-          style="display: none; margin-top: 1rem"
-        >
-          Start Match!
+        <button type="button" id="findMatchBtn" class="btn btn-primary" style="margin-top: 1rem; width: 100%; font-size: 1.2rem;">
+          Find Match <i class="fas fa-crosshairs"></i>
         </button>
-        <p
-          id="battleStatusMsg"
-          style="color: var(--primary-color); text-align: center; margin-top: 1rem"
-        ></p>
+
+        <div id="matchmakingStatus" style="display: none; margin-top: 1rem;">
+          <p style="color: var(--primary-color);">Searching for an opponent... <i class="fas fa-spinner fa-spin"></i></p>
+        </div>
       </div>
     </section>
 
+    <!-- Active Split-Screen Battle -->
     <section id="active-battle" class="section" style="display: none">
-      <div class="container">
-        <h2 class="section-title">Active Battle</h2>
-
-        <div class="battle-container">
-          <div class="battle-info-card">
-            <h3 id="problemTitle">Two Sum Challenge</h3>
-            <p id="problemDescription">Find two numbers whose sum equals the target.</p>
+      <div class="container" style="max-width: 1400px; width: 95%;">
+        
+        <div class="split-screen-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; min-height: 70vh;">
+          
+          <!-- Left Pane: Problem & Progress -->
+          <div class="battle-info-card battle-card" style="display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 id="problemTitle" style="margin: 0; color: var(--primary-color);">Problem Title</h3>
+              <div class="timer-box" style="font-size: 1.5rem; font-weight: bold; color: #ef4444;">
+                ⏳ <span id="timer">300</span>s
+              </div>
+            </div>
             <p>Difficulty: <span id="difficultyBadge" class="difficulty-badge">Easy</span></p>
-            <div class="timer-box">⏳ <span id="timer">300</span>s</div>
+            <p id="problemDescription" style="flex-grow: 1; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">Description</p>
+            
+            <div class="progress-section" style="margin-top: 2rem;">
+              <h4>Battle Progress</h4>
+              
+              <!-- Your Progress -->
+              <div class="progress-bar-container" style="margin: 1rem 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-weight: bold;">You (<span id="myUsernameDisplay"></span>)</span>
+                  <span id="myProgressText">0%</span>
+                </div>
+                <div style="width: 100%; background: #333; height: 12px; border-radius: 6px; margin-top: 0.5rem; overflow: hidden;">
+                  <div id="myProgressBar" style="width: 0%; height: 100%; background: #22c55e; transition: width 0.3s ease;"></div>
+                </div>
+              </div>
 
-            <!-- Scoreboard -->
-            <div class="scoreboard" style="margin-top: 2rem">
-              <h4>Scoreboard</h4>
-              <div id="scoreboardList" style="display: flex; flex-direction: column; gap: 10px">
-                <!-- Scoreboard items injected here -->
+              <!-- Opponent Progress -->
+              <div class="progress-bar-container" style="margin: 1rem 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-weight: bold;">Opponent (<span id="opponentNameDisplay"></span>)</span>
+                  <span id="opponentProgressText">0%</span>
+                </div>
+                <div style="width: 100%; background: #333; height: 12px; border-radius: 6px; margin-top: 0.5rem; overflow: hidden;">
+                  <div id="opponentProgressBar" style="width: 0%; height: 100%; background: #ef4444; transition: width 0.3s ease;"></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="battle-editor">
-            <textarea id="solutionCode" placeholder="Write your solution here..."></textarea>
-            <button type="button" id="submitSolutionBtn" class="btn btn-primary">
-              Submit Solution
-            </button>
+          <!-- Right Pane: Code Editor -->
+          <div class="battle-editor battle-card" style="display: flex; flex-direction: column;">
+            <h3 style="margin-bottom: 1rem;">Code Editor</h3>
+            <textarea id="solutionCode" placeholder="function solve(arr) {&#10;  // Write your logic here&#10;}" style="flex-grow: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 1rem; border-radius: 8px; border: 1px solid #333; resize: none; font-size: 1rem;"></textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span id="submitStatusMsg" style="color: #eab308; font-weight: bold;"></span>
+              <button type="button" id="submitSolutionBtn" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                Submit Solution <i class="fas fa-play"></i>
+              </button>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -300,20 +292,25 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="dsa-battle-mode.js"></script>
-    <script src="/bootstrap-legacy.js"></script>
 
-    <script src="/script.js"></script>
-    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="dsa-battle-mode.js?v=2"></script>
+    <script src="/script.js?v=2"></script>
     <script src="/theme.js"></script>
-    <script src="/script.js"></script>
-    <script type="module" src="/dist/legacy-bundle.mjs"></script>
     <script src="/auth.js"></script>
-    <script src="/theme.js"></script>
     <script>
-      loadPartial('navbar-placeholder', '/partials/navbar.html');
-      loadPartial('footer-placeholder', '/partials/footer.html');
+      try {
+        loadPartial('navbar-placeholder', '/partials/navbar.html');
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      } catch (e) {
+        console.error(e);
+      }
+      
+      // Failsafe to always hide loader
+      setTimeout(() => {
+        const ls = document.getElementById('loading-screen');
+        if (ls) ls.style.display = 'none';
+      }, 2500);
     </script>
   </body>
 </html>
