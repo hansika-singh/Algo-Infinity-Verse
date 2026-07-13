@@ -49,9 +49,6 @@ export function initProfile() {
     });
   }
 
-  const avatarIcons = document.querySelectorAll('.avatar-icon');
-  avatarIcons.forEach(el => el.textContent = userProgress.avatar || '🚀');
-  const profileBio = document.getElementById('profileBio');
  const avatarIcons = document.querySelectorAll('.avatar-icon');
 avatarIcons.forEach((el) => renderProfileAvatar(el, userProgress.avatar));
 
@@ -231,62 +228,6 @@ export function updateProfile() {
   updateLevelProgress();
   renderRecentActivity();
   renderSkillsMastery(); 
-}
-const XP_BY_DIFFICULTY = { easy: 100, medium: 250, hard: 500 };
-
-function renderRecentActivity() {
-  const container = document.getElementById('recentActivityList');
-  if (!container) return;
-
-  const userProgress = window.userProgress || {};
-  const practiceProblems = window.practiceProblems || [];
-  const completedIds = userProgress.completedProblems || [];
-  const submittedSolutions = userProgress.submittedSolutions || {};
-
-  if (!completedIds.length) {
-    container.innerHTML = '<p class="empty-state">No problems solved yet. Go solve one!</p>';
-    return;
-  }
-
-  const entries = completedIds
-    .map((id) => {
-      const problem = practiceProblems.find((p) => p.id === id);
-      if (!problem) return null;
-      const sub = submittedSolutions[id];
-      const date = sub && sub.date ? new Date(sub.date) : null;
-      return {
-        id: problem.id,
-        title: problem.title,
-        difficulty: (problem.difficulty || 'easy').toLowerCase(),
-        xp: XP_BY_DIFFICULTY[(problem.difficulty || 'easy').toLowerCase()] || 100,
-        date,
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => (b.date ? b.date.getTime() : 0) - (a.date ? a.date.getTime() : 0))
-    .slice(0, 5);
-
-  container.innerHTML = entries
-    .map((entry) => {
-      const dateStr = entry.date
-        ? entry.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-        : '';
-      return `<button type="button" class="recent-activity-item" data-id="${entry.id}">
-        <span class="recent-activity-title">${escapeHtmlText(entry.title)}</span>
-        <span class="difficulty-badge ${entry.difficulty}">${entry.difficulty}</span>
-        <span class="recent-activity-xp">+${entry.xp} XP</span>
-        <span class="recent-activity-date">${dateStr}</span>
-      </button>`;
-    })
-    .join('');
-
-  container.querySelectorAll('.recent-activity-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const problemId = Number(btn.dataset.id);
-      const problem = practiceProblems.find((p) => p.id === problemId);
-      if (problem && typeof window.openQuizEditor === 'function') window.openQuizEditor(problem);
-    });
-  });
 }
 const XP_BY_DIFFICULTY = { easy: 100, medium: 250, hard: 500 };
 
