@@ -75,6 +75,38 @@ export function initNavbar() {
     toggle.addEventListener("click", (e) => { if (isMobile()) { e.preventDefault(); e.stopPropagation(); const isOpen = parent.classList.toggle("open"); toggle.setAttribute("aria-expanded", isOpen); } });
     menu.querySelectorAll(".dropdown-item").forEach(item => { item.addEventListener("click", () => { if (isMobile()) { parent.classList.remove("open"); toggle.setAttribute("aria-expanded", "false"); } }); });
   });
+  // Swipe to close gesture
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  if (navLinks) {
+    navLinks.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    navLinks.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      // Swipe left to close
+      if (touchStartX - touchEndX > 80) {
+        closeMenu();
+      }
+    }, { passive: true });
+  }
+
+  // Mobile menu close button
+  const mobileClose = document.getElementById("mobileMenuClose");
+  if (mobileClose) {
+    mobileClose.addEventListener("click", closeMenu);
+  }
+
+  // Active page highlighting
+  const currentPath = window.location.pathname;
+  document.querySelectorAll(".nav-link, .dropdown-item").forEach(link => {
+    if (link.getAttribute("href") === currentPath ||
+        link.getAttribute("href") === currentPath + "index.html") {
+      link.classList.add("active");
+    }
+  });
   window.addEventListener("resize", () => {
     if (!isMobile()) {
       if (navLinks.classList.contains("active")) toggleMenu(false);
