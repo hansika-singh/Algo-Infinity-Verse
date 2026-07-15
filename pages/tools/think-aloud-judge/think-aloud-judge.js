@@ -67,7 +67,7 @@ const PROBLEM_DATA = {
 # Step 2: Select optimal approach (hashing vs double loop)
 
 def twoSum(nums, target):
-    # TODO: Add validations and lookup map here
+    # Lookup map for seen values
     seen = {}
     for i, num in enumerate(nums):
         diff = target - num
@@ -84,7 +84,7 @@ print(twoSum([2, 7, 11, 15], 9))`,
 // Step 2: Select optimal approach (hashing vs double loop)
 
 function twoSum(nums, target) {
-    // TODO: Add validations and lookup map here
+    // Lookup map for seen values
     const seen = new Map();
     for (let i = 0; i < nums.length; i++) {
         const diff = target - nums[i];

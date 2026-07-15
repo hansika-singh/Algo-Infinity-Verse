@@ -1,13 +1,98 @@
 // backend/battle/battleService.js
-import { FieldValue, Timestamp } from "firebase-admin/firestore";
-import { getDb, COLLECTIONS } from "../../firebase.js";
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { getDb, COLLECTIONS } from '../../firebase.js';
+import vm from 'vm';
+
+export const battleCache = new Map();
+const CACHE_TTL = 1000; // 1 second for active/waiting
+const FINAL_CACHE_TTL = 10 * 60 * 1000; // 10 minutes for completed/expired
+
+export const TEST_CASES = {
+  'Two Sum': {
+    func: 'twoSum',
+    cases: [
+      { args: [[2, 7, 11, 15], 9], expected: [0, 1] },
+      { args: [[3, 2, 4], 6], expected: [1, 2] },
+    ],
+  },
+  'Valid Parentheses': {
+    func: 'isValid',
+    cases: [
+      { args: ['()[]{}'], expected: true },
+      { args: ['(]'], expected: false },
+    ],
+  },
+  'Binary Search': {
+    func: 'search',
+    cases: [
+      { args: [[-1, 0, 3, 5, 9, 12], 9], expected: 4 },
+      { args: [[-1, 0, 3, 5, 9, 12], 2], expected: -1 },
+    ],
+  },
+  'Longest Substring Without Repeating Characters': {
+    func: 'lengthOfLongestSubstring',
+    cases: [
+      { args: ['abcabcbb'], expected: 3 },
+      { args: ['bbbbb'], expected: 1 },
+    ],
+  },
+};
+
+export function runTestCases(title, code) {
+  const problem = TEST_CASES[title];
+  if (!problem) {
+    throw new Error(`Unsupported battle problem: ${title}`);
+  }
+  const sandbox = { console, result: null };
+  const context = vm.createContext(sandbox);
+
+  try {
+    vm.runInContext(code, context, { timeout: 1000 });
+
+    let passed = 0;
+    for (const test of problem.cases) {
+      const argsStr = JSON.stringify(test.args).slice(1, -1);
+      vm.runInContext(`result = ${problem.func}(${argsStr});`, context, { timeout: 1000 });
+      if (JSON.stringify(sandbox.result) === JSON.stringify(test.expected)) {
+        passed++;
+      }
+    }
+    return passed === problem.cases.length;
+  } catch (err) {
+    return false;
+  }
+}
+
+export function runDetailedTestCases(title, code) {
+  const problem = TEST_CASES[title];
+  if (!problem) {
+    throw new Error(`Unsupported battle problem: ${title}`);
+  }
+  const sandbox = { console, result: null };
+  const context = vm.createContext(sandbox);
+
+  try {
+    vm.runInContext(code, context, { timeout: 1000 });
+    return problem.cases.map((test) => {
+      const argsStr = JSON.stringify(test.args).slice(1, -1);
+      try {
+        vm.runInContext(`result = ${problem.func}(${argsStr});`, context, { timeout: 1000 });
+        return JSON.stringify(sandbox.result) === JSON.stringify(test.expected);
+      } catch (err) {
+        return false;
+      }
+    });
+  } catch (err) {
+    return problem.cases.map(() => false);
+  }
+}
 
 // Add these two entries to COLLECTIONS in firebase.js:
 //   BATTLES:  "battles",
 //   PROBLEMS: "problems",
-const BATTLES  = "battles";
-const PROBLEMS = "problems";
-const USERS    = COLLECTIONS.USERS;
+const BATTLES = 'battles';
+const PROBLEMS = 'problems';
+const USERS = COLLECTIONS.USERS;
 
 const BATTLE_DURATION_SECONDS = 300;
 const XP_BY_DIFFICULTY = { Easy: 50, Medium: 100, Hard: 150 };
@@ -18,8 +103,8 @@ function db() {
   const instance = getDb();
   if (!instance) {
     throw new Error(
-      "Battle mode requires Firestore. " +
-      "Check FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY in your .env file."
+      'Battle mode requires Firestore. ' +
+        'Check FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY in your .env file.'
     );
   }
   return instance;
@@ -33,13 +118,11 @@ export async function createBattle(creatorId, opponentEmail, difficulty) {
 
   const problemSnap = await firestore
     .collection(PROBLEMS)
-    .where("difficulty", "==", difficulty)
+    .where('difficulty', '==', difficulty)
     .get();
 
   if (problemSnap.empty) {
-    throw new Error(
-      `No problems for difficulty "${difficulty}". Run: node seed-problems.js`
-    );
+    throw new Error(`No problems for difficulty "${difficulty}". Run: node seed-problems.js`);
   }
 
   const candidates = problemSnap.docs;
@@ -48,28 +131,29 @@ export async function createBattle(creatorId, opponentEmail, difficulty) {
   // Generate a random 6-character alphanumeric code
   const lobbyCode = Math.random().toString(36).substring(2, 8).toUpperCase();
   const battleRef = firestore.collection(BATTLES).doc(lobbyCode);
-  
+
   const doc = await battleRef.get();
   if (doc.exists) {
-     throw new Error("Lobby code collision, please try again");
+    throw new Error('Lobby code collision, please try again');
   }
 
   await battleRef.set({
-    hostId:             creatorId,
-    participants:       [creatorId],
-    status:             "waiting",   // waiting → active → completed | expired
+    hostId: creatorId,
+    participants: [creatorId],
+    status: 'waiting', // waiting → active → completed | expired
     difficulty,
-    problemId:          chosen.id,
-    problemTitle:       chosen.data().title,
+    problemId: chosen.id,
+    problemTitle: chosen.data().title,
     problemDescription: chosen.data().description,
-    submissions:        {},
-    winner:             null,
-    xpAwarded:          0,
-    createdAt:          FieldValue.serverTimestamp(),
-    startedAt:          null,
-    expiresAt:          null,
+    submissions: {},
+    winner: null,
+    xpAwarded: 0,
+    createdAt: FieldValue.serverTimestamp(),
+    startedAt: null,
+    expiresAt: null,
   });
 
+  battleCache.delete(lobbyCode);
   return lobbyCode;
 }
 
@@ -78,25 +162,28 @@ export async function joinBattle(battleId, requesterId) {
   const firestore = db();
   const battleRef = firestore.collection(BATTLES).doc(battleId);
 
-  return firestore.runTransaction(async (tx) => {
+  const result = await firestore.runTransaction(async (tx) => {
     const doc = await tx.get(battleRef);
-    if (!doc.exists) throw new Error("Battle not found");
+    if (!doc.exists) throw new Error('Battle not found');
 
     const battle = doc.data();
 
-    if (battle.status !== "waiting" && battle.status !== "active") {
-      throw new Error("This battle is finished and cannot be joined");
+    if (battle.status !== 'waiting' && battle.status !== 'active') {
+      throw new Error('This battle is finished and cannot be joined');
     }
 
     if (!battle.participants.includes(requesterId)) {
-        if (battle.participants.length >= 8) {
-            throw new Error("Lobby is full");
-        }
-        tx.update(battleRef, { participants: FieldValue.arrayUnion(requesterId) });
+      if (battle.participants.length >= 8) {
+        throw new Error('Lobby is full');
+      }
+      tx.update(battleRef, { participants: FieldValue.arrayUnion(requesterId) });
     }
 
     return { status: battle.status, problemTitle: battle.problemTitle };
   });
+
+  battleCache.delete(battleId);
+  return result;
 }
 
 // ─── Start Battle ─────────────────────────────────────────────────────────────
@@ -104,28 +191,29 @@ export async function startBattle(battleId, requesterId) {
   const firestore = db();
   const battleRef = firestore.collection(BATTLES).doc(battleId);
 
-  return firestore.runTransaction(async (tx) => {
+  const result = await firestore.runTransaction(async (tx) => {
     const doc = await tx.get(battleRef);
-    if (!doc.exists) throw new Error("Battle not found");
+    if (!doc.exists) throw new Error('Battle not found');
 
     const battle = doc.data();
 
     if (battle.hostId !== requesterId) {
-      throw new Error("Only the host can start the battle");
+      throw new Error('Only the host can start the battle');
     }
-    if (battle.status !== "waiting") {
-      throw new Error("Battle is already active or finished");
+    if (battle.status !== 'waiting') {
+      throw new Error('Battle is already active or finished');
     }
 
     const startedAt = Timestamp.now();
-    const expiresAt = Timestamp.fromMillis(
-      startedAt.toMillis() + BATTLE_DURATION_SECONDS * 1000
-    );
+    const expiresAt = Timestamp.fromMillis(startedAt.toMillis() + BATTLE_DURATION_SECONDS * 1000);
 
-    tx.update(battleRef, { status: "active", startedAt, expiresAt });
+    tx.update(battleRef, { status: 'active', startedAt, expiresAt });
 
-    return { status: "active", expiresAt: expiresAt.toMillis() };
+    return { status: 'active', expiresAt: expiresAt.toMillis() };
   });
+
+  battleCache.delete(battleId);
+  return result;
 }
 
 // ─── Submit Solution ──────────────────────────────────────────────────────────
@@ -135,39 +223,51 @@ export async function submitSolution(battleId, playerId, code) {
   const firestore = db();
   const battleRef = firestore.collection(BATTLES).doc(battleId);
 
-  return firestore.runTransaction(async (tx) => {
+  const result = await firestore.runTransaction(async (tx) => {
     const doc = await tx.get(battleRef);
-    if (!doc.exists) throw new Error("Battle not found");
+    if (!doc.exists) throw new Error('Battle not found');
 
     const battle = doc.data();
 
-    if (battle.status === "completed") {
-      throw new Error("Battle already finished — opponent submitted first");
+    if (battle.status === 'completed') {
+      throw new Error('Battle already finished — opponent submitted first');
     }
-    if (battle.status !== "active") {
-      throw new Error("Battle is not active");
+    if (battle.status !== 'active') {
+      throw new Error('Battle is not active');
     }
     if (!battle.participants.includes(playerId)) {
-      throw new Error("You are not a participant in this battle");
+      throw new Error('You are not a participant in this battle');
     }
     if (battle.submissions?.[playerId]) {
-      throw new Error("You have already submitted");
+      throw new Error('You have already submitted');
     }
 
     const now = Timestamp.now();
     if (now.toMillis() > battle.expiresAt.toMillis()) {
-      tx.update(battleRef, { status: "expired" });
-      throw new Error("Time is up — battle expired");
+      tx.update(battleRef, { status: 'expired' });
+      throw new Error('Time is up — battle expired');
     }
 
-    // v1 scope: first non-empty submission wins.
-    // Code execution/grading is out of scope for issue #542.
-    const xp = XP_BY_DIFFICULTY[battle.difficulty] ?? 50;
+    // Evaluate code via vm
+    const isCorrect = runTestCases(battle.problemTitle, code);
+    if (!isCorrect) {
+      throw new Error('Incorrect solution or syntax error. Keep trying!');
+    }
+
+    let xp = XP_BY_DIFFICULTY[battle.difficulty] ?? 50;
+
+    // Add bonus XP based on time remaining (up to 50% bonus)
+    const timeRemaining = battle.expiresAt.toMillis() - now.toMillis();
+    const totalTime = BATTLE_DURATION_SECONDS * 1000;
+    if (timeRemaining > 0) {
+      const bonus = Math.floor((timeRemaining / totalTime) * (xp * 0.5));
+      xp += bonus;
+    }
 
     tx.update(battleRef, {
       [`submissions.${playerId}`]: { code, submittedAt: now },
-      status:    "completed",
-      winner:    playerId,
+      status: 'completed',
+      winner: playerId,
       xpAwarded: xp,
     });
 
@@ -178,32 +278,55 @@ export async function submitSolution(battleId, playerId, code) {
 
     return { winner: playerId, xpAwarded: xp };
   });
+
+  battleCache.delete(battleId);
+  return result;
 }
 
 // ─── Get Battle ───────────────────────────────────────────────────────────────
 // Lazily resolves expired battles on read — no background job or cron needed.
 export async function getBattle(battleId) {
+  const now = Date.now();
+  const cached = battleCache.get(battleId);
+  if (cached) {
+    const isExpired = now - cached.timestamp > cached.ttl;
+    if (!isExpired) {
+      const timeRemainingMs = cached.data.expiresAt
+        ? Math.max(0, cached.data.expiresAt.toMillis() - now)
+        : null;
+      return { ...cached.data, id: battleId, timeRemainingMs };
+    }
+  }
+
   const firestore = db();
   const doc = await firestore.collection(BATTLES).doc(battleId).get();
 
-  if (!doc.exists) throw new Error("Battle not found");
+  if (!doc.exists) throw new Error('Battle not found');
 
   const battle = doc.data();
 
   if (
-    battle.status === "active" &&
+    battle.status === 'active' &&
     battle.expiresAt &&
     Timestamp.now().toMillis() > battle.expiresAt.toMillis()
   ) {
-    await firestore.collection(BATTLES).doc(battleId).update({ status: "expired" });
-    battle.status = "expired";
+    await firestore.collection(BATTLES).doc(battleId).update({ status: 'expired' });
+    battle.status = 'expired';
   }
 
-  const timeRemainingMs = battle.expiresAt
-    ? Math.max(0, battle.expiresAt.toMillis() - Date.now())
-    : null;
+  const timeRemainingMs = battle.expiresAt ? Math.max(0, battle.expiresAt.toMillis() - now) : null;
 
-  return { id: doc.id, ...battle, timeRemainingMs };
+  const resolved = { id: doc.id, ...battle, timeRemainingMs };
+
+  const isFinal = battle.status === 'completed' || battle.status === 'expired';
+  const ttl = isFinal ? FINAL_CACHE_TTL : CACHE_TTL;
+  battleCache.set(battleId, {
+    data: { ...battle, expiresAt: battle.expiresAt },
+    timestamp: now,
+    ttl,
+  });
+
+  return resolved;
 }
 
 // ─── Get History ──────────────────────────────────────────────────────────────
@@ -215,9 +338,9 @@ export async function getHistory(userId, limit = 20, startAfterDocId = null) {
 
   let query = firestore
     .collection(BATTLES)
-    .where("participants", "array-contains", userId)
-    .where("status", "in", ["completed", "expired"])
-    .orderBy("createdAt", "desc")
+    .where('participants', 'array-contains', userId)
+    .where('status', 'in', ['completed', 'expired'])
+    .orderBy('createdAt', 'desc')
     .limit(limit);
 
   if (startAfterDocId) {

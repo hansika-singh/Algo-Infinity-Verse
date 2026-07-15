@@ -55,7 +55,7 @@ const languages = [
   },
   {
     name: 'Rust',
-    path: '/rust-learning.html',
+    path: '/pages/rust-academy/rust-academy.html',
     category: 'Systems',
     icon: 'fa-cubes',
     isBrandIcon: false,

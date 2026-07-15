@@ -3,7 +3,7 @@ import * as yaml from 'js-yaml';
 
 export class BitbucketProvider extends VCSProvider {
   async getCIConfigFiles() {
-    const match = this.repoUrl.match(/bitbucket\.org\/([^\/]+)\/([^\/]+)/);
+    const match = this.repoUrl.match(/bitbucket\.org\/([^/]+)\/([^/]+)/);
     if (!match) throw new Error("Invalid Bitbucket URL");
 
     const workspace = match[1];

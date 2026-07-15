@@ -1,139 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DPLL 3-SAT Solver Visualizer | Algo-Infinity-Verse</title>
-  <link rel="stylesheet" href="dpll-3sat-solver-visualizer.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="app-container">
-    <!-- Header -->
-    <header class="glass-header">
-      <div class="logo">
-        <i class="fa-solid fa-square-root-variable logo-icon"></i>
-        <span>Algo <span class="highlight">Infinity</span> Verse</span>
-      </div>
-      <div class="title-section">
-        <h1>DPLL 3-SAT Solver <span class="badge badge-algo">NP-Complete Logic</span></h1>
-        <p>Unit Propagation, Pure Literal Elimination, and Conflict-Driven Backtracking</p>
-      </div>
-      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
-        <i class="fa-brands fa-github"></i>
-      </a>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DPLL 3-SAT Solver Visualizer | Algo-Infinity-Verse</title>
+    <link rel="stylesheet" href="dpll-3sat-solver-visualizer.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="glass-header">
+        <div class="logo">
+          <i class="fa-solid fa-square-root-variable logo-icon"></i>
+          <span>Algo <span class="highlight">Infinity</span> Verse</span>
+        </div>
+        <div class="title-section">
+          <h1>DPLL 3-SAT Solver <span class="badge badge-algo">NP-Complete Logic</span></h1>
+          <p>Unit Propagation, Pure Literal Elimination, and Conflict-Driven Backtracking</p>
+        </div>
+        <a
+          href="https://github.com/Eshajha19/Algo-Infinity-Verse"
+          target="_blank"
+          class="github-link"
+          aria-label="GitHub Repository"
+        >
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </header>
 
-    <!-- Main Workspace -->
-    <main class="workspace">
-      <!-- Left Sidebar: Controls & Live Analytics -->
-      <aside class="sidebar">
-        <!-- Engine Controls -->
-        <section class="glass-panel control-panel">
-          <h2><i class="fa-solid fa-microchip"></i> Solver Controls</h2>
-          <div class="btn-group">
-            <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
-              <i class="fa-solid fa-play"></i> Auto Solve
-            </button>
-            <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
-              <i class="fa-solid fa-forward-step"></i> Step
-            </button>
-            <button id="btn-reset" class="btn btn-danger" aria-label="Reset Engine">
-              <i class="fa-solid fa-arrow-rotate-left"></i> Reset Engine
-            </button>
-          </div>
-          <div class="slider-control">
-            <label for="speed-slider">Animation Speed: <span id="speed-val">1.0x</span></label>
-            <input type="range" id="speed-slider" min="0.5" max="3.0" step="0.5" value="1.0">
-          </div>
-        </section>
+      <!-- Main Workspace -->
+      <main class="workspace">
+        <!-- Left Sidebar: Controls & Live Analytics -->
+        <aside class="sidebar">
+          <!-- Engine Controls -->
+          <section class="glass-panel control-panel">
+            <h2><i class="fa-solid fa-microchip"></i> Solver Controls</h2>
+            <div class="btn-group">
+              <button id="btn-play" class="btn btn-primary" aria-label="Auto Play">
+                <i class="fa-solid fa-play"></i> Auto Solve
+              </button>
+              <button id="btn-step" class="btn btn-accent" aria-label="Step Forward">
+                <i class="fa-solid fa-forward-step"></i> Step
+              </button>
+              <button id="btn-reset" class="btn btn-danger" aria-label="Reset Engine">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset Engine
+              </button>
+            </div>
+            <div class="slider-control">
+              <label for="speed-slider">Animation Speed: <span id="speed-val">1.0x</span></label>
+              <input type="range" id="speed-slider" min="0.5" max="3.0" step="0.5" value="1.0" />
+            </div>
+          </section>
 
-        <!-- Live Telemetry Tracking -->
-        <section class="glass-panel telemetry-panel mt-3">
-          <h2><i class="fa-solid fa-chart-line"></i> Search Metrics</h2>
-          <div class="metric-grid">
-             <div class="metric-box">
+          <!-- Live Telemetry Tracking -->
+          <section class="glass-panel telemetry-panel mt-3">
+            <h2><i class="fa-solid fa-chart-line"></i> Search Metrics</h2>
+            <div class="metric-grid">
+              <div class="metric-box">
                 <span class="metric-title">Backtracks</span>
                 <span class="metric-value text-danger" id="val-backtracks">0</span>
-             </div>
-             <div class="metric-box">
+              </div>
+              <div class="metric-box">
                 <span class="metric-title">Clauses Left</span>
                 <span class="metric-value text-cyan" id="val-clauses">0</span>
-             </div>
-          </div>
-          
-          <div class="variables-display mt-3">
-             <h3>Active Assignments:</h3>
-             <div class="var-badges" id="var-badges">
+              </div>
+            </div>
+
+            <div class="variables-display mt-3">
+              <h3>Active Assignments:</h3>
+              <div class="var-badges" id="var-badges">
                 <!-- Injected via JS -->
-             </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Phase Legend -->
+          <section class="glass-panel legend-panel mt-3">
+            <h2><i class="fa-solid fa-layer-group"></i> Algorithm States</h2>
+            <ul class="phase-list">
+              <li class="phase-item" id="phase-unit">
+                <span class="color-box unit-color"></span>
+                <div class="phase-info">
+                  <strong>Unit Propagation</strong>
+                  <p>Forcing variable value due to single-literal clause constraint.</p>
+                </div>
+              </li>
+              <li class="phase-item" id="phase-pure">
+                <span class="color-box pure-color"></span>
+                <div class="phase-info">
+                  <strong>Pure Literal Elimination</strong>
+                  <p>Assigning variable appearing in only one polarity polarity.</p>
+                </div>
+              </li>
+              <li class="phase-item" id="phase-branch">
+                <span class="color-box branch-color"></span>
+                <div class="phase-info">
+                  <strong>Heuristic Branching</strong>
+                  <p>Speculative assignment (guessing) to explore state space.</p>
+                </div>
+              </li>
+              <li class="phase-item" id="phase-backtrack">
+                <span class="color-box backtrack-color"></span>
+                <div class="phase-info">
+                  <strong>Conflict Backtrack</strong>
+                  <p>Contradiction hit (empty clause). Reverting choices.</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </aside>
+
+        <!-- Center Stage: Split Formula & Decision Tree -->
+        <section class="visualizer-stage glass-panel">
+          <div class="stage-header">
+            <div class="status-display">
+              <span class="status-label">Log Trace:</span>
+              <span id="status-text" class="status-message">Awaiting initialization...</span>
+            </div>
+          </div>
+
+          <div class="split-view">
+            <!-- CNF Formula Board Layer -->
+            <div class="formula-board-wrapper">
+              <h3 class="panel-title">
+                <i class="fa-solid fa-table-cells"></i> 3-CNF Formula Board
+              </h3>
+              <div class="formula-container" id="formula-container">
+                <!-- Clause bricks injected here -->
+              </div>
+            </div>
+
+            <!-- Backtracking Binary Decision Tree Canvas Layer -->
+            <div class="tree-canvas-wrapper">
+              <h3 class="panel-title">
+                <i class="fa-solid fa-network-wired"></i> DPLL Binary Decision Space
+              </h3>
+              <canvas id="dpll-canvas"></canvas>
+            </div>
           </div>
         </section>
-
-        <!-- Phase Legend -->
-        <section class="glass-panel legend-panel mt-3">
-          <h2><i class="fa-solid fa-layer-group"></i> Algorithm States</h2>
-          <ul class="phase-list">
-            <li class="phase-item" id="phase-unit">
-              <span class="color-box unit-color"></span>
-              <div class="phase-info">
-                <strong>Unit Propagation</strong>
-                <p>Forcing variable value due to single-literal clause constraint.</p>
-              </div>
-            </li>
-            <li class="phase-item" id="phase-pure">
-              <span class="color-box pure-color"></span>
-              <div class="phase-info">
-                <strong>Pure Literal Elimination</strong>
-                <p>Assigning variable appearing in only one polarity polarity.</p>
-              </div>
-            </li>
-            <li class="phase-item" id="phase-branch">
-              <span class="color-box branch-color"></span>
-              <div class="phase-info">
-                <strong>Heuristic Branching</strong>
-                <p>Speculative assignment (guessing) to explore state space.</p>
-              </div>
-            </li>
-            <li class="phase-item" id="phase-backtrack">
-              <span class="color-box backtrack-color"></span>
-              <div class="phase-info">
-                <strong>Conflict Backtrack</strong>
-                <p>Contradiction hit (empty clause). Reverting choices.</p>
-              </div>
-            </li>
-          </ul>
-        </section>
-      </aside>
-
-      <!-- Center Stage: Split Formula & Decision Tree -->
-      <section class="visualizer-stage glass-panel">
-        <div class="stage-header">
-          <div class="status-display">
-            <span class="status-label">Log Trace:</span>
-            <span id="status-text" class="status-message">Awaiting initialization...</span>
-          </div>
-        </div>
-
-        <div class="split-view">
-           <!-- CNF Formula Board Layer -->
-           <div class="formula-board-wrapper">
-               <h3 class="panel-title"><i class="fa-solid fa-table-cells"></i> 3-CNF Formula Board</h3>
-               <div class="formula-container" id="formula-container">
-                   <!-- Clause bricks injected here -->
-               </div>
-           </div>
-
-           <!-- Backtracking Binary Decision Tree Canvas Layer -->
-           <div class="tree-canvas-wrapper">
-               <h3 class="panel-title"><i class="fa-solid fa-network-wired"></i> DPLL Binary Decision Space</h3>
-               <canvas id="dpll-canvas"></canvas>
-           </div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="dpll-3sat-solver-visualizer.js"></script>
-</body>
+      </main>
+    </div>
+    <script src="dpll-3sat-solver-visualizer.js"></script>
+  </body>
 </html>

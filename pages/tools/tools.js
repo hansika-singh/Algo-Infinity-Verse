@@ -50,6 +50,7 @@ const practiceTools = [
 
   // ── Other ──
   { name: "Comparison Tool", path: "/pages/tools/compare/compare.html", category: "Other", icon: "fa-not-equal", desc: "Compare two code snippets or algorithms to highlight differences in approach and performance." },
+  { name: "Tech Comparison Radar", path: "/pages/tools/tech-comparison/comparison.html", category: "Other", icon: "fa-chart-scatter", desc: "Compare technologies side by side: React vs Vue, MongoDB vs PostgreSQL, REST vs GraphQL, and more with radar charts." },
   { name: "AST Code Formatter", path: "/pages/tools/ast-formatter/ast-formatter.html", category: "Other", icon: "fa-code", desc: "Format and transform code using AST-based analysis with customizable formatting rules." },
   { name: "Spatial Complexity Profiler", path: "/pages/tools/spatial-profiler/spatial-profiler.html", category: "Other", icon: "fa-cube", desc: "Profile the memory and spatial complexity of your data structures and algorithms." },
   { name: "Algorithms in Real Apps", path: "/pages/tools/everyday-apps/everyday-apps.html", category: "Other", icon: "fa-mobile-screen", desc: "See how DSA concepts power real-world applications like search, maps, and social media." },

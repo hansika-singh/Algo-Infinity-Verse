@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSH Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Locality-Sensitive Hashing visualizer — MinHash signatures, banding, candidate pairs, and Jaccard similarity." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="lsh-visualizer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="lsh-visualizer">
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="hero lsh-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">How Does Spotify Find Songs That Sound Like This?</span>
+        <span class="main-title lsh-gradient">LSH Visualizer</span>
+        <span class="subtitle">Approximate Nearest Neighbors via MinHash &amp; Banding</span>
+      </h1>
+      <p class="section-subtitle">
+        Regular hashing scatters similar items apart. Locality-Sensitive Hashing does the opposite — similar documents collide into the same bucket on purpose. See MinHash signatures, band hashing, and candidate pairs live.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary lsh-btn-primary">
+          <i class="fas fa-fingerprint"></i> Open Visualizer
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <div class="lsh-control-card">
+
+        <div class="lsh-row">
+          <label class="lsh-row-label" for="lshKSlider">Hash functions (k):</label>
+          <input type="range" id="lshKSlider" min="4" max="20" step="2" value="8" class="lsh-slider" aria-valuetext="8 hash functions" />
+          <span class="lsh-slider-val" id="lshKVal">8</span>
+        </div>
+
+        <div class="lsh-row">
+          <label class="lsh-row-label" for="lshBSlider">Bands (b):</label>
+          <input type="range" id="lshBSlider" min="2" max="8" step="1" value="4" class="lsh-slider" />
+          <span class="lsh-slider-val" id="lshBVal">4 bands × 2 rows</span>
+        </div>
+
+        <div class="lsh-row">
+          <label class="lsh-row-label" for="lshDocInput">Add document:</label>
+          <input type="text" id="lshDocInput" class="lsh-text-input" placeholder="Type a short sentence…" maxlength="120" />
+          <button class="btn lsh-btn-primary lsh-action-btn" id="lshAddBtn">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+
+        <div class="lsh-row">
+          <span class="lsh-row-label">Presets:</span>
+          <button class="btn lsh-btn-secondary lsh-action-btn" id="lshPresetBtn">
+            <i class="fas fa-bolt"></i> Load Demo Docs
+          </button>
+          <button class="btn lsh-btn-warning lsh-action-btn" id="lshBruteBtn">
+            <i class="fas fa-table"></i> Show Brute-Force
+          </button>
+          <button class="btn btn-secondary lsh-action-btn" id="lshResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+      </div>
+
+      <div class="lsh-status" id="lshStatus" role="status" aria-live="polite">
+        Add at least two documents, then click a document to search for its nearest neighbors.
+      </div>
+
+      <div class="lsh-main-layout">
+
+        <div class="lsh-docs-col">
+          <div class="lsh-panel-card">
+            <div class="lsh-panel-title"><i class="fas fa-file-lines"></i> Documents</div>
+            <div id="lshDocList" class="lsh-doc-list">
+              <span class="lsh-empty-text">No documents added yet.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lsh-sig-col">
+          <div class="lsh-panel-card">
+            <div class="lsh-panel-title"><i class="fas fa-fingerprint"></i> MinHash Signatures</div>
+            <div id="lshSigArea" class="lsh-sig-area">
+              <span class="lsh-empty-text">Signatures appear here after adding documents.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lsh-bands-col">
+          <div class="lsh-panel-card">
+            <div class="lsh-panel-title"><i class="fas fa-layer-group"></i> Band Buckets</div>
+            <div id="lshBandArea" class="lsh-band-area">
+              <span class="lsh-empty-text">Band buckets appear here.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="lsh-results-section" id="lshResultsSection" style="display:none">
+        <div class="lsh-results-grid">
+
+          <div class="lsh-panel-card lsh-candidates-card">
+            <div class="lsh-panel-title"><i class="fas fa-crosshairs"></i> Candidate Pairs (LSH)</div>
+            <div id="lshCandidates" class="lsh-candidates-area"></div>
+          </div>
+
+          <div class="lsh-panel-card lsh-brute-card" id="lshBruteCard" style="display:none">
+            <div class="lsh-panel-title"><i class="fas fa-table"></i> All-Pairs Jaccard (Brute Force)</div>
+            <div id="lshBruteArea" class="lsh-brute-area"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🔍</span> How LSH Works</h2>
+      <div class="lsh-learn-grid">
+
+        <div class="lsh-learn-card lsh-learn-shingle">
+          <div class="lsh-learn-icon">✂️</div>
+          <h3>Step 1: Shingling</h3>
+          <p>
+            Convert each document into a set of overlapping k-grams (shingles). "the cat sat" → {"the cat", "cat sat"}. Two documents with similar content share many shingles, giving a high Jaccard similarity: |A∩B| / |A∪B|.
+          </p>
+        </div>
+
+        <div class="lsh-learn-card lsh-learn-minhash">
+          <div class="lsh-learn-icon">🎲</div>
+          <h3>Step 2: MinHash Signatures</h3>
+          <p>
+            Apply k random hash functions to every shingle. For each hash function, record the minimum hash value across all shingles. The resulting length-k vector is the MinHash signature — a compact sketch that approximates Jaccard similarity.
+          </p>
+        </div>
+
+        <div class="lsh-learn-card lsh-learn-band">
+          <div class="lsh-learn-icon">🎸</div>
+          <h3>Step 3: Banding</h3>
+          <p>
+            Split each k-dimensional signature into b bands of r rows each. Hash each band. Two documents that share a band's hash become "candidate pairs." Adjusting b and r controls the similarity threshold — more bands catches lower-similarity matches.
+          </p>
+        </div>
+
+        <div class="lsh-learn-card lsh-learn-verify">
+          <div class="lsh-learn-icon">✅</div>
+          <h3>Step 4: Verify Candidates</h3>
+          <p>
+            Only compute exact Jaccard similarity for candidate pairs — not all pairs. This is the speedup: instead of O(n²) comparisons, you do O(n·k) hashing plus O(candidates) verification. At scale, candidates is orders of magnitude smaller than n².
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="lsh-visualizer.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

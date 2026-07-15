@@ -1,55 +1,64 @@
-import { initializeApp, cert, getApps } from "firebase-admin/app";
-import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import { SESSION_COOKIE, verifySessionToken, parseCookies } from "../backend/utils/sessionToken.js";
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { SESSION_COOKIE, verifySessionToken, parseCookies } from '../backend/utils/sessionToken.js';
 
 // ─── Firebase init ────────────────────────────────────────────────────────────
 let db = null;
 
 function initFirebase() {
-  if (getApps().length > 0) { db = getFirestore(); return; }
-  const projectId   = process.env.FIREBASE_PROJECT_ID;
+  if (getApps().length > 0) {
+    db = getFirestore();
+    return;
+  }
+  const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey  = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
   if (!projectId || !clientEmail || !privateKey) return;
   try {
     initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) });
     db = getFirestore();
-  } catch (e) { console.error("Firebase init error:", e); }
+  } catch (e) {
+    console.error('Firebase init error:', e);
+  }
 }
 
 initFirebase();
 
 function getDb() {
-  if (!db) throw new Error("Firestore not available. Check FIREBASE_* env vars.");
+  if (!db) throw new Error('Firestore not available. Check FIREBASE_* env vars.');
   return db;
 }
 
 // ─── Auth helpers ──────────────────────────────────────────────────────────
 function getUser(req) {
-  const cookies = parseCookies(req.headers.cookie || "");
+  const cookies = parseCookies(req.headers.cookie || '');
   return verifySessionToken(cookies[SESSION_COOKIE]);
 }
 
 // ─── Battle constants ─────────────────────────────────────────────────────────
-const BATTLES  = "battles";
-const PROBLEMS = "problems";
-const USERS    = "users";
+const BATTLES = 'battles';
+const PROBLEMS = 'problems';
+const USERS = 'users';
 const BATTLE_DURATION_MS = 300 * 1000;
 const XP_BY_DIFFICULTY = { Easy: 50, Medium: 100, Hard: 150 };
+
+export const battleCache = new Map();
+const CACHE_TTL = 1000; // 1 second for active/waiting
+const FINAL_CACHE_TTL = 10 * 60 * 1000; // 10 minutes for completed/expired
 
 // ─── Route handlers ───────────────────────────────────────────────────────────
 
 // POST /api/battles — create battle
 async function createBattle(req, res, user) {
-  const { opponentEmail, difficulty = "Medium" } = req.body || {};
+  const { opponentEmail, difficulty = 'Medium' } = req.body || {};
 
   if (!opponentEmail) {
-    return res.status(400).json({ error: "opponentEmail is required" });
+    return res.status(400).json({ error: 'opponentEmail is required' });
   }
 
-  const validDifficulties = ["Easy", "Medium", "Hard"];
+  const validDifficulties = ['Easy', 'Medium', 'Hard'];
   if (!validDifficulties.includes(difficulty)) {
-    return res.status(400).json({ error: "difficulty must be Easy, Medium, or Hard" });
+    return res.status(400).json({ error: 'difficulty must be Easy, Medium, or Hard' });
   }
 
   const firestore = getDb();
@@ -57,7 +66,7 @@ async function createBattle(req, res, user) {
   // Look up opponent by email
   const opponentSnap = await firestore
     .collection(USERS)
-    .where("email", "==", opponentEmail.toLowerCase().trim())
+    .where('email', '==', opponentEmail.toLowerCase().trim())
     .limit(1)
     .get();
 
@@ -68,13 +77,13 @@ async function createBattle(req, res, user) {
   const opponentId = opponentSnap.docs[0].id;
 
   if (opponentId === user.sub) {
-    return res.status(400).json({ error: "You cannot challenge yourself" });
+    return res.status(400).json({ error: 'You cannot challenge yourself' });
   }
 
   // Pick a random problem at the requested difficulty
   const problemSnap = await firestore
     .collection(PROBLEMS)
-    .where("difficulty", "==", difficulty)
+    .where('difficulty', '==', difficulty)
     .get();
 
   if (problemSnap.empty) {
@@ -87,22 +96,23 @@ async function createBattle(req, res, user) {
   const battleRef = firestore.collection(BATTLES).doc();
 
   await battleRef.set({
-    player1:            user.sub,
-    player2:            opponentId,
-    participants:       [user.sub, opponentId],
-    status:             "pending",
+    player1: user.sub,
+    player2: opponentId,
+    participants: [user.sub, opponentId],
+    status: 'pending',
     difficulty,
-    problemId:          chosen.id,
-    problemTitle:       chosen.data().title,
+    problemId: chosen.id,
+    problemTitle: chosen.data().title,
     problemDescription: chosen.data().description,
-    submissions:        {},
-    winner:             null,
-    xpAwarded:          0,
-    createdAt:          FieldValue.serverTimestamp(),
-    startedAt:          null,
-    expiresAt:          null,
+    submissions: {},
+    winner: null,
+    xpAwarded: 0,
+    createdAt: FieldValue.serverTimestamp(),
+    startedAt: null,
+    expiresAt: null,
   });
 
+  battleCache.delete(battleRef.id);
   return res.status(201).json({ battleId: battleRef.id });
 }
 
@@ -110,42 +120,77 @@ async function createBattle(req, res, user) {
 async function getHistory(req, res, user) {
   const firestore = getDb();
 
-  const snap = await firestore
-    .collection(BATTLES)
-    .where("participants", "array-contains", user.sub)
-    .where("status", "in", ["completed", "expired"])
-    .orderBy("createdAt", "desc")
-    .limit(20)
-    .get();
+  const limitStr = (req.query && req.query.limit) || 20;
+  const cursorStr = (req.query && req.query.cursor) || null;
+  const limit = Math.min(parseInt(limitStr, 10) || 20, 50);
 
+  let query = firestore
+    .collection(BATTLES)
+    .where('participants', 'array-contains', user.sub)
+    .where('status', 'in', ['completed', 'expired'])
+    .orderBy('createdAt', 'desc')
+    .limit(limit);
+
+  if (cursorStr) {
+    const cursorDoc = await firestore.collection(BATTLES).doc(cursorStr).get();
+    if (cursorDoc.exists) {
+      query = query.startAfter(cursorDoc);
+    }
+  }
+
+  const snap = await query.get();
   const history = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  return res.status(200).json({ history });
+
+  return res.status(200).json({
+    history,
+    nextCursor: history.length === limit ? history[history.length - 1].id : null,
+  });
 }
 
 // GET /api/battles/:id — get single battle
 async function getBattle(req, res, user, battleId) {
+  const now = Date.now();
+  const cached = battleCache.get(battleId);
+  if (cached) {
+    const isExpired = now - cached.timestamp > cached.ttl;
+    if (!isExpired) {
+      const timeRemainingMs = cached.data.expiresAt
+        ? Math.max(0, cached.data.expiresAt.toMillis() - now)
+        : null;
+      return res.status(200).json({ ...cached.data, id: battleId, timeRemainingMs });
+    }
+  }
+
   const firestore = getDb();
   const doc = await firestore.collection(BATTLES).doc(battleId).get();
 
-  if (!doc.exists) return res.status(404).json({ error: "Battle not found" });
+  if (!doc.exists) return res.status(404).json({ error: 'Battle not found' });
 
   const battle = doc.data();
 
   // Lazy expiry — resolve on read, no cron needed
   if (
-    battle.status === "active" &&
+    battle.status === 'active' &&
     battle.expiresAt &&
     Timestamp.now().toMillis() > battle.expiresAt.toMillis()
   ) {
-    await firestore.collection(BATTLES).doc(battleId).update({ status: "expired" });
-    battle.status = "expired";
+    await firestore.collection(BATTLES).doc(battleId).update({ status: 'expired' });
+    battle.status = 'expired';
   }
 
-  const timeRemainingMs = battle.expiresAt
-    ? Math.max(0, battle.expiresAt.toMillis() - Date.now())
-    : null;
+  const timeRemainingMs = battle.expiresAt ? Math.max(0, battle.expiresAt.toMillis() - now) : null;
 
-  return res.status(200).json({ id: doc.id, ...battle, timeRemainingMs });
+  const resolved = { id: doc.id, ...battle, timeRemainingMs };
+
+  const isFinal = battle.status === 'completed' || battle.status === 'expired';
+  const ttl = isFinal ? FINAL_CACHE_TTL : CACHE_TTL;
+  battleCache.set(battleId, {
+    data: { ...battle, expiresAt: battle.expiresAt },
+    timestamp: now,
+    ttl,
+  });
+
+  return res.status(200).json(resolved);
 }
 
 // POST /api/battles/:id/join — join a pending battle
@@ -156,23 +201,24 @@ async function joinBattle(req, res, user, battleId) {
   try {
     await firestore.runTransaction(async (tx) => {
       const doc = await tx.get(battleRef);
-      if (!doc.exists) throw new Error("Battle not found");
+      if (!doc.exists) throw new Error('Battle not found');
 
       const battle = doc.data();
 
-      if (battle.status !== "pending") {
-        throw new Error("This battle is no longer open to join");
+      if (battle.status !== 'pending') {
+        throw new Error('This battle is no longer open to join');
       }
       if (battle.player2 !== user.sub) {
-        throw new Error("You were not invited to this battle");
+        throw new Error('You were not invited to this battle');
       }
 
       const startedAt = Timestamp.now();
       const expiresAt = Timestamp.fromMillis(startedAt.toMillis() + BATTLE_DURATION_MS);
 
-      tx.update(battleRef, { status: "active", startedAt, expiresAt });
+      tx.update(battleRef, { status: 'active', startedAt, expiresAt });
     });
 
+    battleCache.delete(battleId);
     return res.status(200).json({ joined: true });
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -183,7 +229,7 @@ async function joinBattle(req, res, user, battleId) {
 async function submitSolution(req, res, user, battleId) {
   const { code } = req.body || {};
   if (!code?.trim()) {
-    return res.status(400).json({ error: "code is required" });
+    return res.status(400).json({ error: 'code is required' });
   }
 
   const firestore = getDb();
@@ -192,35 +238,35 @@ async function submitSolution(req, res, user, battleId) {
   try {
     const result = await firestore.runTransaction(async (tx) => {
       const doc = await tx.get(battleRef);
-      if (!doc.exists) throw new Error("Battle not found");
+      if (!doc.exists) throw new Error('Battle not found');
 
       const battle = doc.data();
 
-      if (battle.status === "completed" || battle.winner) {
-        throw new Error("Battle already finished — opponent submitted first");
+      if (battle.status === 'completed' || battle.winner) {
+        throw new Error('Battle already finished — opponent submitted first');
       }
-      if (battle.status !== "active") {
-        throw new Error("Battle is not active");
+      if (battle.status !== 'active') {
+        throw new Error('Battle is not active');
       }
       if (![battle.player1, battle.player2].includes(user.sub)) {
-        throw new Error("You are not a participant in this battle");
+        throw new Error('You are not a participant in this battle');
       }
       if (battle.submissions?.[user.sub]) {
-        throw new Error("You have already submitted");
+        throw new Error('You have already submitted');
       }
 
       const now = Timestamp.now();
       if (battle.expiresAt && now.toMillis() > battle.expiresAt.toMillis()) {
-        tx.update(battleRef, { status: "expired" });
-        throw new Error("Time is up — battle expired");
+        tx.update(battleRef, { status: 'expired' });
+        throw new Error('Time is up — battle expired');
       }
 
       const xp = XP_BY_DIFFICULTY[battle.difficulty] ?? 50;
 
       tx.update(battleRef, {
         [`submissions.${user.sub}`]: { code, submittedAt: now },
-        status:    "completed",
-        winner:    user.sub,
+        status: 'completed',
+        winner: user.sub,
         xpAwarded: xp,
       });
 
@@ -231,6 +277,7 @@ async function submitSolution(req, res, user, battleId) {
       return { winner: user.sub, xpAwarded: xp };
     });
 
+    battleCache.delete(battleId);
     return res.status(200).json(result);
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -269,35 +316,38 @@ export default async function handler(req, res) {
   // Auth check — every battle route requires a valid session
   const user = getUser(req);
   if (!user) {
-    return res.status(401).json({ error: "Unauthorized — please log in" });
+    return res.status(401).json({ error: 'Unauthorized — please log in' });
   }
 
   // Parse body for POST requests
-  if (req.method === "POST" && typeof req.body === "string") {
-    try { req.body = JSON.parse(req.body); } catch { req.body = {}; }
+  if (req.method === 'POST' && typeof req.body === 'string') {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch {
+      req.body = {};
+    }
   }
 
   // Content-Type guard — all responses are JSON
-  res.setHeader("Content-Type", "application/json");
+  res.setHeader('Content-Type', 'application/json');
 
-  const url  = req.url || "";
+  const url = req.url || '';
   const method = req.method;
 
   try {
     let result = null;
-    
-    if (method === "GET") {
+
+    if (method === 'GET') {
       result = await handleGetRoutes(req, res, user, url);
-    } else if (method === "POST") {
+    } else if (method === 'POST') {
       result = await handlePostRoutes(req, res, user, url);
     }
 
     if (result) return result;
 
-    return res.status(404).json({ error: "Route not found" });
-
+    return res.status(404).json({ error: 'Route not found' });
   } catch (err) {
-    console.error("Battle API error:", err);
-    return res.status(500).json({ error: err.message || "Internal server error" });
+    console.error('Battle API error:', err);
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Load Balancer Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Simulate and visualize Round Robin, Weighted Round Robin, Least Connections, Least Response Time, IP Hash, and Random load-balancing algorithms."
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="load-balancer-visualizer.css" />
+  </head>
+  <body class="lb-body">
+    <nav class="navbar lb-nav">
+      <div class="nav-logo">
+        <a href="/pages/visualizers/visualizers.html" class="back-link">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-network-wired"></i> Load Balancer Simulator</div>
+    </nav>
+
+    <main class="lb-workspace">
+      <!-- Left Configuration Panel -->
+      <section class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-sliders-h"></i> Configuration</h3>
+        </div>
+
+        <div class="control-section">
+          <!-- Algorithm Selection -->
+          <div class="form-group">
+            <label for="algorithmSelect">Balancing Algorithm</label>
+            <select id="algorithmSelect" class="lb-select">
+              <option value="round_robin">Round Robin</option>
+              <option value="weighted_round_robin">Weighted Round Robin</option>
+              <option value="least_connections">Least Connections</option>
+              <option value="least_response_time">Least Response Time</option>
+              <option value="ip_hash">IP Hash</option>
+              <option value="random">Random Selection</option>
+            </select>
+          </div>
+
+          <!-- Simulation Controls -->
+          <div class="form-group">
+            <label>Simulation Status</label>
+            <div class="action-buttons horizontal">
+              <button id="btnPlayPause" class="btn-primary flex-grow">
+                <i class="fas fa-play"></i> Play
+              </button>
+              <button id="btnReset" class="btn-secondary">
+                <i class="fas fa-rotate-left"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Request Controls -->
+          <div class="form-group">
+            <label for="rateSlider">Request Rate: <span id="rateVal">5</span> req/sec</label>
+            <input type="range" id="rateSlider" class="lb-slider" min="1" max="20" value="5" />
+          </div>
+
+          <div class="form-group">
+            <label>Manual Request Injection</label>
+            <div class="action-buttons horizontal">
+              <button id="btnSingleRequest" class="btn-secondary flex-grow">
+                <i class="fas fa-paper-plane"></i> Send 1 Request
+              </button>
+              <button id="btnBurst" class="btn-primary flex-grow bg-purple">
+                <i class="fas fa-bolt"></i> Burst (10x)
+              </button>
+            </div>
+          </div>
+
+          <!-- Server Configuration -->
+          <div class="panel-header" style="margin-top: 1.5rem; padding: 0.5rem 0">
+            <h3><i class="fas fa-server"></i> Server Management</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="serverWeightInput">New Server Weight (1-10)</label>
+            <div class="horizontal">
+              <input
+                type="number"
+                id="serverWeightInput"
+                class="lb-input"
+                min="1"
+                max="10"
+                value="3"
+              />
+              <button id="btnAddServer" class="btn-primary">
+                <i class="fas fa-plus"></i> Add Server
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Dashboard -->
+          <div class="panel-header" style="margin-top: 1.5rem; padding: 0.5rem 0">
+            <h3><i class="fas fa-chart-line"></i> Dashboard Statistics</h3>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Requests</div>
+              <div class="stat-value" id="statTotalRequests">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Connections</div>
+              <div class="stat-value" id="statActiveConnections">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Successful</div>
+              <div class="stat-value text-green" id="statSuccessful">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Failed (503 Service Unavailable)</div>
+              <div class="stat-value text-red" id="statFailed">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Visualization Area -->
+      <section class="panel-right">
+        <!-- Visual Sandbox -->
+        <div class="visualization-area">
+          <div class="simulation-view">
+            <!-- Client Layer -->
+            <div class="viz-layer clients-layer">
+              <div class="layer-title"><i class="fas fa-users"></i> Clients</div>
+              <div class="client-nodes" id="clientNodes">
+                <!-- Mock clients with IP tags -->
+              </div>
+            </div>
+
+            <!-- Balancer Layer -->
+            <div class="viz-layer balancer-layer">
+              <div class="load-balancer-node" id="loadBalancerNode">
+                <div class="lb-icon-wrapper">
+                  <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="lb-label">LOAD BALANCER</div>
+                <div class="lb-algo-tag" id="lbAlgoTag">ROUND ROBIN</div>
+              </div>
+            </div>
+
+            <!-- Servers Layer -->
+            <div class="viz-layer servers-layer">
+              <div class="layer-title"><i class="fas fa-server"></i> Backend Servers (Cluster)</div>
+              <div class="servers-grid" id="serversGrid">
+                <!-- Dynamic Server Cards -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Animations Track Overlay -->
+          <div class="animation-overlay" id="animationOverlay"></div>
+        </div>
+
+        <!-- Educational Explanations Section -->
+        <div class="educational-section">
+          <div class="edu-card">
+            <h3 id="eduTitle">Algorithm Name</h3>
+            <p class="edu-summary" id="eduSummary">Loading summary...</p>
+
+            <div class="edu-details-grid">
+              <div class="detail-block">
+                <h4><i class="fas fa-check-circle text-green"></i> Pros</h4>
+                <ul id="eduPros"></ul>
+              </div>
+              <div class="detail-block">
+                <h4><i class="fas fa-times-circle text-red"></i> Cons</h4>
+                <ul id="eduCons"></ul>
+              </div>
+            </div>
+
+            <div class="detail-block" style="margin-top: 1rem">
+              <h4><i class="fas fa-industry"></i> Real-World Application</h4>
+              <p id="eduApplication">Use cases...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="load-balancer-visualizer.js"></script>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three.js Academy | Algo Infinity Verse</title>
+  <meta name="description" content="Master 3D web development, scene graphs, cameras, lighting setups, materials, and complex mesh animations." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="threejs-academy.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    (function() {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') { document.documentElement.classList.add('light-mode'); }
+        else { document.documentElement.classList.remove('light-mode'); }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+
+<body data-page="threejs-academy">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+  <div id="navbar-placeholder"></div>
+
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Render Stunning Vector Worlds via</span>
+        <span class="main-title gradient-text">Three.js</span>
+        <span class="subtitle">Interactive 3D Web Development</span>
+      </h1>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary"><i class="fas fa-cube"></i> Initialize Scene</a>
+        <a href="#playground" class="btn btn-secondary"><i class="fas fa-gamepad"></i> Open 3D Space</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="threejs-section" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">📐</span> Three.js Academy</h2>
+      <p class="section-subtitle">Learn how to arrange cameras, direct lighting, forge custom geometries, and apply textures inside a browser-based 3D scene graph.</p>
+
+      <div class="three-progress-bar" role="progressbar">
+        <span class="three-progress-text"><span id="progressCount">0</span> / 4 milestones completed</span>
+        <div class="three-progress-track"><div class="three-progress-fill" id="progressFill"></div></div>
+        <span class="three-progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div id="playground" class="three-playground-card">
+        <div class="playground-header">
+          <h4><i class="fas fa-vr-cardboard"></i> Real-Time 3D Scene Controller Sandbox</h4>
+          <span class="render-badge">WebGL Active</span>
+        </div>
+        <div class="playground-body">
+          <div class="viewport-wrap">
+            <div id="threejsCanvasContainer"></div>
+          </div>
+          <div class="controls-wrap">
+            <h5 class="controls-title">Render Parameter Node Matrix</h5>
+            
+            <div class="control-group">
+              <label>Geometry Primitive Mesh Shape:</label>
+              <select id="geometryShape">
+                <option value="cube">Tessellated BoxGeometry</option>
+                <option value="sphere">High-Poly SphereGeometry</option>
+                <option value="torus">Knot Vector TorusGeometry</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label>Material Texture Layer Type:</label>
+              <select id="materialType">
+                <option value="normal">MeshNormalMaterial (Vector Normals)</option>
+                <option value="phong">MeshPhongMaterial (Specular Highlights)</option>
+                <option value="basic">MeshBasicMaterial (Flat Unlit Colors)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label>Axis Mesh Rotation Velocity Speed: <span id="speedVal">1.0x</span></label>
+              <input type="range" id="rotationSpeed" min="0" max="5" step="0.1" value="1">
+            </div>
+
+            <div class="control-group">
+              <label>Ambient Light Source Intensity: <span id="lightVal">1.0lm</span></label>
+              <input type="range" id="lightIntensity" min="0" max="3" step="0.1" value="1">
+            </div>
+            
+            <div class="control-group">
+               <button id="resetSceneBtn" class="btn btn-secondary btn-sm"><i class="fas fa-undo"></i> Reset Matrix Defaults</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="three-layout">
+        <aside class="three-sidebar">
+          <div class="three-sidebar-title">Academy Syllabus</div>
+          <ul class="three-sidebar-nav" id="topicNav">
+            <li><a href="#introduction" class="three-nav-link"><span class="nav-icon">📦</span> The Core Trio</a></li>
+            <li><a href="#cameras"      class="three-nav-link"><span class="nav-icon">📹</span> Cameras & Frustums</a></li>
+            <li><a href="#lighting"     class="three-nav-link"><span class="nav-icon">💡</span> Light Mechanics</a></li>
+            <li><a href="#materials"    class="three-nav-link"><span class="nav-icon">🎨</span> Meshes & Shaders</a></li>
+          </ul>
+        </aside>
+
+        <main class="three-main-content">
+          <article class="three-lesson" id="introduction" data-topic="1">
+            <div class="three-lesson-header">
+              <span class="three-lesson-number">01</span>
+              <h3>The Core Trio: Scene, Camera, and Renderer</h3>
+            </div>
+            <p>
+              To construct any 3D environment using Three.js, you must define three interconnected root structures: The **Scene** wrapper acting as the container universe, the **Camera** establishing the perspective viewpoint frustum, and the **Renderer** mapping the calculations cleanly into canvas pixels.
+            </p>
+            <div class="three-quiz-card" data-quiz-id="t1">
+              <h5>Checkpoint Quiz:</h5>
+              <p>Which absolute master class structural node instance acts as the container universe file mapping all geometries and lights together?</p>
+              <div class="quiz-options">
+                <label><input type="radio" name="t1" value="A"> A) THREE.WebGLRenderer</label>
+                <label><input type="radio" name="t1" value="B"> B) THREE.Scene</label>
+                <label><input type="radio" name="t1" value="C"> C) THREE.PerspectiveCamera</label>
+              </div>
+              <button class="btn btn-quiz-check">Verify Answer</button>
+              <div class="quiz-feedback hidden"></div>
+            </div>
+          </article>
+
+          <article class="three-lesson" id="cameras" data-topic="2">
+            <div class="three-lesson-header">
+              <span class="three-lesson-number">02</span>
+              <h3>Cameras & Viewport Projections</h3>
+            </div>
+            <p>
+              The <code>PerspectiveCamera</code> class structures human depth perception modeling using field of view (FOV), aspect ratios, and explicit near/far clipping plane vectors.
+            </p>
+          </article>
+        </main>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./threejs-academy.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

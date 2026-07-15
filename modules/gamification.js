@@ -27,6 +27,24 @@ function getDayOfYear() {
 
 function addXP(amount, source = "general", meta = {}) {
   const userProgress = window.userProgress || {};
+  // Apply XP Booster if active
+  if (userProgress.inventory?.xpBoostersTimer?.problemsRemaining > 0) {
+    amount = amount * 2;
+    userProgress.inventory.xpBoostersTimer.problemsRemaining -= 1;
+    if (userProgress.inventory.xpBoostersTimer.problemsRemaining <= 0) {
+      delete userProgress.inventory.xpBoostersTimer;
+      if (typeof showNotification === 'function') {
+        setTimeout(() => showNotification('⚡ XP Booster expired!', 'info'), 300);
+      }
+    } else {
+      if (typeof showNotification === 'function') {
+        setTimeout(() => showNotification(
+          `⚡ Booster active! ${userProgress.inventory.xpBoostersTimer.problemsRemaining} problems remaining.`,
+          'info'
+        ), 300);
+      }
+    }
+  }
   userProgress.xp += amount;
   if (typeof recordAnalyticsEvent === 'function') recordAnalyticsEvent("xp", { amount, source, ...meta });
   checkLevelUp();

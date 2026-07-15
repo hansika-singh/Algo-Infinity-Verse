@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Resolver & N+1 Problem Visualizer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="graphql-n1-simulator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>GraphQL Resolver & N+1 Problem Visualizer</h1>
+            <p>Understand how deeply nested GraphQL queries can cause a cascade of database calls, and how DataLoader batches them.</p>
+        </header>
+
+        <main class="simulator-layout">
+            <aside class="controls-panel">
+                <div class="control-group">
+                    <label>Query</label>
+                    <textarea id="graphql-query" rows="8" readonly>
+query {
+  users(limit: 5) {
+    id
+    name
+    posts {
+      id
+      title
+    }
+  }
+}
+                    </textarea>
+                </div>
+                
+                <div class="control-group">
+                    <label class="toggle-container">
+                        <input type="checkbox" id="dataloader-toggle">
+                        <span class="toggle-slider"></span>
+                        Enable DataLoader Batching
+                    </label>
+                    <small>Batch post resolutions into a single database query.</small>
+                </div>
+                
+                <div class="button-group">
+                    <button id="btn-execute" class="primary-btn"><i class="fa-solid fa-play"></i> Execute Query</button>
+                    <button id="btn-reset" class="secondary-btn"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                </div>
+
+                <div class="stats-card">
+                    <h3>Execution Stats</h3>
+                    <div class="stat-row">
+                        <span>Total DB Queries:</span>
+                        <span id="stat-queries" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Time Taken (simulated):</span>
+                        <span id="stat-time" class="stat-value">0ms</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="visualization-panel">
+                <div class="layers-container">
+                    <!-- Client Layer -->
+                    <div class="layer client-layer">
+                        <div class="layer-title"><i class="fa-solid fa-laptop"></i> Client</div>
+                        <div id="client-node" class="layer-node">GraphQL Request</div>
+                    </div>
+                    
+                    <!-- GraphQL Engine Layer -->
+                    <div class="layer engine-layer" id="engine-layer">
+                        <div class="layer-title"><i class="fa-solid fa-diagram-project"></i> GraphQL Resolvers</div>
+                        <div class="ast-container" id="ast-container">
+                            <!-- AST nodes generated via JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Database Layer -->
+                    <div class="layer db-layer">
+                        <div class="layer-title"><i class="fa-solid fa-database"></i> Database</div>
+                        <div id="db-queries-list" class="db-queries">
+                            <!-- DB Query logs generated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="graphql-n1-simulator.js"></script>
+</body>
+</html>

@@ -104,14 +104,13 @@
     justify-content: center;
     align-items: center;
     padding: 2rem 0;
-    perspective: 1000px; /* For 3D Tilt Effect */
 }
 
 /* Identity Card Body */
 .coding-card {
     position: relative;
     width: 480px;
-    height: 300px;
+    height: 380px;
     border-radius: 16px;
     padding: 1.5rem;
     overflow: hidden;
@@ -119,9 +118,48 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: box-shadow 0.5s ease, transform 0.1s ease;
-    transform-style: preserve-3d;
+    transition: box-shadow 0.5s ease;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Holographic Sheen Effect */
+.coding-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.05) 40%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0.05) 60%,
+        transparent 70%
+    );
+    z-index: 10;
+    pointer-events: none;
+    transition: none;
+}
+
+.coding-card:hover::before {
+    animation: holographicSheen 0.8s ease-in-out forwards;
+}
+
+@keyframes holographicSheen {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+.coding-card:hover {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px var(--card-glow-color);
 }
 
 /* Card Glow Effect */
@@ -323,7 +361,12 @@
     font-size: 0.95rem;
     font-weight: 700;
     color: #ffffff;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
+
 
 /* Card Footer Area: Skills & QR */
 .coding-card .footer-section {
@@ -375,8 +418,8 @@
 }
 
 .coding-card .qr-code {
-    width: 62px;
-    height: 62px;
+    width: 56px;
+    height: 56px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -393,6 +436,35 @@
     width: 100% !important;
     height: 100% !important;
     display: block;
+}
+
+/* Prevent text selection / highlight artifacts on export */
+.coding-card * {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Applied during html2canvas export to kill any selection artifacts */
+.coding-card.exporting,
+.coding-card.exporting * {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.coding-card.exporting .card-glow {
+    opacity: 0.3 !important;
+}
+
+.coding-card.exporting::before {
+    display: none !important;
+}
+
+.coding-card.exporting .logo-icon {
+    -webkit-text-fill-color: unset !important;
+    -webkit-background-clip: unset !important;
+    background: none !important;
+    color: var(--card-accent) !important;
 }
 
 .coding-card .qr-label {
@@ -491,7 +563,7 @@
     .coding-card {
         width: 100%;
         height: auto;
-        aspect-ratio: 480/300;
+        aspect-ratio: 480/380;
         padding: 1rem;
     }
     
@@ -512,5 +584,16 @@
     .coding-card .qr-code {
         width: 48px;
         height: 48px;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .coding-card::before {
+        animation: none;
+    }
+    .coding-card:hover::before {
+        animation: none;
+        left: -100%;
     }
 }

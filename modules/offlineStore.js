@@ -4,7 +4,7 @@
  */
 
 const DB_NAME = 'AlgoInfinityVerseDB';
-const DB_VERSION = 1;
+const DB_VERSION = 3;
 
 class OfflineStore {
     constructor() {

@@ -147,7 +147,7 @@ try {
       const MAX_LOG_LINES = 100;
       const MAX_TOTAL_LOG_CHARS = 10000;
       
-      function enforceLimits(text) {
+      const enforceLimits = (text) => {
         if (!text) return "";
         let lines = text.split("\n");
         let truncated = false;
@@ -164,7 +164,7 @@ try {
           result += "\n[Output Truncated: exceeded log size or line limits]";
         }
         return result;
-      }
+      };
 
       stdout = enforceLimits(rawStdout);
       stderr = enforceLimits(rawStderr);

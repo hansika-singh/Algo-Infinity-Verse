@@ -3,17 +3,22 @@ import { jest } from '@jest/globals';
 jest.unstable_mockModule('../backend/jobs/queue.js', () => ({
   enqueueBulkAudit: jest.fn(),
   getBatchProgress: jest.fn(),
+  enqueueReport: jest.fn(),
+  getReportStatus: jest.fn(),
   MAX_BULK_AUDIT_URLS: 50,
   batchStore: new Map(),
   bulkAuditQueue: {
     add: jest.fn(),
     on: jest.fn(),
   },
-  default: {}
+  redisAvailable: false,
+  redisClient: null,
+  redisReady: Promise.resolve(),
+  default: {},
 }));
 
 jest.unstable_mockModule('../backend/jobs/worker.js', () => ({
-  default: {}
+  default: {},
 }));
 
 const { hashPassword, passwordMatches, applySM2, validateSignup } = await import('../server.js');
@@ -24,7 +29,7 @@ describe('server.js Utility Functions', () => {
     it('should generate a valid hash object with salt', () => {
       const password = 'TestPassword123!';
       const result = hashPassword(password);
-      
+
       expect(result).toHaveProperty('hash');
       expect(result).toHaveProperty('salt');
       expect(result).toHaveProperty('iterations', 210000);
@@ -34,14 +39,14 @@ describe('server.js Utility Functions', () => {
     it('should successfully match a correct password', () => {
       const password = 'SecurePassword1!';
       const storedHash = hashPassword(password);
-      
+
       expect(passwordMatches(password, storedHash)).toBe(true);
     });
 
     it('should fail to match an incorrect password', () => {
       const password = 'SecurePassword1!';
       const storedHash = hashPassword(password);
-      
+
       expect(passwordMatches('WrongPassword!', storedHash)).toBe(false);
     });
 
@@ -60,7 +65,7 @@ describe('server.js Utility Functions', () => {
     it('should initialize a new card correctly on a perfect score', () => {
       const card = null;
       const result = applySM2(card, 5);
-      
+
       expect(result.repetitions).toBe(1);
       expect(result.interval).toBe(1);
       expect(result.easeFactor).toBeGreaterThan(2.5);
@@ -70,7 +75,7 @@ describe('server.js Utility Functions', () => {
     it('should reset interval and repetitions on a score < 3', () => {
       const card = { repetitions: 5, easeFactor: 2.6, interval: 14 };
       const result = applySM2(card, 2); // Blackout
-      
+
       expect(result.repetitions).toBe(0);
       expect(result.interval).toBe(1);
       expect(result.lastQuality).toBe(2);
@@ -79,7 +84,7 @@ describe('server.js Utility Functions', () => {
     it('should increase interval for score >= 3', () => {
       const card = { repetitions: 1, easeFactor: 2.5, interval: 1 };
       const result = applySM2(card, 4);
-      
+
       expect(result.repetitions).toBe(2);
       expect(result.interval).toBe(6);
     });
@@ -91,7 +96,7 @@ describe('server.js Utility Functions', () => {
         name: 'John Doe',
         email: 'john@example.com',
         password: 'ValidPassword123!',
-        confirmPassword: 'ValidPassword123!'
+        confirmPassword: 'ValidPassword123!',
       };
       expect(validateSignup(input)).toBeNull(); // null means no error
     });
@@ -101,7 +106,7 @@ describe('server.js Utility Functions', () => {
         name: 'John Doe',
         email: 'john@example.com',
         password: 'ValidPassword123!',
-        confirmPassword: 'DifferentPassword1!'
+        confirmPassword: 'DifferentPassword1!',
       };
       expect(validateSignup(input)).toBe('Passwords do not match.');
     });
@@ -111,9 +116,11 @@ describe('server.js Utility Functions', () => {
         name: 'John Doe',
         email: 'john@example.com',
         password: 'weakpassword',
-        confirmPassword: 'weakpassword'
+        confirmPassword: 'weakpassword',
       };
-      expect(validateSignup(input)).toBe('Password must include uppercase, lowercase, and a number.');
+      expect(validateSignup(input)).toBe(
+        'Password must include uppercase, lowercase, and a number.'
+      );
     });
 
     it('should return error for invalid email', () => {
@@ -121,7 +128,7 @@ describe('server.js Utility Functions', () => {
         name: 'John Doe',
         email: 'john.com', // invalid
         password: 'ValidPassword123!',
-        confirmPassword: 'ValidPassword123!'
+        confirmPassword: 'ValidPassword123!',
       };
       expect(validateSignup(input)).toBe('Enter a valid email address.');
     });
@@ -143,7 +150,7 @@ describe('server.js Utility Functions', () => {
         windowMs: 1000, // 1 second
         maxAttempts: 3,
         cooldownMs: 2000, // 2 seconds
-        backoffType: 'fixed'
+        backoffType: 'fixed',
       });
     });
 
@@ -178,7 +185,7 @@ describe('server.js Utility Functions', () => {
         rateLimiter.record(key);
       }
       expect(rateLimiter.check(key).allowed).toBe(false);
-      
+
       const now = Date.now();
       const realNow = Date.now;
       try {
@@ -194,12 +201,12 @@ describe('server.js Utility Functions', () => {
         windowMs: 1000,
         maxAttempts: 2,
         cooldownMs: 1000,
-        backoffType: 'exponential'
+        backoffType: 'exponential',
       });
 
       try {
         const key = 'test-client-4';
-        
+
         // Exceed limit 1st time -> cooldown should be 1s
         expLimiter.record(key);
         expLimiter.record(key);
@@ -210,15 +217,15 @@ describe('server.js Utility Functions', () => {
         // Exceed limit 2nd time (simulate 1.5s passes, then 2 new attempts)
         const now = Date.now();
         const realNow = Date.now;
-        
+
         Date.now = () => now + 1500;
         expLimiter.record(key);
         expLimiter.record(key);
-        
+
         check = expLimiter.check(key);
         expect(check.allowed).toBe(false);
         expect(check.retryAfter).toBe(2); // 1s * 2^1 = 2s
-        
+
         Date.now = realNow;
       } finally {
         expLimiter.stopSweeper();
@@ -238,10 +245,10 @@ describe('server.js Utility Functions', () => {
     it('should write 429 response on rate limit hit', () => {
       const res = {
         writeHead: jest.fn(),
-        end: jest.fn()
+        end: jest.fn(),
       };
       const req = {
-        socket: { remoteAddress: '127.0.0.1' }
+        socket: { remoteAddress: '127.0.0.1' },
       };
 
       for (let i = 0; i < 3; i++) {

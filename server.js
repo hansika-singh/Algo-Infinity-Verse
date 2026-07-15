@@ -1,26 +1,32 @@
-import { startTelemetry } from "./backend/utils/telemetry.js";
+import { startTelemetry } from './backend/utils/telemetry.js';
 startTelemetry();
-import { setupWebRTCSignaling } from "./backend/services/webrtc.service.js";
-import crypto from "crypto";
-import fs from "fs/promises";
-import http from "http";
-import express from "express";
-import apiRouter from "./backend/routes/api.js";
-import { execFile } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
-import { FieldValue } from "firebase-admin/firestore";
-import { initializeFirebase, getDb, COLLECTIONS } from "./firebase.js";
-import { verifyCsrfToken } from "./utils/csrf-verify.js";
-import multer from "multer";
-import { extractResumeText } from "./backend/resume-analyzer/parser.js";
-import { calculateATS } from "./backend/resume-analyzer/atsScore.js";
-import { findMissingSkills } from "./backend/resume-analyzer/skills.js";
-import { getSuggestions } from "./backend/resume-analyzer/suggestions.js";
-import { analyzeWorkflow } from "./backend/repository-analyzer/cicdValidator.js";
-import { VCSFactory } from "./backend/vcs/VCSFactory.js";
-import { enqueueBulkAudit, getBatchProgress, MAX_BULK_AUDIT_URLS } from "./backend/jobs/queue.js";
-import "./backend/jobs/worker.js"; // Initialize worker
+import { setupWebRTCSignaling } from './backend/services/webrtc.service.js';
+import crypto from 'crypto';
+import fs from 'fs/promises';
+import http from 'http';
+import express from 'express';
+import apiRouter from './backend/routes/api.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { spawn } from 'child_process';
+import { FieldValue } from 'firebase-admin/firestore';
+import { initializeFirebase, COLLECTIONS } from './firebase.js';
+import { verifyCsrfToken } from './utils/csrf-verify.js';
+import { validateEnv } from './utils/envValidator.js';
+import multer from 'multer';
+import { extractResumeText } from './backend/resume-analyzer/parser.js';
+import { calculateATS } from './backend/resume-analyzer/atsScore.js';
+import { findMissingSkills } from './backend/resume-analyzer/skills.js';
+import { getSuggestions } from './backend/resume-analyzer/suggestions.js';
+import { analyzeWorkflow } from './backend/repository-analyzer/cicdValidator.js';
+import { VCSFactory } from './backend/vcs/VCSFactory.js';
+import {
+  enqueueBulkAudit,
+  getBatchProgress,
+  MAX_BULK_AUDIT_URLS,
+  getReportStatus,
+} from './backend/jobs/queue.js';
+import './backend/jobs/worker.js'; // Initialize worker
 
 import { parse as csvParse } from 'csv-parse/sync';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,31 +34,13 @@ import { generateSdlcAdvice } from './sdlcAdvisor.js';
 import lockfile from 'proper-lockfile';
 import { fileTypeFromBuffer } from 'file-type';
 
-const JUDGE0_LANGUAGE_IDS = {
-  python: 71,
-  javascript: 63,
-  java: 62,
-  'c++': 54,
-  cpp: 54,
-  c: 50,
-  typescript: 74,
-  go: 60,
-  rust: 73,
-  ruby: 72,
-  swift: 83,
-  dart: 98,
-  haskell: 89,
-  kotlin: 78,
-};
 import { handleReportRequest } from './backend/reports/reportGenerator.js';
-import { getUserBenchmark } from './backend/benchmarking/percentileService.js';
+import { getBenchmark as getUserBenchmark } from './backend/benchmarking/percentileService.js';
 import { Server as SocketIOServer } from 'socket.io';
 import {
   ACCESS_TOKEN_MAX_AGE_SECONDS,
   REFRESH_TOKEN_MAX_AGE_SECONDS,
   getClientIdentifier,
-  isSignupRateLimited,
-  recordSignupAttempt,
   normalizeAuthDelay,
   createAccessToken,
   verifyAccessToken,
@@ -62,7 +50,6 @@ import {
   createRefreshToken,
   verifyRefreshToken,
   revokeTokenFamily,
-  activeRefreshFamilies,
 } from './backend/services/auth.service.js';
 import {
   applyRateLimit,
@@ -88,9 +75,11 @@ import {
   submitSolution,
   getBattle,
   getHistory,
+  TEST_CASES,
+  runDetailedTestCases,
 } from './pages/Dsa-Battle/Battleservice.js';
 
-import { instrumentJS } from './modules/code-tracer.js';
+// import { instrumentJS } from './modules/code-tracer.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -127,11 +116,13 @@ let userCacheDirty = true;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = __dirname;
+const PAGE_404 = path.join(ROOT, '404.html');
 const IS_VERCEL = process.env.VERCEL === '1';
 const DATA_DIR = IS_VERCEL ? path.join('/tmp', 'algo-infinity-verse') : path.join(ROOT, 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const MEMORY_FILE = path.join(DATA_DIR, 'memory.json');
 const TEAM_PROFILES_FILE = path.join(DATA_DIR, 'team_profiles.json');
+const ROADMAPS_FILE = path.join(DATA_DIR, 'roadmaps.json');
 const AUDITS_FILE = path.join(DATA_DIR, 'audits_history.json');
 const EXECUTIONS_FILE = path.join(DATA_DIR, 'executions.json');
 const CLIENT_ERRORS_FILE = path.join(DATA_DIR, 'client_errors.json');
@@ -145,7 +136,6 @@ const MAX_INTERVIEW_EXPERIENCE_ENTRIES = 5000;
 const MAX_AUDIT_HISTORY_ENTRIES = 1000;
 const MAX_EXECUTIONS_ENTRIES = 5000;
 const SESSION_COOKIE = 'aiv_session';
-const ACCESS_COOKIE = 'aiv_access';
 const REFRESH_COOKIE = 'aiv_refresh';
 
 const DELETION_LOG_FILE = path.join(DATA_DIR, 'account-deletions.json');
@@ -223,7 +213,11 @@ function getRefreshToken(req) {
 // Previously this set only the access cookie, so the aiv_refresh cookie was
 // never issued and silent token refresh could never succeed (#1225).
 function authCookies(accessToken, refreshToken, req) {
-  const secure = req.headers['x-forwarded-proto'] === 'https';
+  // Don't rely solely on x-forwarded-proto: some deploy targets' proxies
+  // don't forward it, which would leave session cookies without Secure over
+  // HTTPS. Always require it in production regardless of that header (#2358).
+  const secure =
+    process.env.NODE_ENV === 'production' || req.headers['x-forwarded-proto'] === 'https';
   const cookie = (name, value, maxAge) =>
     [
       `${name}=${encodeURIComponent(value)}`,
@@ -346,11 +340,6 @@ async function readAudits() {
   await ensureAuditsStore();
   const raw = await fs.readFile(AUDITS_FILE, 'utf8');
   return JSON.parse(raw || '[]');
-}
-
-async function writeAudits(audits) {
-  await ensureAuditsStore();
-  await fs.writeFile(AUDITS_FILE, `${JSON.stringify(audits, null, 2)}\n`);
 }
 
 // ── Execution History Store ─────────────────────────────────────────────────
@@ -877,7 +866,7 @@ async function handleApi(req, res, pathname) {
     const vars = {};
     keys.forEach((k) => {
       const v = process.env[k];
-      vars[k] = Boolean(process.env[k]);
+      vars[k] = Boolean(v);
     });
     return sendJson(res, 200, vars);
   }
@@ -1186,7 +1175,9 @@ async function handleApi(req, res, pathname) {
         try {
           const snapshot = await db.collection('users').doc(decoded.sub).get();
           if (snapshot.exists) user = { ...snapshot.data(), id: snapshot.id };
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       }
     } else {
       user = users.find((u) => u.id === decoded.sub);
@@ -1770,7 +1761,9 @@ async function handleApi(req, res, pathname) {
       const raw = await fs.readFile(DELETION_LOG_FILE, 'utf8');
 
       logs = JSON.parse(raw || '[]');
-    } catch {}
+    } catch {
+      // ignore
+    }
 
     logs.push(deletionEvent);
 
@@ -1920,7 +1913,7 @@ async function handleApi(req, res, pathname) {
       user: {
         name: session?.name || 'John Doe',
         username: session?.email?.split('@')[0] || 'johndoe',
-        avatar: '🚀',
+        avatar: { initial: 'L', bg: '#7c3aed' },
         bio: 'Passionate about DSA and building cool stuff!',
         joinedDate: '2024-01-15',
       },
@@ -2083,13 +2076,14 @@ async function handleApi(req, res, pathname) {
       if (useFirestore) {
         let query = db.collection(COLLECTIONS.AUDITS_HISTORY).where('userId', '==', session.sub);
         if (repoUrl) query = query.where('repoUrl', '==', repoUrl);
-        const snapshot = await query.orderBy('timestamp', 'asc').get();
-        history = snapshot.docs.map((doc) => doc.data());
+        const snapshot = await query.orderBy('timestamp', 'desc').limit(100).get();
+        history = snapshot.docs.map((doc) => doc.data()).reverse();
       } else {
         const allAudits = await readAudits();
         history = allAudits.filter((a) => a.userId === session.sub);
         if (repoUrl) history = history.filter((a) => a.repoUrl === repoUrl);
-        history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        history = history.slice(0, 100).reverse();
       }
 
       const trends = history.map((a) => ({
@@ -2278,10 +2272,55 @@ async function handleApi(req, res, pathname) {
     }
   }
 
+  if (pathname === '/api/roadmaps' && req.method === 'GET') {
+    try {
+      const data = await fs.readFile(ROADMAPS_FILE, 'utf8');
+      return sendJson(res, 200, JSON.parse(data));
+    } catch (err) {
+      console.error('Failed to load roadmaps registry:', err);
+      return sendJson(res, 500, { error: 'Failed to load roadmaps registry.' });
+    }
+  }
+
   if (pathname === '/api/reports/export/pdf' || pathname === '/api/reports/export/image') {
     const session = getSession(req);
     if (!session) return sendJson(res, 401, { error: 'Authentication required.' });
     return await handleReportRequest(req, res, pathname, session);
+  }
+
+  if (pathname === '/api/reports/status' && req.method === 'GET') {
+    const session = getSession(req);
+    if (!session) return sendJson(res, 401, { error: 'Authentication required.' });
+
+    const urlParams = new URL(req.url, `http://${req.headers.host}`).searchParams;
+    const jobId = urlParams.get('jobId');
+    if (!jobId) return sendJson(res, 400, { error: 'Missing jobId' });
+
+    try {
+      const jobStatus = await getReportStatus(jobId);
+      if (!jobStatus) return sendJson(res, 404, { error: 'Job not found' });
+
+      if (jobStatus.status === 'completed') {
+        const buffer = Buffer.from(jobStatus.data, 'base64');
+        const isPdf = jobStatus.type === 'pdf';
+        const contentType = isPdf ? 'application/pdf' : 'image/png';
+        const ext = isPdf ? 'pdf' : 'png';
+
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Content-Disposition': `attachment; filename="report_${session.sub}.${ext}"`,
+          'Content-Length': buffer.length,
+        });
+        return res.end(buffer);
+      } else if (jobStatus.status === 'failed') {
+        return sendJson(res, 500, { error: jobStatus.error || 'Report generation failed' });
+      } else {
+        return sendJson(res, 200, { status: jobStatus.status });
+      }
+    } catch (err) {
+      console.error('Error fetching report status:', err);
+      return sendJson(res, 500, { error: 'Failed to fetch report status' });
+    }
   }
 
   if (pathname === '/api/user/benchmark' && req.method === 'GET') {
@@ -2526,7 +2565,7 @@ async function handleApi(req, res, pathname) {
   // ── Collaborative Study Rooms endpoints ──────────────────────────────────
   if (pathname === '/api/study-rooms' && req.method === 'GET') {
     const roomsList = [];
-    for (const [id, r] of studyRooms.entries()) {
+    for (const r of studyRooms.values()) {
       roomsList.push({
         id: r.id,
         hostName: r.hostName,
@@ -2854,7 +2893,7 @@ async function handleApi(req, res, pathname) {
     }
 
     try {
-      const analysis = analyzeCode(code, language, problemId);
+      const analysis = analyzeCode(code, language);
       return sendJson(res, 200, { success: true, data: analysis });
     } catch (error) {
       console.error('Error predicting acceptance:', error);
@@ -3038,12 +3077,233 @@ async function handleApi(req, res, pathname) {
     }
   }
 
+  // Helper function to run javascript in child process securely for complexity profiling
+  function _runInChild(code, N) {
+    return new Promise((resolve) => {
+      // Spawn node with 16MB heap memory limit and read from stdin (-)
+      const child = spawn(process.execPath, ['--max-old-space-size=16', '-'], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+
+      const runnerScript = `
+        const vm = require('vm');
+        const code = ${JSON.stringify(code)};
+        const N = ${N};
+        
+        const sandbox = {
+          console: { log: () => {}, error: () => {} },
+          Math, Array, Object, String, Number, Boolean, Date, Set, Map, N
+        };
+        
+        try {
+          const memStart = process.memoryUsage().heapUsed;
+          const timeStart = performance.now();
+          
+          const scriptContent = code + '\\n' + 'solve(N);';
+          
+          vm.runInNewContext(scriptContent, sandbox, { timeout: 150 });
+          
+          const timeEnd = performance.now();
+          const memEnd = process.memoryUsage().heapUsed;
+          
+          const timeMs = timeEnd - timeStart;
+          const memBytes = Math.max(0, memEnd - memStart);
+          
+          console.log(JSON.stringify({ success: true, timeMs, memKb: memBytes / 1024 }));
+        } catch (err) {
+          console.log(JSON.stringify({ success: false, error: err.message }));
+        }
+      `;
+
+      let stdoutData = '';
+      let stderrData = '';
+
+      child.stdout.on('data', (data) => {
+        stdoutData += data.toString();
+      });
+
+      child.stderr.on('data', (data) => {
+        stderrData += data.toString();
+      });
+
+      child.on('close', (exitCode) => {
+        if (exitCode !== 0) {
+          if (stderrData.includes('Allocation failed') || stderrData.includes('Out of memory')) {
+            resolve({ success: false, error: 'Memory limit of 16MB exceeded.' });
+          } else {
+            resolve({
+              success: false,
+              error: stderrData.trim() || `Process exited with code ${exitCode}`,
+            });
+          }
+          return;
+        }
+
+        try {
+          const result = JSON.parse(stdoutData.trim());
+          resolve(result);
+        } catch (e) {
+          resolve({ success: false, error: 'Internal execution sandbox crash.' });
+        }
+      });
+
+      child.stdin.write(runnerScript);
+      child.stdin.end();
+    });
+  }
+
+  // ── Complexity Sandbox Profiler ───────────────────────────────────────────
+  if (pathname === '/api/execute/profile' && req.method === 'POST') {
+    if (
+      !applyRateLimit(
+        req,
+        res,
+        sdlcAdvisorLimiter,
+        'Too many profile requests. Please try again later.'
+      )
+    ) {
+      return;
+    }
+
+    let payload;
+    try {
+      payload = await readJsonBody(req);
+    } catch {
+      return sendJson(res, 400, { error: 'Invalid JSON body.' });
+    }
+
+    const problemName = String(payload.problemName || '').trim();
+    const problemDescription = String(payload.problemDescription || '').trim();
+    const code = String(payload.code || '');
+    const language = String(payload.language || '').trim();
+
+    if (!code) {
+      return sendJson(res, 400, { error: 'Code is required for review.' });
+    }
+
+    const MAX_REVIEW_CODE_LENGTH = 20000;
+    if (code.length > MAX_REVIEW_CODE_LENGTH) {
+      return sendJson(res, 400, {
+        error: `Code exceeds maximum length of ${MAX_REVIEW_CODE_LENGTH} characters.`,
+      });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return sendJson(res, 503, { error: 'AI reviewer unavailable (GEMINI_API_KEY not set).' });
+    }
+
+    const prompt = `You are a critical senior software engineer and static analysis tool. Analyze the following user code for the problem "${problemName}" (Language: ${language}).
+Problem description (if any):
+${problemDescription}
+
+User Code:
+\`\`\`${language}
+${code}
+\`\`\`
+
+Perform an in-depth audit of the code. Look for:
+1. Poor time/space complexity (e.g., O(N^2) where O(N) is possible).
+2. Unsafe operations, memory leaks, or potential crash points.
+3. Styling issues, bad practices, or un-idiomatic code.
+4. Edge-case bugs, off-by-one errors, or incorrect logic.
+
+You must return a JSON array of suggestions.
+Each item in the array must be an object with the following exact keys:
+- "lineStart": (number) 1-based start line number of the flagged code section.
+- "lineEnd": (number) 1-based end line number of the flagged code section (inclusive).
+- "severity": (string) either "warning" or "error".
+- "message": (string) clear, concise description of the issue and why it is a problem.
+- "suggestionContent": (string) the proposed code snippet that should replace the code from lineStart to lineEnd. Make sure this snippet integrates seamlessly as a drop-in replacement for the exact lines from lineStart to lineEnd.
+
+Example format:
+[
+  {
+    "lineStart": 5,
+    "lineEnd": 8,
+    "severity": "error",
+    "message": "This linear search inside a loop causes O(N^2) complexity. Use a hash map for O(N) lookup.",
+    "suggestionContent": "    if (seen.has(complement)) {\\n        return [seen.get(complement), i];\\n    }"
+  }
+]
+
+CRITICAL RULES:
+1. Only flag genuine issues. If the code is perfect, return an empty array [].
+2. The lineStart and lineEnd must match the line numbers of the user code EXACTLY.
+3. "suggestionContent" must be a direct replacement for the lines from lineStart to lineEnd (inclusive). Ensure correct indentation, newlines, and syntax so that replacing those lines with suggestionContent keeps the overall file syntax correct.
+4. Return ONLY valid JSON. Do not include markdown code block tags in your raw response (like \`\`\`json) if possible, but if you do, the server will parse it. Ensure it parses as a valid JSON array.`;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.2,
+              responseMimeType: 'application/json',
+            },
+          }),
+          signal: controller.signal,
+        }
+      );
+      clearTimeout(timeoutId);
+
+      const result = await response.json();
+      let raw = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!raw) {
+        return sendJson(res, 502, { error: 'No suggestions were generated. Please try again.' });
+      }
+
+      raw = raw.trim();
+      if (raw.startsWith('```')) {
+        raw = raw
+          .replace(/^```(?:json)?\n?/, '')
+          .replace(/\n?```$/, '')
+          .trim();
+      }
+
+      let suggestions;
+      try {
+        suggestions = JSON.parse(raw);
+      } catch (err) {
+        console.error('Failed to parse Gemini review JSON:', raw);
+        return sendJson(res, 502, { error: 'AI returned an invalid JSON response format.' });
+      }
+
+      const lines = code.split('\n');
+      const totalLines = lines.length;
+
+      const validSuggestions = (Array.isArray(suggestions) ? suggestions : []).map((s) => {
+        const lineStart = Math.max(1, Math.min(totalLines, Number(s.lineStart)));
+        const lineEnd = Math.max(lineStart, Math.min(totalLines, Number(s.lineEnd)));
+        const severity = s.severity === 'error' ? 'error' : 'warning';
+        return {
+          lineStart,
+          lineEnd,
+          severity,
+          message: String(s.message || 'AI Review Suggestion'),
+          suggestionContent: String(s.suggestionContent || ''),
+        };
+      });
+
+      return sendJson(res, 200, { success: true, suggestions: validSuggestions });
+    } catch (error) {
+      console.error('AI review error:', error);
+      return sendJson(res, 500, { error: 'Failed to complete AI review.' });
+    }
+  }
+
   // ── Leaderboard ──────────────────────────────────────────────────────────
   if (pathname === '/api/leaderboard' && req.method === 'GET') {
     try {
       let leaders = [];
       if (useFirestore) {
-        const usersSnap = await db.collection('users').get();
+        const usersSnap = await db.collection('users').orderBy('xp', 'desc').limit(50).get();
         leaders = usersSnap.docs.map((doc) => {
           const d = doc.data();
           return {
@@ -3063,6 +3323,8 @@ async function handleApi(req, res, pathname) {
           level: u.level || 1,
           avatar: u.avatar || '🚀',
         }));
+        leaders.sort((a, b) => b.xp - a.xp);
+        leaders = leaders.slice(0, 50);
       }
       const session = getSession(req);
       return sendJson(res, 200, { leaders, currentUserId: session?.sub || null });
@@ -3137,8 +3399,10 @@ function resolveStaticPath(pathname) {
     '/verify-email.html': 'pages/auth/verify-email.html',
     '/community': 'pages/community/community/community.html',
     '/community.html': 'pages/community/community/community.html',
-    '/rust-learning': 'rust-learning.html',
-    '/rust-learning.html': 'rust-learning.html',
+    '/rust-learning': 'pages/rust-academy/rust-academy.html',
+    '/rust-learning.html': 'pages/rust-academy/rust-academy.html',
+    '/rust-academy': 'pages/rust-academy/rust-academy.html',
+    '/rust-academy.html': 'pages/rust-academy/rust-academy.html',
     '/python-learning': 'pages/learning/python-learning/python-learning.html',
     '/javascript-learning': 'pages/learning/javascript-learning/javascript-learning.html',
     '/dbms-learning': 'pages/learning/dbms-learning/dbms-learning.html',
@@ -3153,6 +3417,8 @@ function resolveStaticPath(pathname) {
     '/memory-scanner': 'pages/tools/memory-scanner/memory-scanner.html',
     '/memory-scanner.html': 'pages/tools/memory-scanner/memory-scanner.html',
     '/algorithm-timeline': 'pages/visualizers/algorithm-timeline/algorithm-timeline.html',
+    '/practice': 'pages/practice/problems.html',
+    '/practice.html': 'pages/practice/problems.html',
     '/support-page': 'support-page/index.html',
     '/support-page/': 'support-page/index.html',
   };
@@ -3285,12 +3551,12 @@ async function serveStatic(req, res, pathname) {
 
       headers['Content-Security-Policy'] =
         `default-src 'self'; ` +
-        `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com; ` +
-        `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; ` +
+        `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net; ` +
+        `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; ` +
         `font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; ` +
         `img-src 'self' data: https: blob:; ` +
         `connect-src 'self' https: wss:; ` +
-        `frame-src 'self' https://*.firebaseapp.com; ` +
+        `frame-src 'self' blob: https://*.firebaseapp.com; ` +
         `object-src 'none'; ` +
         `base-uri 'self';`;
     } else {
@@ -3299,6 +3565,16 @@ async function serveStatic(req, res, pathname) {
 
     headers['Content-Type'] = mimeTypes[ext] || 'application/octet-stream';
     res.writeHead(200, headers);
+    res.end(content);
+  } catch {
+    await serve404Page(req, res);
+  }
+}
+
+async function serve404Page(req, res) {
+  try {
+    const content = await fs.readFile(PAGE_404, 'utf8');
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(content);
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -3353,7 +3629,7 @@ const server = http.createServer(app);
 
 // ===== CODE ANALYSIS ENGINE =====
 // Used by the POST /api/predict-acceptance route in handleApi().
-function analyzeCode(code, language, problemId) {
+function analyzeCode(code, language) {
   let score = 100;
   const risks = [];
   const suggestions = [];
@@ -3383,7 +3659,7 @@ function analyzeCode(code, language, problemId) {
   }
 
   // 4. Check for Syntax errors
-  if (checkSyntaxErrors(code, language)) {
+  if (checkSyntaxErrors(code)) {
     score -= 25;
     risks.push('❌ Syntax errors detected');
     suggestions.push('Fix syntax errors before submitting');
@@ -3446,7 +3722,6 @@ function checkTimeComplexity(code) {
 
 function checkOverflowRisk(code) {
   const intTypes = ['int', 'long', 'number'];
-  const largeOperations = ['*', '+', '-', '/'];
 
   for (const type of intTypes) {
     if (code.includes(type) && code.includes('*')) {
@@ -3472,7 +3747,7 @@ function checkEdgeCases(code) {
   return { missing };
 }
 
-function checkSyntaxErrors(code, language) {
+function checkSyntaxErrors(code) {
   // Basic syntax check
   const openBraces = (code.match(/{/g) || []).length;
   const closeBraces = (code.match(/}/g) || []).length;
@@ -3535,6 +3810,10 @@ function getSummary(score) {
 
 // --- PHASE 1 ADDITION: SOCKET.IO LOGIC ---
 const io = new SocketIOServer(server);
+
+// --- BATTLE MODE STATE ---
+const matchmakingQueue = { Easy: [], Medium: [], Hard: [] };
+const activeBattles = new Map();
 
 function serializeRoom(room) {
   return {
@@ -3629,7 +3908,7 @@ io.on('connection', (socket) => {
 
       if (result.candidates && result.candidates.length > 0) {
         let aiHint = result.candidates[0].content.parts[0].text;
-        aiHint = aiHint.replace(/\*/g, '').replace(/\`/g, ''); // Clean markdown
+        aiHint = aiHint.replace(/\*/g, '').replace(/`/g, ''); // Clean markdown
         socket.emit('ai-interviewer-feedback', { hint: aiHint });
       } else {
         socket.emit('ai-interviewer-feedback', {
@@ -3659,6 +3938,7 @@ io.on('connection', (socket) => {
         if (rules.type && (val === null || typeof val !== rules.type)) return null;
         if (rules.string && typeof val === 'string') {
           val = val.slice(0, rules.maxLength || MAX_TEXT_LENGTH);
+          // eslint-disable-next-line no-control-regex
           val = val.replace(/[\x00-\x1F\x7F]/g, '');
         }
         result[key] = val;
@@ -3776,16 +4056,36 @@ io.on('connection', (socket) => {
     });
     if (!valid) return;
     socket.join(`battle_${valid.battleId}`);
+    socket.battleId = valid.battleId;
+    socket.battleUserId = valid.userId;
     socket.to(`battle_${valid.battleId}`).emit('battle-user-joined', { userId: valid.userId });
+
+    // Send all existing updates to the joining user for synchronization
+    const battle = activeBattles.get(valid.battleId);
+    if (battle && battle.updates) {
+      socket.emit('battle-init-state', {
+        updates: battle.updates,
+      });
+    }
   });
 
   socket.on('battle-code-update', (data) => {
     const valid = validateSocketInput(data, {
       battleId: { type: 'string', required: true },
       userId: { type: 'string', required: true },
-      code: { type: 'string', string: true },
+      update: { type: 'string', required: true, maxLength: 50000 },
     });
     if (!valid) return;
+
+    // Save update in room state
+    const battle = activeBattles.get(valid.battleId);
+    if (battle) {
+      if (!battle.updates) {
+        battle.updates = [];
+      }
+      battle.updates.push(valid.update);
+    }
+
     socket.to(`battle_${valid.battleId}`).emit('battle-code-update', valid);
   });
 
@@ -3807,6 +4107,147 @@ io.on('connection', (socket) => {
     });
     if (!valid) return;
     socket.to(`battle_${valid.battleId}`).emit('battle-progress-update', valid);
+  });
+
+  // ── IN-MEMORY MATCHMAKING LOGIC ──
+  socket.on('find-match', (data) => {
+    const valid = validateSocketInput(data, {
+      userId: { type: 'string', required: true },
+      userName: { type: 'string', required: true },
+      difficulty: { type: 'string', required: true },
+    });
+    if (!valid) return;
+
+    const diff = valid.difficulty;
+    if (!matchmakingQueue[diff]) matchmakingQueue[diff] = [];
+
+    // Check if someone is already waiting
+    const queue = matchmakingQueue[diff];
+    const opponentIdx = queue.findIndex((u) => u.userId !== valid.userId);
+
+    if (opponentIdx !== -1) {
+      // Match found!
+      const opponent = queue.splice(opponentIdx, 1)[0];
+      const battleId = crypto.randomUUID();
+
+      const problemKeys = Object.keys(TEST_CASES);
+      const chosenTitle = problemKeys[Math.floor(Math.random() * problemKeys.length)];
+      const problem = TEST_CASES[chosenTitle];
+
+      const battleData = {
+        id: battleId,
+        difficulty: diff,
+        status: 'active',
+        problemTitle: chosenTitle,
+        problemDescription: `Implement ${problem.func}. Test cases await.`,
+        participants: {
+          [valid.userId]: { name: valid.userName, progress: 0, status: 'active' },
+          [opponent.userId]: { name: opponent.userName, progress: 0, status: 'active' },
+        },
+        winner: null,
+      };
+
+      activeBattles.set(battleId, battleData);
+
+      // Join both to the socket room
+      socket.join(`battle_${battleId}`);
+      const opponentSocket = io.sockets.sockets.get(opponent.socketId);
+      if (opponentSocket) opponentSocket.join(`battle_${battleId}`);
+
+      // Emit match-found to both
+      io.to(`battle_${battleId}`).emit('match-found', {
+        battleId,
+        battleData,
+        opponentName: { [valid.userId]: opponent.userName, [opponent.userId]: valid.userName },
+      });
+    } else {
+      // Add to queue
+      // Remove existing entries for this user first
+      matchmakingQueue[diff] = queue.filter((u) => u.userId !== valid.userId);
+      matchmakingQueue[diff].push({
+        userId: valid.userId,
+        userName: valid.userName,
+        socketId: socket.id,
+      });
+    }
+  });
+
+  // ── Multiplayer Battle Live Telemetry ──
+  socket.on('battle-typing', (data) => {
+    const valid = validateSocketInput(data, {
+      battleId: { type: 'string', required: true },
+      userId: { type: 'string', required: true },
+      typing: { type: 'boolean', required: true },
+    });
+    if (!valid) return;
+    socket.to(`battle_${valid.battleId}`).emit('opponent:typing', {
+      userId: valid.userId,
+      typing: valid.typing,
+    });
+  });
+
+  socket.on('battle-editor-state', (data) => {
+    const valid = validateSocketInput(data, {
+      battleId: { type: 'string', required: true },
+      userId: { type: 'string', required: true },
+      charCount: { type: 'number', required: true },
+      syntaxErrors: { type: 'number', required: true },
+      wpm: { type: 'number', required: true },
+    });
+    if (!valid) return;
+    socket.to(`battle_${valid.battleId}`).emit('opponent:editor-state', {
+      userId: valid.userId,
+      charCount: valid.charCount,
+      syntaxErrors: valid.syntaxErrors,
+      wpm: valid.wpm,
+    });
+  });
+
+  socket.on('battle-submit', (data) => {
+    const valid = validateSocketInput(data, {
+      battleId: { type: 'string', required: true },
+      userId: { type: 'string', required: true },
+      code: { type: 'string', required: true },
+    });
+    if (!valid) return;
+
+    const battle = activeBattles.get(valid.battleId);
+    if (!battle || battle.status !== 'active') {
+      socket.emit('battle-submit-result', { error: 'Battle not active.' });
+      return;
+    }
+
+    let results = [];
+    try {
+      results = runDetailedTestCases(battle.problemTitle, valid.code);
+    } catch (e) {
+      results = [false];
+    }
+    const passed = results.length > 0 && results.every((r) => r === true);
+
+    // Broadcast test run results to the room for opponent telemetry grid
+    socket.to(`battle_${valid.battleId}`).emit('opponent:test-run', {
+      userId: valid.userId,
+      results: results,
+    });
+
+    if (passed) {
+      battle.status = 'completed';
+      battle.winner = valid.userId;
+      delete battle.updates;
+      io.to(`battle_${valid.battleId}`).emit('battle-over', {
+        winnerId: valid.userId,
+        winnerName: battle.participants[valid.userId].name,
+        badge: 'Speed Demon',
+        xpAwarded: 100, // Mock XP
+      });
+    } else {
+      socket.emit('battle-submit-result', {
+        success: false,
+        message: 'Tests failed. Keep trying!',
+        results: results,
+      });
+    }
   });
 
   // ── ESCAPE ROOM MODE ──
@@ -4086,6 +4527,12 @@ io.on('connection', (socket) => {
       const wbRoom = 'wb_' + socket.wbRoomId;
       socket.to(wbRoom).emit('wb-user-left', { userId: socket.wbUserId });
     }
+    // Handle clean disconnect for Battle Mode CRDT presence and cursors
+    if (socket.battleId && socket.battleUserId) {
+      socket
+        .to(`battle_${socket.battleId}`)
+        .emit('battle-user-left', { userId: socket.battleUserId });
+    }
   });
 
   socket.on('join-room', (roomId, userId) => {
@@ -4138,11 +4585,7 @@ export {
 if (process.env.VERCEL === '1') {
   db = initializeFirebase();
   useFirestore = !!db;
-  if (!process.env.SESSION_SECRET) {
-    throw new Error(
-      'FATAL: SESSION_SECRET is required on Vercel. Set it in the Vercel dashboard under Project Settings > Environment Variables.'
-    );
-  }
+  validateEnv();
 }
 
 const vercelHandler =
@@ -4153,22 +4596,14 @@ export default vercelHandler;
 if (process.env.VERCEL !== '1' && process.env.NODE_ENV !== 'test') {
   loadEnvFile()
     .then(() => {
+      validateEnv();
       db = initializeFirebase();
       useFirestore = !!db;
       const port = Number(process.env.PORT || 3000);
       const host = process.env.HOST || '127.0.0.1';
 
       server.listen(port, host, () => {
-        const url = `http://${host}:${port}`;
-        void 0;
-        if (!process.env.SESSION_SECRET) {
-          // Fail closed in every environment — a missing secret means tokens
-          // would be signed with a forgeable, hardcoded fallback.
-          console.error(
-            'FATAL: SESSION_SECRET is required. Set it in the environment before starting the server.'
-          );
-          process.exit(1);
-        }
+        // listening started
       });
 
       server.on('error', (err) => {

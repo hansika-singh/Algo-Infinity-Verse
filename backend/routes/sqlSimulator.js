@@ -1,32 +1,19 @@
+// backend/routes/sqlSimulator.js
 import express from 'express';
-import Database from 'better-sqlite3';
+import { initDB, getDb } from '../services/sqlSimulatorService.js';
+import { resetDatabase } from '../controllers/sqlSimulatorController.js';
 
 const router = express.Router();
 router.use(express.json());
 
-let db;
-function initDB() {
-  db = new Database(':memory:');
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS employees (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      department TEXT NOT NULL,
-      salary INTEGER NOT NULL
-    );
-    INSERT INTO employees (name, department, salary) VALUES ('Alice', 'Engineering', 90000);
-    INSERT INTO employees (name, department, salary) VALUES ('Bob', 'HR', 60000);
-    INSERT INTO employees (name, department, salary) VALUES ('Charlie', 'Engineering', 95000);
-    INSERT INTO employees (name, department, salary) VALUES ('Diana', 'Marketing', 70000);
-  `);
-}
-
+// DB initialize kar do
 try {
   initDB();
 } catch (error) {
   console.error("Failed to initialize SQL Simulator database:", error);
 }
 
+// ⚠️ UNCHANGED: Execute route
 router.post('/execute', (req, res) => {
   const { query } = req.body;
   if (!query) {
@@ -34,6 +21,7 @@ router.post('/execute', (req, res) => {
   }
 
   try {
+    const db = getDb();
     const isSelect = query.trim().toUpperCase().startsWith('SELECT') || query.trim().toUpperCase().startsWith('PRAGMA');
     if (isSelect) {
       const stmt = db.prepare(query);
@@ -49,14 +37,6 @@ router.post('/execute', (req, res) => {
   }
 });
 
-router.post('/reset', (req, res) => {
-  try {
-    db.exec(`DROP TABLE IF EXISTS employees;`);
-    initDB();
-    return res.json({ success: true, message: 'Database reset successfully' });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
+router.post('/reset', resetDatabase);
 
 export default router;

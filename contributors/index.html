@@ -788,7 +788,7 @@
         </div>
       </section>
     </main>
-    <div class="modal-overlay" id="contributorModal">
+    <div class="modal-overlay hidden" id="contributorModal">
       <div class="modal-card">
         <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
         <div id="modalContent">
@@ -806,14 +806,6 @@
     <script src="/script.js"></script>
     <script type="module" src="/dist/legacy-bundle.mjs"></script>
     <script>
-      window.addEventListener('DOMContentLoaded', async () => {
-        await loadPartial('navbar-placeholder', '/partials/navbar.html');
-        await loadPartial('footer-placeholder', '/partials/footer.html');
-
-        loadContributors();
-      });
-    </script>
-    <script>
       const REPO_OWNER = 'Eshajha19';
       const REPO_NAME = 'Algo-Infinity-Verse';
       const CACHE_KEY = 'algo_contributors_cache';
@@ -824,7 +816,7 @@
       let allContributorsData = [];
       let sortedContributorsData = [];
       let filteredContributors = [];
-      let currentPage = 1;
+      let contributorsCurrentPage = 1;
 
       function getCachedData() {
         try {
@@ -845,14 +837,23 @@
       }
 
       async function gh(url) {
-        const res = await fetch(url, {
-          headers: { Accept: 'application/vnd.github.v3+json' },
-        });
-        if (!res.ok) {
-          if (res.status === 403 || res.status === 429) throw new Error('RATE_LIMIT');
-          throw new Error('GitHub API error: ' + res.status);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        try {
+          const res = await fetch(url, {
+            headers: { Accept: 'application/vnd.github.v3+json' },
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 429) throw new Error('RATE_LIMIT');
+            throw new Error('GitHub API error: ' + res.status);
+          }
+          return res;
+        } catch (e) {
+          clearTimeout(timeoutId);
+          throw e;
         }
-        return res;
       }
 
       async function ghJSON(url) {
@@ -953,10 +954,10 @@
         // Clamp page
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
-        currentPage = page;
+        contributorsCurrentPage = page;
 
         // Update URL hash without triggering hashchange
-        const newHash = totalPages > 1 ? '#page=' + currentPage : '';
+        const newHash = totalPages > 1 ? '#page=' + contributorsCurrentPage : '';
         if (window.location.hash !== newHash) {
           history.replaceState(null, '', newHash || window.location.pathname);
         }
@@ -976,7 +977,7 @@
             return;
           }
 
-          const start = (currentPage - 1) * ITEMS_PER_PAGE;
+          const start = (contributorsCurrentPage - 1) * ITEMS_PER_PAGE;
           const end = Math.min(start + ITEMS_PER_PAGE, filteredContributors.length);
           const pageItems = filteredContributors.slice(start, end);
 
@@ -1013,8 +1014,8 @@
           return;
         }
 
-        const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
-        const end = Math.min(currentPage * ITEMS_PER_PAGE, filteredContributors.length);
+        const start = (contributorsCurrentPage - 1) * ITEMS_PER_PAGE + 1;
+        const end = Math.min(contributorsCurrentPage * ITEMS_PER_PAGE, filteredContributors.length);
         info.textContent =
           'Showing ' + start + '–' + end + ' of ' + filteredContributors.length + ' contributors';
 
@@ -1022,13 +1023,13 @@
         const prevBtn = document.createElement('button');
         prevBtn.className = 'pagination-btn';
         prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        prevBtn.disabled = currentPage === 1;
+        prevBtn.disabled = contributorsCurrentPage === 1;
         prevBtn.setAttribute('aria-label', 'Previous page');
-        prevBtn.addEventListener('click', () => renderPage(currentPage - 1));
+        prevBtn.addEventListener('click', () => renderPage(contributorsCurrentPage - 1));
         container.appendChild(prevBtn);
 
         // Page numbers with ellipsis
-        const pages = generatePageNumbers(currentPage, totalPages);
+        const pages = generatePageNumbers(contributorsCurrentPage, totalPages);
         pages.forEach((p) => {
           if (p === '...') {
             const ellipsis = document.createElement('span');
@@ -1037,10 +1038,10 @@
             container.appendChild(ellipsis);
           } else {
             const btn = document.createElement('button');
-            btn.className = 'pagination-btn' + (p === currentPage ? ' active' : '');
+            btn.className = 'pagination-btn' + (p === contributorsCurrentPage ? ' active' : '');
             btn.textContent = p;
             btn.setAttribute('aria-label', 'Page ' + p);
-            if (p === currentPage) btn.setAttribute('aria-current', 'page');
+            if (p === contributorsCurrentPage) btn.setAttribute('aria-current', 'page');
             btn.addEventListener('click', () => renderPage(p));
             container.appendChild(btn);
           }
@@ -1050,9 +1051,9 @@
         const nextBtn = document.createElement('button');
         nextBtn.className = 'pagination-btn';
         nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.disabled = contributorsCurrentPage === totalPages;
         nextBtn.setAttribute('aria-label', 'Next page');
-        nextBtn.addEventListener('click', () => renderPage(currentPage + 1));
+        nextBtn.addEventListener('click', () => renderPage(contributorsCurrentPage + 1));
         container.appendChild(nextBtn);
       }
 
@@ -1163,6 +1164,7 @@
       async function openModal(contributor, badges) {
         const modal = document.getElementById('contributorModal');
         const content = document.getElementById('modalContent');
+        modal.classList.remove('hidden');
         modal.classList.add('active');
         content.innerHTML =
           '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
@@ -1222,14 +1224,16 @@
       }
 
       // ── Modal close handlers ──
+      function closeContributorModal() {
+        const modal = document.getElementById('contributorModal');
+        modal.classList.remove('active');
+        modal.classList.add('hidden');
+      }
       document
         .getElementById('modalClose')
-        .addEventListener('click', () =>
-          document.getElementById('contributorModal').classList.remove('active')
-        );
+        .addEventListener('click', closeContributorModal);
       document.getElementById('contributorModal').addEventListener('click', (e) => {
-        if (e.target.id === 'contributorModal')
-          document.getElementById('contributorModal').classList.remove('active');
+        if (e.target.id === 'contributorModal') closeContributorModal();
       });
 
       // ── Search, filter, and clear event listeners ──
@@ -1277,7 +1281,10 @@
           await renderContributors(filtered);
         } catch (err) {
           try {
-            const fallbackRes = await fetch('/contributors/contributors.json');
+            const fbController = new AbortController();
+            const fbTimeoutId = setTimeout(() => fbController.abort(), 5000);
+            const fallbackRes = await fetch('/contributors/contributors.json', { signal: fbController.signal });
+            clearTimeout(fbTimeoutId);
             if (!fallbackRes.ok) throw new Error('Fallback JSON not found');
             const fallback = await fallbackRes.json();
             const filtered = fallback.filter((c) => c.type === 'User' || !c.type);
@@ -1299,6 +1306,17 @@
         }
       }
 
+      // ── Bootstrap ──
+      (async function bootstrap() {
+        try { await loadPartial('navbar-placeholder', '/partials/navbar.html'); } catch (e) {}
+        try { await loadPartial('footer-placeholder', '/partials/footer.html'); } catch (e) {}
+        try { await loadContributors(); } catch (e) {
+          const lb = document.getElementById('leaderboard');
+          const g = document.getElementById('contributorsGrid');
+          if (lb) lb.innerHTML = '<p class="error-text">Failed to load page. Please try refreshing.</p>';
+          if (g) g.innerHTML = '<p class="error-text">Failed to load page. Please try refreshing.</p>';
+        }
+      })();
     </script>
   </body>
 </html>

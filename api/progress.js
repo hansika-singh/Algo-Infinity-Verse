@@ -38,7 +38,7 @@ function publicUser(user) {
     name: user.name || "Learner",
     xp: Number(user.xp || user.progress?.xp || 0),
     level: Number(user.level || user.progress?.level || 1),
-    avatar: user.avatar || user.progress?.avatar || "🚀",
+    avatar: user.avatar || user.progress?.avatar || '{"initial":"L","bg":"#7c3aed"}',
     updatedAt: user.progressUpdatedAt || user.updatedAt || user.createdAt || null,
   };
 }
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       name: String(payload.name || "").trim() || doc.data().name,
       xp: Math.max(0, Number(payload.xp) || 0),
       level: Math.max(1, Number(payload.level) || 1),
-      avatar: String(payload.avatar || "🚀").trim() || "🚀",
+      avatar: String(payload.avatar || '{"initial":"L","bg":"#7c3aed"}').trim() || '{"initial":"L","bg":"#7c3aed"}',
       progressUpdatedAt: new Date().toISOString(),
     };
 

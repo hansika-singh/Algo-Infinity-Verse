@@ -18,7 +18,7 @@ class Heap {
     this.steps.push({
       heap: (heap !== null ? heap : this.cloneHeap()).slice(),
       message,
-      highlight: [...highlight]
+      highlight: [...highlight],
     });
   }
 
@@ -53,7 +53,10 @@ class Heap {
       const currentValue = this.heap[current];
       const parentValue = this.heap[parent];
 
-      this.recordStep(`Compare node ${currentValue} with parent ${parentValue}.`, [current, parent]);
+      this.recordStep(`Compare node ${currentValue} with parent ${parentValue}.`, [
+        current,
+        parent,
+      ]);
 
       if (this.compare(parentValue, currentValue)) {
         this.recordStep(`Heap property satisfied for parent ${parentValue}.`, [parent, current]);
@@ -74,7 +77,7 @@ class Heap {
     const length = this.heap.length;
     let current = index;
 
-    while (true) {
+    for (;;) {
       const left = this.leftChildIndex(current);
       const right = this.rightChildIndex(current);
       let target = -1;
@@ -117,14 +120,20 @@ class Heap {
     const values = this.heap.slice();
     this.heap = values;
 
-    this.recordStep('Starting heapify from the provided array.', this.heap.map((_, idx) => idx));
+    this.recordStep(
+      'Starting heapify from the provided array.',
+      this.heap.map((_, idx) => idx)
+    );
 
     for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i -= 1) {
       this.recordStep(`Heapify subtree rooted at index ${i}.`, [i]);
       this.siftDown(i);
     }
 
-    this.recordStep('Heapify complete. Heap property is satisfied.', this.heap.map((_, idx) => idx));
+    this.recordStep(
+      'Heapify complete. Heap property is satisfied.',
+      this.heap.map((_, idx) => idx)
+    );
     return this.steps;
   }
 
@@ -168,7 +177,7 @@ function initHeroTyping() {
   const words = [
     'Trace Min and Max Heap Percolation',
     'Visualize Heapify, Insert, and Extract',
-    'Step Through Swaps and Comparisons'
+    'Step Through Swaps and Comparisons',
   ];
 
   let wordIndex = 0;
@@ -231,6 +240,10 @@ function initHeapVisualizer() {
   let isPlaying = false;
   let playTimer = null;
   let animationSpeed = parseInt(speedSlider.value, 10);
+  let heapType = 'min';
+  let heap = new Heap(heapType);
+  let steps = [];
+  let currentStep = -1;
 
   function syncHeapState() {
     window.heap = heap;
@@ -263,8 +276,8 @@ function initHeapVisualizer() {
     nodeElements.forEach((node) => {
       const index = Number(node.dataset.index);
       positions.set(index, {
-        x: Number(node.style.left.replace('%', '')) / 100 * width,
-        y: Number(node.style.top.replace('%', '')) / 100 * height
+        x: (Number(node.style.left.replace('%', '')) / 100) * width,
+        y: (Number(node.style.top.replace('%', '')) / 100) * height,
       });
     });
 
@@ -306,11 +319,6 @@ function initHeapVisualizer() {
       return;
     }
 
-    const width = nodesLayer.clientWidth || 700;
-    const height = nodesLayer.clientHeight || 520;
-    const totalLevels = Math.ceil(Math.log2(heap.heap.length + 1));
-    const levelHeight = Math.min(140, height / Math.max(totalLevels + 1, 3));
-
     const positions = [];
     const queue = [{ index: 0, x: 50, y: 18 }];
 
@@ -337,7 +345,12 @@ function initHeapVisualizer() {
       node.dataset.index = index;
       node.style.left = `${pos.x}%`;
       node.style.top = `${pos.y}%`;
-      if (steps.length && currentStep >= 0 && steps[currentStep] && steps[currentStep].highlight.includes(index)) {
+      if (
+        steps.length &&
+        currentStep >= 0 &&
+        steps[currentStep] &&
+        steps[currentStep].highlight.includes(index)
+      ) {
         node.classList.add('current');
       }
       node.innerHTML = `<span class="heap-node-label">${heap.heap[index]}</span>`;
@@ -419,7 +432,10 @@ function initHeapVisualizer() {
   function parseInputValues() {
     const raw = arrayInput.value.trim();
     if (!raw) return [];
-    return raw.split(',').map((entry) => Number(entry.trim())).filter((entry) => !Number.isNaN(entry));
+    return raw
+      .split(',')
+      .map((entry) => Number(entry.trim()))
+      .filter((entry) => !Number.isNaN(entry));
   }
 
   function applyHeapify() {

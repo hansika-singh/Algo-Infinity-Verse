@@ -8,11 +8,17 @@ const { addDocument, search } = require('./vectorStore');
 const { generateStatsSection } = require('./compressionEngine/summaryGenerator');
 
 function slugify(str) {
-  return str.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '').replace(/\-\-+/g, '-').replace(/^\-+/, '').replace(/\-+$/, '');
+  return str.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
 }
 
-async function fetchUserSnippets(topic) {
-  // TODO: integrate with user's notes, submissions, flashcards, etc.
+async function fetchUserSnippets(_topic) {
+  // STUB: Personalised snippet integration is not yet implemented.
+  //
+  // This function should query the user's notes, submissions, flashcards,
+  // and mistake logs for the given topic and return structured snippets
+  // that the markdown generator can weave into personalised content.
+  //
+  // Tracking: https://github.com/CodeBreeeze/Algo-Infinity-Verse/issues/new
   return [];
 }
 

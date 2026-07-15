@@ -93,24 +93,24 @@ const CATEGORIES = {
     ],
     templates: {
       javascript: `function solve(nums) {
-  // TODO: implement your solution
+  // Implement your solution here
   return nums;
 }`,
       python: `def solve(nums):
-    # TODO: implement your solution
+    # Implement your solution here
     return nums`,
       cpp: `#include <vector>
 using namespace std;
 
 vector<int> solve(vector<int> nums) {
-    // TODO: implement your solution
+    // Implement your solution here
     return nums;
 }`,
       java: `import java.util.*;
 
 class Solution {
     static int[] solve(int[] nums) {
-        // TODO: implement your solution
+        // Implement your solution here
         return nums;
     }
 }`
@@ -131,22 +131,22 @@ class Solution {
     ],
     templates: {
       javascript: `function solve(s) {
-  // TODO: implement your solution
+  // Implement your solution here
   return s;
 }`,
       python: `def solve(s):
-    # TODO: implement your solution
+    # Implement your solution here
     return s`,
       cpp: `#include <string>
 using namespace std;
 
 string solve(string s) {
-    // TODO: implement your solution
+    // Implement your solution here
     return s;
 }`,
       java: `class Solution {
     static String solve(String s) {
-        // TODO: implement your solution
+        // Implement your solution here
         return s;
     }
 }`
@@ -167,26 +167,26 @@ string solve(string s) {
     templates: {
       javascript: `// Tree is given as a level-order array, null = missing node
 function solve(levelOrder) {
-  // TODO: implement your solution
+  // Implement your solution here
   return levelOrder;
 }`,
       python: `# Tree is given as a level-order list, None = missing node
 def solve(level_order):
-    # TODO: implement your solution
+    # Implement your solution here
     return level_order`,
       cpp: `#include <vector>
 #include <optional>
 using namespace std;
 
 vector<int> solve(vector<int> levelOrder) {
-    // TODO: implement your solution
+    // Implement your solution here
     return levelOrder;
 }`,
       java: `import java.util.*;
 
 class Solution {
     static int[] solve(int[] levelOrder) {
-        // TODO: implement your solution
+        // Implement your solution here
         return levelOrder;
     }
 }`
@@ -207,25 +207,25 @@ class Solution {
     templates: {
       javascript: `// Graph is given as an adjacency list: adj[i] = list of neighbors of node i
 function solve(adj) {
-  // TODO: implement your solution
+  // Implement your solution here
   return adj;
 }`,
       python: `# Graph is given as an adjacency list: adj[i] = list of neighbors of node i
 def solve(adj):
-    # TODO: implement your solution
+    # Implement your solution here
     return adj`,
       cpp: `#include <vector>
 using namespace std;
 
 vector<vector<int>> solve(vector<vector<int>> adj) {
-    // TODO: implement your solution
+    // Implement your solution here
     return adj;
 }`,
       java: `import java.util.*;
 
 class Solution {
     static int[][] solve(int[][] adj) {
-        // TODO: implement your solution
+        // Implement your solution here
         return adj;
     }
 }`

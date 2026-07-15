@@ -1,7 +1,6 @@
 // ====== EDITOR SETUP ======
 const codeEditor = document.getElementById('codeEditor');
 const lineNumbers = document.getElementById('lineNumbers');
-const highlightLine = document.getElementById('highlightLine');
 
 // ====== DEFAULT CODE ======
 const defaultCode = `// Simple code to trace

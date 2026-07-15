@@ -5,6 +5,7 @@ import { VCSFactory } from '../vcs/VCSFactory.js';
 import { batchStore, redisAvailable, redisReady, redisClient } from './queue.js';
 
 let auditWorker = null;
+let reportWorker = null;
 
 // The Redis availability probe in queue.js runs asynchronously, so `redisAvailable`
 // is still `false` at module-evaluation time. Reading it synchronously here would
@@ -24,44 +25,48 @@ async function startWorker() {
     maxRetriesPerRequest: null,
   });
 
-  auditWorker = new Worker('bulk-audit-queue', async (job) => {
-    const { batchId, repoUrl } = job.data;
+  auditWorker = new Worker(
+    'bulk-audit-queue',
+    async (job) => {
+      const { repoUrl } = job.data;
 
-    let parsedRepoUrl;
-    try {
-      parsedRepoUrl = new URL(repoUrl);
-    } catch {
-      throw new Error("Invalid GitHub URL");
-    }
-
-    if (
-      !['http:', 'https:'].includes(parsedRepoUrl.protocol) ||
-      !['github.com', 'www.github.com'].includes(parsedRepoUrl.hostname.toLowerCase())
-    ) {
-      throw new Error("Invalid GitHub URL");
-    }
-
-    try {
-      const provider = VCSFactory.getProvider(repoUrl);
-      const workflows = await provider.getNormalizedWorkflows();
-
-      let bestScore = 0;
-      for (const wf of workflows) {
-        const result = analyzeWorkflow(wf.commands);
-        if (result.score > bestScore) bestScore = result.score;
+      let parsedRepoUrl;
+      try {
+        parsedRepoUrl = new URL(repoUrl);
+      } catch {
+        throw new Error('Invalid GitHub URL');
       }
 
-      return { repoUrl, score: bestScore };
-    } catch (error) {
-      console.error(`Job ${job.id} failed for repo ${repoUrl}:`, error.message);
-      throw error;
-    }
-  }, {
-    connection: conn,
-    concurrency: 5,
-  });
+      if (
+        !['http:', 'https:'].includes(parsedRepoUrl.protocol) ||
+        !['github.com', 'www.github.com'].includes(parsedRepoUrl.hostname.toLowerCase())
+      ) {
+        throw new Error('Invalid GitHub URL');
+      }
 
-  auditWorker.on('error', (err) => {
+      try {
+        const provider = VCSFactory.getProvider(repoUrl);
+        const workflows = await provider.getNormalizedWorkflows();
+
+        let bestScore = 0;
+        for (const wf of workflows) {
+          const result = analyzeWorkflow(wf.commands);
+          if (result.score > bestScore) bestScore = result.score;
+        }
+
+        return { repoUrl, score: bestScore };
+      } catch (error) {
+        console.error(`Job ${job.id} failed for repo ${repoUrl}:`, error.message);
+        throw error;
+      }
+    },
+    {
+      connection: conn,
+      concurrency: 5,
+    }
+  );
+
+  auditWorker.on('error', (_err) => {
     void 0;
   });
 
@@ -100,16 +105,59 @@ async function startWorker() {
     }
   });
 
+  reportWorker = new Worker(
+    'report-queue',
+    async (job) => {
+      const { jobId, session, type } = job.data;
+      const { generateReportBuffer } = await import('../reports/reportGenerator.js');
+      try {
+        const buffer = await generateReportBuffer(session, type);
+        return buffer.toString('base64');
+      } catch (error) {
+        console.error(`Report generation failed for job ${jobId}:`, error.message);
+        throw error;
+      }
+    },
+    {
+      connection: conn,
+      concurrency: 2, // Puppeteer is heavy, limit concurrency
+    }
+  );
+
+  reportWorker.on('error', (_err) => {
+    void 0;
+  });
+
+  reportWorker.on('completed', async (job, result) => {
+    const { jobId } = job.data;
+    if (redisClient) {
+      await redisClient.hset(`report:${jobId}`, {
+        status: 'completed',
+        data: result,
+      });
+    }
+  });
+
+  reportWorker.on('failed', async (job, err) => {
+    const { jobId } = job.data;
+    if (redisClient) {
+      await redisClient.hset(`report:${jobId}`, {
+        status: 'failed',
+        error: err.message,
+      });
+    }
+  });
+
   void 0;
-  return auditWorker;
+  return { auditWorker, reportWorker };
 }
 
 // Kick off worker startup as a module side effect. Errors are swallowed so a
 // Redis hiccup at boot doesn't crash the importing process; jobs fall back to
 // the in-process path in queue.js.
-const workerReady = startWorker().catch((err) => {
+const workerReady = startWorker().catch((_err) => {
   void 0;
   return null;
 });
 
-export { auditWorker, startWorker, workerReady };
+export { auditWorker, reportWorker, startWorker, workerReady };

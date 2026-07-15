@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn WebGL | Algo Infinity Verse</title>
+  <meta name="description" content="Master low-level graphics programming, GPU pipeline control, shaders, and hardware-accelerated rendering configurations." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="webgl-learning.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function() {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') { document.documentElement.classList.add('light-mode'); }
+        else { document.documentElement.classList.remove('light-mode'); }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+
+<body data-page="webgl-learning">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+  <div id="navbar-placeholder"></div>
+
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Harness Hardware Acceleration via</span>
+        <span class="main-title gradient-text">WebGL</span>
+        <span class="subtitle">Low-Level GPU Graphics Programming</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_webgl" id="typingTextWebGL"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary"><i class="fas fa-terminal"></i> Boot Pipeline</a>
+        <a href="#sandbox" class="btn btn-secondary"><i class="fas fa-flask"></i> Shader Editor</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="webgl-learning-section" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🎮</span> Learn WebGL</h2>
+      <p class="section-subtitle">Command the GPU directly. Learn rendering pipelines, custom shaders, coordinate matrices, and hardware vectors.</p>
+
+      <div class="webgl-progress-bar" role="progressbar">
+        <span class="webgl-progress-text"><span id="progressCount">0</span> / 4 milestones completed</span>
+        <div class="webgl-progress-track"><div class="webgl-progress-fill" id="progressFill"></div></div>
+        <span class="webgl-progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div id="sandbox" class="webgl-sandbox-card">
+        <div class="sandbox-header">
+          <h4><i class="fas fa-cube"></i> GPU Shader Matrix Playground</h4>
+          <span class="fps-badge">FPS: <span id="fpsCount">60</span></span>
+        </div>
+        <div class="sandbox-body">
+          <div class="canvas-wrap">
+            <canvas id="webglCanvas"></canvas>
+          </div>
+          <div class="editor-wrap">
+            <div class="editor-tabs">
+              <button class="tab-btn active" data-target="fragment">Fragment Shader (Color)</button>
+            </div>
+            <textarea id="shaderEditor" spellcheck="false">void main() {
+  gl_FragColor = vec4(0.1, 0.6, 0.9, 1.0);
+}</textarea>
+            <div class="editor-controls">
+              <button id="compileBtn" class="btn btn-primary btn-sm"><i class="fas fa-sync"></i> Compile Shader</button>
+              <button id="animateBtn" class="btn btn-secondary btn-sm"><i class="fas fa-bolt"></i> Wave Effect</button>
+            </div>
+            <div id="compilerConsole" class="compiler-console output-clean">GPU Pipeline: Status Operational</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="webgl-layout">
+        <aside class="webgl-sidebar">
+          <div class="webgl-sidebar-title">Syllabus</div>
+          <ul class="webgl-sidebar-nav" id="topicNav">
+            <li><a href="#introduction" class="webgl-nav-link"><span class="nav-icon">📊</span> Rendering Pipeline</a></li>
+            <li><a href="#shaders"      class="webgl-nav-link"><span class="nav-icon">⚡</span> Shader Architectures</a></li>
+            <li><a href="#buffers"      class="webgl-nav-link"><span class="nav-icon">📦</span> Vertex Buffers</a></li>
+            <li><a href="#lighting"     class="webgl-nav-link"><span class="nav-icon">💡</span> Fragment Lighting</a></li>
+          </ul>
+        </aside>
+
+        <main class="webgl-main-content">
+          <article class="webgl-lesson" id="introduction" data-topic="1">
+            <div class="webgl-lesson-header">
+              <span class="webgl-lesson-number">01</span>
+              <h3>The Rasterization Rendering Pipeline</h3>
+            </div>
+            <p>
+              WebGL acts as an interface parsing client vectors into flat screen pixels via a sequence known as the rendering pipeline. Vertex transformations evaluate geometric constraints before fragment pipelines solve final per-pixel raster colors.
+            </p>
+            <div class="webgl-quiz-card" data-quiz-id="w1">
+              <h5>Checkpoint Quiz:</h5>
+              <p>Which pipeline engine structural subsystem is uniquely responsible for converting vector triangles into screen space raster coordinate pixels?</p>
+              <div class="quiz-options">
+                <label><input type="radio" name="w1" value="A"> A) The Rasterizer Unit</label>
+                <label><input type="radio" name="w1" value="B"> B) The Array Buffer instance</label>
+                <label><input type="radio" name="w1" value="C"> C) The Framebuffer Registry</label>
+              </div>
+              <button class="btn btn-quiz-check">Verify Answer</button>
+              <div class="quiz-feedback hidden"></div>
+            </div>
+          </article>
+
+          <article class="webgl-lesson" id="shaders" data-topic="2">
+            <div class="webgl-lesson-header">
+              <span class="webgl-lesson-number">02</span>
+              <h3>Shader Program Structures</h3>
+            </div>
+            <p>
+              WebGL programs require explicit compilation of two structural procedures written in GLSL (OpenGL Shading Language): 
+              The <strong>Vertex Shader</strong> controls coordinate positioning metrics, while the <strong>Fragment Shader</strong> sets pixel color codes.
+            </p>
+          </article>
+        </main>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./webgl-learning.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

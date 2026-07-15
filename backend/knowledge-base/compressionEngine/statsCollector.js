@@ -5,13 +5,19 @@
 
 /**
  * Mock function to simulate fetching user submissions for a topic.
+ *
+ * STUB: Real data-source integration is not yet implemented.
+ * Currently returns dummy submissions for demonstration purposes.
+ * When ready, this should query from Firestore, Postgres (Supabase),
+ * or the local users.json store depending on the active data layer.
+ *
+ * Tracking: https://github.com/CodeBreeeze/Algo-Infinity-Verse/issues/new
+ *
  * @param {string} userId - ID of the user.
  * @param {string} topic - Topic name.
  * @returns {Array<Object>} Array of submission objects.
  */
 function fetchUserSubmissions(userId, topic) {
-  // TODO: Replace with real data source (e.g., DB query).
-  // Returning an array of dummy submissions for demonstration.
   return Array.from({ length: 10 }, (_, i) => ({
     id: `sub-${i}`,
     topic,

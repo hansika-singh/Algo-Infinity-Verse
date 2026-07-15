@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAssembly Linear Memory Visualizer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="wasm-memory-simulator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>WebAssembly Linear Memory & JS Interop Visualizer</h1>
+            <p>Understand how JavaScript and WebAssembly communicate by copying strings and arrays into a shared Linear Memory buffer (WebAssembly.Memory).</p>
+        </header>
+
+        <main class="simulator-layout">
+            <div class="top-panels">
+                <!-- JS Environment -->
+                <section class="env-panel js-panel">
+                    <h2><i class="fa-brands fa-js"></i> JavaScript Environment</h2>
+                    <div class="control-group">
+                        <label>Input String to send to Wasm:</label>
+                        <input type="text" id="js-input" value="Hello Wasm!" maxlength="15">
+                    </div>
+                    <button id="btn-send" class="primary-btn">Pass to Wasm (Pointer + Length)</button>
+                    
+                    <div class="log-area" id="js-logs">
+                        <div class="log-entry">> JS Context Ready.</div>
+                    </div>
+                </section>
+
+                <!-- Transfer Arrow -->
+                <div class="transfer-arrow">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                </div>
+
+                <!-- Wasm Environment -->
+                <section class="env-panel wasm-panel">
+                    <h2><i class="fa-brands fa-rust"></i> WebAssembly Module</h2>
+                    <div class="wasm-code-box">
+                        <pre><code>
+// Mock C/Rust Wasm Export
+void processString(int ptr, int len) {
+    for(int i = 0; i < len; i++) {
+        // Read byte from Linear Memory
+        char c = memory[ptr + i];
+        print(c);
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="log-area" id="wasm-logs">
+                        <div class="log-entry" style="color: #6ee7b7">> Wasm Instance Ready.</div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="memory-panel">
+                <h2><i class="fa-solid fa-memory"></i> Shared Linear Memory (WebAssembly.Memory / Uint8Array)</h2>
+                <p class="memory-desc">JavaScript must encode the string into UTF-8 bytes and copy them into this contiguous array. It then passes the <strong>Starting Index (Pointer)</strong> and <strong>Length</strong> to the Wasm function.</p>
+                
+                <div class="memory-grid" id="memory-grid">
+                    <!-- Bytes generated via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="wasm-memory-simulator.js"></script>
+</body>
+</html>

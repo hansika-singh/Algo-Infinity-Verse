@@ -51,3 +51,10 @@ Set the environment variables the server needs (`SESSION_SECRET`, `PORT`,
 `HOST`, `REDIS_URL` for the worker, `FIREBASE_*` for Firestore). Redis must be
 reachable for the bulk-audit worker to run; without it the app falls back to
 in-process audit handling.
+
+Also set `NODE_ENV=production`. Session/refresh cookies are only marked
+`Secure` when either `NODE_ENV=production` or the proxy forwards
+`x-forwarded-proto: https`; not every host in front of a persistent Node
+process forwards that header correctly, and getting it wrong would let
+cookies be sent over plain HTTP. Setting `NODE_ENV=production` makes the
+cookie flag correct regardless of the proxy's behavior.

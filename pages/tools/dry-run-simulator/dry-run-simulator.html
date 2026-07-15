@@ -25,6 +25,307 @@
         } catch (e) {}
       })();
     </script>
+
+</head>
+  <body data-page="dry-run-simulator">
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero -->
+    <section class="hero visualizer-hero drs-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">See Algorithms Think</span>
+          <span class="main-title drs-gradient">Dry Run Simulator</span>
+          <span class="subtitle">Step-by-step. Line by line. Pointer by pointer.</span>
+        </h1>
+        <p class="section-subtitle">Watch Binary Search, Bubble Sort, BFS, and DFS execute step by step — with live pointer movements, line highlighting, and variable state tracking.</p>
+        <div class="hero-buttons">
+          <a href="#simulator" class="btn btn-primary"><i class="fas fa-play"></i> Start Simulating</a>
+          <a href="/pages/visualizers/sorting-visualizer/sorting-visualizer.html" class="btn btn-secondary"><i class="fas fa-chart-bar"></i> Sorting Visualizer</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulator -->
+
+<section id="simulator" class="section">
+  <div class="container">
+
+    <!-- Algorithm Selector -->
+    <div class="drs-algo-selector">
+
+      <button class="drs-algo-btn active" data-algo="binarySearch">
+        <i class="fas fa-search"></i> Binary Search
+      </button>
+
+      <button class="drs-algo-btn" data-algo="bubbleSort">
+        <i class="fas fa-sort"></i> Bubble Sort
+      </button>
+
+      <button class="drs-algo-btn" data-algo="mergeSort">
+        <i class="fas fa-code"></i> Merge Sort
+      </button>
+
+      <button class="drs-algo-btn" data-algo="bfs">
+        <i class="fas fa-project-diagram"></i> BFS
+      </button>
+
+      <button class="drs-algo-btn" data-algo="dfs">
+        <i class="fas fa-code-branch"></i> DFS
+      </button>
+
+    </div>
+
+    <div class="visualizer-container">
+
+      <!-- LEFT SIDE -->
+      <div class="visualizer-main-panel">
+
+        <!-- Visual State -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-eye"></i>
+            Visual State
+          </div>
+
+          <div
+            id="drsVisual"
+            class="drs-visual-area"
+          ></div>
+
+          <div
+            id="drsExplanation"
+            class="drs-explanation"
+          >
+            Select an algorithm and press Play to begin.
+          </div>
+
+        </div>
+
+        <!-- Code Trace -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-code"></i>
+            Code Trace
+          </div>
+
+          <div
+            id="drsCode"
+            class="drs-code-panel"
+            aria-live="polite"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="visualizer-sidebar">
+
+        <!-- Custom Input -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-keyboard"></i>
+            Custom Input
+          </div>
+
+          <input
+            type="text"
+            id="drsArrayInput"
+            class="custom-input"
+            placeholder="Example: 5,2,8,1"
+            aria-label="Array input (comma-separated numbers)"
+          >
+
+          <input
+            type="number"
+            id="drsTargetInput"
+            class="custom-input"
+            placeholder="Target value"
+            style="margin-top:10px;"
+            aria-label="Target value for binary search"
+          >
+
+          <input
+            type="text"
+            id="drsGraphInput"
+            class="custom-input"
+            placeholder="0:1,2;1:3,4;2:5,6"
+            style="margin-top:10px;"
+            aria-label="Graph adjacency list (format: node:neighbors)"
+          >
+
+          <button
+            id="drsGenerateBtn"
+            class="btn btn-primary"
+            style="margin-top:10px;width:100%;"
+          >
+            Generate Dry Run
+          </button>
+        </div>
+
+        <!-- Controls -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-sliders-h"></i>
+            Controls
+          </div>
+
+          <div class="control-group">
+
+            <label>
+              Speed
+              <span id="speedLabel">Normal</span>
+            </label>
+
+            <input
+              type="range"
+              id="drsSpeed"
+              class="slider-custom"
+              min="1"
+              max="5"
+              value="3"
+            >
+
+          </div>
+
+          <div class="drs-step-counter">
+            Step
+            <span id="drsStepNum">0</span>
+            /
+            <span id="drsTotalSteps">0</span>
+          </div>
+
+          <div class="btn-control-row">
+
+            <button
+              id="drsPrevBtn"
+              class="btn btn-secondary btn-control"
+              aria-label="Previous step"
+            >
+              <i class="fas fa-step-backward"></i>
+            </button>
+
+            <button
+              id="drsPlayBtn"
+              class="btn btn-primary btn-control"
+              aria-label="Play or pause simulation"
+            >
+              <i class="fas fa-play"></i>
+            </button>
+
+            <button
+              id="drsNextBtn"
+              class="btn btn-secondary btn-control"
+              aria-label="Next step"
+            >
+              <i class="fas fa-step-forward"></i>
+            </button>
+
+          </div>
+
+          <div class="btn-control-row">
+
+            <button
+              id="drsResetBtn"
+              class="btn btn-secondary btn-control"
+            >
+              <i class="fas fa-undo"></i>
+              Reset
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- Variable State -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-table"></i>
+            Variable State
+          </div>
+
+          <div
+            id="drsVarTable"
+            class="drs-var-table"
+          >
+            <p class="drs-var-empty">
+              Variables will appear here during simulation.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Complexity -->
+        <div class="visualizer-card">
+
+          <div class="drs-panel-title">
+            <i class="fas fa-clock"></i>
+            Complexity
+          </div>
+
+          <div class="complexity-grid">
+
+            <div class="complexity-card-mini">
+              <h5>Time</h5>
+              <p id="drsTimeComp">—</p>
+            </div>
+
+            <div class="complexity-card-mini">
+              <h5>Space</h5>
+              <p id="drsSpaceComp">—</p>
+            </div>
+
+          </div>
+
+          <p
+            id="drsAlgoDesc"
+            class="drs-algo-desc"
+          ></p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="./dry-run-simulator.js"></script>
+  
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+
 </head>
   <body data-page="dry-run-simulator">
     <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
@@ -319,3 +620,4 @@
     loadPartial('footer-placeholder', '/partials/footer.html');
   </script>
 </body>
+

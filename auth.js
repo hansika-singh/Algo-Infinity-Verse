@@ -56,13 +56,13 @@
           if (!element) return;
 
           if (element.tagName === 'INPUT') element.value = '';
-          else element.textContent = 'Learner';
+          element.textContent = 'Learner';
         }
       );
 
       document
         .querySelectorAll('[data-auth-user-name]')
-        .forEach((el) => (el.textContent = 'Learner'));
+        .forEach((el) => (el.textContent = 'Hello Learner'));
 
       document.querySelectorAll('[data-auth-user-email]').forEach((el) => (el.textContent = ''));
 
@@ -84,9 +84,11 @@
       }
     );
 
+    const displayName = user?.name || 'Guest';
+
     document
       .querySelectorAll('[data-auth-user-name]')
-      .forEach((el) => (el.textContent = user.name));
+      .forEach((el) => (el.textContent = `Hello ${displayName}`));
 
     document
       .querySelectorAll('[data-auth-user-email]')
@@ -110,67 +112,35 @@
 
   function renderAuthNav() {
     function inject() {
-      document.querySelectorAll('.nav-links').forEach((navLinks) => {
-        let slot = navLinks.querySelector('.auth-nav-item');
+      const header = document.getElementById('settingsProfileHeader');
+      if (!header) return;
 
-        if (!slot) {
-          slot = document.createElement('li');
-          slot.className = 'auth-nav-item';
-          navLinks.appendChild(slot);
-        }
-
-        if (currentSession?.authenticated) {
-          slot.innerHTML = '';
-
-          const chip = document.createElement('span');
-          chip.className = 'nav-user-chip';
-          chip.title = currentSession.user.email;
-          const nameEl = document.createElement('span');
-          nameEl.textContent = currentSession.user.name;
-          if (currentSession.user.avatar) {
-            const avatarEl = document.createElement('img');
-            avatarEl.className = 'nav-avatar';
-            avatarEl.alt = '';
-            avatarEl.setAttribute('data-auth-avatar', '');
-            avatarEl.src = currentSession.user.avatar;
-            chip.append(avatarEl, nameEl);
-          } else {
-            const iconEl = document.createElement('i');
-            iconEl.className = 'fas fa-user-circle';
-            chip.append(iconEl, nameEl);
-          }
-          chip.querySelector('span').textContent = currentSession.user.name;
-
-          const btn = document.createElement('button');
-          btn.className = 'nav-auth-link';
-          btn.type = 'button';
-          btn.setAttribute('data-auth-logout', '');
-          btn.innerHTML = `<i class="fas fa-right-from-bracket"></i> Logout`;
-
-          slot.append(chip, btn);
-        } else {
-          slot.innerHTML = `
-            <a class="nav-auth-link" href="${authUrl('/login')}">
-              <i class="fas fa-right-to-bracket"></i>
-              Login
-            </a>
-            <button class="nav-auth-link nav-auth-guest" data-auth-guest type="button">
-              <i class="fas fa-user-astronaut"></i>
-              Continue as Guest
-            </button>
-            <a class="nav-auth-link nav-auth-primary" href="${authUrl('/signup')}">
-              Sign Up
-            </a>
-          `;
-        }
-      });
+      if (currentSession?.authenticated) {
+        header.style.display = '';
+        header.innerHTML = `
+          <div class="settings-profile-info">
+            <div class="settings-avatar-wrapper">
+              <img class="settings-avatar" src="" alt="" data-auth-avatar style="display: none;" />
+              <i class="fas fa-user-circle settings-avatar-fallback"></i>
+            </div>
+            <div class="settings-user-details">
+              <div class="settings-user-name" data-auth-user-name>Hello Learner</div>
+              <div class="settings-user-email" data-auth-user-email></div>
+            </div>
+          </div>
+        `;
+        updateProfileNames(currentSession.user);
+      } else {
+        header.style.display = 'none';
+        header.innerHTML = '';
+      }
     }
 
-    if (document.querySelector('.nav-links')) {
+    if (document.getElementById('settingsProfileHeader')) {
       inject();
     } else {
       const observer = new MutationObserver(() => {
-        if (document.querySelector('.nav-links')) {
+        if (document.getElementById('settingsProfileHeader')) {
           observer.disconnect();
           inject();
         }
@@ -370,8 +340,11 @@
       input.style.borderColor = message ? '#ef4444' : 'rgba(255, 255, 255, 0.1)';
     }
 
+    const touched = new Set();
+
     form.querySelectorAll('input').forEach((input) => {
       input.addEventListener('input', () => {
+        if (input.value) touched.add(input.name);
         if (validators[input.name]) {
           showError(input, validators[input.name](input.value));
         }
@@ -388,7 +361,7 @@
       });
 
       input.addEventListener('blur', () => {
-        if (validators[input.name]) {
+        if (touched.has(input.name) && validators[input.name]) {
           showError(input, validators[input.name](input.value));
         }
       });
@@ -402,6 +375,7 @@
       const dataObj = Object.fromEntries(formData.entries());
 
       form.querySelectorAll('input').forEach((input) => {
+        touched.add(input.name);
         if (validators[input.name]) {
           const errorMsg = validators[input.name](input.value);
           showError(input, errorMsg);
@@ -526,10 +500,21 @@
         const accessToken = redirectResult?.accessToken;
 
         if (accessToken) {
+          // Bridge Supabase OAuth -> app session. This app requires CSRF for
+          // state-changing requests, so we must fetch a CSRF token first.
+          const csrfResponse = await fetch('/api/csrf-token', {
+            credentials: 'include',
+          });
+          if (!csrfResponse.ok) throw new Error('Failed to initialize secure session.');
+          const { csrfToken } = await csrfResponse.json();
+
           const response = await fetch('/api/auth/supabase', {
             method: 'POST',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'x-csrf-token': csrfToken,
+            },
             body: JSON.stringify({ accessToken }),
           });
           if (response.ok) {
@@ -541,7 +526,12 @@
             renderAuthNav();
             updateProfileNames(currentSession.user);
           } else {
-            const errorBody = await response.text().catch(() => 'Unknown error');
+            let errorBody = 'Unknown error';
+            try {
+              errorBody = await response.json();
+            } catch {
+              errorBody = await response.text().catch(() => 'Unknown error');
+            }
             console.error('[auth] Supabase bridge failed:', response.status, errorBody);
           }
         } else {

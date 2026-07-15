@@ -23,7 +23,7 @@ export function initKeyboardShortcuts() {
     }
     if (e.altKey && e.key === 't') {
       e.preventDefault();
-      window.location.href = '#topics';
+      window.location.href = '/pages/learning/learning-topics.html';
     }
     if (e.altKey && e.key === 'p') {
       e.preventDefault();

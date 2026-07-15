@@ -22,6 +22,7 @@ export class BinarySearchTree {
         }
 
         let current = this.root;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if (value === current.value) return { node: current, isNew: false }; // No duplicates for simplicity
             

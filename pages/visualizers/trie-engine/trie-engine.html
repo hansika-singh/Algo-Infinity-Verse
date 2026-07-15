@@ -1,104 +1,182 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trie (Prefix Tree) Engine | Algo Infinity Verse</title>
-    <link rel="stylesheet" href="trie-engine.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="trie-engine.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <script src="trie-engine.js" defer></script>
-  <script src="/theme.js"></script>
-</head>
-<body data-page="trie-engine">
+    <script src="/theme.js"></script>
+  </head>
+  <body data-page="trie-engine">
     <div class="glass-panel top-bar">
-        <div class="header-info">
-            <h2>Advanced Strings: Trie (Prefix Tree)</h2>
-            <p class="status" role="status" aria-live="polite" id="main-status">Status: Awaiting Input | Nodes: 1</p>
-        </div>
-        <div class="controls">
-            <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled><i class="fas fa-step-forward"></i> Step</button>
-            <button type="button" id="btn-play" class="btn primary" aria-label="Play Algorithm" disabled><i class="fas fa-play"></i> Auto Run</button>
-            <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Trie"><i class="fas fa-undo"></i> Reset</button>
-        </div>
+      <div class="header-info">
+        <h2>Advanced Strings: Trie (Prefix Tree)</h2>
+        <p class="status" role="status" aria-live="polite" id="main-status">
+          Status: Awaiting Input | Nodes: 1
+        </p>
+      </div>
+      <div class="controls">
+        <button type="button" id="btn-step" class="btn outline" aria-label="Step Forward" disabled>
+          <i class="fas fa-step-forward"></i> Step
+        </button>
+        <button
+          type="button"
+          id="btn-play"
+          class="btn primary"
+          aria-label="Play Algorithm"
+          disabled
+        >
+          <i class="fas fa-play"></i> Auto Run
+        </button>
+        <button type="button" id="btn-reset" class="btn danger" aria-label="Reset Trie">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
     </div>
 
     <div class="workspace">
-        <aside class="side-panel left-panel glass-panel">
-            <div class="panel-section">
-                <h3><i class="fas fa-keyboard"></i> Operations</h3>
-                
-                <div class="param-grid" style="margin-bottom: 1.5rem;">
-                    <label for="input-insert">Insert Word</label>
-                    <input type="text" id="input-insert" class="glass-input" placeholder="e.g. apple" maxlength="10">
-                    <button type="button" id="btn-insert" class="btn outline" style="grid-column: 1 / 3; justify-content: center;"><i class="fas fa-plus"></i> Insert</button>
-                </div>
+      <aside class="side-panel left-panel glass-panel">
+        <div class="panel-section">
+          <h3><i class="fas fa-keyboard"></i> Operations</h3>
 
-                <div class="param-grid">
-                    <label for="input-search">Search Pattern</label>
-                    <input type="text" id="input-search" class="glass-input" placeholder="e.g. app" maxlength="10">
-                    <div class="search-actions" style="grid-column: 1 / 3; display: flex; gap: 0.5rem;">
-                        <button type="button" id="btn-search-word" class="btn outline" style="flex: 1; justify-content: center;"><i class="fas fa-search"></i> Exact Word</button>
-                        <button type="button" id="btn-search-prefix" class="btn outline" style="flex: 1; justify-content: center;"><i class="fas fa-project-diagram"></i> Prefix</button>
-                    </div>
-                </div>
-            </div>
+          <div class="param-grid" style="margin-bottom: 1.5rem">
+            <label for="input-insert">Insert Word</label>
+            <input
+              type="text"
+              id="input-insert"
+              class="glass-input"
+              placeholder="e.g. apple"
+              maxlength="10"
+            />
+            <button
+              type="button"
+              id="btn-insert"
+              class="btn outline"
+              style="grid-column: 1 / 3; justify-content: center"
+            >
+              <i class="fas fa-plus"></i> Insert
+            </button>
+          </div>
 
-            <div class="panel-section" style="flex: 1;">
-                <h3><i class="fas fa-code"></i> Execution Trace</h3>
-                
-                <div class="pseudocode" id="pseudo-insert">
-                    <div id="ins-1" class="code-line">1. curr = root</div>
-                    <div id="ins-2" class="code-line">2. For each char in word:</div>
-                    <div id="ins-3" class="code-line indent">3. If char not in curr.children:</div>
-                    <div id="ins-4" class="code-line indent-2">curr.children[char] = new Node()</div>
-                    <div id="ins-5" class="code-line indent">4. curr = curr.children[char]</div>
-                    <div id="ins-6" class="code-line">5. curr.isEndOfWord = true</div>
-                </div>
+          <div class="param-grid">
+            <label for="input-search">Search Pattern</label>
+            <input
+              type="text"
+              id="input-search"
+              class="glass-input"
+              placeholder="e.g. app"
+              maxlength="10"
+            />
+            <div class="search-actions" style="grid-column: 1 / 3; display: flex; gap: 0.5rem">
+              <button
+                type="button"
+                id="btn-search-word"
+                class="btn outline"
+                style="flex: 1; justify-content: center"
+              >
+                <i class="fas fa-search"></i> Exact Word
+              </button>
+              <button
+                type="button"
+                id="btn-search-prefix"
+                class="btn outline"
+                style="flex: 1; justify-content: center"
+              >
+                <i class="fas fa-project-diagram"></i> Prefix
+              </button>
+            </div>
+          </div>
+        </div>
 
-                <div class="pseudocode hidden" id="pseudo-search">
-                    <div id="sch-1" class="code-line">1. curr = root</div>
-                    <div id="sch-2" class="code-line">2. For each char in target:</div>
-                    <div id="sch-3" class="code-line indent">3. If char not in curr.children:</div>
-                    <div id="sch-4" class="code-line indent-2">Return False (Not Found)</div>
-                    <div id="sch-5" class="code-line indent">4. curr = curr.children[char]</div>
-                    <div id="sch-6" class="code-line">5. Return isPrefix ? True : curr.isEndOfWord</div>
-                </div>
-            </div>
-        </aside>
+        <div class="panel-section" style="flex: 1">
+          <h3><i class="fas fa-code"></i> Execution Trace</h3>
 
-        <main class="canvas-container">
-            <canvas id="viz-canvas" role="img" aria-label="Trie Data Structure Visualization"></canvas>
-            
-            <div id="live-trace-overlay" class="glass-panel math-panel hidden" aria-live="polite">
-                <h4 id="trace-title">Target Word</h4>
-                <div id="trace-word" class="equation">...</div>
-            </div>
-        </main>
+          <div class="pseudocode" id="pseudo-insert">
+            <div id="ins-1" class="code-line">1. curr = root</div>
+            <div id="ins-2" class="code-line">2. For each char in word:</div>
+            <div id="ins-3" class="code-line indent">3. If char not in curr.children:</div>
+            <div id="ins-4" class="code-line indent-2">curr.children[char] = new Node()</div>
+            <div id="ins-5" class="code-line indent">4. curr = curr.children[char]</div>
+            <div id="ins-6" class="code-line">5. curr.isEndOfWord = true</div>
+          </div>
 
-        <aside class="side-panel right-panel glass-panel">
-            <div class="panel-section">
-                <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
-                <p class="edu-text">A <strong>Trie (Prefix Tree)</strong> is an N-ary tree used for efficient string matching. Paths are shared between words with common prefixes to save space.</p>
-                <ul class="edu-list">
-                    <li><span class="badge root">Root</span> Empty starting node.</li>
-                    <li><span class="badge link">Edge</span> Represents a character.</li>
-                    <li><span class="badge end">End Node</span> Marks a valid dictionary word termination.</li>
-                </ul>
-            </div>
-            <div class="panel-section">
-                <h3><i class="fas fa-microchip"></i> Complexity</h3>
-                <div class="complexity-stat">
-                    <span class="label">Time (Insert/Search)</span>
-                    <span class="value">O(L)</span>
-                </div>
-                <div class="complexity-stat">
-                    <span class="label">Space</span>
-                    <span class="value">O(N × L)</span>
-                </div>
-                <p class="edu-text sub-text" style="margin-top: 1rem;"><strong>L</strong> is the length of the word, and <strong>N</strong> is the number of words. Lookups are independent of the total dictionary size.</p>
-            </div>
-        </aside>
+          <div class="pseudocode hidden" id="pseudo-search">
+            <div id="sch-1" class="code-line">1. curr = root</div>
+            <div id="sch-2" class="code-line">2. For each char in target:</div>
+            <div id="sch-3" class="code-line indent">3. If char not in curr.children:</div>
+            <div id="sch-4" class="code-line indent-2">Return False (Not Found)</div>
+            <div id="sch-5" class="code-line indent">4. curr = curr.children[char]</div>
+            <div id="sch-6" class="code-line">5. Return isPrefix ? True : curr.isEndOfWord</div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="canvas-container">
+        <canvas
+          id="viz-canvas"
+          role="img"
+          aria-label="Trie Data Structure Visualization"
+          aria-describedby="trie-a11y-summary"
+        ></canvas>
+        <div
+          id="trie-a11y-summary"
+          aria-live="polite"
+          style="
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+          "
+        >
+          Trie is currently empty.
+        </div>
+
+        <div id="live-trace-overlay" class="glass-panel math-panel hidden" aria-live="polite">
+          <h4 id="trace-title">Target Word</h4>
+          <div id="trace-word" class="equation">...</div>
+        </div>
+      </main>
+
+      <aside class="side-panel right-panel glass-panel">
+        <div class="panel-section">
+          <h3><i class="fas fa-graduation-cap"></i> Theory</h3>
+          <p class="edu-text">
+            A <strong>Trie (Prefix Tree)</strong> is an N-ary tree used for efficient string
+            matching. Paths are shared between words with common prefixes to save space.
+          </p>
+          <ul class="edu-list">
+            <li><span class="badge root">Root</span> Empty starting node.</li>
+            <li><span class="badge link">Edge</span> Represents a character.</li>
+            <li>
+              <span class="badge end">End Node</span> Marks a valid dictionary word termination.
+            </li>
+          </ul>
+        </div>
+        <div class="panel-section">
+          <h3><i class="fas fa-microchip"></i> Complexity</h3>
+          <div class="complexity-stat">
+            <span class="label">Time (Insert/Search)</span>
+            <span class="value">O(L)</span>
+          </div>
+          <div class="complexity-stat">
+            <span class="label">Space</span>
+            <span class="value">O(N × L)</span>
+          </div>
+          <p class="edu-text sub-text" style="margin-top: 1rem">
+            <strong>L</strong> is the length of the word, and <strong>N</strong> is the number of
+            words. Lookups are independent of the total dictionary size.
+          </p>
+        </div>
+      </aside>
     </div>
-</body>
+  </body>
 </html>
-

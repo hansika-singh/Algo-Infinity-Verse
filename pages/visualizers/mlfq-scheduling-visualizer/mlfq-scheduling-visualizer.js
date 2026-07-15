@@ -7,7 +7,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  import { runSimulation } from '../../common/engine/simulator.js';
   const el = {
     queueCount: document.getElementById('queueCount'),
     agingThreshold: document.getElementById('agingThreshold'),
@@ -67,8 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================
   // Utilities
   // =========================
-  const uid = () => Math.random().toString(16).slice(2);
-
   function clampInt(n, min, max) {
     const x = Math.floor(Number(n));
     if (Number.isNaN(x)) return min;
@@ -268,15 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================
   // MLFQ Simulation Engine
   // =========================
+  function buildProcessesById(processes) {
+    const map = new Map();
+    processes.forEach((p) => map.set(p.id, p));
+    return map;
+  }
+
   function cloneProcesses(processes) {
     return processes.map((p) => ({ ...p }));
   }
 
-  // The simulation engine has been moved to a shared module. This function is deprecated and removed.
-  // Use runSimulation from '../../common/engine/simulator.js' instead.
-
-  // NOTE: The previous implementation remains here in the file; keep the surrounding braces intact.
-
+  function generateScheduleTrace({ processes, queueCount, quantumPerQueue, agingThreshold }) {
     const procs = cloneProcesses(processes).map((p) => {
       return {
         id: p.id,
@@ -308,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let quantumLeft = 0;
 
     let t = 0;
-    const totalRemaining = () => procs.reduce((acc, p) => acc + (p.remainingTime > 0 ? 1 : 0), 0);
 
     const trace = [];
 
@@ -342,7 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // 2) Aging: increment age for all waiting processes then promote if threshold
       // We define "waiting" as any process currently in queues and not running.
       // Since cpuRunning may have just been selected, we still exclude it.
-      let promotedSomething = false;
       for (let level = 0; level < queueCount; level++) {
         const q = queues[level];
         for (let i = 0; i < q.length; i++) {
@@ -372,8 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let level = 1; level < queueCount; level++) {
         const promoteList = toPromoteByLevel[level];
         if (!promoteList.length) continue;
-
-        promotedSomething = true;
 
         // Remove promoted processes from the original level queue (preserve remaining order).
         const promoteSet = new Set(promoteList);
@@ -500,11 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
       t += 1;
     }
 
-    // Cleanup helper flags
-    trace.forEach((ev) => {
-      // nothing
-    });
-
     return trace;
   }
 
@@ -573,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (ev.type === 'demote') {
-      const fromQ = ev.fromQueue;
       const toQ = ev.toQueue;
 
       const p = state.runtime.processesById.get(pid);
@@ -663,14 +652,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // log only meaningful events
     if (ev.type === 'arrive') {
-      logLine(`Process ${ev.pid} arrived → enqueued to Q${ev.queueLevel}` , ev.t);
+      logLine(`Process ${ev.pid} arrived → enqueued to Q${ev.queueLevel}`, ev.t);
     } else if (ev.type === 'dispatch') {
       logLine(`CPU picked ${ev.pid} from Q${ev.fromQueue} (quantum=${ev.quantum})`, ev.t);
     } else if (ev.type === 'run_slice') {
       const extra = ev.completed ? 'completed' : ev.quantumEnd ? 'quantum expired' : '';
-      logLine(`CPU ran ${ev.processId} for ${ev.duration} tick(s) from Q${ev.fromQueue}${extra ? ` (${extra})` : ''}`, ev.t);
+      logLine(
+        `CPU ran ${ev.processId} for ${ev.duration} tick(s) from Q${ev.fromQueue}${extra ? ` (${extra})` : ''}`,
+        ev.t
+      );
     } else if (ev.type === 'demote') {
-      logLine(`Demotion: ${ev.pid} moved Q${ev.fromQueue} → Q${ev.toQueue} after quantum end`, ev.t);
+      logLine(
+        `Demotion: ${ev.pid} moved Q${ev.fromQueue} → Q${ev.toQueue} after quantum end`,
+        ev.t
+      );
     } else if (ev.type === 'promote') {
       logLine(`Aging Promotion: ${ev.pid} moved Q${ev.fromQueue} → Q${ev.toQueue}`, ev.t);
     } else if (ev.type === 'complete') {
@@ -738,7 +733,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Rule 2: All queue indices within bounds.
     for (const ev of trace) {
       if (ev.type === 'arrive') {
-        if (ev.queueLevel < 0 || ev.queueLevel >= qCount) issues.push('Arrival enqueue queue out of bounds.');
+        if (ev.queueLevel < 0 || ev.queueLevel >= qCount)
+          issues.push('Arrival enqueue queue out of bounds.');
       }
       if (ev.type === 'promote') {
         if (ev.fromQueue < 0 || ev.fromQueue >= qCount || ev.toQueue < 0 || ev.toQueue >= qCount) {
@@ -772,7 +768,8 @@ document.addEventListener('DOMContentLoaded', () => {
     el.accuracyList.innerHTML = '';
     if (issues.length === 0) {
       const li = document.createElement('li');
-      li.textContent = 'All queue transitions and completion events are consistent with the generated MLFQ rules.';
+      li.textContent =
+        'All queue transitions and completion events are consistent with the generated MLFQ rules.';
       li.style.color = 'rgba(34,197,94,0.95)';
       el.accuracyList.appendChild(li);
     } else {
@@ -802,7 +799,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderProcessesList() {
     if (!state.processes.length) {
-      el.processList.innerHTML = '<div class="empty-state">No processes yet. Add a process or load an example.</div>';
+      el.processList.innerHTML =
+        '<div class="empty-state">No processes yet. Add a process or load an example.</div>';
       return;
     }
 
@@ -838,12 +836,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialQueueLevel = clampInt(el.pInitialLevel.value, 0, state.queueCount - 1);
 
     if (!id) {
-      console.warn("Alert:", 'Process ID is required.');
+      console.warn('Alert:', 'Process ID is required.');
       return;
     }
 
     if (state.processes.some((p) => p.id === id)) {
-      console.warn("Alert:", 'Process ID must be unique.');
+      console.warn('Alert:', 'Process ID must be unique.');
       return;
     }
 
@@ -892,7 +890,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // validate processes
     if (!state.processes.length) {
-      console.warn("Alert:", 'Add at least one process (or load an example) before generating the schedule.');
+      console.warn(
+        'Alert:',
+        'Add at least one process (or load an example) before generating the schedule.'
+      );
       return;
     }
 
@@ -931,7 +932,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRuntimeUI();
 
     // log header
-    logLine(`Schedule generated. Qs=${state.queueCount}, quantum=${JSON.stringify(state.quantumPerQueue)}, agingThreshold=${state.agingThreshold}` , 0);
+    logLine(
+      `Schedule generated. Qs=${state.queueCount}, quantum=${JSON.stringify(state.quantumPerQueue)}, agingThreshold=${state.agingThreshold}`,
+      0
+    );
 
     // render initial state
     el.tickBadge.textContent = 'Tick: 0';
@@ -1023,4 +1027,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-

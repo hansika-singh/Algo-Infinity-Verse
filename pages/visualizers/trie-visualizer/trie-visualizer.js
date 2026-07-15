@@ -1,21 +1,397 @@
-document.addEventListener('DOMContentLoaded', function () { initTrieVisualizer(); });
-function initTyping() { let el = document.getElementById('typingTextVisualizer'); if (!el) return; let words = ['Insert words into Trie', 'Search words step-by-step', 'Visualize node creation', 'Learn prefix trees interactively']; let index = 0; let charIndex = 0; let deleting = false; let reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; if (reduced) { el.textContent = words[0]; return; } function tick() { let current = words[index]; if (deleting) { charIndex--; el.textContent = current.slice(0, charIndex); } else { charIndex++; el.textContent = current.slice(0, charIndex); } let delay = deleting ? 45 : 85; if (!deleting && charIndex === current.length) { deleting = true; delay = 1400; } else if (deleting && charIndex === 0) { deleting = false; index = (index + 1) % words.length; delay = 250; } setTimeout(tick, delay); } tick(); }
-function TrieNode(char, id) { this.children = {}; this.isEnd = false; this.char = char; this.id = id; this.x = 0; this.y = 0; }
-function Trie() { this.root = new TrieNode('', 'root'); this._id = 0; this.steps = []; }
-Trie.prototype.nextId = function () { this._id += 1; return 'node-' + this._id; };
-Trie.prototype.cloneNode = function (node) { if (!node) return null; let clone = { children: {}, isEnd: node.isEnd, char: node.char, id: node.id, x: node.x, y: node.y }; for (let key in node.children) { if (Object.prototype.hasOwnProperty.call(node.children, key)) clone.children[key] = this.cloneNode(node.children[key]); } return clone; };
-Trie.prototype.cloneTrie = function () { let nextTrie = new Trie(); nextTrie.root = this.cloneNode(this.root); nextTrie._id = this._id; return nextTrie; };
-Trie.prototype.recordStep = function (message, explanation, type, activePath) { this.steps.push({ trie: this.cloneTrie(), message: message, explanation: explanation, type: type || 'info', activePath: (activePath || []).slice() }); };
-Trie.prototype.insert = function (word) { this.steps = []; word = (word || '').trim().toLowerCase(); if (!word) { this.recordStep('Please enter a word.', 'Word input cannot be empty.', 'failed', []); return; } let current = this.root; let path = [this.root.id]; this.recordStep('Starting insertion for "' + word + '"', 'Root reached. Begin walking character by character.', 'info', path); for (let i = 0; i < word.length; i++) { let ch = word[i]; let existing = current.children[ch]; if (!existing) { let newNode = new TrieNode(ch, this.nextId()); current.children[ch] = newNode; path.push(newNode.id); this.recordStep("Created node '" + ch + "'", "Node '" + ch + "' did not exist, so we created it.", 'created', path); current = newNode; } else { path.push(existing.id); this.recordStep("Node already exists for '" + ch + "'", "Traversing to child '" + ch + "'.", 'info', path); current = existing; } } current.isEnd = true; this.recordStep('Mark terminal node', 'Reached the last character and marked the node as the end of the word.', 'terminal', path); this.recordStep('Word inserted successfully', 'Insertion completed without adding extra operations.', 'info', path); };
-Trie.prototype.search = function (word) { this.steps = []; word = (word || '').trim().toLowerCase(); if (!word) { this.recordStep('Please enter a word.', 'Word input cannot be empty.', 'failed', []); return false; } let current = this.root; let path = [this.root.id]; this.recordStep('Starting search for "' + word + '"', 'Begin traversal from root.', 'info', path); for (let i = 0; i < word.length; i++) { let ch = word[i]; this.recordStep("Searching character '" + ch + "'", "Looking for child '" + ch + "' from the current node.", 'info', path); if (!current.children[ch]) { this.recordStep("Search failed at character '" + ch + "'", "No child node exists for '" + ch + "'. The word is not present.", 'failed', path); return false; } current = current.children[ch]; path.push(current.id); this.recordStep("Traversing to child '" + ch + "'", "Moved to the next node in the word path.", 'current', path); } if (current.isEnd) { this.recordStep('Reached terminal node', 'Word Found', 'terminal', path); return true; } this.recordStep('Reached non-terminal node', 'Search failed because the path exists but no word ends here.', 'failed', path); return false; };
-Trie.prototype.layout = function () { let levels = []; let queue = [{ node: this.root, depth: 0 }]; while (queue.length) { let item = queue.shift(); if (!levels[item.depth]) levels[item.depth] = []; levels[item.depth].push(item.node); let keys = Object.keys(item.node.children).sort(); for (let i = 0; i < keys.length; i++) queue.push({ node: item.node.children[keys[i]], depth: item.depth + 1 }); } let width = Math.max(900, (document.getElementById('trieTreeArea') || {}).clientWidth || 900); let levelGap = 110; let topPadding = 70; for (let d = 0; d < levels.length; d++) { let nodes = levels[d]; let spacing = width / (nodes.length + 1); for (let j = 0; j < nodes.length; j++) { nodes[j].x = spacing * (j + 1); nodes[j].y = topPadding + d * levelGap; } } };
-Trie.prototype.render = function (snapshot) { let area = document.getElementById('trieTreeArea'); let svg = document.getElementById('trieLinesSvg'); if (!area || !svg || !snapshot || !snapshot.root) return; area.innerHTML = ''; svg.innerHTML = ''; snapshot.layout(); function collectLevels(node, depth, levels) { if (!levels[depth]) levels[depth] = []; levels[depth].push(node); let keys = Object.keys(node.children).sort(); for (let i = 0; i < keys.length; i++) collectLevels(node.children[keys[i]], depth + 1, levels); } let levels = []; collectLevels(snapshot.root, 0, levels); function line(x1, y1, x2, y2, cls) { let l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2); l.setAttribute('class', cls); svg.appendChild(l); } function drawNode(node, depth) { let keys = Object.keys(node.children).sort(); if (depth < levels.length - 1) { for (let i = 0; i < keys.length; i++) { let child = node.children[keys[i]]; line(node.x, node.y + 30, child.x, child.y - 30, 'trie-edge' + (snapshot.activePath.indexOf(node.id) > -1 && snapshot.activePath.indexOf(child.id) > -1 ? ' current' : '')); drawNode(child, depth + 1); } } } drawNode(snapshot.root, 0); function renderNode(node) { let el = document.createElement('div'); let cls = 'trie-node'; if (node.id === 'root') cls += ' root'; if (node.isEnd) cls += ' terminal'; if (snapshot.activePath.indexOf(node.id) > -1) { if (snapshot.type === 'created') cls += ' created'; else if (snapshot.type === 'failed') cls += ' failed'; else if (snapshot.type === 'terminal') cls += ' terminal'; else cls += ' current'; } el.className = cls; el.id = node.id; el.style.left = node.x + 'px'; el.style.top = node.y + 'px'; let charEl = document.createElement('span'); charEl.className = 'node-char'; charEl.textContent = node.char || 'root'; el.appendChild(charEl); if (node.isEnd && node.id !== 'root') { let endMarker = document.createElement('span'); endMarker.className = 'end-marker'; endMarker.setAttribute('aria-hidden', 'true'); el.appendChild(endMarker); } area.appendChild(el); let ks = Object.keys(node.children).sort(); for (let i = 0; i < ks.length; i++) renderNode(node.children[ks[i]]); } renderNode(snapshot.root); svg.setAttribute('width', area.scrollWidth); svg.setAttribute('height', area.scrollHeight); svg.setAttribute('viewBox', '0 0 ' + area.scrollWidth + ' ' + area.scrollHeight); };
-function initTrieVisualizer() { initTyping(); let trie = new Trie(); let currentStep = 0; let playing = false; let timer = null; let input = document.getElementById('wordInput'); let statusBox = document.getElementById('statusBox'); let explanationBox = document.getElementById('explanationBox'); let counter = document.getElementById('stepCounter'); let playPauseBtn = document.getElementById('playPauseBtn');
- if (statusBox) {
-   statusBox.setAttribute('role', 'status');
-   statusBox.setAttribute('aria-live', 'polite');
-   statusBox.setAttribute('aria-atomic', 'true');
- }
- if (explanationBox) explanationBox.setAttribute('aria-live', 'polite');
- if (counter) counter.setAttribute('aria-live', 'polite');
- function renderStep() { if (!trie.steps.length) return; let step = trie.steps[currentStep]; trie.render(step.trie); statusBox.textContent = step.message; explanationBox.textContent = step.explanation; counter.textContent = 'Step ' + (currentStep + 1) + ' / ' + trie.steps.length; playPauseBtn.innerHTML = playing ? '<i class="fas fa-pause"></i> Pause' : '<i class="fas fa-play"></i> Play'; } function loadSteps() { currentStep = 0; renderStep(); } function stopPlayback() { playing = false; clearInterval(timer); timer = null; playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play'; } function play() { if (!trie.steps.length || playing) return; playing = true; playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause'; timer = setInterval(function () { if (currentStep >= trie.steps.length - 1) { stopPlayback(); return; } currentStep += 1; renderStep(); }, 850); } function pause() { stopPlayback(); } function runInsert() { stopPlayback(); trie.insert(input.value); loadSteps(); } function runSearch() { stopPlayback(); trie.search(input.value); loadSteps(); } function resetTrie() { stopPlayback(); trie = new Trie(); trie.recordStep('Trie reset', 'Empty Trie ready for a new operation.', 'info', ['root']); loadSteps(); } document.getElementById('insertBtn').addEventListener('click', runInsert); document.getElementById('searchBtn').addEventListener('click', runSearch); document.getElementById('resetBtn').addEventListener('click', resetTrie); document.getElementById('previousBtn').addEventListener('click', function () { stopPlayback(); if (currentStep > 0) { currentStep -= 1; renderStep(); } }); document.getElementById('nextBtn').addEventListener('click', function () { stopPlayback(); if (currentStep < trie.steps.length - 1) { currentStep += 1; renderStep(); } }); playPauseBtn.addEventListener('click', function () { if (playing) pause(); else play(); }); if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') runInsert(); }); window.addEventListener('resize', function () { if (trie.steps.length) renderStep(); }); resetTrie(); }
+document.addEventListener('DOMContentLoaded', function () {
+  initTrieVisualizer();
+});
+function initTyping() {
+  let el = document.getElementById('typingTextVisualizer');
+  if (!el) return;
+  let words = [
+    'Insert words into Trie',
+    'Search words step-by-step',
+    'Visualize node creation',
+    'Learn prefix trees interactively',
+  ];
+  let index = 0;
+  let charIndex = 0;
+  let deleting = false;
+  let reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) {
+    el.textContent = words[0];
+    return;
+  }
+  function tick() {
+    let current = words[index];
+    if (deleting) {
+      charIndex--;
+      el.textContent = current.slice(0, charIndex);
+    } else {
+      charIndex++;
+      el.textContent = current.slice(0, charIndex);
+    }
+    let delay = deleting ? 45 : 85;
+    if (!deleting && charIndex === current.length) {
+      deleting = true;
+      delay = 1400;
+    } else if (deleting && charIndex === 0) {
+      deleting = false;
+      index = (index + 1) % words.length;
+      delay = 250;
+    }
+    setTimeout(tick, delay);
+  }
+  tick();
+}
+function TrieNode(char, id) {
+  this.children = {};
+  this.isEnd = false;
+  this.char = char;
+  this.id = id;
+  this.x = 0;
+  this.y = 0;
+}
+function Trie() {
+  this.root = new TrieNode('', 'root');
+  this._id = 0;
+  this.steps = [];
+}
+Trie.prototype.nextId = function () {
+  this._id += 1;
+  return 'node-' + this._id;
+};
+Trie.prototype.cloneNode = function (node) {
+  if (!node) return null;
+  let clone = {
+    children: {},
+    isEnd: node.isEnd,
+    char: node.char,
+    id: node.id,
+    x: node.x,
+    y: node.y,
+  };
+  for (let key in node.children) {
+    if (Object.prototype.hasOwnProperty.call(node.children, key))
+      clone.children[key] = this.cloneNode(node.children[key]);
+  }
+  return clone;
+};
+Trie.prototype.cloneTrie = function () {
+  let nextTrie = new Trie();
+  nextTrie.root = this.cloneNode(this.root);
+  nextTrie._id = this._id;
+  return nextTrie;
+};
+Trie.prototype.recordStep = function (message, explanation, type, activePath) {
+  this.steps.push({
+    trie: this.cloneTrie(),
+    message: message,
+    explanation: explanation,
+    type: type || 'info',
+    activePath: (activePath || []).slice(),
+  });
+};
+Trie.prototype.insert = function (word) {
+  this.steps = [];
+  word = (word || '').trim().toLowerCase();
+  if (!word) {
+    this.recordStep('Please enter a word.', 'Word input cannot be empty.', 'failed', []);
+    return;
+  }
+  let current = this.root;
+  let path = [this.root.id];
+  this.recordStep(
+    'Starting insertion for "' + word + '"',
+    'Root reached. Begin walking character by character.',
+    'info',
+    path
+  );
+  for (let i = 0; i < word.length; i++) {
+    let ch = word[i];
+    let existing = current.children[ch];
+    if (!existing) {
+      let newNode = new TrieNode(ch, this.nextId());
+      current.children[ch] = newNode;
+      path.push(newNode.id);
+      this.recordStep(
+        "Created node '" + ch + "'",
+        "Node '" + ch + "' did not exist, so we created it.",
+        'created',
+        path
+      );
+      current = newNode;
+    } else {
+      path.push(existing.id);
+      this.recordStep(
+        "Node already exists for '" + ch + "'",
+        "Traversing to child '" + ch + "'.",
+        'info',
+        path
+      );
+      current = existing;
+    }
+  }
+  current.isEnd = true;
+  this.recordStep(
+    'Mark terminal node',
+    'Reached the last character and marked the node as the end of the word.',
+    'terminal',
+    path
+  );
+  this.recordStep(
+    'Word inserted successfully',
+    'Insertion completed without adding extra operations.',
+    'info',
+    path
+  );
+};
+Trie.prototype.search = function (word) {
+  this.steps = [];
+  word = (word || '').trim().toLowerCase();
+  if (!word) {
+    this.recordStep('Please enter a word.', 'Word input cannot be empty.', 'failed', []);
+    return false;
+  }
+  let current = this.root;
+  let path = [this.root.id];
+  this.recordStep('Starting search for "' + word + '"', 'Begin traversal from root.', 'info', path);
+  for (let i = 0; i < word.length; i++) {
+    let ch = word[i];
+    this.recordStep(
+      "Searching character '" + ch + "'",
+      "Looking for child '" + ch + "' from the current node.",
+      'info',
+      path
+    );
+    if (!current.children[ch]) {
+      this.recordStep(
+        "Search failed at character '" + ch + "'",
+        "No child node exists for '" + ch + "'. The word is not present.",
+        'failed',
+        path
+      );
+      return false;
+    }
+    current = current.children[ch];
+    path.push(current.id);
+    this.recordStep(
+      "Traversing to child '" + ch + "'",
+      'Moved to the next node in the word path.',
+      'current',
+      path
+    );
+  }
+  if (current.isEnd) {
+    this.recordStep('Reached terminal node', 'Word Found', 'terminal', path);
+    return true;
+  }
+  this.recordStep(
+    'Reached non-terminal node',
+    'Search failed because the path exists but no word ends here.',
+    'failed',
+    path
+  );
+  return false;
+};
+Trie.prototype.layout = function () {
+  let levels = [];
+  let queue = [{ node: this.root, depth: 0 }];
+  while (queue.length) {
+    let item = queue.shift();
+    if (!levels[item.depth]) levels[item.depth] = [];
+    levels[item.depth].push(item.node);
+    let keys = Object.keys(item.node.children).sort();
+    for (let i = 0; i < keys.length; i++)
+      queue.push({ node: item.node.children[keys[i]], depth: item.depth + 1 });
+  }
+  let width = Math.max(900, (document.getElementById('trieTreeArea') || {}).clientWidth || 900);
+  let levelGap = 110;
+  let topPadding = 70;
+  for (let d = 0; d < levels.length; d++) {
+    let nodes = levels[d];
+    let spacing = width / (nodes.length + 1);
+    for (let j = 0; j < nodes.length; j++) {
+      nodes[j].x = spacing * (j + 1);
+      nodes[j].y = topPadding + d * levelGap;
+    }
+  }
+};
+Trie.prototype.render = function (snapshot) {
+  let area = document.getElementById('trieTreeArea');
+  let svg = document.getElementById('trieLinesSvg');
+  if (!area || !svg || !snapshot || !snapshot.root) return;
+  snapshot.activePath = snapshot.activePath || [];
+  area.innerHTML = '';
+  svg.innerHTML = '';
+  snapshot.layout();
+  function collectLevels(node, depth, levels) {
+    if (!levels[depth]) levels[depth] = [];
+    levels[depth].push(node);
+    let keys = Object.keys(node.children).sort();
+    for (let i = 0; i < keys.length; i++) collectLevels(node.children[keys[i]], depth + 1, levels);
+  }
+  let levels = [];
+  collectLevels(snapshot.root, 0, levels);
+  function line(x1, y1, x2, y2, cls) {
+    let l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', x1);
+    l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2);
+    l.setAttribute('y2', y2);
+    l.setAttribute('class', cls);
+    svg.appendChild(l);
+  }
+  function drawNode(node, depth) {
+    let keys = Object.keys(node.children).sort();
+    if (depth < levels.length - 1) {
+      for (let i = 0; i < keys.length; i++) {
+        let child = node.children[keys[i]];
+        line(
+          node.x,
+          node.y + 30,
+          child.x,
+          child.y - 30,
+          'trie-edge' +
+            (snapshot.activePath.indexOf(node.id) > -1 && snapshot.activePath.indexOf(child.id) > -1
+              ? ' current'
+              : '')
+        );
+        drawNode(child, depth + 1);
+      }
+    }
+  }
+  drawNode(snapshot.root, 0);
+  function renderNode(node) {
+    let el = document.createElement('div');
+    let cls = 'trie-node';
+    if (node.id === 'root') cls += ' root';
+    if (node.isEnd) cls += ' terminal';
+    if (snapshot.activePath.indexOf(node.id) > -1) {
+      if (snapshot.type === 'created') cls += ' created';
+      else if (snapshot.type === 'failed') cls += ' failed';
+      else if (snapshot.type === 'terminal') cls += ' terminal';
+      else cls += ' current';
+    }
+    el.className = cls;
+    el.id = node.id;
+    el.style.left = node.x + 'px';
+    el.style.top = node.y + 'px';
+    let charEl = document.createElement('span');
+    charEl.className = 'node-char';
+    charEl.textContent = node.char || 'root';
+    el.appendChild(charEl);
+    if (node.isEnd && node.id !== 'root') {
+      let endMarker = document.createElement('span');
+      endMarker.className = 'end-marker';
+      endMarker.setAttribute('aria-hidden', 'true');
+      el.appendChild(endMarker);
+    }
+    area.appendChild(el);
+    let ks = Object.keys(node.children).sort();
+    for (let i = 0; i < ks.length; i++) renderNode(node.children[ks[i]]);
+  }
+  renderNode(snapshot.root);
+  svg.setAttribute('width', area.scrollWidth);
+  svg.setAttribute('height', area.scrollHeight);
+  svg.setAttribute('viewBox', '0 0 ' + area.scrollWidth + ' ' + area.scrollHeight);
+};
+function initTrieVisualizer() {
+  initTyping();
+  let trie = new Trie();
+  let currentStep = 0;
+  let playing = false;
+  let timer = null;
+  let input = document.getElementById('wordInput');
+  let statusBox = document.getElementById('statusBox');
+  let explanationBox = document.getElementById('explanationBox');
+  let counter = document.getElementById('stepCounter');
+  let playPauseBtn = document.getElementById('playPauseBtn');
+  if (statusBox) {
+    statusBox.setAttribute('role', 'status');
+    statusBox.setAttribute('aria-live', 'polite');
+    statusBox.setAttribute('aria-atomic', 'true');
+  }
+  if (explanationBox) explanationBox.setAttribute('aria-live', 'polite');
+  if (counter) counter.setAttribute('aria-live', 'polite');
+  function renderStep() {
+    if (!trie.steps.length) return;
+    let step = trie.steps[currentStep];
+    step.trie.activePath = step.activePath || [];
+    step.trie.type = step.type;
+    trie.render(step.trie);
+    statusBox.textContent = step.message;
+    explanationBox.textContent = step.explanation;
+    counter.textContent = 'Step ' + (currentStep + 1) + ' / ' + trie.steps.length;
+    playPauseBtn.innerHTML = playing
+      ? '<i class="fas fa-pause"></i> Pause'
+      : '<i class="fas fa-play"></i> Play';
+  }
+  function loadSteps() {
+    currentStep = 0;
+    renderStep();
+  }
+  function stopPlayback() {
+    playing = false;
+    clearInterval(timer);
+    timer = null;
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+  }
+  function play() {
+    if (!trie.steps.length || playing) return;
+    playing = true;
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+    timer = setInterval(function () {
+      if (currentStep >= trie.steps.length - 1) {
+        stopPlayback();
+        return;
+      }
+      currentStep += 1;
+      renderStep();
+    }, 850);
+  }
+  function pause() {
+    stopPlayback();
+  }
+  function runInsert() {
+    stopPlayback();
+    trie.insert(input.value);
+    loadSteps();
+  }
+  function runSearch() {
+    stopPlayback();
+    trie.search(input.value);
+    loadSteps();
+  }
+  function resetTrie() {
+    stopPlayback();
+    trie = new Trie();
+    trie.recordStep('Trie reset', 'Empty Trie ready for a new operation.', 'info', ['root']);
+    loadSteps();
+  }
+  document.getElementById('insertBtn').addEventListener('click', runInsert);
+  document.getElementById('searchBtn').addEventListener('click', runSearch);
+  document.getElementById('resetBtn').addEventListener('click', resetTrie);
+  document.getElementById('previousBtn').addEventListener('click', function () {
+    stopPlayback();
+    if (currentStep > 0) {
+      currentStep -= 1;
+      renderStep();
+    }
+  });
+  document.getElementById('nextBtn').addEventListener('click', function () {
+    stopPlayback();
+    if (currentStep < trie.steps.length - 1) {
+      currentStep += 1;
+      renderStep();
+    }
+  });
+  playPauseBtn.addEventListener('click', function () {
+    if (playing) pause();
+    else play();
+  });
+  if (input)
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') runInsert();
+    });
+  window.addEventListener('resize', function () {
+    if (trie.steps.length) renderStep();
+  });
+  resetTrie();
+}

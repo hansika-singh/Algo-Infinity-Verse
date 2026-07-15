@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rsync Protocol Simulator - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="rsync-simulator.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <span>Algo Infinity Verse</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../dsa.html">DSA Modules</a></li>
+            <li><a href="../visualizers.html" class="active">Visualizers</a></li>
+            <li><a href="../../contribute.html">Contribute</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+
+    <div class="simulator-container">
+        <header class="simulator-header">
+            <h1><i class="fas fa-sync-alt"></i> Rsync Delta Transfer Simulator</h1>
+            <p>Rolling Checksum Algorithm and Delta Compression</p>
+        </header>
+
+        <div class="simulator-layout">
+            <div class="files-panel">
+                <div class="file-container">
+                    <h3><i class="fas fa-desktop"></i> Remote File (Target)</h3>
+                    <div class="blocks-grid" id="remoteBlocks"></div>
+                    <div class="checksum-table">
+                        <h4>Block Hashes (Sent to Local)</h4>
+                        <div id="remoteHashes" class="hash-list"></div>
+                    </div>
+                </div>
+
+                <div class="file-container">
+                    <h3><i class="fas fa-laptop"></i> Local File (Source)</h3>
+                    <p class="subtitle">Finding matches using sliding window</p>
+                    <div class="blocks-stream" id="localStream"></div>
+                    <div class="window-info">
+                        <span>Window Checksum: </span><strong id="rollingChecksum">--</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sync-panel">
+                <h2>Sync Process</h2>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="btnStart"><i class="fas fa-play"></i> Start Sync</button>
+                    <button class="btn" id="btnPause" disabled><i class="fas fa-pause"></i> Pause</button>
+                    <button class="btn" id="btnReset"><i class="fas fa-undo"></i> Reset</button>
+                </div>
+                
+                <div class="network-report">
+                    <h3><i class="fas fa-network-wired"></i> Delta Stream (Network)</h3>
+                    <div id="deltaStream" class="delta-list"></div>
+                </div>
+                
+                <div class="stats-box">
+                    <div class="stat">
+                        <span class="label">Full Transfer:</span>
+                        <span class="value" id="fullBytes">0 B</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Rsync Transfer:</span>
+                        <span class="value highlight" id="rsyncBytes">0 B</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Bandwidth Saved:</span>
+                        <span class="value" id="savedBytes">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../scripts/theme.js"></script>
+    <script src="rsync-simulator.js"></script>
+</body>
+</html>

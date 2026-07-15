@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Signaling & ICE Simulator | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="webrtc-simulator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>WebRTC Signaling & ICE Simulator</h1>
+            <p>Visualize Peer-to-Peer connections, STUN UDP hole-punching, and TURN server relays behind NAT firewalls.</p>
+        </header>
+
+        <main class="simulator-layout">
+            <aside class="controls-panel">
+                <div class="control-group">
+                    <label class="toggle-container">
+                        <input type="checkbox" id="nat-toggle">
+                        <span class="toggle-slider"></span>
+                        Enable Strict Symmetric NAT
+                    </label>
+                    <small>Forces STUN failure and triggers TURN server relay fallback.</small>
+                </div>
+                
+                <div class="button-group">
+                    <button id="btn-connect" class="primary-btn"><i class="fa-solid fa-phone-volume"></i> Start Connection</button>
+                    <button id="btn-reset" class="secondary-btn"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                </div>
+
+                <div class="logs-container">
+                    <h3>Connection Logs</h3>
+                    <div id="logs-area" class="logs-area"></div>
+                </div>
+            </aside>
+
+            <section class="visualization-panel">
+                <div class="network-canvas" id="network-canvas">
+                    <!-- Top Infrastructure -->
+                    <div class="node server-node" id="node-signaling" style="top: 15%; left: 20%;">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                        <span>Signaling Server</span>
+                    </div>
+                    <div class="node server-node" id="node-stun" style="top: 15%; left: 50%;">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                        <span>STUN Server</span>
+                    </div>
+                    <div class="node server-node" id="node-turn" style="top: 15%; left: 80%;">
+                        <i class="fa-solid fa-server"></i>
+                        <span>TURN Server</span>
+                    </div>
+
+                    <!-- Peers -->
+                    <div class="node peer-node" id="node-peer-a" style="top: 75%; left: 15%;">
+                        <i class="fa-solid fa-laptop"></i>
+                        <span>Peer A</span>
+                    </div>
+                    
+                    <div class="nat-wall" id="nat-a" style="left: 30%;">NAT A</div>
+
+                    <div class="nat-wall" id="nat-b" style="left: 70%;">NAT B</div>
+
+                    <div class="node peer-node" id="node-peer-b" style="top: 75%; left: 85%;">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                        <span>Peer B</span>
+                    </div>
+                    
+                    <!-- SVG lines for static topology (optional, we use animated packets instead) -->
+                    <svg id="connection-lines" width="100%" height="100%" style="position: absolute; top:0; left:0; pointer-events:none; z-index: 1;">
+                        <line id="p2p-line" x1="15%" y1="75%" x2="85%" y2="75%" stroke="#4facfe" stroke-width="4" stroke-dasharray="10" stroke-linecap="round" style="display: none; animation: dash 1s linear infinite;" />
+                        <polyline id="turn-line" points="15%,75% 80%,15% 85%,75%" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="10" stroke-linecap="round" style="display: none; animation: dash 1s linear infinite;" />
+                    </svg>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="webrtc-simulator.js"></script>
+</body>
+</html>

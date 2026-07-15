@@ -11,28 +11,28 @@ const authCode = fs.readFileSync(path.resolve(__dirname, '../auth.js'), 'utf-8')
 describe('Auth Helper Functions', () => {
   let originalDocument;
   let originalWindow;
-  
+
   beforeEach(() => {
     // Setup minimal DOM for auth.js to parse
     originalDocument = global.document;
     originalWindow = global.window;
-    
+
     global.document = {
       documentElement: {
         classList: {
           add: jest.fn(),
-          remove: jest.fn()
-        }
+          remove: jest.fn(),
+        },
       },
       addEventListener: jest.fn(),
       querySelector: jest.fn(() => null),
       querySelectorAll: jest.fn(() => []),
       getElementById: jest.fn(() => null),
       body: {
-        appendChild: jest.fn()
-      }
+        appendChild: jest.fn(),
+      },
     };
-    
+
     global.window = {
       addEventListener: jest.fn(),
       location: {
@@ -40,25 +40,28 @@ describe('Auth Helper Functions', () => {
         pathname: '/login',
         search: '',
         hash: '',
-        href: ''
+        href: '',
       },
       __supabaseClient: {
         isConfigured: jest.fn(() => true),
-        getSessionToken: jest.fn().mockResolvedValue(null)
-      }
+        getSessionToken: jest.fn().mockResolvedValue(null),
+      },
     };
 
     global.location = global.window.location;
     global.confirm = jest.fn(() => true);
     global.fetch = jest.fn();
-    
+
     // Evaluate auth.js in the global scope
     // This will attach the global functions like passwordStrength
-    eval(authCode + `
+    eval(
+      authCode +
+        `
       if (typeof passwordStrength === 'function') global.passwordStrength = passwordStrength;
       if (typeof wireChangePassword === 'function') global.wireChangePassword = wireChangePassword;
       if (typeof wireDeactivateAccount === 'function') global.wireDeactivateAccount = wireDeactivateAccount;
-    `);
+    `
+    );
   });
 
   afterEach(() => {
@@ -72,7 +75,7 @@ describe('Auth Helper Functions', () => {
     test('calculates correct strength score', () => {
       // The function should be available in global scope now
       expect(typeof global.passwordStrength).toBe('function');
-      
+
       expect(global.passwordStrength('short')).toBe(1); // 1 point for lowercase
       expect(global.passwordStrength('password')).toBe(2); // 8+ chars and lowercase
       expect(global.passwordStrength('Password123')).toBe(4); // 8+ chars, lowercase, uppercase, number
@@ -82,16 +85,17 @@ describe('Auth Helper Functions', () => {
 
   describe('DOM Wiring Functions', () => {
     test('wireChangePassword sets up toggle handlers', () => {
+      let clickHandler;
       const mockToggleBtn = {
         addEventListener: jest.fn((event, handler) => {
-          if (event === 'click') handler();
+          if (event === 'click') clickHandler = handler;
         }),
         dataset: { target: 'mockInput' },
-        innerHTML: ''
+        innerHTML: '',
       };
-      
+
       const mockInput = {
-        type: 'password'
+        type: 'password',
       };
 
       global.document.querySelectorAll = jest.fn((selector) => {
@@ -107,6 +111,10 @@ describe('Auth Helper Functions', () => {
       if (typeof global.wireChangePassword === 'function') {
         global.wireChangePassword();
         expect(mockToggleBtn.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+
+        // Trigger the handler explicitly
+        if (clickHandler) clickHandler();
+
         expect(mockInput.type).toBe('text');
         expect(mockToggleBtn.innerHTML).toContain('fa-eye-slash');
       }
@@ -114,9 +122,7 @@ describe('Auth Helper Functions', () => {
 
     test('wireDeactivateAccount handles clicks', async () => {
       const mockBtn = {
-        addEventListener: jest.fn((event, handler) => {
-          if (event === 'click') handler();
-        })
+        addEventListener: jest.fn(),
       };
 
       global.document.getElementById = jest.fn((id) => {

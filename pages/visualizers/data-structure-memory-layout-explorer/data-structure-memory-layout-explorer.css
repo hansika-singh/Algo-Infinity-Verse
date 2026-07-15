@@ -1,0 +1,569 @@
+/* =========================================================
+   Data Structure Memory Layout Explorer — page-specific theme
+   Uses shared tokens from /styles.css (--primary, --secondary,
+   --gradient-1, --glass-bg, --glass-border, --text-primary, etc.)
+   ========================================================= */
+
+:root {
+  --dsml-primary: var(--secondary);
+  --dsml-secondary: var(--primary);
+  --dsml-gradient: var(--gradient-1);
+  --dsml-good: #22c55e;
+  --dsml-bad: #ef4444;
+  --dsml-mid: #eab308;
+}
+
+/* ---------- Hero theme ---------- */
+.hero .title-line {
+  color: var(--dsml-secondary);
+}
+
+.hero .main-title {
+  background: var(--dsml-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .section-subtitle {
+  max-width: 720px;
+  margin: 1rem auto 0;
+  text-align: center;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ---------- Topic sections ---------- */
+.dsml-topic {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.dsml-topic:last-child {
+  border-bottom: none;
+}
+
+.dsml-topic-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.dsml-badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--dsml-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.dsml-topic-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin: 0.4rem 0 0.75rem;
+}
+
+.dsml-lede {
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ---------- Overview grid ---------- */
+.dsml-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .dsml-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .dsml-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dsml-overview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  text-decoration: none;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.75rem 1rem;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.dsml-overview-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dsml-overview-card i {
+  font-size: 1.8rem;
+  color: var(--dsml-primary);
+}
+
+.dsml-overview-card h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+/* ---------- Tags ---------- */
+.dsml-tag {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.dsml-tag-contiguous {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--dsml-good);
+}
+
+.dsml-tag-scattered {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--dsml-bad);
+}
+
+.dsml-tag-hybrid {
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--dsml-mid);
+}
+
+/* ---------- Diagrams ---------- */
+.dsml-diagram-wrapper {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+}
+
+.dsml-diagram-small {
+  padding: 1rem;
+}
+
+.dsml-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-width: 480px;
+}
+
+.dsml-cell {
+  fill: rgba(59, 130, 246, 0.1);
+  stroke: rgba(59, 130, 246, 0.35);
+  stroke-width: 1.5;
+}
+
+.dsml-cell-filled {
+  fill: rgba(124, 58, 237, 0.15);
+  stroke: rgba(124, 58, 237, 0.45);
+}
+
+.dsml-cell-empty {
+  fill: transparent;
+  stroke: var(--glass-border);
+  stroke-dasharray: 4 3;
+}
+
+.dsml-cell-text {
+  fill: var(--text-primary);
+  font-weight: 600;
+}
+
+.dsml-dim {
+  fill: var(--text-secondary);
+}
+
+.dsml-ptr {
+  fill: var(--dsml-primary);
+}
+
+.dsml-addr {
+  fill: var(--text-secondary);
+  font-size: 10px;
+}
+
+.dsml-idx {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+
+.dsml-formula {
+  fill: var(--text-primary);
+  font-size: 13px;
+  font-family: 'Fira Code', monospace;
+}
+
+.dsml-formula-sub {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  font-family: 'Fira Code', monospace;
+}
+
+.dsml-arrow {
+  stroke: var(--dsml-primary);
+  stroke-width: 1.75;
+  fill: none;
+  marker-end: none;
+}
+
+/* ---------- Compare grid (tree section) ---------- */
+.dsml-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .dsml-compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dsml-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.dsml-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dsml-card h3 i {
+  color: var(--dsml-primary);
+}
+
+.dsml-card p {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 1rem 0 0;
+}
+
+/* ---------- Facts grid ---------- */
+.dsml-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .dsml-facts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .dsml-facts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dsml-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.dsml-fact-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.dsml-fact-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dsml-fact-value.dsml-good {
+  color: var(--dsml-good);
+}
+.dsml-fact-value.dsml-bad {
+  color: var(--dsml-bad);
+}
+.dsml-fact-value.dsml-mid {
+  color: var(--dsml-mid);
+}
+
+/* ---------- Comparison table ---------- */
+.dsml-table-wrapper {
+  overflow-x: auto;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.dsml-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.88rem;
+  min-width: 720px;
+}
+
+.dsml-table thead th {
+  text-align: left;
+  padding: 1rem 1.25rem;
+  color: var(--text-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), rgba(59, 130, 246, 0.08));
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.dsml-table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+.dsml-table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.dsml-table tbody td {
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  transition: background 0.2s ease;
+}
+
+.dsml-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dsml-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.dsml-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+.dsml-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+.dsml-table td:first-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.dsml-table td.dsml-good {
+  color: var(--dsml-good);
+  font-weight: 500;
+}
+.dsml-table td.dsml-bad {
+  color: var(--dsml-bad);
+  font-weight: 500;
+}
+.dsml-table td.dsml-mid {
+  color: var(--dsml-mid);
+  font-weight: 500;
+}
+
+/* ---------- Highlight-on-arrival flash ---------- */
+.dsml-highlight {
+  animation: dsml-flash 1.2s ease;
+}
+
+@keyframes dsml-flash {
+  0% {
+    background: rgba(59, 130, 246, 0.1);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* ---------- Interactive controls ---------- */
+.dsml-interactive {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(59, 130, 246, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+.dsml-interactive-title {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dsml-interactive-title i {
+  color: var(--dsml-primary);
+}
+
+.dsml-interactive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.dsml-interactive-row label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.dsml-input {
+  width: 90px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+.dsml-input-text {
+  width: 160px;
+}
+
+.dsml-input:focus {
+  outline: none;
+  border-color: var(--dsml-primary);
+}
+
+.dsml-btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--dsml-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.dsml-btn:hover {
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.dsml-btn:active {
+  transform: scale(0.97);
+}
+
+.dsml-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dsml-btn-secondary {
+  border-color: var(--glass-border);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.dsml-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dsml-interactive-result {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  min-height: 1.4em;
+}
+
+.dsml-interactive-result strong {
+  color: var(--dsml-primary);
+}
+
+.dsml-interactive-error {
+  color: var(--dsml-bad) !important;
+}
+
+/* Highlight state applied to SVG elements on compute/traverse */
+.dsml-cell-active {
+  stroke: var(--dsml-primary) !important;
+  stroke-width: 2.5 !important;
+  fill: rgba(59, 130, 246, 0.22) !important;
+}
+
+.dsml-node-active rect {
+  stroke: var(--dsml-primary) !important;
+  stroke-width: 2.5 !important;
+}
+
+.dsml-arrow-active {
+  stroke: var(--dsml-good) !important;
+  stroke-width: 2.5 !important;
+}
+
+/* ---------- Note box ---------- */
+.dsml-note {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 10px;
+}
+
+.dsml-note i {
+  color: var(--dsml-primary);
+  margin-top: 0.2rem;
+}
+
+.dsml-note p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}

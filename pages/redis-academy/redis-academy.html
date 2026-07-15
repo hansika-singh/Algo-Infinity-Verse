@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redis Academy | Algo-Infinity-Verse</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="redis-academy.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <header class="glass-header">
+      <div class="header-left">
+        <a href="/pages/academy/academy.html" class="back-btn" aria-label="Back to Academy">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div class="logo">
+          <i class="fa-solid fa-database logo-icon redis-color"></i>
+          <span>Algo <span class="highlight">Infinity</span> Verse</span>
+        </div>
+      </div>
+      <div class="title-section">
+        <h1>Redis Academy <span class="badge badge-redis">In-Memory Store</span></h1>
+        <p>Interactive Caching, Pub/Sub, and Data Structures Simulator</p>
+      </div>
+      <a href="https://github.com/Eshajha19/Algo-Infinity-Verse" target="_blank" class="github-link" aria-label="GitHub Repository">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </header>
+
+    <main class="workspace">
+
+      <aside class="sidebar" id="sidebar">
+        <section class="glass-panel progress-panel">
+          <h2><i class="fa-solid fa-graduation-cap"></i> Course Progress</h2>
+          <div class="progress-stats">
+            <span id="progress-text">0 / 7 Modules</span>
+            <span id="progress-percentage">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div id="course-progress-bar" class="progress-fill"></div>
+          </div>
+          <button id="btn-reset-progress" class="btn btn-secondary mt-2 w-100">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Reset Progress
+          </button>
+        </section>
+
+        <section class="glass-panel nav-panel mt-3">
+          <h2><i class="fa-solid fa-book"></i> Curriculum</h2>
+          <ul class="module-list" id="module-list"></ul>
+        </section>
+      </aside>
+
+      <section class="main-stage">
+
+        <header class="tab-bar">
+          <button class="tab-btn active" data-tab="lesson">
+            <i class="fa-solid fa-book-open"></i> Lesson Viewer
+          </button>
+          <button class="tab-btn" data-tab="simulator">
+            <i class="fa-solid fa-terminal"></i> Redis Simulator
+          </button>
+          <button class="tab-btn" data-tab="quiz">
+            <i class="fa-solid fa-tasks"></i> Quiz
+          </button>
+        </header>
+
+        <div class="tab-content">
+
+          <div id="lesson-tab" class="tab-pane active">
+            <div class="lesson-panel glass-panel">
+              <div class="lesson-header">
+                <h2 id="lesson-title">Welcome to Redis</h2>
+                <button id="btn-mark-complete" class="btn btn-accent">
+                  <i class="fa-solid fa-check"></i> Mark Complete
+                </button>
+              </div>
+              <div class="lesson-body" id="lesson-body">
+                Select a module from the left to begin learning!
+              </div>
+            </div>
+          </div>
+
+          <div id="simulator-tab" class="tab-pane hidden">
+            <div class="simulator-layout">
+              <div class="glass-panel terminal-panel">
+                <div class="terminal-header">
+                  <h3><i class="fa-solid fa-terminal"></i> Interactive Redis CLI</h3>
+                  <span class="status-indicator">
+                    <i class="fa-solid fa-circle text-success"></i> Connected (Mock Engine)
+                  </span>
+                </div>
+                <div class="terminal-window" id="terminal-window">
+                  <div class="terminal-output" id="terminal-output">
+                    <div class="log line-system">Algo-Infinity-Verse Redis Mock Engine v2.0.0</div>
+                    <div class="log line-system">Type 'HELP' for a list of supported commands.</div>
+                  </div>
+                  <div class="terminal-input-line">
+                    <span class="prompt">127.0.0.1:6379&gt;</span>
+                    <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-panel inspector-panel">
+                <h3><i class="fa-solid fa-eye"></i> Data Inspector</h3>
+                <div class="inspector-tabs">
+                  <button class="inspector-tab active" data-inspector="strings">Strings</button>
+                  <button class="inspector-tab" data-inspector="lists">Lists</button>
+                  <button class="inspector-tab" data-inspector="hashes">Hashes</button>
+                  <button class="inspector-tab" data-inspector="sorted-sets">Sorted Sets</button>
+                  <button class="inspector-tab" data-inspector="pubsub">Pub/Sub</button>
+                </div>
+                <div class="inspector-content" id="inspector-content">
+                  <div class="empty-state">Run some commands to see data here</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="quiz-tab" class="tab-pane hidden">
+            <div class="quiz-panel glass-panel" id="quiz-content">
+              <h2>Module Knowledge Check</h2>
+              <p class="text-secondary">Complete the lesson to unlock the quiz.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="redis-academy.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIES Recovery Simulator - Algo Infinity Verse</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="aries-simulator.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-infinity"></i>
+            <span>Algo Infinity Verse</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../dsa.html">DSA Modules</a></li>
+            <li><a href="../visualizers.html" class="active">Visualizers</a></li>
+            <li><a href="../../contribute.html">Contribute</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+
+    <div class="simulator-container">
+        <header class="simulator-header">
+            <h1><i class="fas fa-database"></i> ARIES Recovery Simulator</h1>
+            <p>Write-Ahead Logging (WAL) and Database Crash Recovery Algorithm</p>
+        </header>
+
+        <div class="simulator-layout">
+            <div class="main-panel">
+                <div class="db-components">
+                    <div class="component transaction-manager">
+                        <h3><i class="fas fa-exchange-alt"></i> Active Transactions</h3>
+                        <div id="txList" class="data-table"></div>
+                        <div class="actions">
+                            <button class="btn btn-sm" id="btnBeginTx">Begin Tx</button>
+                            <button class="btn btn-sm" id="btnUpdateTx">Update (Random)</button>
+                            <button class="btn btn-sm" id="btnCommitTx">Commit Oldest</button>
+                        </div>
+                    </div>
+                    
+                    <div class="component buffer-pool">
+                        <h3><i class="fas fa-memory"></i> Buffer Pool (Dirty Page Table)</h3>
+                        <div id="dirtyPageTable" class="data-table"></div>
+                        <div class="actions">
+                            <button class="btn btn-sm btn-danger" id="btnCrash">⚡ Force Crash</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="log-viewer">
+                    <h3><i class="fas fa-hdd"></i> Write-Ahead Log (Disk)</h3>
+                    <div id="walDisk" class="wal-list"></div>
+                </div>
+            </div>
+
+            <div class="recovery-panel">
+                <h2>Recovery Manager</h2>
+                <div class="recovery-steps">
+                    <div class="step" id="stepAnalysis">1. Analysis Phase</div>
+                    <div class="step" id="stepRedo">2. Redo Phase</div>
+                    <div class="step" id="stepUndo">3. Undo Phase</div>
+                </div>
+                
+                <div class="recovery-controls">
+                    <button class="btn btn-primary" id="btnStartRecovery" disabled>Start Recovery</button>
+                    <button class="btn" id="btnStepRecovery" disabled>Next Step</button>
+                    <button class="btn" id="btnReset" style="display:none;">Reset DB</button>
+                </div>
+                
+                <div class="recovery-log">
+                    <h3>System Log</h3>
+                    <div id="sysLog" class="log-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../scripts/theme.js"></script>
+    <script src="aries-simulator.js"></script>
+</body>
+</html>
