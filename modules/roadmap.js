@@ -103,8 +103,23 @@ function initRoadmap() {
   if (!roadmapStagesInitialized) {
     stages.forEach((stage) => {
       stage.style.cursor = 'pointer';
-      stage.addEventListener('click', () => {
+      stage.addEventListener('click', (e) => {
         const level = stage.dataset.level;
+        if (level === 'advanced') {
+          const completedProblems = userProgress.completedProblems || [];
+          const easyProbs = practiceProblems.filter((p) => p.difficulty.toLowerCase() === 'easy');
+          const solvedEasy = easyProbs.filter((p) => completedProblems.includes(p.id)).length;
+          const beginnerProgress = easyProbs.length
+            ? Math.round((solvedEasy / easyProbs.length) * 100)
+            : 0;
+
+          if (beginnerProgress === 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            showPrerequisiteWarningModal();
+            return;
+          }
+        }
         if (level === 'beginner') {
           document.getElementById('roadmapBasicTab')?.click();
         } else if (level === 'intermediate') {
@@ -128,6 +143,36 @@ function initRoadmap() {
       if (progress === 100) stages[2].classList.add('active');
     }, 500);
   }
+
+  // Calculate progress for each stage (Beginner, Intermediate, Advanced) based on problem difficulty
+  const completedProblems = userProgress.completedProblems || [];
+  const easyProbs = practiceProblems.filter((p) => p.difficulty.toLowerCase() === 'easy');
+  const mediumProbs = practiceProblems.filter((p) => p.difficulty.toLowerCase() === 'medium');
+  const hardProbs = practiceProblems.filter((p) => p.difficulty.toLowerCase() === 'hard');
+
+  const solvedEasy = easyProbs.filter((p) => completedProblems.includes(p.id)).length;
+  const solvedMedium = mediumProbs.filter((p) => completedProblems.includes(p.id)).length;
+  const solvedHard = hardProbs.filter((p) => completedProblems.includes(p.id)).length;
+
+  const beginnerProgress = easyProbs.length ? Math.round((solvedEasy / easyProbs.length) * 100) : 0;
+  const intermediateProgress = mediumProbs.length
+    ? Math.round((solvedMedium / mediumProbs.length) * 100)
+    : 0;
+  const advancedProgress = hardProbs.length ? Math.round((solvedHard / hardProbs.length) * 100) : 0;
+
+  const updateStageCard = (level, percent) => {
+    const cards = document.querySelectorAll(`.stage[data-level="${level}"]`);
+    cards.forEach((card) => {
+      const fill = card.querySelector('.stage-progress-fill');
+      const text = card.querySelector('.stage-progress-percent');
+      if (fill) fill.style.width = `${percent}%`;
+      if (text) text.textContent = `${percent}%`;
+    });
+  };
+
+  updateStageCard('beginner', beginnerProgress);
+  updateStageCard('intermediate', intermediateProgress);
+  updateStageCard('advanced', advancedProgress);
 }
 
 function renderBasicRoadmap() {
@@ -394,6 +439,73 @@ function submitRoadmapQuiz(stepIndex, type = 'basic') {
       });
     }, 3000);
   }
+}
+
+function showPrerequisiteWarningModal() {
+  document.getElementById('prerequisiteWarningModal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'prerequisiteWarningModal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  `;
+
+  const content = document.createElement('div');
+  content.style.cssText = `
+    background: #1e293b;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    animation: scaleIn 0.3s ease;
+  `;
+
+  content.innerHTML = `
+    <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚠️</div>
+    <h3 style="font-size: 1.6rem; color: #fff; margin-bottom: 1rem; font-family: 'Poppins', sans-serif;">Prerequisites Missing!</h3>
+    <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.5; margin-bottom: 2rem;">
+      It looks like you haven't started the <strong>Beginner Roadmap</strong> yet (0% completed). We highly recommend mastering the fundamentals before diving into advanced topics.
+    </p>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <a href="beginner-roadmap.html" class="btn btn-primary" style="padding: 12px; font-weight: 600; text-decoration: none; border-radius: 8px; text-align: center;">🌱 Start Beginner Path</a>
+      <button id="closePrereqModal" class="btn btn-secondary" style="padding: 12px; background: transparent; border: 1px solid #475569; color: #cbd5e1; border-radius: 8px; cursor: pointer;">Continue Anyway</button>
+    </div>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  const style = document.createElement('style');
+  style.id = 'prerequisiteWarningModalStyle';
+  style.textContent = `
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const closeModal = () => {
+    modal.remove();
+    style.remove();
+  };
+
+  document.getElementById('closePrereqModal').addEventListener('click', () => {
+    closeModal();
+    window.location.href = 'advanced-roadmap.html';
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
 }
 
 window.openRoadmapStepModal = openRoadmapStepModal;

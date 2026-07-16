@@ -1,5 +1,6 @@
 let currentFilter = 'all';
 let currentSearch = '';
+let currentTopic = 'all';
 let currentNotesProblemId = null;
 let virtualizedGrid = null;
 import { VirtualizedGrid } from './virtualizedGrid.js';
@@ -26,6 +27,7 @@ function initPracticeSection() {
       const state = JSON.parse(savedStateStr);
       if (state.filter) currentFilter = state.filter;
       if (state.search) currentSearch = state.search;
+      if (state.topic) currentTopic = state.topic;
       restoredScrollY = state.scrollY || 0;
     } catch (e) {
       // ignore parsing errors
@@ -50,25 +52,25 @@ function initPracticeSection() {
       currentFilter = btn.dataset.filter;
       renderProblems();
     });
-    // Topic filter buttons
-  let currentTopic = 'all';
-  const topicButtons = document.querySelectorAll(".topic-btn");
-  topicButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      topicButtons.forEach((b) => b.classList.remove("active-topic"));
-      btn.classList.add("active-topic");
-      currentTopic = btn.dataset.topic;
-      renderProblems();
-    });
-  });
-
-  // Override renderProblems to include topic filter
-  const originalRenderProblems = window.renderProblems;
-  window.currentTopic = 'all';
     // Set active state on load if restored
     if (btn.dataset.filter === currentFilter) {
       filterButtons.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
+    }
+  });
+
+  const topicButtons = document.querySelectorAll('.topic-btn');
+  topicButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      topicButtons.forEach((b) => b.classList.remove('active-topic'));
+      btn.classList.add('active-topic');
+      currentTopic = btn.dataset.topic;
+      renderProblems();
+    });
+    // Set active state on load if restored
+    if (btn.dataset.topic === currentTopic) {
+      topicButtons.forEach((b) => b.classList.remove('active-topic'));
+      btn.classList.add('active-topic');
     }
   });
 
@@ -114,22 +116,11 @@ function initPracticeSection() {
     });
   }
   if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      currentSearch = "";
-      clearBtn.classList.remove("visible");
-      // Topic filter buttons
-  const topicButtons = document.querySelectorAll(".topic-btn");
-  topicButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      topicButtons.forEach((b) => b.classList.remove("active-topic"));
-      btn.classList.add("active-topic");
-      currentTopic = btn.dataset.topic;
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      clearBtn.classList.remove('visible');
       renderProblems();
-    });
-  });
-
-  renderProblems();
       searchInput.focus();
     });
     if (currentSearch) {
@@ -161,13 +152,12 @@ function initPracticeSection() {
       JSON.stringify({
         filter: currentFilter,
         search: currentSearch,
+        topic: currentTopic,
         scrollY: window.scrollY,
       })
     );
   });
 }
-
-let currentTopic = 'all';
 
 function getFilteredProblems() {
   const userProgress = window.userProgress || {};

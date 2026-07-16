@@ -219,6 +219,11 @@
 
     <div class="progress-section">
       <h3 id="roadmapTime">📊 Estimated Completion: 8-12 Weeks</h3>
+
+      <div class="view-toggle">
+        <button id="listViewBtn" class="active">List View</button>
+        <button id="treeViewBtn">Tree View</button>
+      </div>
     </div>
 
     <section class="roadmap-container" id="roadmapStepsContainer">
@@ -227,6 +232,8 @@
         <p style="margin-top: 10px; color: #cbd5e1">Loading roadmap steps...</p>
       </div>
     </section>
+
+    <div class="roadmap-container hidden" id="roadmapVisualTree"></div>
 
     <div style="text-align: center; margin: 2rem 0">
       <a href="/pages/visualizers/algorithm-timeline/algorithm-timeline.html" class="back-btn">
@@ -237,6 +244,7 @@
 
     <footer class="footer">🚀 Keep Practicing • Keep Learning • Keep Growing</footer>
 
+    <script src="/modules/roadmap-tree.js"></script>
     <script>
       async function loadRoadmap() {
         try {
@@ -270,6 +278,31 @@
           `
             )
             .join('');
+
+          // Initialize SVG visual tree
+          if (window.initRoadmapTree) {
+            window.initRoadmapTree('beginner', beginner.steps);
+          }
+
+          // Setup toggle controls
+          const listBtn = document.getElementById('listViewBtn');
+          const treeBtn = document.getElementById('treeViewBtn');
+          const stepsContainer = document.getElementById('roadmapStepsContainer');
+          const treeContainer = document.getElementById('roadmapVisualTree');
+
+          listBtn.addEventListener('click', () => {
+            listBtn.classList.add('active');
+            treeBtn.classList.remove('active');
+            stepsContainer.classList.remove('hidden');
+            treeContainer.classList.add('hidden');
+          });
+
+          treeBtn.addEventListener('click', () => {
+            treeBtn.classList.add('active');
+            listBtn.classList.remove('active');
+            stepsContainer.classList.add('hidden');
+            treeContainer.classList.remove('hidden');
+          });
         } catch (err) {
           console.error('Error loading roadmap:', err);
           const container = document.getElementById('roadmapStepsContainer');

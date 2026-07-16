@@ -404,11 +404,19 @@ function renderActiveState() {
 function renderLesson(lesson) {
   const isCompleted = state.completedItems.includes(lesson.id);
 
+  /* ── ELI5: wrap content in data-technical / data-simple ── */
+  const eli5 = window.eli5Toggle;
+  const simpleContent =
+    window.eli5NextjsData && lesson.id ? (window.eli5NextjsData[lesson.id] || '') : '';
+  const bodyHtml = eli5
+    ? eli5.wrapContent(lesson.content, simpleContent)
+    : lesson.content;
+
   DOM.tabLesson.innerHTML = `
-        <div class="max-w-3xl mx-auto animate-fade-in">
+        <div class="max-w-3xl mx-auto animate-fade-in eli5-container eli5-lesson-container" data-mode="technical">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">${lesson.title}</h2>
             <div class="prose max-w-none text-gray-800">
-                ${lesson.content}
+                ${bodyHtml}
             </div>
             
             <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
@@ -418,6 +426,14 @@ function renderLesson(lesson) {
             </div>
         </div>
     `;
+
+  /* ── Initialize ELI5 toggle inside the lesson container ── */
+  const lessonContainer = DOM.tabLesson.querySelector('.eli5-lesson-container');
+  if (eli5 && lessonContainer) {
+    const oldToggle = lessonContainer.querySelector('.eli5-toggle');
+    if (oldToggle) oldToggle.remove();
+    eli5.initToggle('nextjs', lessonContainer);
+  }
 
   const btn = document.getElementById('mark-lesson-complete');
   if (!isCompleted) {

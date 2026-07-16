@@ -580,12 +580,14 @@ function getSession(req) {
 }
 
 // A team profile is private to its owner — the authenticated user who first
-// created it — and any explicitly listed members. Profiles with no recorded
-// owner are treated as unclaimed legacy data: still readable, and claimed by
-// the first authenticated user who writes them. This closes the IDOR where any
-// client could read/overwrite any profile just by knowing its id.
+// created it — and any explicitly listed members. `profile` must be `null`/
+// `undefined` when no record exists yet (allowing the caller to create one
+// and become its owner); a stored record with no `ownerId` is legacy data
+// with no rightful owner on file, so it fails closed and denies everyone
+// rather than granting open read/write access to anyone who knows the id.
 function canAccessTeamProfile(profile, userId) {
-  if (!profile || !profile.ownerId) return true;
+  if (!profile) return true;
+  if (!profile.ownerId) return false;
   if (profile.ownerId === userId) return true;
   const members = Array.isArray(profile.members) ? profile.members : [];
   return members.some(
@@ -745,10 +747,11 @@ async function handleApi(req, res, pathname) {
       if (!useFirestore) {
         try {
           updatedProfile = await updateTeamProfilesStore((store) => {
-            const currentProfile = store[teamId] || { version: 1 };
+            const existing = store[teamId] || null;
+            const currentProfile = existing || { version: 1 };
 
             // Ownership check: only the owner/members may modify a claimed profile.
-            if (!canAccessTeamProfile(currentProfile, session.sub)) {
+            if (!canAccessTeamProfile(existing, session.sub)) {
               const forbiddenError = new Error('Forbidden');
               forbiddenError.status = 403;
               throw forbiddenError;

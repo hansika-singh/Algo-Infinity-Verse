@@ -322,7 +322,10 @@ function loadLesson(mIndex, lIndex) {
     markLessonComplete(lesson.id);
   }
 
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('supabase', elements.lessonContent);
+  }
   elements.supabaseEditor.value = lesson.defaultCode || '';
 
   elements.editorConsole.innerHTML = '';

@@ -35,10 +35,13 @@ describe('/api/roadmaps registry endpoint', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data).toHaveProperty('beginner');
+    expect(data).toHaveProperty('intermediate');
     expect(data).toHaveProperty('advanced');
     expect(data.beginner.title).toBe('Beginner DSA Roadmap');
+    expect(data.intermediate.title).toBe('Intermediate DSA Roadmap');
     expect(data.advanced.title).toBe('Advanced DSA Roadmap');
     expect(data.beginner.steps.length).toBe(10);
+    expect(data.intermediate.steps.length).toBe(8);
     expect(data.advanced.steps.length).toBe(10);
   });
 

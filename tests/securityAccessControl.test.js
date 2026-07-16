@@ -1,6 +1,8 @@
 import { jest } from '@jest/globals';
 import IORedis from 'ioredis';
 import { Worker } from 'bullmq';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Stub out Redis so importing the server does not hang or hit a real Redis.
 IORedis.prototype.connect = function () {
@@ -17,6 +19,14 @@ jest.unstable_mockModule('../backend/jobs/queue.js', () => ({
   getReportStatus: jest.fn(),
   batchStore: new Map(),
   MAX_BULK_AUDIT_URLS: 100,
+  bulkAuditQueue: {
+    add: jest.fn(),
+    on: jest.fn(),
+  },
+  redisAvailable: false,
+  redisClient: null,
+  redisReady: Promise.resolve(),
+  default: {},
 }));
 
 process.env.NODE_ENV = 'test';
@@ -94,6 +104,28 @@ describe('Access control: /api/team-profile IDOR (#1216)', () => {
     expect(aGet.status).toBe(200);
     const aData = await aGet.json();
     expect(aData.name).toBe('A Team');
+  });
+
+  it('denies everyone access to a legacy record with no ownerId (#2360)', async () => {
+    const teamId = `team-legacy-${Date.now()}`;
+    const someUser = { id: `userC-${Date.now()}`, name: 'C', email: 'c@example.com' };
+
+    const teamProfilesFile = path.join(process.cwd(), 'data', 'team_profiles.json');
+    const store = JSON.parse(await fs.readFile(teamProfilesFile, 'utf8'));
+    store[teamId] = { id: teamId, name: 'Legacy Team', description: 'secret', version: 1 };
+    await fs.writeFile(teamProfilesFile, `${JSON.stringify(store, null, 2)}\n`);
+
+    const getRes = await fetch(`${origin}/api/team-profile?id=${teamId}`, {
+      headers: { Cookie: cookieFor(someUser) },
+    });
+    expect(getRes.status).toBe(403);
+
+    const postRes = await fetch(`${origin}/api/team-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(someUser), Origin: origin },
+      body: JSON.stringify({ id: teamId, version: 1, name: 'hijacked' }),
+    });
+    expect(postRes.status).toBe(403);
   });
 });
 

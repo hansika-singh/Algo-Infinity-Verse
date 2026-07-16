@@ -282,7 +282,21 @@ function loadLesson(mIndex, lIndex) {
     markLessonComplete(lesson.id);
   }
 
-  elements.lessonContent.innerHTML = lesson.content;
+  /* ── ELI5: wrap content in data-technical / data-simple ── */
+  const eli5 = window.eli5Toggle;
+  const simpleContent =
+    window.eli5AwsData && lesson.id ? (window.eli5AwsData[lesson.id] || '') : '';
+  elements.lessonContent.innerHTML = eli5
+    ? eli5.wrapContent(lesson.content, simpleContent)
+    : lesson.content;
+
+  /* Remove old toggle if present, then re-init */
+  const oldToggle = elements.lessonContent.querySelector('.eli5-toggle');
+  if (oldToggle) oldToggle.remove();
+
+  if (eli5) {
+    eli5.initToggle('aws', elements.lessonContent);
+  }
 
   renderQuiz(mIndex);
   renderSidebar();

@@ -1201,7 +1201,10 @@ function renderLesson() {
     const lesson = getActiveLesson();
     const isComplete = isItemComplete(lesson.id);
 
-    DOM.lessonContent.innerHTML = lesson.content;
+    DOM.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('rust', DOM.lessonContent);
+  }
 
     DOM.markCompleteBtn.innerHTML = isComplete
         ? '<i class="fas fa-check-circle mr-2"></i> Completed'

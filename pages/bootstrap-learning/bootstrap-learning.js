@@ -315,7 +315,7 @@ function renderLesson(lesson) {
         <div class="max-w-3xl mx-auto animate-fade-in">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">${lesson.title}</h2>
             <div class="prose max-w-none text-gray-800">
-                ${lesson.content}
+                ${(window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content)}
             </div>
             
             <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
@@ -326,6 +326,10 @@ function renderLesson(lesson) {
         </div>
     `;
 
+  /* ELI5 toggle */
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('bootstrap', DOM.tabLesson);
+  }
   const btn = document.getElementById('mark-lesson-complete');
   if (!isCompleted) {
     btn.addEventListener('click', () => {

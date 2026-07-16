@@ -1,0 +1,136 @@
+/* ============================================
+   ELI5 TOGGLE — "Explain Like I'm 5" Pill Switch
+   ============================================
+   Soft pastel palette, accessible, no external deps.
+   Used across Redis / Next.js / AWS academies.
+   ============================================ */
+
+.eli5-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: rgba(203, 213, 225, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.eli5-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 13px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  color: #94a3b8;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.eli5-btn:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+.eli5-btn.active {
+  background: #f1f5f9;
+  color: #334155;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(148, 163, 184, 0.1);
+}
+
+/* Dark mode support */
+.light-mode .eli5-btn.active {
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.15);
+}
+
+.light-mode .eli5-toggle {
+  background: rgba(203, 213, 225, 0.35);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.light-mode .eli5-btn {
+  color: #64748b;
+}
+
+.light-mode .eli5-btn.active {
+  color: #1e293b;
+}
+
+/* ═══ Simple mode content visibility ═══ */
+.eli5-container[data-mode="technical"] [data-simple] {
+  display: none !important;
+}
+
+.eli5-container[data-mode="simple"] [data-technical] {
+  display: none !important;
+}
+
+.eli5-container[data-mode="simple"] [data-simple] {
+  display: block !important;
+}
+
+/* ═══ Toggle positioned inline after title ═══ */
+.eli5-toggle.eli5-toggle-inline {
+  margin-bottom: 1rem;
+}
+
+/* ═══ Simple content styling ═══ */
+.eli5-simple-content {
+  background: rgba(254, 243, 199, 0.35);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.light-mode .eli5-simple-content {
+  background: rgba(254, 243, 199, 0.5);
+  color: #374151;
+}
+
+.eli5-simple-content .eli5-label-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+}
+
+/* ═══ Reduce motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .eli5-btn {
+    transition: none;
+  }
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 640px) {
+  .eli5-toggle {
+    gap: 1px;
+    padding: 2px;
+  }
+
+  .eli5-btn {
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    gap: 3px;
+  }
+}

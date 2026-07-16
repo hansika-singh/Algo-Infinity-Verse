@@ -313,7 +313,10 @@ function loadLesson(mIndex, lIndex) {
     markLessonComplete(lesson.id);
   }
 
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('elasticsearch', elements.lessonContent);
+  }
   elements.esEditor.value = lesson.defaultCode || '';
   elements.jsonResults.innerHTML =
     '<span class="text-gray-500 italic">Click Play to run the request...</span>';

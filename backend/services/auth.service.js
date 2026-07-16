@@ -40,6 +40,18 @@ const TRUSTED_PROXIES = new Set(
     .filter(Boolean)
 );
 
+if (process.env.NODE_ENV === 'production' && TRUSTED_PROXIES.size === 0) {
+  console.warn(
+    '[SECURITY WARNING] TRUSTED_PROXIES is not configured in production. ' +
+      'If this server sits behind a reverse proxy or CDN, every request will ' +
+      "resolve to the proxy's IP for rate-limiting purposes, collapsing all " +
+      "clients into a single shared bucket (e.g. one user's failed logins can " +
+      "lock out the entire site). Set TRUSTED_PROXIES to the proxy's IP(s) so " +
+      'X-Forwarded-For is honoured, or ignore this warning if the server is ' +
+      'reachable directly with no proxy in front of it.'
+  );
+}
+
 export function getClientIdentifier(req) {
   const remoteAddress = req.socket?.remoteAddress || 'unknown';
 
