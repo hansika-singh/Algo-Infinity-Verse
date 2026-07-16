@@ -2,8 +2,6 @@
 // USER PROGRESS STATE
 // ============================================
 window.userProgress = {
-  name: "Learner",
-  avatar: "🚀",
   name: 'Learner',
   avatar: { initial: 'L', bg: '#7c3aed' },
   bio: '',
