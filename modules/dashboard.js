@@ -264,6 +264,22 @@ function updateBadges() {
             description: "Hit the target with consistency",
             criteria: "Solve 25 problems and earn 2,500 XP",
             earned: completedProblems.length >= 25 && (userProgress.xp || 0) >= 2500
+        },
+        {
+            id: 7,
+            icon: "⚔️",
+            name: "Gladiator",
+            description: "Win your first coding battle",
+            criteria: "Win 1 battle",
+            earned: (userProgress.battlesWon || 0) >= 1
+        },
+        {
+            id: 8,
+            icon: "⚡",
+            name: "Speed Demon",
+            description: "Become a battle master",
+            criteria: "Win 5 battles",
+            earned: (userProgress.battlesWon || 0) >= 5
         }
     ];
     

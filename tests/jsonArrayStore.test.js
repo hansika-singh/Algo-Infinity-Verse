@@ -10,6 +10,9 @@ jest.unstable_mockModule('../backend/jobs/queue.js', () => ({
   batchStore: new Map(),
   bulkAuditQueue: { add: jest.fn(), on: jest.fn() },
   MAX_BULK_AUDIT_URLS: 50,
+  redisAvailable: false,
+  redisClient: null,
+  redisReady: Promise.resolve(),
   default: {},
 }));
 jest.unstable_mockModule('../backend/jobs/worker.js', () => ({ default: {} }));
@@ -24,7 +27,7 @@ describe('appendToJsonArrayFile: serialized, size-capped JSON append (#1217)', (
   beforeEach(async () => {
     filePath = path.join(
       os.tmpdir(),
-      `aiv-json-store-${process.pid}-${Math.floor(Math.random() * 1e9)}.json`,
+      `aiv-json-store-${process.pid}-${Math.floor(Math.random() * 1e9)}.json`
     );
     await fs.rm(filePath, { force: true });
   });
@@ -38,7 +41,7 @@ describe('appendToJsonArrayFile: serialized, size-capped JSON append (#1217)', (
     // Fire all appends concurrently — the old readFile→push→writeFile would
     // interleave and drop most of these.
     await Promise.all(
-      Array.from({ length: N }, (_, i) => appendToJsonArrayFile(filePath, { i }, 1000)),
+      Array.from({ length: N }, (_, i) => appendToJsonArrayFile(filePath, { i }, 1000))
     );
 
     const list = JSON.parse(await fs.readFile(filePath, 'utf8'));

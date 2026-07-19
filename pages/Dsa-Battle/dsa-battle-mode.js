@@ -20,15 +20,21 @@ const difficultyEl = document.getElementById("difficultyBadge");
 const historyGrid = document.getElementById("historyGrid");
 const statusMsg = document.getElementById("battleStatusMsg");
 
-const waitingRoom = document.getElementById("waitingRoom");
-const lobbyCodeDisplay = document.getElementById("lobbyCodeDisplay");
-const participantsList = document.getElementById("participantsList");
-const hostStartBtn = document.getElementById("hostStartBtn");
-const activeBattle = document.getElementById("active-battle");
-const scoreboardList = document.getElementById("scoreboardList");
 const battleLobby = document.getElementById("battle-lobby");
-
+const activeBattle = document.getElementById("active-battle");
 const solutionCode = document.getElementById("solutionCode");
+
+// New DOM refs
+const findMatchBtn = document.getElementById("findMatchBtn");
+const difficultySelect = document.getElementById("difficultySelect");
+const matchmakingStatus = document.getElementById("matchmakingStatus");
+const myUsernameDisplay = document.getElementById("myUsernameDisplay");
+const opponentNameDisplay = document.getElementById("opponentNameDisplay");
+const myProgressBar = document.getElementById("myProgressBar");
+const opponentProgressBar = document.getElementById("opponentProgressBar");
+const myProgressText = document.getElementById("myProgressText");
+const opponentProgressText = document.getElementById("opponentProgressText");
+const submitStatusMsg = document.getElementById("submitStatusMsg");
 
 // Spectator
 const spectatorModal = document.getElementById("spectatorModal");
@@ -51,15 +57,16 @@ async function apiFetch(path, options = {}) {
 // ─── Init ───
 async function init() {
   try {
-    const { authenticated, user } = await apiFetch("/session");
+    let { authenticated, user } = await apiFetch("/session").catch(() => ({ authenticated: false, user: null }));
     if (!authenticated || !user) {
-      window.location.href = "/login?next=" + encodeURIComponent(window.location.pathname);
-      return;
+      // Mock user for direct access without login
+      authenticated = true;
+      user = { sub: "guest-" + Math.floor(Math.random() * 10000), name: "Guest User", email: "guest@example.com" };
     }
     currentUserId = user.sub;
     currentUserName = user.name || user.email;
     initSocket();
-    await loadHistory();
+    await loadHistory().catch(() => console.warn("Failed to load history (requires Firestore)"));
   } catch (err) {
     console.error("Session check failed:", err.message);
   }
@@ -69,33 +76,99 @@ function initSocket() {
   if (typeof io !== "undefined") {
     socket = io();
     
-    socket.on("battle-user-joined", (data) => {
-      // Just re-poll to get updated participant list
-      if (currentBattleId) pollBattle(currentBattleId);
-    });
-
-    socket.on("battle-code-update", (data) => {
-      if (spectatorTargetId === data.userId && spectatorCode) {
-        spectatorCode.value = data.code || "";
+    socket.on("match-found", (data) => {
+      currentBattleId = data.battleId;
+      const battle = data.battleData;
+      const oppName = data.opponentName[currentUserId];
+      
+      // Update UI
+      if (matchmakingStatus) matchmakingStatus.style.display = "none";
+      if (findMatchBtn) findMatchBtn.disabled = false;
+      
+      battleLobby.style.display = "none";
+      activeBattle.style.display = "block";
+      
+      if (problemTitle) problemTitle.textContent = battle.problemTitle;
+      if (problemDesc) problemDesc.textContent = battle.problemDescription;
+      if (difficultyEl) difficultyEl.textContent = battle.difficulty;
+      
+      if (myUsernameDisplay) myUsernameDisplay.textContent = currentUserName;
+      if (opponentNameDisplay) opponentNameDisplay.textContent = oppName;
+      
+      if (myProgressBar) myProgressBar.style.width = "0%";
+      if (opponentProgressBar) opponentProgressBar.style.width = "0%";
+      if (myProgressText) myProgressText.textContent = "0%";
+      if (opponentProgressText) opponentProgressText.textContent = "0%";
+      if (submitStatusMsg) submitStatusMsg.textContent = "";
+      if (solutionCode) {
+        solutionCode.value = "";
+        solutionCode.disabled = false;
       }
-    });
-
-    socket.on("battle-cursor-update", (data) => {
-      if (spectatorTargetId === data.userId && spectatorCursor) {
-        spectatorCursor.style.display = "block";
-        // Approximating cursor position, in a real editor we'd map row/col to pixels.
-        // We use 8px per char width and 16px line height approximation
-        spectatorCursor.style.left = (data.position.col * 8 + 16) + "px"; 
-        spectatorCursor.style.top = (data.position.row * 16 + 16) + "px";
-      }
+      if (submitSolutionBtn) submitSolutionBtn.disabled = false;
+      
+      // Start client side timer (5 mins)
+      let timeLeft = 300;
+      if (timerEl) timerEl.textContent = timeLeft;
+      
+      stopPolling(); // we use socket now, but keep interval for timer
+      pollInterval = setInterval(() => {
+        timeLeft--;
+        if (timerEl) timerEl.textContent = Math.max(0, timeLeft);
+        if (timeLeft <= 0) {
+          stopPolling();
+          submitStatusMsg.textContent = "Time's up!";
+          submitSolutionBtn.disabled = true;
+          solutionCode.disabled = true;
+        }
+      }, 1000);
     });
 
     socket.on("battle-progress-update", (data) => {
-      if (!participantsMap[data.userId]) {
-         participantsMap[data.userId] = { progress: 0 };
+      if (data.userId === currentUserId) {
+        if (myProgressBar) myProgressBar.style.width = data.progress + "%";
+        if (myProgressText) myProgressText.textContent = data.progress + "%";
+      } else {
+        if (opponentProgressBar) opponentProgressBar.style.width = data.progress + "%";
+        if (opponentProgressText) opponentProgressText.textContent = data.progress + "%";
       }
-      participantsMap[data.userId].progress = data.progress;
-      renderScoreboard();
+    });
+
+    socket.on("battle-over", (data) => {
+      stopPolling();
+      submitSolutionBtn.disabled = true;
+      solutionCode.disabled = true;
+      
+      const isWinner = data.winnerId === currentUserId;
+      if (isWinner) {
+        submitStatusMsg.style.color = "#22c55e";
+        submitStatusMsg.textContent = `🏆 You won the battle! Earned ${data.xpAwarded} XP and the '${data.badge}' badge!`;
+        
+        // Update LocalStorage
+        const up = JSON.parse(localStorage.getItem("algoInfinityVerse") || "{}");
+        up.battlesWon = (up.battlesWon || 0) + 1;
+        up.xp = (up.xp || 0) + data.xpAwarded;
+        if (!up.badges) up.badges = [];
+        if (!up.badges.includes(data.badge)) up.badges.push(data.badge);
+        localStorage.setItem("algoInfinityVerse", JSON.stringify(up));
+      } else {
+        submitStatusMsg.style.color = "#ef4444";
+        submitStatusMsg.textContent = `❌ ${data.winnerName} won the battle!`;
+      }
+      
+      setTimeout(() => {
+        alert(submitStatusMsg.textContent);
+        location.reload();
+      }, 3000);
+    });
+    
+    socket.on("battle-submit-result", (data) => {
+      if (!data.success) {
+        submitStatusMsg.style.color = "`#ef4444`";
+        submitStatusMsg.textContent =
+          data.message || data.error || "Submission failed.";
+        submitSolutionBtn.disabled = false;
+        submitSolutionBtn.textContent = "Submit Solution";
+      }
     });
   }
 }
@@ -209,105 +282,47 @@ function renderScoreboard() {
 }
 
 // ─── Actions ───
-if (startBattleBtn) {
-  startBattleBtn.addEventListener("click", async () => {
-    const difficulty = document.getElementById("difficultySelect")?.value;
-    startBattleBtn.disabled = true;
-    startBattleBtn.textContent = "Creating...";
-
-    try {
-      const { battleId } = await apiFetch("/battles", {
-        method: "POST",
-        body: JSON.stringify({ difficulty }), // No opponent email needed
-      });
-
-      currentBattleId = battleId;
-      if (socket) socket.emit('battle-join', { battleId, userId: currentUserId });
-      startPolling(battleId);
-      setStatus("Lobby created!");
-    } catch (err) {
-      console.warn("Alert:", err.message);
-      resetUI();
-    }
-  });
-}
-
-if (joinBattleBtn) {
-  joinBattleBtn.addEventListener("click", async () => {
-    const battleId = document.getElementById("joinBattleId")?.value.trim().toUpperCase();
-    if (!battleId) return;
-
-    joinBattleBtn.disabled = true;
-    joinBattleBtn.textContent = "Joining...";
-
-    try {
-      await apiFetch(`/battles/${battleId}/join`, { method: "POST" });
-      currentBattleId = battleId;
-      if (socket) socket.emit('battle-join', { battleId, userId: currentUserId });
-      startPolling(battleId);
-      setStatus("Joined lobby!");
-    } catch (err) {
-      console.warn("Alert:", err.message);
-      resetUI();
-    }
-  });
-}
-
-if (hostStartBtn) {
-  hostStartBtn.addEventListener("click", async () => {
-    if (!currentBattleId) return;
-    try {
-      await apiFetch(`/battles/${currentBattleId}/start`, { method: "POST" });
-      pollBattle(currentBattleId);
-    } catch (err) {
-      console.warn("Alert:", err.message);
-    }
+if (findMatchBtn) {
+  findMatchBtn.addEventListener("click", () => {
+    if (!socket) return alert("Disconnected from server.");
+    const difficulty = difficultySelect?.value || "Medium";
+    
+    findMatchBtn.disabled = true;
+    if (matchmakingStatus) matchmakingStatus.style.display = "block";
+    
+    socket.emit('find-match', { 
+      userId: currentUserId, 
+      userName: currentUserName, 
+      difficulty 
+    });
   });
 }
 
 if (submitSolutionBtn) {
-  submitSolutionBtn.addEventListener("click", async () => {
-    if (!currentBattleId) return;
+  submitSolutionBtn.addEventListener("click", () => {
+    if (!currentBattleId || !socket) return;
     const code = solutionCode.value || "";
     if (!code.trim()) return;
 
     submitSolutionBtn.disabled = true;
     submitSolutionBtn.textContent = "Submitting...";
-
-    try {
-      const result = await apiFetch(`/battles/${currentBattleId}/submit`, {
-        method: "POST", body: JSON.stringify({ code }),
-      });
-      stopPolling();
-      winnerText.textContent = "🏆 You Won!";
-      xpReward.textContent = result.xpAwarded;
-      loadHistory();
-      renderResult({ winner: currentUserId, xpAwarded: result.xpAwarded });
-    } catch (err) {
-      console.warn("Alert:", err.message);
-      submitSolutionBtn.disabled = false;
-      submitSolutionBtn.textContent = "Submit Solution";
-      pollBattle(currentBattleId);
+    if (submitStatusMsg) {
+      submitStatusMsg.style.color = "#eab308";
+      submitStatusMsg.textContent = "Running tests...";
     }
-  });
-}
 
-if (closeSpectatorBtn) {
-    closeSpectatorBtn.addEventListener("click", () => {
-        spectatorModal.style.display = "none";
-        spectatorTargetId = null;
+    socket.emit('battle-submit', {
+      battleId: currentBattleId,
+      userId: currentUserId,
+      code
     });
+  });
 }
 
 // ─── Real-time typing logic ───
 if (solutionCode) {
     solutionCode.addEventListener('input', () => {
         if (!currentBattleId || !socket) return;
-        socket.emit('battle-code-update', {
-            battleId: currentBattleId,
-            userId: currentUserId,
-            code: solutionCode.value
-        });
         
         // Mock progress updates based on line count for demo purposes
         const lines = solutionCode.value.split('\n').length;
@@ -317,27 +332,11 @@ if (solutionCode) {
             userId: currentUserId,
             progress
         });
-        if (participantsMap[currentUserId]) participantsMap[currentUserId].progress = progress;
-        renderScoreboard();
-    });
-
-    solutionCode.addEventListener('keyup', updateCursor);
-    solutionCode.addEventListener('click', updateCursor);
-
-    function updateCursor() {
-        if (!currentBattleId || !socket) return;
-        const pos = solutionCode.selectionStart;
-        const textToCursor = solutionCode.value.substring(0, pos);
-        const lines = textToCursor.split('\n');
-        const row = lines.length - 1;
-        const col = lines[lines.length - 1].length;
         
-        socket.emit('battle-cursor-update', {
-            battleId: currentBattleId,
-            userId: currentUserId,
-            position: { row, col }
-        });
-    }
+        // Update my own progress locally immediately
+        if (myProgressBar) myProgressBar.style.width = progress + "%";
+        if (myProgressText) myProgressText.textContent = progress + "%";
+    });
 }
 
 // ─── Helpers ───

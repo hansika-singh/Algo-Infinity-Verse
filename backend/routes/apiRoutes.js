@@ -9,7 +9,14 @@ import {
 import { handleAnalyzeResume } from '../handlers/resumeHandlers.js';
 import { handleSubmitFeedback } from '../handlers/feedbackHandlers.js';
 import { handleSubmitInterviewExperience } from '../handlers/interviewHandlers.js';
-import { handleMemoryLog, handleMemoryDue, handleMemoryAll } from '../handlers/memoryHandlers.js';
+import {
+  handleMemoryLog,
+  handleMemoryDue,
+  handleMemoryAll,
+  handleMemoryDelete,
+  handleMemoryStats,
+  handleMemoryReset,
+} from '../handlers/memoryHandlers.js';
 import { handleUserPersonality } from '../handlers/personalityHandlers.js';
 
 export function setupApiRoutes(req, res, pathname) {
@@ -58,15 +65,46 @@ export function setupApiRoutes(req, res, pathname) {
     return handleSubmitInterviewExperience(req, res);
   }
 
-  // Memory Operations
+  // ============================================
+  // MEMORY ROUTES (Spaced Repetition System)
+  // ============================================
+
+  // POST /api/memory/log - Log a memory review
   if (pathname === '/api/memory/log' && req.method === 'POST') {
     return handleMemoryLog(req, res);
   }
+
+  // GET /api/memory/due - Get due cards
   if (pathname === '/api/memory/due' && req.method === 'GET') {
     return handleMemoryDue(req, res);
   }
+
+  // GET /api/memory/all - Get all cards
   if (pathname === '/api/memory/all' && req.method === 'GET') {
     return handleMemoryAll(req, res);
+  }
+
+  // DELETE /api/memory/:topic - Delete a card
+  // Note: pathname will be like /api/memory/Spanish%20Verbs
+  if (pathname.startsWith('/api/memory/') && req.method === 'DELETE') {
+    // Extract topic from pathname
+    const topic = pathname.replace('/api/memory/', '');
+    if (topic && topic.length > 0) {
+      // Add topic to request params
+      req.params = req.params || {};
+      req.params.topic = decodeURIComponent(topic);
+      return handleMemoryDelete(req, res);
+    }
+  }
+
+  // GET /api/memory/stats - Get statistics
+  if (pathname === '/api/memory/stats' && req.method === 'GET') {
+    return handleMemoryStats(req, res);
+  }
+
+  // POST /api/memory/reset - Reset all cards
+  if (pathname === '/api/memory/reset' && req.method === 'POST') {
+    return handleMemoryReset(req, res);
   }
 
   // Coding Personality
