@@ -1,0 +1,177 @@
+/* ===========================================================
+   splash.css — Algo Infinity Verse Loading Animation Styles
+   Extracted from the main styles.css for isolated development.
+   =========================================================== */
+
+/* ── Design Tokens ── */
+:root {
+  --dark-bg-darkest: #0d0d0d;
+  --dark-bg-dark: #1a1a1a;
+  --dark-bg-mid: #262626;
+  --dark-accent: #6b7280;
+  --dark-accent-light: #9ca3af;
+  --dark-text: #e5e7eb;
+}
+
+/* ── Loading Screen Container ── */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--dark-bg-darkest), var(--dark-bg-dark), var(--dark-bg-mid));
+  z-index: 10001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ── Loader container (inner content) ── */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Infinity SVG Wrapper ── */
+.infinity-wrapper {
+  width: 180px;
+  height: 144px;
+  margin-bottom: 2rem;
+}
+
+.infinity-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.infinity-path {
+  fill: none;
+  stroke: #c4b5fd;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Site Name (Typewriter) ── */
+.site-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.4rem;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  min-height: 2.5rem;
+  text-align: center;
+  color: var(--dark-text);
+}
+
+.typed-text {
+  display: inline;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+  color: #d8b4fe;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ── Tagline ── */
+.tagline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  color: #a78bfa;
+  opacity: 0;
+  scale: 0.8;
+}
+
+/* ── Hidden state ── */
+#loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Transition class added by the animation timeline for smooth exit */
+#loading-screen.animating.hidden {
+  transition:
+    opacity 0.6s ease,
+    visibility 0.6s ease;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+    opacity: 1;
+  }
+
+  #loading-screen.animating.hidden {
+    transition: opacity 0.3s ease;
+  }
+
+  #loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .infinity-wrapper {
+    width: 140px;
+    height: 112px;
+    margin-bottom: 1.5rem;
+  }
+
+  .site-name {
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+  }
+
+  .tagline {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .infinity-wrapper {
+    width: 110px;
+    height: 88px;
+    margin-bottom: 1.2rem;
+  }
+
+  .site-name {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+  }
+
+  .tagline {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .infinity-wrapper {
+    width: 90px;
+    height: 72px;
+    margin-bottom: 1rem;
+  }
+
+  .site-name {
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+  }
+
+  .tagline {
+    font-size: 0.65rem;
+  }
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Preview — Algo Infinity Verse</title>
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/pages/leaderboard/leaderboard.css">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-page="leaderboard">
+
+    <!-- Navigation -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Page Content -->
+    <main class="lb-page">
+
+        <div class="lb-container">
+
+            <!-- Header -->
+            <header class="lb-header">
+                <h1 class="lb-title">Leaderboard</h1>
+                <a href="/leaderboard" class="lb-preview-back-link"><i class="fas fa-arrow-left"></i> Back to real leaderboard</a>
+                <p class="lb-preview-note">These are simulated users for preview purposes only</p>
+                <p class="lb-subtitle">Top learners ranked by experience points</p>
+            </header>
+
+            <!-- Filter Bar -->
+            <div class="lb-filter-bar">
+                <div class="lb-period-tabs" role="tablist" aria-label="Leaderboard time period">
+                    <button class="lb-period-tab active" data-period="all" role="tab" aria-selected="true">All-Time</button>
+                    <button class="lb-period-tab" data-period="month" role="tab" aria-selected="false">This Month</button>
+                    <button class="lb-period-tab" data-period="week" role="tab" aria-selected="false">This Week</button>
+                </div>
+                <div class="lb-search">
+                    <i class="fas fa-search lb-search-icon"></i>
+                    <input
+                        type="text"
+                        class="lb-search-input"
+                        id="lbSearchInput"
+                        placeholder="Search by name..."
+                        aria-label="Search leaderboard by name"
+                        autocomplete="off"
+                    >
+                    <button type="button" class="lb-search-clear" id="lbSearchClear" aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Podium (Top 3) -->
+            <div class="lb-podium" id="lbPodium">
+                <!-- #2 Silver -->
+                <div class="lb-podium-card lb-podium-card--silver" id="lbPodium2" data-rank="2">
+                    <span class="lb-podium-rank">2</span>
+                    <div class="lb-podium-avatar" id="lbPodiumAvatar2"></div>
+                    <p class="lb-podium-name" id="lbPodiumName2">—</p>
+                    <p class="lb-podium-xp" id="lbPodiumXp2">—</p>
+                    <p class="lb-podium-level" id="lbPodiumLevel2">—</p>
+                </div>
+                <!-- #1 Gold -->
+                <div class="lb-podium-card lb-podium-card--gold" id="lbPodium1" data-rank="1">
+                    <span class="lb-podium-rank">1</span>
+                    <div class="lb-podium-avatar" id="lbPodiumAvatar1"></div>
+                    <p class="lb-podium-name" id="lbPodiumName1">—</p>
+                    <p class="lb-podium-xp" id="lbPodiumXp1">—</p>
+                    <p class="lb-podium-level" id="lbPodiumLevel1">—</p>
+                </div>
+                <!-- #3 Bronze -->
+                <div class="lb-podium-card lb-podium-card--bronze" id="lbPodium3" data-rank="3">
+                    <span class="lb-podium-rank">3</span>
+                    <div class="lb-podium-avatar" id="lbPodiumAvatar3"></div>
+                    <p class="lb-podium-name" id="lbPodiumName3">—</p>
+                    <p class="lb-podium-xp" id="lbPodiumXp3">—</p>
+                    <p class="lb-podium-level" id="lbPodiumLevel3">—</p>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="lb-loader" id="lbLoader">
+                <div class="lb-loader-spinner"></div>
+                <span class="lb-loader-text">Loading preview data...</span>
+            </div>
+
+            <!-- Table -->
+            <div class="lb-table-wrap hidden" id="lbTableWrap">
+                <div class="lb-table-header">
+                    <span class="lb-col-rank">Rank</span>
+                    <span class="lb-col-avatar"></span>
+                    <span class="lb-col-name">Name</span>
+                    <span class="lb-col-xp">XP</span>
+                    <span class="lb-col-level">Level</span>
+                    <span class="lb-col-change">vs.</span>
+                </div>
+                <div class="lb-table" id="lbTableBody" role="list">
+                    <!-- Rows injected by JS -->
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="lb-empty hidden" id="lbEmpty">
+                <p class="lb-empty-text">No preview data available.</p>
+            </div>
+
+            <!-- Load More -->
+            <div class="lb-load-more-wrap hidden" id="lbLoadMoreWrap">
+                <button class="lb-load-more-btn" id="lbLoadMoreBtn">
+                    Load More Learners <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+
+
+        </div>
+    </main>
+
+    <!-- Profile Modal -->
+    <div class="lb-modal-overlay" id="lbProfileModal">
+        <div class="lb-modal">
+            <button type="button" class="lb-modal-close" id="lbModalClose" aria-label="Close profile">&times;</button>
+            <div class="lb-modal-avatar" id="lbModalAvatar"></div>
+            <h3 class="lb-modal-name" id="lbModalName">—</h3>
+            <div class="lb-modal-stats">
+                <div class="lb-modal-stat">
+                    <div class="lb-modal-stat-value" id="lbModalRank">#—</div>
+                    <div class="lb-modal-stat-label">Rank</div>
+                </div>
+                <div class="lb-modal-stat">
+                    <div class="lb-modal-stat-value" id="lbModalXp">—</div>
+                    <div class="lb-modal-stat-label">XP</div>
+                </div>
+                <div class="lb-modal-stat">
+                    <div class="lb-modal-stat-value" id="lbModalLevel">—</div>
+                    <div class="lb-modal-stat-label">Level</div>
+                </div>
+                <div class="lb-modal-stat">
+                    <div class="lb-modal-stat-value" id="lbModalBadges">—</div>
+                    <div class="lb-modal-stat-label">Total XP</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/script.js"></script>
+    <script src="/theme.js"></script>
+    <script src="/pages/leaderboard/preview.js"></script>
+
+    <script>
+        if (typeof loadPartial === 'function') {
+            loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+                if (typeof initNavbar === 'function') initNavbar();
+            });
+        }
+    </script>
+</body>
+</html>

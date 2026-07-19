@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Splash Playground — Algo Infinity Verse</title>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- GSAP for animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Splash animation styles -->
+  <link rel="stylesheet" href="splash.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0518; overflow: hidden; }
+
+    /* ── Control panel ── */
+    #controls {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20000;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 24px;
+      background: rgba(12, 12, 30, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    #controls button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.04em;
+    }
+
+    #controls button:hover {
+      transform: translateY(-2px);
+    }
+
+    #playBtn {
+      background: linear-gradient(135deg, #667eea, #7c3aed);
+      color: white;
+    }
+
+    #replayBtn {
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+    }
+
+    #replayBtn:hover {
+      background: rgba(255,255,255,0.14);
+      color: white;
+    }
+
+    #controls .status {
+      color: #94a3b8;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    #controls .hint {
+      color: #64748b;
+      font-family: sans-serif;
+      font-size: 0.7rem;
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body data-page="playground">
+
+  <!-- ═══ Loading Screen (same markup as index.html) ═══ -->
+  <div id="loading-screen">
+    <div class="loader-container">
+      <div class="infinity-wrapper">
+        <svg class="infinity-svg" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path class="infinity-path"
+                d="M100,80 C70,15 30,15 30,80 C30,145 70,145 100,80 C130,145 170,145 170,80 C170,15 130,15 100,80" />
+        </svg>
+      </div>
+      <h1 class="site-name">
+        <span class="typed-text"></span><span class="cursor" aria-hidden="true">|</span>
+      </h1>
+      <p class="tagline">Loading the universe of algorithms...</p>
+    </div>
+  </div>
+
+  <!-- ═══ Controls ═══ -->
+  <div id="controls">
+    <button id="playBtn">▶ Play</button>
+    <button id="replayBtn">↻ Replay</button>
+    <span class="status" id="status">Ready</span>
+    <span class="hint">Edit splash.js / splash.css and reload</span>
+  </div>
+
+  <script type="module">
+    import { initLoadingScreen, cleanupLoadingScreen } from './splash.js';
+
+    const playBtn = document.getElementById('playBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const statusEl = document.getElementById('status');
+    const loadingScreen = document.getElementById('loading-screen');
+
+    let checkDone;
+    let replayTimeout;
+    let isPlaying = false;
+
+    function startMonitoring() {
+      clearInterval(checkDone);
+      isPlaying = true;
+      checkDone = setInterval(() => {
+        const tl = window.__loadingTimeline;
+        if (!tl || tl.progress() >= 1) {
+          statusEl.textContent = '✓ Complete';
+          isPlaying = false;
+          clearInterval(checkDone);
+        }
+      }, 200);
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) return; // Prevent overlapping timelines
+      statusEl.textContent = '▶ Playing…';
+      initLoadingScreen();
+      startMonitoring();
+    });
+
+    replayBtn.addEventListener('click', () => {
+      clearTimeout(replayTimeout);
+      clearInterval(checkDone);
+      isPlaying = false;
+
+      // Clean up previous run
+      cleanupLoadingScreen();
+
+      // Reset the loading screen to visible
+      loadingScreen.classList.remove('hidden', 'animating');
+      loadingScreen.style.display = '';
+      loadingScreen.style.opacity = '1';
+      loadingScreen.style.visibility = 'visible';
+
+      // Reset DOM state reliably
+      const path = document.querySelector('.infinity-path');
+      const typedText = document.querySelector('.typed-text');
+      const tagline = document.querySelector('.tagline');
+      const loaderContainer = document.querySelector('.loader-container');
+
+      if (path) path.removeAttribute('style');
+      if (typedText) typedText.textContent = '';
+      if (tagline) tagline.removeAttribute('style');
+      if (loaderContainer) loaderContainer.removeAttribute('style');
+
+      statusEl.textContent = '↻ Replaying…';
+      replayTimeout = setTimeout(() => {
+        initLoadingScreen();
+        startMonitoring();
+      }, 300);
+    });
+
+    console.log('🏗️  Splash Playground ready!');
+    console.log('   • Click "Play" to run the animation');
+    console.log('   • Click "Replay" to reset and run again');
+    console.log('   • Edit splash.js / splash.css and reload');
+  </script>
+</body>
+</html>

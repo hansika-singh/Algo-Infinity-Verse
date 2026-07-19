@@ -38,12 +38,18 @@
     if (loginBtn) loginBtn.href = `${authUrl("/login")}?next=${next}`;
     if (signupBtn) signupBtn.href = `${authUrl("/signup")}?next=${next}`;
 
-    // Re-trigger the slide-in animation every open
+    // Re-trigger entrance animations every open
     const content = modal.querySelector(".auth-gate-modal-content");
+    const iconRing = modal.querySelector(".auth-gate-icon-ring");
     if (content) {
       content.style.animation = "none";
       void content.offsetWidth;
       content.style.animation = "";
+    }
+    if (iconRing) {
+      iconRing.style.animation = "none";
+      void iconRing.offsetWidth;
+      iconRing.style.animation = "";
     }
 
     modal.classList.add("active");
@@ -80,9 +86,7 @@
             lastMatchedProtected = null;
           }
         } else {
-          const text = JSON.stringify(payload);
-          void 0;
-          void 0;
+          JSON.stringify(payload);
         }
       } catch (error) {
         console.error("Guest auth error:", error);
@@ -124,14 +128,6 @@
     {
       selector: ".hero-buttons .btn-primary",
       message: "Login to start practising problems and track your progress.",
-    },
-    {
-      selector: ".nav-cta-btn",
-      message: "Login to start your DSA learning journey.",
-    },
-    {
-      selector: ".nav-cta a",
-      message: "Login to start your learning journey.",
     },
     {
       selector: "#totdBtn",
@@ -180,10 +176,6 @@
       message: "Login to access roadmap steps, quizzes, and challenges.",
     },
     {
-      selector: ".interview-card button.card-btn",
-      message: "Login to access Technical Interview practice.",
-    },
-    {
       selector: ".dashboard-card a[href='/pages/career/resume/resume.html']",
       message: "Login to view your coding resume.",
     },
@@ -199,10 +191,11 @@
     ".nav-logo",
     ".nav-link[href='#home']",
     "#darkModeToggle",
+    "#navSettingsBtn",
+    ".settings-toggle",
     "#menuToggle",
     "#scrollTopBtn",
-    "#backToTopBtn",
-    ".back-to-top",
+
     ".modal-close",
     "#authGateModalClose",
     "#authGateDismiss",
@@ -221,7 +214,6 @@
     "#searchInput",
     "#authGateModal",
     ".auth-gate-modal-content",
-    ".interview-card a.card-btn",
   ];
 
   // Main click interceptor

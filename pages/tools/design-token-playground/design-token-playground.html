@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS Design Token Playground | Algo Infinity Verse</title>
+  <meta name="description" content="Edit Algo Infinity Verse :root design tokens (colors, spacing, fonts) and preview changes live on quiz card and navbar UI." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="design-token-playground.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="design-token-playground">
+  <a href="#dtp-main" class="dtp-skip-link">Skip to main content</a>
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="dtp-hero">
+    <div class="dtp-hero-badge">
+      <i class="fas fa-palette" aria-hidden="true"></i>
+      AIV Theme Customization
+    </div>
+    <h1>
+      CSS Design Token
+      <span class="dtp-hero-accent">Playground</span>
+    </h1>
+    <p>
+      Edit Algo Infinity Verse <code>:root</code> tokens — colors, spacing, and fonts —
+      and see live previews of the quiz card and navbar, matching the README Customization guide.
+    </p>
+  </header>
+
+  <main id="dtp-main" class="dtp-main">
+    <div class="container">
+      <div class="dtp-workspace">
+        <!-- Token editors -->
+        <section class="dtp-panel" aria-labelledby="dtp-tokens-title">
+          <div class="dtp-panel-header">
+            <div class="dtp-panel-title">
+              <i class="fas fa-sliders dtp-panel-icon" aria-hidden="true"></i>
+              <h2 id="dtp-tokens-title">Design tokens</h2>
+            </div>
+            <div class="dtp-actions">
+              <button type="button" id="dtpResetBtn" class="btn btn-secondary" title="Reset to AIV defaults">
+                <i class="fas fa-rotate-left" aria-hidden="true"></i> Reset
+              </button>
+              <button type="button" id="dtpCopyBtn" class="btn btn-primary" title="Copy CSS :root snippet">
+                <i class="fas fa-copy" aria-hidden="true"></i> Copy CSS
+              </button>
+            </div>
+          </div>
+
+          <p class="dtp-readme-note">
+            Mirrors README Customization: edit <code>--primary</code>, <code>--secondary</code>,
+            <code>--accent</code>, fonts, and spacing — then paste into <code>styles.css</code> <code>:root</code>.
+          </p>
+
+          <div class="dtp-token-groups" id="dtpTokenGroups"></div>
+
+          <div class="dtp-snippet-wrap">
+            <div class="dtp-snippet-header">
+              <label for="dtpSnippet" class="dtp-label">CSS snippet</label>
+              <span id="dtpCopyStatus" class="dtp-copy-status" role="status" aria-live="polite"></span>
+            </div>
+            <textarea id="dtpSnippet" class="dtp-snippet" readonly rows="12" aria-label="Generated :root CSS snippet"></textarea>
+          </div>
+        </section>
+
+        <!-- Live previews -->
+        <section class="dtp-panel dtp-preview-panel" aria-labelledby="dtp-preview-title">
+          <div class="dtp-panel-header">
+            <div class="dtp-panel-title">
+              <i class="fas fa-eye dtp-panel-icon" aria-hidden="true"></i>
+              <h2 id="dtp-preview-title">Live preview</h2>
+            </div>
+            <div class="dtp-theme-toggle" role="group" aria-label="Preview theme context">
+              <button type="button" class="dtp-theme-btn active" id="dtpThemeDark" data-theme="dark" aria-pressed="true">
+                <i class="fas fa-moon" aria-hidden="true"></i> Dark
+              </button>
+              <button type="button" class="dtp-theme-btn" id="dtpThemeLight" data-theme="light" aria-pressed="false">
+                <i class="fas fa-sun" aria-hidden="true"></i> Light
+              </button>
+            </div>
+          </div>
+
+          <div id="dtpPreview" class="dtp-preview-root" data-preview-theme="dark">
+            <!-- Mini navbar -->
+            <div class="dtp-preview-section">
+              <h3 class="dtp-preview-label">Navbar</h3>
+              <nav class="dtp-mini-nav" aria-label="Preview navbar">
+                <div class="dtp-mini-nav-brand">
+                  <span class="dtp-mini-logo" aria-hidden="true"><i class="fas fa-infinity"></i></span>
+                  <span class="dtp-mini-brand-text">Algo Infinity Verse</span>
+                </div>
+                <ul class="dtp-mini-nav-links">
+                  <li><a href="#" class="dtp-mini-link active" onclick="return false;">Home</a></li>
+                  <li><a href="#" class="dtp-mini-link" onclick="return false;">Visualizers</a></li>
+                  <li><a href="#" class="dtp-mini-link" onclick="return false;">Quiz</a></li>
+                  <li><a href="#" class="dtp-mini-link" onclick="return false;">Tools</a></li>
+                </ul>
+                <button type="button" class="dtp-mini-cta">Get Started</button>
+              </nav>
+            </div>
+
+            <!-- Quiz card -->
+            <div class="dtp-preview-section">
+              <h3 class="dtp-preview-label">Quiz card</h3>
+              <article class="dtp-quiz-card">
+                <div class="dtp-quiz-card-top">
+                  <span class="dtp-quiz-badge">Arrays · Medium</span>
+                  <span class="dtp-quiz-xp"><i class="fas fa-bolt" aria-hidden="true"></i> +15 XP</span>
+                </div>
+                <h4 class="dtp-quiz-question">What is the time complexity of binary search on a sorted array?</h4>
+                <div class="dtp-quiz-options" role="group" aria-label="Sample quiz options">
+                  <button type="button" class="dtp-quiz-option">O(n)</button>
+                  <button type="button" class="dtp-quiz-option selected">O(log n)</button>
+                  <button type="button" class="dtp-quiz-option">O(1)</button>
+                  <button type="button" class="dtp-quiz-option">O(n log n)</button>
+                </div>
+                <div class="dtp-quiz-footer">
+                  <button type="button" class="dtp-quiz-btn secondary">Skip</button>
+                  <button type="button" class="dtp-quiz-btn primary">Submit Answer</button>
+                </div>
+              </article>
+            </div>
+
+            <!-- Swatches + type -->
+            <div class="dtp-preview-section">
+              <h3 class="dtp-preview-label">Token swatches &amp; type</h3>
+              <div class="dtp-swatches" id="dtpSwatches" aria-label="Color token swatches"></div>
+              <div class="dtp-type-sample">
+                <p class="dtp-type-display">Display · Orbitron</p>
+                <p class="dtp-type-body">Body text uses the body font token for readable UI copy across quiz cards and navigation.</p>
+                <code class="dtp-type-mono">const tokens = { primary: 'var(--primary)' };</code>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="design-token-playground.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

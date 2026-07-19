@@ -282,7 +282,10 @@ function loadLesson(mIndex, lIndex) {
     markLessonComplete(lesson.id);
   }
 
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('neo4j', elements.lessonContent);
+  }
   elements.cypherEditor.value = lesson.defaultCode || '';
   elements.jsonResults.innerHTML =
     '<span class="text-gray-400 italic">Run a query to see results...</span>';

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quorum Replication Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Dynamo-style N/W/R quorum replication — tunable consistency, write/read quorums, staleness demo, and strong consistency guarantee." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="quorum-replication.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="quorum-replication">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="hero qrv-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">How Does Cassandra Balance Consistency and Availability?</span>
+        <span class="main-title qrv-gradient">Quorum Replication</span>
+        <span class="subtitle">Tunable N / W / R — Dynamo-Style Consistency Visualized</span>
+      </h1>
+      <p class="section-subtitle">
+        Adjust replica count, write quorum, and read quorum live. Watch parallel writes hit W nodes, reads resolve from R nodes with version-based repair, and see exactly when a stale read can — or mathematically cannot — happen.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary qrv-btn-primary">
+          <i class="fas fa-server"></i> Open Visualizer
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <!-- Config card -->
+      <div class="qrv-control-card">
+
+        <div class="qrv-sliders-row">
+
+          <div class="qrv-slider-group">
+            <div class="qrv-slider-label">
+              <span class="qrv-param-badge qrv-badge-n">N</span>
+              Replicas
+            </div>
+            <input type="range" id="qrvSliderN" min="3" max="7" step="1" value="3" class="qrv-slider" />
+            <span class="qrv-slider-val" id="qrvValN">3</span>
+          </div>
+
+          <div class="qrv-slider-group">
+            <div class="qrv-slider-label">
+              <span class="qrv-param-badge qrv-badge-w">W</span>
+              Write Quorum
+            </div>
+            <input type="range" id="qrvSliderW" min="1" max="7" step="1" value="2" class="qrv-slider" />
+            <span class="qrv-slider-val" id="qrvValW">2</span>
+          </div>
+
+          <div class="qrv-slider-group">
+            <div class="qrv-slider-label">
+              <span class="qrv-param-badge qrv-badge-r">R</span>
+              Read Quorum
+            </div>
+            <input type="range" id="qrvSliderR" min="1" max="7" step="1" value="2" class="qrv-slider" />
+            <span class="qrv-slider-val" id="qrvValR">2</span>
+          </div>
+
+          <div class="qrv-consistency-indicator" id="qrvConsistencyBadge">
+            <div class="qrv-ci-formula" id="qrvCiFormula">W+R = 4 &gt; N=3</div>
+            <div class="qrv-ci-verdict" id="qrvCiVerdict">✅ Strong Consistency</div>
+            <div class="qrv-ci-desc" id="qrvCiDesc">Read quorum always overlaps write quorum</div>
+          </div>
+
+        </div>
+
+        <div class="qrv-actions-row">
+          <div class="qrv-write-group">
+            <input type="text" id="qrvWriteVal" class="qrv-text-input" placeholder="Value to write…" maxlength="20" value="hello" />
+            <button class="btn qrv-btn-primary qrv-action-btn" id="qrvWriteBtn">
+              <i class="fas fa-pen"></i> Write
+            </button>
+          </div>
+          <button class="btn qrv-btn-read qrv-action-btn" id="qrvReadBtn">
+            <i class="fas fa-magnifying-glass"></i> Read
+          </button>
+          <button class="btn qrv-btn-stale qrv-action-btn" id="qrvStaleBtn">
+            <i class="fas fa-triangle-exclamation"></i> Staleness Demo
+          </button>
+          <button class="btn qrv-btn-strong qrv-action-btn" id="qrvStrongBtn">
+            <i class="fas fa-shield-halved"></i> Strong Consistency Demo
+          </button>
+          <button class="btn btn-secondary qrv-action-btn" id="qrvResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Status -->
+      <div class="qrv-status" id="qrvStatus">
+        Adjust N, W, R above, then write a value or read from the replicas.
+      </div>
+
+      <!-- Main layout -->
+      <div class="qrv-main-layout">
+
+        <!-- Replica ring -->
+        <div class="qrv-replica-col">
+          <div class="qrv-panel-card qrv-ring-card">
+            <div class="qrv-panel-title"><i class="fas fa-circle-nodes"></i> Replica Nodes</div>
+            <div class="qrv-ring-wrap" id="qrvRingWrap">
+              <svg id="qrvRingSvg" class="qrv-ring-svg"></svg>
+              <div class="qrv-nodes-overlay" id="qrvNodesOverlay"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: quorum view + log -->
+        <div class="qrv-right-col">
+
+          <div class="qrv-panel-card qrv-quorum-card">
+            <div class="qrv-panel-title"><i class="fas fa-layer-group"></i> Quorum Activity</div>
+            <div class="qrv-quorum-area" id="qrvQuorumArea">
+              <span class="qrv-empty-text">Run a write or read to see quorum activity.</span>
+            </div>
+          </div>
+
+          <div class="qrv-panel-card qrv-result-card" id="qrvResultCard" style="display:none">
+            <div class="qrv-panel-title"><i class="fas fa-check-circle"></i> Operation Result</div>
+            <div class="qrv-result-body" id="qrvResultBody"></div>
+          </div>
+
+          <div class="qrv-panel-card">
+            <div class="qrv-panel-title"><i class="fas fa-list"></i> Operation Log</div>
+            <div class="qrv-log-area" id="qrvLog">
+              <span class="qrv-empty-text">Operations appear here.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🗄️</span> Quorum Replication Explained</h2>
+      <div class="qrv-learn-grid">
+
+        <div class="qrv-learn-card qrv-learn-nwr">
+          <div class="qrv-learn-icon">🔢</div>
+          <h3>N, W, R Explained</h3>
+          <p>
+            <strong>N</strong> = total replicas storing the data.
+            <strong>W</strong> = replicas that must acknowledge a write before it's considered successful.
+            <strong>R</strong> = replicas consulted on a read — the highest version wins.
+            These three numbers are per-request knobs in Cassandra and DynamoDB.
+          </p>
+        </div>
+
+        <div class="qrv-learn-card qrv-learn-strong">
+          <div class="qrv-learn-icon">🔒</div>
+          <h3>Strong Consistency: W + R &gt; N</h3>
+          <p>
+            If W + R &gt; N, the write and read quorums <em>must</em> overlap — at least one node in any read quorum also received the latest write. The read always sees the freshest data. Cassandra calls this QUORUM + QUORUM with N=3, W=2, R=2.
+          </p>
+        </div>
+
+        <div class="qrv-learn-card qrv-learn-eventual">
+          <div class="qrv-learn-icon">⏳</div>
+          <h3>Eventual Consistency: W + R ≤ N</h3>
+          <p>
+            If W + R ≤ N, write and read quorums <em>may not overlap</em>. A read can hit only nodes that haven't received the latest write yet — returning stale data. The trade-off: lower latency and higher availability during network partitions.
+          </p>
+        </div>
+
+        <div class="qrv-learn-card qrv-learn-repair">
+          <div class="qrv-learn-icon">🔧</div>
+          <h3>Read Repair</h3>
+          <p>
+            When a read quorum returns mixed versions, the coordinator returns the highest version to the client and asynchronously sends the latest value back to the stale replicas. This is "read repair" — how Cassandra heals inconsistency without a full sync.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="quorum-replication.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

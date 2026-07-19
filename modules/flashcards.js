@@ -1,4 +1,5 @@
 /* global quizQuestions, userProgress, saveUserData, showNotification */
+import { playFlipSound, toggleSound, isSoundEnabled } from './audio.js';
 
 const CATEGORY_LABELS = {
   arrays: 'Arrays',
@@ -26,7 +27,8 @@ function buildFlashcards(category) {
     question: q.question,
     answer: q.options[q.correct] + (q.explanation ? ' — ' + q.explanation : ''),
     options: q.options,
-    correctIndex: q.correct
+    correctIndex: q.correct,
+    explanation: q.explanation || ''
   }));
 }
 
@@ -59,9 +61,13 @@ function renderFlashcard() {
   questionEl.textContent = card.question;
   answerEl.textContent = '';
 
+  const flashcard = document.querySelector('.flashcard');
+  if (flashcard) flashcard.classList.remove('is-revealed');
+
   if (revealBtn) {
     revealBtn.disabled = false;
-    revealBtn.innerHTML = '<i class="fas fa-eye"></i> Reveal Answer';
+    revealBtn.style.display = '';
+    revealBtn.textContent = 'Reveal Options';
   }
 
   if (totalText) totalText.textContent = `Card ${currentCardIndex + 1} of ${flashcards.length}`;
@@ -73,39 +79,99 @@ function renderFlashcard() {
 }
 
 function revealAnswer() {
+  if (isCardFlipped) return;
+  playFlipSound();
   const answerEl = document.getElementById('flashcardAnswer');
   const revealBtn = document.getElementById('flashcardsRevealBtn');
   const hintEl = document.getElementById('flashcardsSmallHint');
 
   if (!answerEl || !revealBtn) return;
 
-  if (isCardFlipped) {
-    const card = flashcards[currentCardIndex];
-    const optionsHtml = card.options.map((opt, i) =>
-      `<div class="flashcard-option ${i === card.correctIndex ? 'correct' : ''}">${opt}</div>`
-    ).join('');
-    answerEl.innerHTML = `<div class="flashcard-options">${optionsHtml}</div>`;
-    revealBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Show Explanation';
-    if (hintEl) hintEl.textContent = 'Green highlight indicates the correct answer.';
-    return;
-  }
+  const card = flashcards[currentCardIndex];
+  if (!card) return;
 
   revealedCards.add(currentCardIndex);
-  answerEl.textContent = flashcards[currentCardIndex].answer;
-  revealBtn.innerHTML = '<i class="fas fa-list"></i> Show Options';
+
+  const optionsHtml = card.options.map((opt, i) =>
+    `<div class="flashcard-option" data-option-index="${i}">${opt}</div>`
+  ).join('');
+  answerEl.innerHTML = `<div class="flashcard-options">${optionsHtml}</div>`;
+  revealBtn.style.display = 'none';
+  if (hintEl) hintEl.textContent = '';
   isCardFlipped = true;
+
+  const flashcard = document.querySelector('.flashcard');
+  if (flashcard) flashcard.classList.add('is-revealed');
 
   const progressText = document.getElementById('flashcardsProgressText');
   if (progressText) progressText.textContent = `Reviewed ${revealedCards.size} / ${flashcards.length}`;
-  if (hintEl) hintEl.textContent = '';
   updateFlashcardProgress();
+}
+
+function handleOptionClick(e) {
+  const optionEl = e.target.closest('.flashcard-option');
+  if (!optionEl) return;
+  if (optionEl.classList.contains('correct') || optionEl.classList.contains('incorrect')) return;
+
+  const card = flashcards[currentCardIndex];
+  if (!card) return;
+  const answerEl = document.getElementById('flashcardAnswer');
+
+  const selectedIndex = parseInt(optionEl.dataset.optionIndex);
+  const isCorrect = selectedIndex === card.correctIndex;
+
+  if (isCorrect) {
+    optionEl.classList.add('correct');
+  } else {
+    optionEl.classList.add('incorrect');
+    document.querySelectorAll('.flashcard-option').forEach(el => {
+      if (parseInt(el.dataset.optionIndex) === card.correctIndex) {
+        el.classList.add('correct');
+      }
+    });
+  }
+
+  const explanationHtml = card.explanation
+    ? `<div class="flashcard-explanation">${card.explanation}</div>`
+    : '';
+  answerEl.insertAdjacentHTML('beforeend', explanationHtml);
 }
 
 function navigateFlashcard(direction) {
   const newIndex = currentCardIndex + direction;
   if (newIndex < 0 || newIndex >= flashcards.length) return;
-  currentCardIndex = newIndex;
-  renderFlashcard();
+  playFlipSound();
+
+  const inner = document.querySelector('.flashcard-inner');
+  if (!inner) {
+    currentCardIndex = newIndex;
+    renderFlashcard();
+    return;
+  }
+
+  const rotation = direction > 0 ? '-180deg' : '180deg';
+  const reverseRotation = direction > 0 ? '180deg' : '-180deg';
+
+  inner.style.transition = 'transform 0.25s ease';
+  inner.style.transform = `rotateY(${rotation})`;
+
+  setTimeout(() => {
+    currentCardIndex = newIndex;
+    renderFlashcard();
+
+    inner.style.transition = 'none';
+    inner.style.transform = `rotateY(${reverseRotation})`;
+
+    requestAnimationFrame(() => {
+      inner.style.transition = 'transform 0.25s ease';
+      inner.style.transform = 'rotateY(0deg)';
+
+      setTimeout(() => {
+        inner.style.transition = '';
+        inner.style.transform = '';
+      }, 300);
+    });
+  }, 280);
 }
 
 function switchFlashcardCategory(category) {
@@ -143,6 +209,9 @@ export function initFlashcardsRevision() {
   if (prevBtn) prevBtn.addEventListener('click', () => navigateFlashcard(-1));
   if (nextBtn) nextBtn.addEventListener('click', () => navigateFlashcard(1));
 
+  const answerEl = document.getElementById('flashcardAnswer');
+  if (answerEl) answerEl.addEventListener('click', handleOptionClick);
+
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
@@ -150,6 +219,23 @@ export function initFlashcardsRevision() {
       switchFlashcardCategory(btn.dataset.flashcardsCategory);
     });
   });
+
+  const soundToggle = document.getElementById('flashcardsSoundToggle');
+  if (soundToggle) {
+    const updateSoundIcon = () => {
+      const enabled = isSoundEnabled();
+      soundToggle.innerHTML = enabled
+        ? '<i class="fas fa-volume-up"></i>'
+        : '<i class="fas fa-volume-mute"></i>';
+      soundToggle.classList.toggle('muted', !enabled);
+    };
+    updateSoundIcon();
+    soundToggle.addEventListener('click', () => {
+      toggleSound();
+      updateSoundIcon();
+      showNotification(isSoundEnabled() ? 'Sound on' : 'Sound off', 'info');
+    });
+  }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') navigateFlashcard(-1);

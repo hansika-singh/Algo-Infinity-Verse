@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPU Pipeline &amp; Branch Predictor Visualizer · Algo Infinity Verse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pipeline.css">
+</head>
+<body>
+
+<div class="starfield" id="starfield"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">∞</span>
+    <div class="brand-text">
+      <span class="brand-name">Algo</span>
+      <span class="brand-sub">INFINITY VERSE</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <span>Learn</span><span>Practice</span><span class="active">Interview</span><span>Discussions</span>
+  </nav>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <p class="eyebrow">COMPUTER ARCHITECTURE · PIPELINING</p>
+    <h1>Pipeline <span class="accent">&amp; Predictor Engine</span></h1>
+    <p class="subhead">Every wrong guess is perfectly good work, thrown in the trash.</p>
+    <p class="lede">Modern CPUs overlap instructions across a 5-stage pipeline (<strong>Fetch, Decode, Execute, Memory, Write-back</strong>) to keep throughput high. But a data hazard forces a stall, and a mispredicted branch forces a <strong>flush</strong> — discarding real, completed work. Write a small loop below and watch both happen.</p>
+  </section>
+
+  <section class="panel editor-panel">
+    <div class="editor-grid">
+      <div class="editor-col">
+        <div class="control-label"><span>Assembly (ADD/SUB/ADDI/LW/SW/BEQ/BNE/J, labels supported)</span></div>
+        <textarea id="programInput" spellcheck="false">LOOP:
+  ADD R2, R2, R3
+  SUB R1, R1, R3
+  BNE R1, R0, LOOP
+  ADD R4, R2, R0</textarea>
+        <div class="control-label" style="margin-top:12px;"><span>Preset programs</span></div>
+        <div class="preset-row">
+          <button class="btn btn-ghost btn-sm" id="presetLoop">Loop w/ hazard chain</button>
+          <button class="btn btn-ghost btn-sm" id="presetIndep">No-hazard baseline</button>
+          <button class="btn btn-ghost btn-sm" id="presetRaw">Back-to-back RAW hazard</button>
+        </div>
+      </div>
+      <div class="editor-col regs-col">
+        <div class="control-label"><span>Initial registers</span></div>
+        <div class="reg-inputs" id="regInputs"></div>
+        <div class="control-label" style="margin-top:12px;"><span>Predictor cold-start state</span></div>
+        <select id="predictorInit">
+          <option value="0">Strongly Not Taken</option>
+          <option value="1" selected>Weakly Not Taken</option>
+          <option value="2">Weakly Taken</option>
+          <option value="3">Strongly Taken</option>
+        </select>
+        <button class="btn btn-primary full" id="btnRun" style="margin-top:16px;">▶ Run Simulation</button>
+        <p class="error-text" id="errorText"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel grid-panel">
+    <div class="view-header">
+      <h2>Pipeline Timing Diagram <span class="view-tag">rows = instructions · columns = clock cycles</span></h2>
+    </div>
+    <div class="controls-row">
+      <button class="btn btn-ghost" id="btnStep">Step ⏭</button>
+      <button class="btn btn-primary" id="btnPlay">▶ Play</button>
+      <button class="btn btn-ghost" id="btnRestart">⏮ Restart</button>
+      <div class="control-group">
+        <label for="speedSlider">Speed <span id="speedVal">300ms/cycle</span></label>
+        <input type="range" id="speedSlider" min="60" max="800" step="20" value="300">
+      </div>
+      <span class="cycle-readout" id="cycleReadout">cycle 0 / 0</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-item"><span class="swatch if"></span> Fetch</span>
+      <span class="legend-item"><span class="swatch id"></span> Decode</span>
+      <span class="legend-item"><span class="swatch ex"></span> Execute</span>
+      <span class="legend-item"><span class="swatch mem"></span> Memory</span>
+      <span class="legend-item"><span class="swatch wb"></span> Write-back</span>
+      <span class="legend-item"><span class="swatch stall"></span> Stall (bubble)</span>
+      <span class="legend-item"><span class="swatch flush"></span> Flushed (mispredict)</span>
+    </div>
+    <div class="grid-scroll" id="gridScroll">
+      <div class="grid-wrap" id="gridWrap"></div>
+    </div>
+  </section>
+
+  <section class="panel dual-view">
+    <div class="view-col">
+      <div class="view-header">
+        <h2>2&#8209;Bit Branch Predictor <span class="view-tag">saturating counter, one per branch address</span></h2>
+      </div>
+      <svg id="predictorSvg" viewBox="0 0 700 260" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div class="view-col">
+      <div class="view-header">
+        <h2>Predictor Log <span class="view-tag">updates as each branch resolves in EX</span></h2>
+      </div>
+      <div class="predictor-log" id="predictorLog"></div>
+    </div>
+  </section>
+
+  <section class="panel stats-panel">
+    <div class="view-header">
+      <h2>Performance Readout <span class="view-tag">measured vs. ideal, live as cycles play</span></h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><span class="stat-label">Cycles elapsed</span><span class="stat-value" id="statCycles">–</span></div>
+      <div class="stat"><span class="stat-label">Ideal cycles (no stalls/flushes)</span><span class="stat-value" id="statIdeal">–</span></div>
+      <div class="stat"><span class="stat-label">Stall cycles</span><span class="stat-value" id="statStalls">–</span></div>
+      <div class="stat"><span class="stat-label">Flushed instructions</span><span class="stat-value" id="statFlushed">–</span></div>
+      <div class="stat"><span class="stat-label">Mispredicts</span><span class="stat-value" id="statMispredicts">–</span></div>
+      <div class="stat"><span class="stat-label">Prediction accuracy</span><span class="stat-value" id="statAccuracy">–</span></div>
+    </div>
+  </section>
+
+  <footer class="foot-note">
+    Built as a Pipeline &amp; Predictor Engine · Algo Infinity Verse
+  </footer>
+
+</main>
+
+<script src="pipeline-core.js"></script>
+<script src="pipeline.js"></script>
+</body>
+</html>

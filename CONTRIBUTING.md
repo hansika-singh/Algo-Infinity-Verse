@@ -9,22 +9,16 @@ Thank you for your interest in contributing! Please follow these guidelines to e
 - **Follow code style** - Maintain consistency with the existing codebase.
 - **Use proper labels** - Apply appropriate labels to your issues and pull requests.
 
-## Issue Claiming Process
+## Issue Assignment
 
-This project uses an automated issue assignment system to keep contributions fair and self-managing.
+Issues are manually assigned by maintainers. To work on an issue:
 
-### Claiming an Issue
+1. Find an open issue that interests you.
+2. Comment on the issue expressing your interest and relevant experience.
+3. Wait for a maintainer to assign it to you before starting work.
+4. If the issue is already assigned, check if it is actively being worked on or ask about alternatives.
 
-1. Find an open issue that interests you with no assignee.
-2. Comment `/claim` on the issue.
-3. A bot will automatically assign the issue to you and post a confirmation comment.
-4. If the issue is already assigned to someone else, you'll be notified that it's taken.
-
-### Staying Active
-
-- Issues are automatically unassigned after **7 days of inactivity** (no comments, commits, or updates).
-- If you're still working on the issue, leave a status update comment to keep it active.
-- After unassignment, the issue reopens for anyone to claim with `/claim`.
+<b>Note</b>: A contributor would be assigned to maximum of 5 issues at a time.
 
 ## Pull Request Process
 

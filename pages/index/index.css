@@ -286,6 +286,20 @@
 
 /* ===== KEYBOARD SHORTCUTS STYLES ===== */
 
+/* ── Soft pastel color tokens for the shortcuts modal ── */
+:root {
+  --sc-pastel-lavender: #c4b5fd;
+  --sc-pastel-periwinkle: #a5b4fc;
+  --sc-pastel-pink: #f9a8d4;
+  --sc-pastel-blue: #93c5fd;
+  --sc-pastel-peach: #fed7aa;
+  --sc-pastel-mint: #a7f3d0;
+  --sc-pastel-rose: #fda4af;
+  --sc-pastel-lavender-rgb: 196, 181, 253;
+  --sc-pastel-periwinkle-rgb: 165, 180, 252;
+}
+
+/* ── Toggle button ── */
 .shortcuts-toggle-btn {
   position: fixed;
   bottom: 55px;
@@ -295,236 +309,311 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(196, 181, 253, 0.2);
   border-radius: 12px;
-  color: var(--text-primary);
+  color: #e2e8f0;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   font-family: 'Poppins', sans-serif;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .shortcuts-toggle-btn:hover {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
+  background: linear-gradient(135deg, rgba(196, 181, 253, 0.15), rgba(165, 180, 252, 0.1));
+  border-color: var(--sc-pastel-lavender);
+  color: #f1f5f9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 6px 20px rgba(196, 181, 253, 0.2);
 }
 
 .shortcuts-toggle-btn i {
   font-size: 1rem;
+  color: var(--sc-pastel-lavender);
+}
+
+.shortcuts-toggle-btn:hover i {
+  color: var(--sc-pastel-periwinkle);
 }
 
 .shortcuts-toggle-btn .shortcut-hint {
   font-size: 0.7rem;
-  opacity: 0.6;
+  opacity: 0.5;
   font-weight: 400;
 }
 
+/* ── Modal overlay ── */
+.shortcuts-modal {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.shortcuts-modal.shortcuts-modal--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ── Modal content (single seamless card) ── */
 .shortcuts-modal .modal-content {
-  max-width: 700px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  margin-top: 70px;
+  max-width: 960px;
+  margin-top: 20px;
+  padding: 22px 28px 22px;
+  transform: translateY(12px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  background: linear-gradient(170deg, rgba(15, 23, 42, 0.98), rgba(20, 14, 35, 0.98));
+  border: 1px solid rgba(196, 181, 253, 0.15);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(196, 181, 253, 0.05);
+}
+
+.shortcuts-modal.shortcuts-modal--visible .modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
 }
 
 .shortcuts-modal-content {
-  padding: 0 !important;
+  padding: 0;
 }
 
-.shortcuts-modal .modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border-color);
+/* ── Card header (heading + close button, inline with content) ── */
+.shortcuts-modal .shortcuts-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
 }
 
-.shortcuts-modal .modal-header h3 {
+.shortcuts-modal .shortcuts-card-header h3 {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--sc-pastel-lavender);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.shortcuts-modal .modal-header h3 i {
-  color: var(--primary);
+.shortcuts-modal .shortcuts-card-header h3 i {
+  color: var(--sc-pastel-lavender);
+  font-size: 1.2rem;
 }
 
-.shortcuts-modal .modal-body {
-  padding: 20px 24px 16px;
+/* ── Remove cyan focus outline on the close button ── */
+.shortcuts-modal .modal-close:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .shortcuts-intro {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
   margin-bottom: 20px;
+  letter-spacing: 0.01em;
 }
 
+/* ── Grid layout ── */
 .shortcuts-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
 }
 
+/* ── Section cards with pastel-tinted accents ── */
 .shortcuts-section {
-  background: var(--bg-primary);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
-  border: 1px solid var(--border-color);
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.shortcuts-section:hover {
+  transform: translateY(-1px);
+}
+
+/* Navigation section — lavender tint */
+.shortcuts-section:has(h4 i.fa-compass) {
+  background: rgba(196, 181, 253, 0.06);
+  border: 1px solid rgba(196, 181, 253, 0.12);
+}
+.shortcuts-section:has(h4 i.fa-compass):hover {
+  box-shadow: 0 4px 20px rgba(196, 181, 253, 0.08);
+  border-color: rgba(196, 181, 253, 0.22);
+}
+
+/* Search section — blue tint */
+.shortcuts-section:has(h4 i.fa-search) {
+  background: rgba(147, 197, 253, 0.06);
+  border: 1px solid rgba(147, 197, 253, 0.12);
+}
+.shortcuts-section:has(h4 i.fa-search):hover {
+  box-shadow: 0 4px 20px rgba(147, 197, 253, 0.08);
+  border-color: rgba(147, 197, 253, 0.22);
+}
+
+/* Code Editor section — periwinkle tint */
+.shortcuts-section:has(h4 i.fa-code) {
+  background: rgba(165, 180, 252, 0.06);
+  border: 1px solid rgba(165, 180, 252, 0.12);
+}
+.shortcuts-section:has(h4 i.fa-code):hover {
+  box-shadow: 0 4px 20px rgba(165, 180, 252, 0.08);
+  border-color: rgba(165, 180, 252, 0.22);
+}
+
+/* General section — peach tint */
+.shortcuts-section:has(h4 i.fa-globe) {
+  background: rgba(254, 215, 170, 0.05);
+  border: 1px solid rgba(254, 215, 170, 0.12);
+}
+.shortcuts-section:has(h4 i.fa-globe):hover {
+  box-shadow: 0 4px 20px rgba(254, 215, 170, 0.08);
+  border-color: rgba(254, 215, 170, 0.22);
 }
 
 .shortcuts-section h4 {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #e2e8f0;
   margin: 0 0 12px 0;
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: 0.02em;
 }
 
 .shortcuts-section h4 i {
-  color: var(--primary);
+  font-size: 0.9rem;
 }
 
+/* Section-specific icon colors */
+.shortcuts-section:has(h4 i.fa-compass) h4 i { color: var(--sc-pastel-lavender); }
+.shortcuts-section:has(h4 i.fa-search) h4 i { color: var(--sc-pastel-blue); }
+.shortcuts-section:has(h4 i.fa-code) h4 i { color: var(--sc-pastel-periwinkle); }
+.shortcuts-section:has(h4 i.fa-globe) h4 i { color: var(--sc-pastel-peach); }
+
+/* ── Table ── */
 .shortcuts-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .shortcuts-table tr {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s ease;
+  border-radius: 6px;
 }
 
 .shortcuts-table tr:last-child {
   border-bottom: none;
 }
 
+.shortcuts-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .shortcuts-table td {
-  padding: 6px 0;
-  color: var(--text-secondary);
+  padding: 6px 4px;
+  color: #94a3b8;
+  vertical-align: middle;
 }
 
 .shortcuts-table td:first-child {
-  color: var(--text-primary);
+  color: #cbd5e1;
   font-weight: 500;
-  min-width: 120px;
+  min-width: 130px;
+  white-space: nowrap;
 }
 
+/* ── kbd styling ── */
 .shortcuts-table kbd {
   display: inline-block;
   padding: 2px 8px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: 'Fira Code', monospace;
-  color: var(--text-primary);
-}
-
-.shortcuts-footer {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-color);
-  text-align: center;
-}
-
-.shortcuts-tip {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-.shortcuts-tip i {
-  color: #fbbf24;
-  margin-right: 6px;
-}
-
-.shortcuts-tip kbd {
-  display: inline-block;
-  padding: 1px 6px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 5px;
   font-size: 0.7rem;
-  font-family: 'Fira Code', monospace;
   font-weight: 600;
+  font-family: 'Fira Code', monospace;
+  color: #e2e8f0;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.shortcuts-modal .modal-footer {
-  padding: 12px 24px 20px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
+.shortcuts-table tr:hover kbd {
+  border-color: rgba(196, 181, 253, 0.3);
+  background: rgba(30, 41, 59, 1);
 }
 
-.shortcuts-modal .modal-footer kbd {
-  display: inline-block;
-  padding: 1px 6px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-family: 'Fira Code', monospace;
-  font-weight: 600;
-}
+
 
 body.modal-open {
   overflow: hidden;
 }
 
+/* Hide navbar when shortcuts modal is open */
+body.shortcuts-modal-open .navbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 /* ===== DARK MODE OVERRIDES ===== */
 
 .dark .shortcuts-toggle-btn {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f1f5f9;
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(196, 181, 253, 0.2);
+  color: #e2e8f0;
 }
 
 .dark .shortcuts-toggle-btn:hover {
-  background: #7c3aed;
-  border-color: #7c3aed;
-}
-
-.dark .shortcuts-section {
-  background: #0f172a;
-  border-color: #334155;
-}
-
-.dark .shortcuts-table tr {
-  border-color: #334155;
-}
-
-.dark .shortcuts-table kbd {
-  background: #1e293b;
-  border-color: #334155;
+  background: linear-gradient(135deg, rgba(196, 181, 253, 0.15), rgba(165, 180, 252, 0.1));
+  border-color: var(--sc-pastel-lavender);
   color: #f1f5f9;
 }
 
 .dark .shortcuts-modal .modal-content {
-  background: #1e293b;
+  background: linear-gradient(170deg, rgba(15, 23, 42, 0.98), rgba(20, 14, 35, 0.98));
+  border-color: rgba(196, 181, 253, 0.15);
 }
 
-.dark .shortcuts-modal .modal-header {
-  border-color: #334155;
+.dark .shortcuts-table tr {
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
-.dark .shortcuts-modal .modal-footer {
-  border-color: #334155;
+.dark .shortcuts-table kbd {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(148, 163, 184, 0.15);
+  color: #e2e8f0;
 }
 
-.dark .shortcuts-tip kbd {
-  background: #0f172a;
-  border-color: #334155;
-  color: #f1f5f9;
+.dark .shortcuts-section:has(h4 i.fa-compass) {
+  background: rgba(196, 181, 253, 0.06);
+  border-color: rgba(196, 181, 253, 0.12);
+}
+
+.dark .shortcuts-section:has(h4 i.fa-search) {
+  background: rgba(147, 197, 253, 0.06);
+  border-color: rgba(147, 197, 253, 0.12);
+}
+
+.dark .shortcuts-section:has(h4 i.fa-code) {
+  background: rgba(165, 180, 252, 0.06);
+  border-color: rgba(165, 180, 252, 0.12);
+}
+
+.dark .shortcuts-section:has(h4 i.fa-globe) {
+  background: rgba(254, 215, 170, 0.05);
+  border-color: rgba(254, 215, 170, 0.12);
 }
 
 .dark .search-suggestions {
@@ -535,11 +624,11 @@ body.modal-open {
 
 .dark .suggestion-item:hover,
 .dark .suggestion-item:focus {
-  background: rgba(124, 58, 237, 0.15);
+  background: rgba(196, 181, 253, 0.12);
 }
 
 .dark .suggestion-item.active {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(196, 181, 253, 0.18);
 }
 
 .dark .suggestion-text .highlight {
@@ -604,11 +693,11 @@ body.modal-open {
 
   .shortcuts-table td {
     font-size: 0.8rem;
-    padding: 4px 0;
+    padding: 4px 4px;
   }
 
   .shortcuts-table td:first-child {
-    min-width: 80px;
+    min-width: 90px;
   }
 
   /* Search responsive */
@@ -649,14 +738,11 @@ body.modal-open {
   .shortcuts-modal .modal-content {
     max-width: 98%;
     margin: 10px;
+    margin-top: 60px;
   }
 
-  .shortcuts-modal .modal-header {
-    padding: 14px 16px 12px;
-  }
-
-  .shortcuts-modal .modal-body {
-    padding: 14px 16px 12px;
+  .shortcuts-modal .modal-content {
+    padding: 16px 18px 18px;
   }
 
   .shortcuts-section {
@@ -665,11 +751,11 @@ body.modal-open {
 
   .shortcuts-table td {
     font-size: 0.75rem;
-    padding: 3px 0;
+    padding: 3px 2px;
   }
 
   .shortcuts-table td:first-child {
-    min-width: 60px;
+    min-width: 70px;
   }
 
   .shortcuts-table kbd {
@@ -717,5 +803,19 @@ body.modal-open {
   }
   .shortcuts-toggle-btn:hover {
     transform: none;
+  }
+  .shortcuts-section {
+    transition: none;
+  }
+  .shortcuts-section:hover {
+    transform: none;
+  }
+  .shortcuts-modal,
+  .shortcuts-modal .modal-content {
+    transition: none;
+  }
+  .shortcuts-table tr:hover kbd {
+    border-color: rgba(148, 163, 184, 0.15);
+    background: rgba(30, 41, 59, 0.8);
   }
 }

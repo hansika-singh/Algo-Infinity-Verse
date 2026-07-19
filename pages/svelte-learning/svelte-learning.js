@@ -570,6 +570,12 @@ function changeModule(moduleId) {
     }
 }
 
+// --- Helper: HTML-escape text to prevent <script> etc. from breaking innerHTML ---
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // --- Rendering Functions ---
 
 function renderSidebar() {
@@ -626,7 +632,7 @@ function renderLesson(lesson) {
         <div class="max-w-3xl mx-auto animate-fade-in">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">${lesson.title}</h2>
             <div class="prose max-w-none text-gray-800">
-                ${lesson.content}
+                ${(window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, window.eli5SvelteData?.[lesson.id] || '') : lesson.content)}
             </div>
             
             <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
@@ -637,6 +643,10 @@ function renderLesson(lesson) {
         </div>
     `;
 
+  /* ELI5 toggle */
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('svelte', DOM.tabLesson);
+  }
     const btn = document.getElementById('mark-lesson-complete');
     if (!isCompleted) {
         btn.addEventListener('click', () => {
@@ -678,7 +688,7 @@ function renderQuiz(mod) {
             html += `
                 <label class="flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-orange-50 border-orange-300' : 'hover:bg-gray-50 border-gray-200'}">
                     <input type="radio" name="quiz-${q.id}" value="${optIdx}" class="form-radio text-orange-600 h-5 w-5" ${isSelected ? 'checked' : ''} onchange="handleQuizSelection('${q.id}', ${optIdx})">
-                    <span class="ml-3 text-gray-700">${opt}</span>
+                    <span class="ml-3 text-gray-700">${escapeHtml(opt)}</span>
                 </label>
             `;
         });
@@ -1170,7 +1180,15 @@ function runCode() {
                     }
                 }
 
-                runSvelteApp(\`${userCode.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`);
+                // Receive user code via postMessage — avoids all escaping issues
+                window.addEventListener('message', function(e) {
+                    if (e.data && e.data.type === 'run-svelte-code') {
+                        runSvelteApp(e.data.code);
+                    }
+                });
+
+                // Signal parent that iframe is ready
+                window.parent.postMessage({ type: 'svelte-iframe-ready' }, '*');
             <\/script>
         </body>
         </html>
@@ -1178,6 +1196,28 @@ function runCode() {
 
     // Inject compiled output
     DOM.previewFrame.srcdoc = iframeContent;
+
+    // Listen for iframe ready signal, then send user code via postMessage
+    // (avoids ALL escaping issues since structured clone handles serialization)
+    // Clean up any pending listener from previous executions
+    if (DOM.previewFrame._iframeReadyListener) {
+        window.removeEventListener('message', DOM.previewFrame._iframeReadyListener);
+    }
+
+    const onIframeReady = (e) => {
+        if (e.data && e.data.type === 'svelte-iframe-ready') {
+            window.removeEventListener('message', onIframeReady);
+            DOM.previewFrame._iframeReadyListener = null;
+            
+            DOM.previewFrame.contentWindow.postMessage({
+                type: 'run-svelte-code',
+                code: userCode
+            }, window.location.origin);
+        }
+    };
+    
+    DOM.previewFrame._iframeReadyListener = onIframeReady;
+    window.addEventListener('message', onIframeReady);
 }
 
 // Start application

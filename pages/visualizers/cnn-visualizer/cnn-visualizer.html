@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CNN Layer & Feature Map Explorer | Algo Infinity Verse</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="cnn-visualizer.css" />
+  </head>
+  <body class="cnn-body">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="workspace">
+      <!-- Left Panel: Controls -->
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-eye"></i> CNN Explorer</h3>
+        </div>
+
+        <div class="control-section">
+          <p class="desc-text">
+            Explore how Convolutional Neural Networks extract features from images. Upload your own
+            image or use a preset shape, select a filter, and step through the sliding window math.
+          </p>
+
+          <!-- Input Selection -->
+          <div class="input-group">
+            <label for="imageSelect">Select Input Pattern</label>
+            <select id="imageSelect" class="styled-select">
+              <option value="smiley">Smiley Face</option>
+              <option value="cross">Cross Pattern</option>
+              <option value="circle">Circle Pattern</option>
+              <option value="stripes">Vertical Stripes</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="file-upload-label" for="fileInput">
+              <i class="fas fa-upload"></i> Upload Custom Image
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/*"
+              class="file-input"
+              style="display: none"
+            />
+            <small class="hint">Images will be resized to 14x14 grayscale.</small>
+          </div>
+
+          <!-- Kernel Selection -->
+          <div class="input-group">
+            <label for="kernelSelect">Convolution Kernel</label>
+            <select id="kernelSelect" class="styled-select">
+              <option value="sobelV">Sobel Vertical (Edges)</option>
+              <option value="sobelH">Sobel Horizontal (Edges)</option>
+              <option value="ridge">Ridge / Laplacian (All Edges)</option>
+              <option value="sharpen">Sharpen</option>
+              <option value="gaussian">Gaussian Blur</option>
+              <option value="identity">Identity</option>
+            </select>
+          </div>
+
+          <!-- Padding & Stride -->
+          <div class="row-inputs">
+            <div class="input-group">
+              <label for="paddingSelect">Padding</label>
+              <select id="paddingSelect" class="styled-select">
+                <option value="0">0 (Valid)</option>
+                <option value="1">1 (Same)</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="strideSelect">Stride</label>
+              <select id="strideSelect" class="styled-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Activation Functions -->
+          <div class="input-group">
+            <label for="activationSelect">Activation Function</label>
+            <select id="activationSelect" class="styled-select">
+              <option value="relu">ReLU (max(0, x))</option>
+              <option value="identity">Identity (Linear)</option>
+            </select>
+          </div>
+
+          <!-- Pooling Layer Settings -->
+          <div class="input-group">
+            <label for="poolingSelect">Pooling Type (2x2, Stride 2)</label>
+            <select id="poolingSelect" class="styled-select">
+              <option value="max">Max Pooling</option>
+              <option value="avg">Average Pooling</option>
+            </select>
+          </div>
+
+          <!-- Hyperparameters -->
+          <div class="sliders-container">
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="speedSlider">Animation Speed</label>
+                <span id="speedVal" class="val-badge">300ms</span>
+              </div>
+              <input
+                type="range"
+                id="speedSlider"
+                min="50"
+                max="1000"
+                step="50"
+                value="300"
+                aria-label="Animation Speed"
+              />
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="action-buttons-col">
+            <div class="row-btns">
+              <button type="button" id="playBtn" class="btn btn-primary">
+                <i class="fas fa-play"></i> Play
+              </button>
+              <button type="button" id="stepBtn" class="btn btn-accent">
+                <i class="fas fa-step-forward"></i> Step
+              </button>
+            </div>
+            <button type="button" id="resetBtn" class="btn btn-secondary">
+              <i class="fas fa-undo"></i> Reset Animation
+            </button>
+          </div>
+
+          <!-- Explanations & Math Breakdown -->
+          <div class="stats-panel">
+            <div class="stat-header">Interactive Dot Product</div>
+            <div id="mathFormula" class="math-box">
+              Select a cell on the feature map or click 'Play' to see the sliding dot product.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: visual stages of CNN -->
+      <div class="panel-right">
+        <div class="stage-container">
+          <!-- Stage 1: Input Grid -->
+          <div class="stage-card">
+            <div class="stage-title">Input Image (14x14)</div>
+            <div class="grid-wrapper">
+              <div id="inputGrid" class="grid-container pixel-grid"></div>
+            </div>
+          </div>
+
+          <!-- Kernel Weights -->
+          <div class="stage-card compact-card">
+            <div class="stage-title">Kernel (3x3)</div>
+            <div class="grid-wrapper">
+              <div id="kernelGrid" class="grid-container kernel-grid"></div>
+            </div>
+          </div>
+
+          <!-- Stage 2: Feature Map -->
+          <div class="stage-card">
+            <div class="stage-title">Feature Map (Conv + Act)</div>
+            <div class="grid-wrapper">
+              <div id="featureMapGrid" class="grid-container pixel-grid"></div>
+            </div>
+          </div>
+
+          <!-- Stage 3: Pooling Map -->
+          <div class="stage-card">
+            <div class="stage-title">Pooled Map (Downsampled)</div>
+            <div class="grid-wrapper">
+              <div id="pooledGrid" class="grid-container pixel-grid"></div>
+            </div>
+          </div>
+
+          <!-- Stage 4: Dense + Prediction -->
+          <div class="stage-card prediction-card">
+            <div class="stage-title">Softmax Prediction</div>
+            <div class="prediction-list" id="predictionList">
+              <div class="pred-row">
+                <span class="pred-label">Cat</span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" id="bar-cat" style="width: 25%"></div>
+                </div>
+                <span class="pred-pct" id="val-cat">25%</span>
+              </div>
+              <div class="pred-row">
+                <span class="pred-label">Dog</span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" id="bar-dog" style="width: 15%"></div>
+                </div>
+                <span class="pred-pct" id="val-dog">15%</span>
+              </div>
+              <div class="pred-row">
+                <span class="pred-label">Car</span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" id="bar-car" style="width: 40%"></div>
+                </div>
+                <span class="pred-pct" id="val-car">40%</span>
+              </div>
+              <div class="pred-row">
+                <span class="pred-label">Plane</span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" id="bar-plane" style="width: 20%"></div>
+                </div>
+                <span class="pred-pct" id="val-plane">20%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="cnn-visualizer.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    </script>
+  </body>
+</html>

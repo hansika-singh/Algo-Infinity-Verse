@@ -1,4 +1,4 @@
-/* global handleActiveNav, initPracticeSection, initProfile, initAiInterviewer, initNewsletterValidation, initFooterCurrentDate, updateProfile, closeTopicModal, saveProblemNotes, closeNotesModal, closeQuizEditor, closeQuizModal, openTopicModal, openQuizModal, renderQuizQuestion, handleProblemClick, escapeHtml, renderPersonalityCard, renderMistakeDnaCard, apiAbort, apiCache, getEditorDraft, getEditorDraftSignature, getProblemSignature, clearEditorDraft, updateEditorDisplayMode, toggleOutputPanel, updateLineNumbers, syncScroll, switchQuizTab, genCppHarness, genJavaHarness, genCHarness, genSwiftHarness, parseTestResults, setOutput, getXPForDifficulty, initializeQuizEditor, closeShortcutModal, initIdentityCard, renderProblems, updatePaginationControls, initDarkMode */
+/* global handleActiveNav, initPracticeSection, initProfile, initAiInterviewer, initNewsletterValidation, initFooterCurrentDate, closeTopicModal, saveProblemNotes, closeNotesModal, closeQuizEditor, closeQuizModal, openTopicModal, openQuizModal, renderQuizQuestion, handleProblemClick, escapeHtml, apiAbort, apiCache, getEditorDraft, getEditorDraftSignature, getProblemSignature, clearEditorDraft, updateEditorDisplayMode, toggleOutputPanel, updateLineNumbers, syncScroll, switchQuizTab, genCppHarness, genJavaHarness, genCHarness, genSwiftHarness, parseTestResults, setOutput, getXPForDifficulty, initializeQuizEditor, closeShortcutModal, renderProblems, updatePaginationControls, initDarkMode */
 
 // Nuke all caches on every page load — ensures fresh content always
 (async function nukeCaches() {
@@ -1726,7 +1726,7 @@ const chatbotResponses = {
 // ============================================
 let userProgress = {
   name: 'Learner',
-  avatar: '🚀',
+  avatar: { initial: 'L', bg: '#7c3aed' },
   completedProblems: [],
   completedDailyChallenges: [],
   codingPersonality: {
@@ -1746,6 +1746,17 @@ let userProgress = {
   streak: 0,
   freezes: 0,
   freezeHistory: [],
+  inventory: {
+    streakFreezes: 0,
+    hintTokens: 0,
+    xpBoosters: 0,
+    exclusiveBadge: false,
+    avatarPacks: [],
+  },
+  avatarCustomization: {
+    border: 'none',
+    theme: 'default',
+  },
   badges: [],
   completedRoadmapSteps: [],
   lastActive: null,
@@ -1785,6 +1796,19 @@ if (localStorage.getItem('algoInfinityVerse')) {
       if (!userProgress.dailyGoals) userProgress.dailyGoals = {};
       if (!userProgress.spacedRepetition) userProgress.spacedRepetition = {};
       if (userProgress.reviewStreak === undefined) userProgress.reviewStreak = 0;
+      userProgress.inventory = {
+        streakFreezes: 0,
+        hintTokens: 0,
+        xpBoosters: 0,
+        exclusiveBadge: false,
+        avatarPacks: [],
+        ...(userProgress.inventory || {}),
+      };
+      userProgress.avatarCustomization = {
+        border: 'none',
+        theme: 'default',
+        ...(userProgress.avatarCustomization || {}),
+      };
 
       if (loaded.quizScores)
         userProgress.quizScores = { ...(userProgress.quizScores || {}), ...loaded.quizScores };
@@ -1813,9 +1837,8 @@ if (localStorage.getItem('algoInfinityVerse')) {
   }
 }
 
-// ============================================
-// SPACED REPETITION
-// ============================================
+// Make userProgress accessible via window for profile edit modal
+window.userProgress = userProgress;
 const REVISION_INTERVALS = [1, 3, 7, 14];
 
 function scheduleNextRevision(topicId) {
@@ -1925,16 +1948,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initLoadingScreen();
   initNavbar();
-  initHeroSection();
-  initTopicsSection();
-  initQuizSection();
-  initPracticeSection();
-  initRoadmap();
-  initDashboard();
-  initGamification();
-  initChatbot();
-  initProfile();
-  initScrollEffects();
+  if (typeof initHeroSection === 'function') initHeroSection();
+  if (typeof initTopicsSection === 'function') initTopicsSection();
+  if (typeof initQuizSection === 'function') initQuizSection();
+  if (typeof initPracticeSection === 'function') initPracticeSection();
+  if (typeof initRoadmap === 'function') initRoadmap();
+  if (typeof initDashboard === 'function') initDashboard();
+  if (typeof initGamification === 'function') initGamification();
+  if (typeof initChatbot === 'function') initChatbot();
+  if (typeof initProfile === 'function') initProfile();
+  if (typeof initScrollEffects === 'function') initScrollEffects();
   console.log('App initialization complete');
 });
 
@@ -1943,29 +1966,29 @@ document.addEventListener('DOMContentLoaded', () => {
     import('./modules/revisionScheduler.js')
       .then(({ buildRevisionTasks, toggleRevisionTaskCompletion }) => {
         window.revisionScheduler = { buildRevisionTasks, toggleRevisionTaskCompletion };
-        renderRevisionSchedulerCard();
+        if (typeof renderRevisionSchedulerCard === 'function') renderRevisionSchedulerCard();
       })
       .catch(() => {});
   }
-  loadUserData();
-  initLoadingScreen();
-  initNavbar();
-  initHeroSection();
-  initTopicOfTheDay();
-  initTopicsSection();
-  initQuizSection();
-  initPracticeSection();
-  initRoadmap();
-  initDashboard();
-  initGamification();
-  initDailyChallenge();
-  initChatbot();
-  initProfile();
-  initAiInterviewer();
-  initNewsletterValidation();
-  initScrollEffects();
-  initFooterCurrentDate();
-  updateProfile();
+  if (typeof loadUserData === 'function') loadUserData();
+  if (typeof initLoadingScreen === 'function') initLoadingScreen();
+  if (typeof initNavbar === 'function') initNavbar();
+  if (typeof initHeroSection === 'function') initHeroSection();
+  if (typeof initTopicOfTheDay === 'function') initTopicOfTheDay();
+  if (typeof initTopicsSection === 'function') initTopicsSection();
+  if (typeof initQuizSection === 'function') initQuizSection();
+  if (typeof initPracticeSection === 'function') initPracticeSection();
+  if (typeof initRoadmap === 'function') initRoadmap();
+  if (typeof initDashboard === 'function') initDashboard();
+  if (typeof initGamification === 'function') initGamification();
+  if (typeof initDailyChallenge === 'function') initDailyChallenge();
+  if (typeof initChatbot === 'function') initChatbot();
+  if (typeof initProfile === 'function') initProfile();
+  if (typeof initAiInterviewer === 'function') initAiInterviewer();
+  if (typeof initNewsletterValidation === 'function') initNewsletterValidation();
+  if (typeof initScrollEffects === 'function') initScrollEffects();
+  if (typeof initFooterCurrentDate === 'function') initFooterCurrentDate();
+  if (typeof updateProfile === 'function') updateProfile();
 });
 
 // ============================================
@@ -2126,19 +2149,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // New Topic Quiz Modal close handlers
-  const topicQuizCloseBtn = document.getElementById('topicQuizModalClose');
-  if (topicQuizCloseBtn) {
-    topicQuizCloseBtn.addEventListener('click', closeQuizModal);
-  }
-
-  const topicQuizModal = document.getElementById('quizModal');
-  if (topicQuizModal) {
-    topicQuizModal.addEventListener('click', (e) => {
-      if (e.target === topicQuizModal) {
-        closeQuizModal();
-      }
-    });
-  }
+  // Topic quiz modal is now a full page at /pages/topic-quiz/topic-quiz.html
+  // Legacy modal listeners removed.
 });
 
 // ===== LOADING SCREEN =====
@@ -2200,6 +2212,7 @@ function initNavbar() {
     const parent = toggle.closest('.has-dropdown');
     const menu = parent?.querySelector('.dropdown-menu');
     if (!parent || !menu) return;
+    const isSettingsToggle = toggle.classList.contains('settings-toggle');
 
     let hoverTimeout;
 
@@ -2216,26 +2229,37 @@ function initNavbar() {
       }, 250);
     };
 
-    parent.addEventListener('mouseenter', () => {
-      if (!isMobile()) showMenu();
-    });
-    parent.addEventListener('mouseleave', () => {
-      if (!isMobile()) hideMenu();
-    });
-    toggle.addEventListener('focus', () => {
-      if (!isMobile()) showMenu();
-    });
-    menu.addEventListener('focusin', () => {
-      if (!isMobile()) showMenu();
-    });
-    parent.addEventListener('focusout', () => {
-      if (!isMobile()) hideMenu();
-    });
+    // Hover behavior: only for non-settings dropdowns on desktop
+    if (!isSettingsToggle) {
+      parent.addEventListener('mouseenter', () => {
+        if (!isMobile()) showMenu();
+      });
+      parent.addEventListener('mouseleave', () => {
+        if (!isMobile()) hideMenu();
+      });
+      toggle.addEventListener('focus', () => {
+        if (!isMobile()) showMenu();
+      });
+      menu.addEventListener('focusin', () => {
+        if (!isMobile()) showMenu();
+      });
+      parent.addEventListener('focusout', () => {
+        if (!isMobile()) hideMenu();
+      });
+    }
 
+    // Click behavior: always for settings, mobile-only for others
     toggle.addEventListener('click', (e) => {
-      if (isMobile()) {
+      if (isSettingsToggle || isMobile()) {
         e.preventDefault();
         e.stopPropagation();
+        // Close other open dropdowns first
+        document.querySelectorAll('.has-dropdown.open').forEach((el) => {
+          if (el !== parent) {
+            el.classList.remove('open');
+            el.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+          }
+        });
         const isOpen = parent.classList.toggle('open');
         toggle.setAttribute('aria-expanded', isOpen);
       }
@@ -2243,11 +2267,21 @@ function initNavbar() {
 
     menu.querySelectorAll('.dropdown-item').forEach((item) => {
       item.addEventListener('click', () => {
-        if (isMobile()) {
+        if (isSettingsToggle || isMobile()) {
           parent.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
         }
       });
+    });
+  });
+
+  // Close settings dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-settings-dropdown.open').forEach((el) => {
+      if (!el.contains(e.target)) {
+        el.classList.remove('open');
+        el.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+      }
     });
   });
 
@@ -2256,6 +2290,7 @@ function initNavbar() {
       if (navLinks.classList.contains('active')) {
         toggleMenu(false);
       }
+    } else {
       document.querySelectorAll('.has-dropdown.open').forEach((el) => {
         el.classList.remove('open');
       });
@@ -2344,100 +2379,8 @@ function animateValue(element) {
 }
 
 // ===== PROFILE EDITING =====
-let selectedAvatar = '🚀';
-
-const avatarOptions = ['🚀', '🌟', '🔥', '💎', '🎯', '🧠', '⚡', '🦄', '🐉', '🔮', '🎨', '🎭'];
-
-function initProfileEdit() {
-  try {
-    const avatarContainer = document.getElementById('avatarOptions');
-    if (!avatarContainer) {
-      console.warn('Avatar options container not found');
-      return;
-    }
-
-    const currentAvatar = userProgress.avatar || '🚀';
-
-    avatarContainer.innerHTML = avatarOptions
-      .map(
-        (avatar) => `
-            <div class="avatar-option ${avatar === currentAvatar ? 'selected' : ''}"
-                 data-avatar="${avatar}">${avatar}</div>
-        `
-      )
-      .join('');
-
-    avatarContainer.querySelectorAll('.avatar-option').forEach((opt) => {
-      opt.addEventListener('click', () => {
-        avatarContainer
-          .querySelectorAll('.avatar-option')
-          .forEach((o) => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        selectedAvatar = opt.dataset.avatar;
-      });
-    });
-
-    const nameInput = document.getElementById('profileNameInput');
-    if (nameInput) {
-      nameInput.value = userProgress.name || 'Learner';
-    }
-
-    selectedAvatar = currentAvatar;
-  } catch (error) {
-    console.error('Error in initProfileEdit:', error);
-  }
-}
-
-function openProfileModal() {
-  try {
-    const modal = document.getElementById('profileEditModal');
-    if (!modal) {
-      console.error('Profile edit modal not found');
-      return;
-    }
-    initProfileEdit();
-    modal.classList.add('active');
-  } catch (error) {
-    console.error('Error opening profile modal:', error);
-  }
-}
-
-function closeProfileModal() {
-  const modal = document.getElementById('profileEditModal');
-  if (modal) modal.classList.remove('active');
-}
-
-// eslint-disable-next-line no-unused-vars
-function saveProfileChanges() {
-  const nameInput = document.getElementById('profileNameInput');
-  const newName = nameInput.value.trim() || 'Learner';
-
-  userProgress.name = newName;
-  userProgress.avatar = selectedAvatar;
-
-  saveUserData();
-  updateProfile();
-  closeProfileModal();
-  showNotification('Profile updated successfully!', 'success');
-}
-
-// Profile click handler
-document.addEventListener('click', (e) => {
-  if (e.target.closest('.profile-edit-btn')) {
-    openProfileModal();
-  }
-});
-
-// Profile modal close
-document.addEventListener('click', (e) => {
-  if (e.target.closest('#profileModalClose')) {
-    closeProfileModal();
-  }
-  const modal = document.getElementById('profileEditModal');
-  if (modal && e.target === modal) {
-    closeProfileModal();
-  }
-});
+// Handled by modules/profile-edit.js (initial-based avatars, language saving)
+// Legacy emoji-based code removed.
 
 function getTopicProgress(topicName) {
   // Map topic names to category keys used in practiceProblems
@@ -3465,7 +3408,7 @@ function submitRoadmapQuiz(stepIndex, type = 'basic') {
 // ============================================
 function initDashboard() {
   updateDashboard();
-  updateProfile();
+  if (typeof updateProfile === 'function') updateProfile();
 }
 
 function renderRevisionSchedulerCard() {
@@ -3566,7 +3509,6 @@ function updateDashboard() {
   if (typeof updateFreezeHistoryList === 'function') updateFreezeHistoryList();
   updateBadges();
   updateRecentProblems();
-  updateLeaderboard();
   renderRevisionSchedulerCard();
   const grid = document.querySelector('.dashboard-grid');
   if (grid && !document.getElementById('personalityCard')) {
@@ -3577,7 +3519,7 @@ function updateDashboard() {
     if (profileCard) profileCard.after(pCard);
     else grid.prepend(pCard);
   }
-  renderPersonalityCard();
+  if (typeof renderPersonalityCard === 'function') renderPersonalityCard();
   if (grid && !document.getElementById('mistakeDnaCard')) {
     const mCard = document.createElement('div');
     mCard.className = 'dashboard-card mistake-dna-card';
@@ -3590,7 +3532,7 @@ function updateDashboard() {
       else grid.prepend(mCard);
     }
   }
-  renderMistakeDnaCard();
+  if (typeof renderMistakeDnaCard === 'function') renderMistakeDnaCard();
 }
 
 function updateCurrentDate() {
@@ -3672,51 +3614,93 @@ function updateBadges() {
   const badges = [
     {
       id: 1,
-      icon: '🌟',
+      icon: '<i class="fas fa-star"></i>',
       name: 'First Steps',
       description: 'Begin your journey',
       criteria: 'Solve 1 problem',
+      color: '#f59e0b',
+      anim: 'badge-hover-spin',
       earned: userProgress.completedProblems.length >= 1,
     },
     {
       id: 2,
-      icon: '🔥',
+      icon: '<i class="fas fa-fire"></i>',
       name: 'On Fire',
       description: 'Keep the momentum going',
       criteria: 'Maintain a 7-day streak',
+      color: '#ef4444',
+      anim: 'badge-hover-pulse',
       earned: userProgress.streak >= 7,
     },
     {
       id: 3,
-      icon: '💎',
+      icon: '<i class="fas fa-gem"></i>',
       name: 'Diamond',
       description: 'Reach a major XP milestone',
       criteria: 'Earn 5,000 XP',
+      color: '#8b5cf6',
+      anim: 'badge-hover-float',
       earned: userProgress.xp >= 5000,
     },
     {
       id: 4,
-      icon: '🚀',
+      icon: '<i class="fas fa-rocket"></i>',
       name: 'Rocket',
       description: 'Speed through problems',
       criteria: 'Solve 50 problems',
+      color: '#06b6d4',
+      anim: 'badge-hover-bounce',
       earned: userProgress.completedProblems.length >= 50,
     },
     {
       id: 5,
-      icon: '👑',
+      icon: '<i class="fas fa-crown"></i>',
       name: 'Master',
       description: 'Achieve expert problem-solving',
       criteria: 'Solve 100 problems',
+      color: '#ec4899',
+      anim: 'badge-hover-glow',
       earned: userProgress.completedProblems.length >= 100,
     },
     {
       id: 6,
-      icon: '🎯',
+      icon: '<i class="fas fa-bullseye"></i>',
       name: 'Sharpshooter',
       description: 'Hit the target with consistency',
       criteria: 'Solve 25 problems and earn 2,500 XP',
+      color: '#10b981',
+      anim: 'badge-hover-wobble',
       earned: userProgress.completedProblems.length >= 25 && userProgress.xp >= 2500,
+    },
+    {
+      id: 7,
+      icon: '<i class="fas fa-shield-alt"></i>',
+      name: 'Gladiator',
+      description: 'Win your first coding battle',
+      criteria: 'Win 1 battle',
+      color: '#f97316',
+      anim: 'badge-hover-shake',
+      earned: (userProgress.battlesWon || 0) >= 1,
+    },
+    {
+      id: 8,
+      icon: '<i class="fas fa-bolt"></i>',
+      name: 'Speed Demon',
+      description: 'Become a battle master',
+      criteria: 'Win 5 battles',
+      color: '#a855f7',
+      anim: 'badge-hover-flash',
+      earned: (userProgress.battlesWon || 0) >= 5,
+    },
+    {
+      id: 9,
+      icon: '<i class="fas fa-trophy"></i>',
+      name: 'Exclusive',
+      description: 'A mark of true dedication',
+      criteria: 'Purchased from the XP Store',
+      color: '#f59e0b',
+      anim: 'badge-hover-grow',
+      earned: !!userProgress.inventory?.exclusiveBadge,
     },
   ];
   const earned = badges.filter((b) => b.earned).map((b) => b.id);
@@ -3728,14 +3712,14 @@ function updateBadges() {
     container.innerHTML = badges
       .map(
         (badge) =>
-          `<div class="badge ${badge.earned ? '' : 'locked'}" tabindex="0"><span class="badge-tooltip"><strong>${badge.name}</strong><span>${badge.description}</span><span>${badge.criteria}</span></span>${badge.icon}</div>`
+          `<div class="badge ${badge.earned ? badge.anim : 'locked'}" tabindex="0" style="${badge.earned ? `background:${badge.color};box-shadow:0 4px 14px ${badge.color}40` : ''}"><span class="badge-tooltip"><strong>${badge.name}</strong><span>${badge.description}</span><span>${badge.criteria}</span></span>${badge.icon}</div>`
       )
       .join('');
   if (grid)
     grid.innerHTML = badges
       .map(
         (badge) =>
-          `<div class="badge-lg ${badge.earned ? '' : 'locked'}" tabindex="0"><span class="badge-tooltip"><strong>${badge.name}</strong><span>${badge.description}</span><span>${badge.criteria}</span></span>${badge.icon}</div>`
+          `<div class="badge-lg ${badge.earned ? badge.anim : 'locked'}" tabindex="0" style="${badge.earned ? `background:${badge.color};box-shadow:0 4px 14px ${badge.color}40` : ''}"><span class="badge-tooltip"><strong>${badge.name}</strong><span>${badge.description}</span><span>${badge.criteria}</span></span>${badge.icon}</div>`
       )
       .join('');
 }
@@ -3853,6 +3837,8 @@ function renderLeaderboardRows(rows, currentUserId = getCurrentUserId(), options
       return `<div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}"><span class="leader-rank">#${user.rank}</span><span class="leader-avatar" aria-hidden="true">${escapeHtml(user.avatar)}</span><span class="leader-name">${escapeHtml(displayName)}</span><span class="leader-xp">${user.xp.toLocaleString()} XP</span></div>`;
     })
     .join('');
+  const earnedEl = document.getElementById('badgesEarnedCount');
+  if (earnedEl) earnedEl.textContent = `${earned.length} / ${badges.length} earned`;
 }
 
 // ============================================
@@ -4136,18 +4122,14 @@ function getBotResponse(question) {
 // ============================================
 function initScrollEffects() {
   const scrollTopBtn = document.getElementById('scrollTopBtn');
-  const backToTopBtn = document.getElementById('backToTopBtn');
   const setVisibleState = () => {
     const shouldShow = window.scrollY > 500;
     if (scrollTopBtn) scrollTopBtn.classList.toggle('visible', shouldShow);
-    if (backToTopBtn) backToTopBtn.classList.toggle('show', shouldShow);
   };
   window.addEventListener('scroll', setVisibleState);
   setVisibleState();
   if (scrollTopBtn)
     scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  if (backToTopBtn)
-    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -4275,7 +4257,6 @@ async function syncUserProgress() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    updateLeaderboard();
   } catch (e) {
     void 0;
   }
@@ -4342,7 +4323,7 @@ function loadUserData() {
     } else {
       userProgress = {
         name: 'Learner',
-        avatar: '🚀',
+        avatar: { initial: 'L', bg: '#7c3aed' },
         completedProblems: [],
         completedDailyChallenges: [],
         codingPersonality: {
@@ -4391,7 +4372,7 @@ function loadUserData() {
     console.error('Error loading user data:', e);
     userProgress = {
       name: 'Learner',
-      avatar: '🚀',
+      avatar: { initial: 'L', bg: '#7c3aed' },
       completedProblems: [],
       completedDailyChallenges: [],
       codingPersonality: {
@@ -4436,18 +4417,18 @@ function loadUserData() {
     };
     saveUserData();
   }
-  updateProfile();
+  if (typeof updateProfile === 'function') updateProfile();
   getAuthenticatedSession().then((session) => {
     if (session?.user?.name) {
       userProgress.name = session.user.name;
-      updateProfile();
+      if (typeof updateProfile === 'function') updateProfile();
       saveUserData();
     } else {
       userProgress.name = 'Learner';
-      updateProfile();
+      if (typeof updateProfile === 'function') updateProfile();
       saveUserData();
     }
-    initProfile();
+    if (typeof initProfile === 'function') initProfile();
   });
 }
 
@@ -5041,7 +5022,6 @@ window.addEventListener('online', async () => {
         }
       }
       await window.StorageDB.set(window.DB_STORES.SYNC_QUEUE, 'offlineSyncQueue', []);
-      if (typeof updateLeaderboard === 'function') updateLeaderboard();
     }
   }
 });
@@ -5492,7 +5472,7 @@ document.addEventListener('keydown', function (e) {
   // Alt+P: Practice
   if (e.altKey && e.key === 'p') {
     e.preventDefault();
-    window.location.href = '#practice';
+    window.location.href = '/practice';
   }
 
   // Alt+Q: Quiz
@@ -5704,180 +5684,8 @@ document.addEventListener('keydown', function (e) {
 // ============================================
 // PROFILE EDITING & LANGUAGES MANAGER
 // ============================================
-(function () {
-  const PROFILE_AVATARS = ['🚀', '💻', '🧠', '🔥', '🦄', '⚡', '🤖', '🎨'];
-  let selectedProfileAvatar = '';
-
-  window.openProfileModal = function () {
-    const modal = document.getElementById('profileEditModal');
-    const nameInput = document.getElementById('profileNameInput');
-
-    if (nameInput) nameInput.value = userProgress.name || 'Learner';
-    selectedProfileAvatar = userProgress.avatar || '🚀';
-
-    renderAvatarOptions();
-
-    const userLangs = userProgress.languages || [];
-    const checkboxes = document.querySelectorAll('.lang-edit-checkbox');
-    checkboxes.forEach((cb) => {
-      cb.checked = userLangs.includes(cb.value);
-    });
-
-    if (modal) modal.classList.add('active');
-  };
-
-  window.closeProfileModal = function () {
-    const modal = document.getElementById('profileEditModal');
-    if (modal) modal.classList.remove('active');
-  };
-
-  window.selectProfileAvatar = function (av) {
-    selectedProfileAvatar = av;
-    renderAvatarOptions();
-  };
-
-  function renderAvatarOptions() {
-    const avatarOpts = document.getElementById('avatarOptions');
-    if (!avatarOpts) return;
-    avatarOpts.innerHTML = PROFILE_AVATARS.map(
-      (av) => `
-            <span class="avatar-option ${selectedProfileAvatar === av ? 'selected' : ''}" 
-                  onclick="selectProfileAvatar('${av}')" 
-                  style="cursor: pointer; font-size: 2rem; padding: 0.25rem 0.5rem; border-radius: 8px; border: 2px solid ${selectedProfileAvatar === av ? 'var(--primary)' : 'transparent'}; transition: all 0.2s; display: inline-block;">
-                ${av}
-            </span>
-        `
-    ).join('');
-  }
-
-  window.saveProfileChanges = function () {
-    const nameInput = document.getElementById('profileNameInput');
-    const nameVal = nameInput ? nameInput.value.trim() : '';
-
-    if (!nameVal) {
-      void 0;
-      return;
-    }
-
-    const userLangs = [];
-    const checkboxes = document.querySelectorAll('.lang-edit-checkbox');
-    checkboxes.forEach((cb) => {
-      if (cb.checked) userLangs.push(cb.value);
-    });
-
-    userProgress.name = nameVal;
-    userProgress.avatar = selectedProfileAvatar;
-    userProgress.languages = userLangs;
-
-    if (typeof saveUserData === 'function') {
-      saveUserData();
-    } else {
-      localStorage.setItem('algoInfinityVerse', JSON.stringify(userProgress));
-    }
-
-    updateProfileViews();
-    window.closeProfileModal();
-
-    if (typeof showNotification === 'function') {
-      showNotification('Profile updated successfully!', 'success');
-    }
-  };
-
-  window.renderLanguageChips = function () {
-    if (typeof userProgress === 'undefined') return;
-    const userLangs = userProgress.languages || [];
-    const containers = [
-      document.getElementById('profileLanguagesSection'),
-      document.getElementById('profileLanguages'),
-    ];
-
-    const colors = {
-      'C++': '#f34b7d',
-      Java: '#b07219',
-      Python: '#3572A5',
-      JavaScript: '#f1e05a',
-      Rust: '#dea584',
-    };
-
-    const textColors = {
-      JavaScript: '#000000',
-    };
-
-    containers.forEach((container) => {
-      if (!container) return;
-      if (userLangs.length === 0) {
-        container.innerHTML = `<span style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">No languages added yet. Click edit to add!</span>`;
-        return;
-      }
-
-      container.innerHTML = userLangs
-        .map((lang) => {
-          const bg = colors[lang] || 'var(--primary)';
-          const color = textColors[lang] || '#ffffff';
-          return `
-                    <span class="lang-chip" style="
-                        display: inline-flex;
-                        align-items: center;
-                        background: ${bg};
-                        color: ${color};
-                        font-size: 0.8rem;
-                        font-weight: 600;
-                        padding: 0.3rem 0.8rem;
-                        border-radius: 20px;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                        text-transform: uppercase;
-                        letter-spacing: 0.5px;
-                    ">${lang}</span>
-                `;
-        })
-        .join('');
-    });
-  };
-
-  function updateProfileViews() {
-    const profileName = document.getElementById('profileName');
-    if (profileName) profileName.textContent = userProgress.name;
-    const profileSectionName = document.getElementById('profileSectionName');
-    if (profileSectionName) profileSectionName.textContent = userProgress.name;
-
-    const userNameEl = document.getElementById('userName');
-    if (userNameEl) userNameEl.textContent = userProgress.name;
-    const cardUserName = document.getElementById('cardUserName');
-    if (cardUserName) cardUserName.textContent = userProgress.name;
-
-    document
-      .querySelectorAll('.avatar-icon')
-      .forEach((el) => (el.textContent = userProgress.avatar || '🚀'));
-    const cardAvatar = document.getElementById('cardAvatar');
-    if (cardAvatar) cardAvatar.textContent = userProgress.avatar || '🚀';
-
-    if (typeof initIdentityCard === 'function') {
-      initIdentityCard();
-    }
-
-    window.renderLanguageChips();
-  }
-
-  function setupProfileListeners() {
-    const mainEditBtn = document.getElementById('profileSectionEditBtn');
-    if (mainEditBtn) mainEditBtn.onclick = window.openProfileModal;
-    const pageEditBtn = document.getElementById('profilePageEditBtn');
-    if (pageEditBtn) pageEditBtn.onclick = window.openProfileModal;
-
-    const closeCrossBtn = document.getElementById('profileModalClose');
-    if (closeCrossBtn) closeCrossBtn.onclick = window.closeProfileModal;
-
-    window.renderLanguageChips();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupProfileListeners);
-  } else {
-    setupProfileListeners();
-  }
-
-  setTimeout(setupProfileListeners, 200);
-})();
+// Handled by modules/profile-edit.js (initial-based avatars, language saving)
+// Legacy emoji-based IIFE removed.
 
 // Offline/Online status handler
 window.addEventListener('load', () => {
@@ -6455,3 +6263,26 @@ function updateProblemCount(filteredProblems) {
     countElement.textContent = `${total} problem${total !== 1 ? 's' : ''}`;
   }
 }
+
+// ============================================
+// BREADCRUMB SETUP
+// ============================================
+// Ensure the breadcrumb DOM element exists on every page so the
+// NavigationManager can attach to it — even on pages that don't load
+// the navbar partial (where the element normally lives).
+(function () {
+  if (!document.getElementById('dynamic-breadcrumbs')) {
+    const div = document.createElement('div');
+    div.id = 'dynamic-breadcrumbs';
+    div.className = 'breadcrumb-bar';
+    document.body.appendChild(div);
+  }
+
+  // Load navigationManager if not already present
+  if (!window.navManager) {
+    const s = document.createElement('script');
+    s.src = '/utils/navigationManager.js';
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+})();

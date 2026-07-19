@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessibility Audit Toolkit | Algo Infinity Verse</title>
+  <meta name="description" content="Scan Algo Infinity Verse visualizer pages for WCAG-aligned accessibility issues: headings, alt text, contrast, focus order, and ARIA." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="a11y-audit-toolkit.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="a11y-audit-toolkit">
+  <a href="#a11y-main" class="a11y-skip-link">Skip to main content</a>
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="a11y-hero">
+    <div class="a11y-hero-badge">
+      <i class="fas fa-universal-access" aria-hidden="true"></i>
+      WCAG 2.2 Audit Toolkit
+    </div>
+    <h1>
+      Accessibility Audit
+      <span class="a11y-hero-accent">Toolkit</span>
+    </h1>
+    <p>
+      Scan visualizer pages for heading structure, alt text, color contrast,
+      keyboard focus order, and ARIA issues — then get severity-ranked fixes.
+    </p>
+    <div class="a11y-hero-stats" aria-live="polite">
+      <div class="a11y-stat">
+        <span class="a11y-stat-val" id="statCritical">0</span>
+        <span class="a11y-stat-label">Critical</span>
+      </div>
+      <div class="a11y-stat">
+        <span class="a11y-stat-val" id="statSerious">0</span>
+        <span class="a11y-stat-label">Serious</span>
+      </div>
+      <div class="a11y-stat">
+        <span class="a11y-stat-val" id="statModerate">0</span>
+        <span class="a11y-stat-label">Moderate</span>
+      </div>
+      <div class="a11y-stat">
+        <span class="a11y-stat-val" id="statPages">0</span>
+        <span class="a11y-stat-label">Pages scanned</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="a11y-main" class="a11y-main">
+    <div class="container">
+      <div class="a11y-workspace">
+        <!-- Controls -->
+        <section class="a11y-panel" aria-labelledby="a11y-controls-title">
+          <div class="a11y-panel-header">
+            <div class="a11y-panel-title">
+              <i class="fas fa-sliders a11y-panel-icon" aria-hidden="true"></i>
+              <h2 id="a11y-controls-title">Scan source</h2>
+            </div>
+          </div>
+
+          <div class="a11y-tabs" role="tablist" aria-label="Audit input mode">
+            <button type="button" class="a11y-tab active" role="tab" id="tabVisualizer" aria-selected="true" aria-controls="panelVisualizer" data-tab="visualizer">
+              <i class="fas fa-eye" aria-hidden="true"></i> Visualizer
+            </button>
+            <button type="button" class="a11y-tab" role="tab" id="tabPaste" aria-selected="false" aria-controls="panelPaste" data-tab="paste" tabindex="-1">
+              <i class="fas fa-code" aria-hidden="true"></i> Paste HTML
+            </button>
+            <button type="button" class="a11y-tab" role="tab" id="tabDemo" aria-selected="false" aria-controls="panelDemo" data-tab="demo" tabindex="-1">
+              <i class="fas fa-flask" aria-hidden="true"></i> Demo mode
+            </button>
+          </div>
+
+          <div id="panelVisualizer" class="a11y-tab-panel" role="tabpanel" aria-labelledby="tabVisualizer">
+            <label class="a11y-label" for="visualizerSelect">Select a project visualizer</label>
+            <select id="visualizerSelect" class="a11y-select" aria-describedby="visualizerHint">
+              <option value="">Choose a visualizer…</option>
+            </select>
+            <p id="visualizerHint" class="a11y-hint">Loads the page HTML from this site and runs WCAG-aligned checks.</p>
+            <div class="a11y-or-divider" aria-hidden="true">or</div>
+            <label class="a11y-label" for="pathInput">Custom path under this site</label>
+            <input type="text" id="pathInput" class="a11y-input" placeholder="/pages/visualizers/avl-tree/avl-tree.html" autocomplete="off" />
+          </div>
+
+          <div id="panelPaste" class="a11y-tab-panel" role="tabpanel" aria-labelledby="tabPaste" hidden>
+            <label class="a11y-label" for="htmlPaste">Paste HTML markup</label>
+            <textarea id="htmlPaste" class="a11y-textarea" rows="12" spellcheck="false" placeholder="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=&quot;en&quot;&gt;…&lt;/html&gt;" aria-describedby="pasteHint"></textarea>
+            <p id="pasteHint" class="a11y-hint">Paste a full page or a fragment. Best results with a complete document.</p>
+          </div>
+
+          <div id="panelDemo" class="a11y-tab-panel" role="tabpanel" aria-labelledby="tabDemo" hidden>
+            <p class="a11y-hint a11y-hint-block">
+              Runs the audit against a curated set of Algo Infinity Verse visualizers
+              so you can see real reports without picking pages one by one.
+            </p>
+            <ul class="a11y-demo-list" id="demoList" aria-label="Demo visualizers"></ul>
+          </div>
+
+          <fieldset class="a11y-checks">
+            <legend class="a11y-label">Checks to run</legend>
+            <label class="a11y-check"><input type="checkbox" id="checkHeadings" checked /> Heading hierarchy</label>
+            <label class="a11y-check"><input type="checkbox" id="checkAlt" checked /> Image &amp; media alt text</label>
+            <label class="a11y-check"><input type="checkbox" id="checkContrast" checked /> Color contrast</label>
+            <label class="a11y-check"><input type="checkbox" id="checkFocus" checked /> Focus order / focusability</label>
+            <label class="a11y-check"><input type="checkbox" id="checkAria" checked /> ARIA roles &amp; attributes</label>
+          </fieldset>
+
+          <div class="a11y-controls">
+            <button type="button" id="runAuditBtn" class="btn btn-primary">
+              <i class="fas fa-magnifying-glass" aria-hidden="true"></i> Run audit
+            </button>
+            <button type="button" id="clearReportBtn" class="btn btn-secondary" disabled>
+              <i class="fas fa-eraser" aria-hidden="true"></i> Clear
+            </button>
+            <button type="button" id="exportReportBtn" class="btn btn-outline" disabled>
+              <i class="fas fa-download" aria-hidden="true"></i> Export JSON
+            </button>
+          </div>
+        </section>
+
+        <!-- Report -->
+        <section class="a11y-panel a11y-report-panel" aria-labelledby="a11y-report-title">
+          <div class="a11y-panel-header">
+            <div class="a11y-panel-title">
+              <i class="fas fa-clipboard-list a11y-panel-icon" aria-hidden="true"></i>
+              <h2 id="a11y-report-title">Audit report</h2>
+            </div>
+            <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
+              <button type="button" class="a11y-filter active" data-severity="all">All</button>
+              <button type="button" class="a11y-filter" data-severity="critical">Critical</button>
+              <button type="button" class="a11y-filter" data-severity="serious">Serious</button>
+              <button type="button" class="a11y-filter" data-severity="moderate">Moderate</button>
+            </div>
+          </div>
+
+          <div id="reportStatus" class="a11y-status" role="status" aria-live="polite">
+            <div class="a11y-empty">
+              <i class="fas fa-universal-access" aria-hidden="true"></i>
+              <p>No audit yet. Select a visualizer, paste HTML, or start demo mode.</p>
+            </div>
+          </div>
+
+          <div id="loadingState" class="a11y-loading" hidden>
+            <div class="a11y-spinner" aria-hidden="true"></div>
+            <p id="loadingText">Scanning pages…</p>
+          </div>
+
+          <div id="errorState" class="a11y-error" hidden role="alert"></div>
+
+          <div id="reportResults" class="a11y-results" hidden></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="a11y-audit-toolkit.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

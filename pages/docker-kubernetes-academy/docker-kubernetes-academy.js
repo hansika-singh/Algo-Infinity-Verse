@@ -38,9 +38,70 @@ const curriculum = [
   },
 ];
 
+// Quiz Data
+const quiz = [
+  {
+    id: 'q1',
+    question: 'What is the main advantage containers have over virtual machines?',
+    options: [
+      'They run a full guest OS for stronger isolation',
+      'They share the host OS kernel, making them lightweight and fast to start',
+      'They require a hypervisor to run',
+      'They are always larger than VM images',
+    ],
+    correct: 1,
+  },
+  {
+    id: 'q2',
+    question: 'What is a Docker image?',
+    options: [
+      'A running instance of a container',
+      'A live snapshot of a running process',
+      'A read-only template with instructions for creating a container',
+      'A Kubernetes configuration file',
+    ],
+    correct: 2,
+  },
+  {
+    id: 'q3',
+    question: 'How does a Docker container relate to a Docker image?',
+    options: [
+      'A container is a runnable instance of an image',
+      'An image is a runnable instance of a container',
+      'They are unrelated concepts',
+      'An image can only be created after a container exists',
+    ],
+    correct: 0,
+  },
+  {
+    id: 'q4',
+    question: 'What does Kubernetes primarily manage?',
+    options: [
+      'Individual Docker image builds',
+      'Containerized workloads and services across a cluster',
+      'Virtual machine hypervisors',
+      'Source code version control',
+    ],
+    correct: 1,
+  },
+  {
+    id: 'q5',
+    question: 'Which of the following is a core Kubernetes building block?',
+    options: ['Dockerfile', 'Pod', 'Registry', 'Volume Mount'],
+    correct: 1,
+  },
+  {
+    id: 'q6',
+    question: 'Which Docker CLI command lists currently running containers?',
+    options: ['docker ps', 'docker ls', 'docker containers', 'docker show'],
+    correct: 0,
+  },
+];
+
 // State
 let currentLessonIndex = 0;
 let completedLessons = JSON.parse(localStorage.getItem('docker-k8s-completed')) || [];
+let completedQuizzes = JSON.parse(localStorage.getItem('docker-k8s-quiz-completed')) || [];
 
 // DOM Elements
 const sidebarContent = document.getElementById('sidebar-content');
@@ -55,11 +116,13 @@ const tabs = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 const terminalInput = document.getElementById('terminal-input');
 const terminalOutput = document.getElementById('terminal-output');
+const quizContainer = document.getElementById('quiz-container');
 
 // Initialization
 function init() {
   renderSidebar();
   loadLesson(0);
+  renderQuiz();
   updateProgress();
   setupEventListeners();
 }
@@ -89,7 +152,10 @@ function loadLesson(index) {
   const lesson = curriculum[index];
 
   lessonTitle.textContent = lesson.title;
-  lessonBody.innerHTML = lesson.content;
+  lessonBody.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('docker-k8s', lessonBody);
+  }
 
   prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
   nextBtn.style.visibility = index === curriculum.length - 1 ? 'hidden' : 'visible';
@@ -106,9 +172,75 @@ function loadLesson(index) {
 }
 
 function updateProgress() {
-  const percent = Math.round((completedLessons.length / curriculum.length) * 100);
+  const totalItems = curriculum.length + quiz.length;
+  const completedItems = completedLessons.length + completedQuizzes.length;
+  const percent = Math.round((completedItems / totalItems) * 100);
   progressBar.style.width = percent + '%';
   progressText.textContent = percent + '%';
+}
+
+// Quiz Rendering
+function renderQuiz() {
+  let html = '';
+
+  quiz.forEach((q, i) => {
+    const isCompleted = completedQuizzes.includes(q.id);
+    html += `
+            <div class="p-6 rounded-lg border quiz-question ${isCompleted ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-100'}" id="q-container-${q.id}">
+                <p class="font-semibold text-lg text-gray-800 mb-4">${i + 1}. ${q.question}</p>
+                <div class="space-y-2">
+        `;
+
+    q.options.forEach((opt, oIndex) => {
+      html += `
+                <label class="flex items-center p-3 bg-white border border-gray-200 rounded cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input type="radio" name="quiz-${q.id}" value="${oIndex}" class="mr-3 w-4 h-4 text-blue-600">
+                    <span class="text-gray-700">${opt}</span>
+                </label>
+            `;
+    });
+
+    html += `
+                </div>
+                <button data-quiz-id="${q.id}" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
+                    Submit Answer
+                </button>
+                <div id="q-feedback-${q.id}" class="mt-3 hidden text-sm font-medium"></div>
+            </div>
+        `;
+  });
+
+  quizContainer.innerHTML = html;
+}
+
+// Check Quiz Answer
+function checkAnswer(qId) {
+  const q = quiz.find((item) => item.id === qId);
+  const selected = document.querySelector(`input[name="quiz-${qId}"]:checked`);
+  const feedback = document.getElementById(`q-feedback-${qId}`);
+  const container = document.getElementById(`q-container-${qId}`);
+
+  if (!selected) {
+    feedback.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> Please select an answer.';
+    feedback.className = 'mt-3 text-sm font-medium text-amber-600 block';
+    return;
+  }
+
+  if (parseInt(selected.value) === q.correct) {
+    feedback.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Correct! Great job.';
+    feedback.className = 'mt-3 text-sm font-medium text-green-600 block';
+    container.classList.remove('bg-blue-50', 'border-blue-100');
+    container.classList.add('bg-green-50', 'border-green-200');
+
+    if (!completedQuizzes.includes(qId)) {
+      completedQuizzes.push(qId);
+      localStorage.setItem('docker-k8s-quiz-completed', JSON.stringify(completedQuizzes));
+      updateProgress();
+    }
+  } else {
+    feedback.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Incorrect. Try again.';
+    feedback.className = 'mt-3 text-sm font-medium text-red-600 block';
+  }
 }
 
 function handleTerminalCommand(cmd) {
@@ -197,6 +329,14 @@ function setupEventListeners() {
     if (e.key === 'Enter') {
       handleTerminalCommand(terminalInput.value);
       terminalInput.value = '';
+    }
+  });
+
+  // Quiz answer submission
+  quizContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-quiz-id]');
+    if (btn) {
+      checkAnswer(btn.dataset.quizId);
     }
   });
 

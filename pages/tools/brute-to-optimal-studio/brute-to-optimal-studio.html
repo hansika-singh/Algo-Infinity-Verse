@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brute → Optimal Diff Studio | Algo Infinity Verse</title>
+  <meta name="description" content="Side-by-side brute vs optimal solutions with annotated evolution steps — learn why each optimization move works." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="brute-to-optimal-studio.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="bto-body" data-page="brute-to-optimal-studio">
+  <a href="#bto-main" class="bto-skip-link">Skip to main content</a>
+
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="bto-hero">
+    <div class="bto-hero-badge">
+      <i class="fas fa-code-compare" aria-hidden="true"></i>
+      Solution Evolution Storytelling
+    </div>
+    <h1>
+      Brute → Optimal
+      <span class="bto-accent">Diff Studio</span>
+    </h1>
+    <p>
+      Left is brute. Right is better. Step through annotated moves like
+      <strong>sorted → two pointers</strong> and watch complexity upgrade with each transformation.
+    </p>
+  </header>
+
+  <main id="bto-main" class="bto-main">
+    <div class="container">
+      <!-- Problem picker -->
+      <section class="bto-card" aria-labelledby="bto-stories-title">
+        <div class="bto-card-head">
+          <h2 id="bto-stories-title"><i class="fas fa-book-open" aria-hidden="true"></i> Problem stories</h2>
+          <p class="bto-muted">Pick a curated evolution path</p>
+        </div>
+        <div class="bto-story-tabs" id="btoStoryTabs" role="tablist" aria-label="Problem stories"></div>
+        <div class="bto-problem-meta" id="btoProblemMeta">
+          <h3 id="btoProblemTitle">—</h3>
+          <p id="btoProblemDesc" class="bto-muted"></p>
+          <div class="bto-tags" id="btoProblemTags"></div>
+        </div>
+      </section>
+
+      <!-- Timeline -->
+      <section class="bto-card" aria-labelledby="bto-timeline-title">
+        <div class="bto-card-head bto-row-between">
+          <div>
+            <h2 id="bto-timeline-title"><i class="fas fa-route" aria-hidden="true"></i> Evolution timeline</h2>
+            <p class="bto-muted" id="btoStepCounter">Step 1 of 1</p>
+          </div>
+          <div class="bto-nav">
+            <button type="button" class="btn btn-outline" id="btoPrev" aria-label="Previous step">
+              <i class="fas fa-arrow-left" aria-hidden="true"></i> Prev
+            </button>
+            <button type="button" class="btn btn-primary" id="btoNext" aria-label="Next step">
+              Next <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <ol class="bto-timeline" id="btoTimeline" aria-label="Transformation steps"></ol>
+      </section>
+
+      <!-- Annotation banner -->
+      <div class="bto-annotation" id="btoAnnotation" role="status" aria-live="polite">
+        <div class="bto-annotation-move" id="btoMoveLabel">—</div>
+        <p class="bto-annotation-why" id="btoMoveWhy"></p>
+        <div class="bto-complexity-row">
+          <div class="bto-comp-pill brute">
+            <span class="bto-comp-label">Before</span>
+            <span id="btoBeforeComp">—</span>
+          </div>
+          <i class="fas fa-arrow-right bto-arrow" aria-hidden="true"></i>
+          <div class="bto-comp-pill optimal">
+            <span class="bto-comp-label">After</span>
+            <span id="btoAfterComp">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Split diff -->
+      <section class="bto-diff" aria-label="Brute versus optimal code">
+        <article class="bto-pane brute" aria-labelledby="bto-left-title">
+          <header class="bto-pane-head">
+            <h2 id="bto-left-title"><i class="fas fa-bomb" aria-hidden="true"></i> Before / Brute</h2>
+            <span class="bto-badge" id="btoLeftBadge">O(?)</span>
+          </header>
+          <pre class="bto-code" tabindex="0"><code id="btoLeftCode"></code></pre>
+        </article>
+        <article class="bto-pane optimal" aria-labelledby="bto-right-title">
+          <header class="bto-pane-head">
+            <h2 id="bto-right-title"><i class="fas fa-bolt" aria-hidden="true"></i> After / Optimal</h2>
+            <span class="bto-badge good" id="btoRightBadge">O(?)</span>
+          </header>
+          <pre class="bto-code" tabindex="0"><code id="btoRightCode"></code></pre>
+        </article>
+      </section>
+
+      <section class="bto-card bto-insight-card" aria-labelledby="bto-insight-title">
+        <h2 id="bto-insight-title"><i class="fas fa-lightbulb" aria-hidden="true"></i> Why this move matters</h2>
+        <p id="btoInsight" class="bto-insight-text"></p>
+        <ul class="bto-takeaways" id="btoTakeaways"></ul>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js?v=20260601"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="brute-to-optimal-studio.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

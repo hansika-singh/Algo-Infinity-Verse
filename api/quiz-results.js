@@ -6,40 +6,14 @@
  *    Vercel to return 500 on every request.
  */
 
-import { initializeApp, cert, getApps } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+
+import { initializeFirebase } from '../firebase.js';
 import crypto from "crypto";
 import { SESSION_COOKIE, verifySessionToken, parseCookies } from "../backend/utils/sessionToken.js";
 
-let db = null;
-let useFirestore = false;
+const db = initializeFirebase();
+const useFirestore = !!db;
 
-function initFirebase() {
-  if (getApps().length > 0) {
-    db = getFirestore();
-    useFirestore = true;
-    return;
-  }
-
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-
-  if (!projectId || !clientEmail || !privateKey) {
-    void 0;
-    return;
-  }
-
-  try {
-    initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) });
-    db = getFirestore();
-    useFirestore = true;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-initFirebase();
 
 /**
  * Validate quiz result payload before saving.
@@ -61,7 +35,7 @@ function validateQuizResult(payload) {
  * POST /api/quiz-results
  * Save a quiz attempt to Firestore under users/{userId}/quizResults/{attemptId}
  */
-export async function saveQuizResult(req, res) {
+export async function saveQuizResult(req, _res) {
   const cookies = parseCookies(req.headers.cookie || "");
   const session = verifySessionToken(cookies[SESSION_COOKIE]);
   if (!session) return { status: 401, body: { error: "Authentication required." } };
@@ -120,7 +94,7 @@ export async function saveQuizResult(req, res) {
  * Fetch quiz history for the authenticated user, sorted by completedAt descending.
  * Optional query params: ?limit=20&topic=Arrays
  */
-export async function getQuizResults(req, res) {
+export async function getQuizResults(req, _res) {
   const cookies = parseCookies(req.headers.cookie || "");
   const session = verifySessionToken(cookies[SESSION_COOKIE]);
   if (!session) return { status: 401, body: { error: "Authentication required." } };

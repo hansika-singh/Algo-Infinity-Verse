@@ -654,13 +654,7 @@ function openQuizEditor(problem) {
   if (outputPanel) outputPanel.classList.remove('collapsed');
   if (outputIcon) { outputIcon.classList.remove('fa-chevron-up'); outputIcon.classList.add('fa-chevron-down'); }
 
-  if (!window.__quizButtonsBound) {
-    window.__quizButtonsBound = true;
-    document.getElementById('quizRunBtn')?.addEventListener('click', runQuizCode);
-    document.getElementById('quizSubmitBtn')?.addEventListener('click', submitQuizCode);
-    document.getElementById('quizModalClose')?.addEventListener('click', closeQuizEditor);
-    document.getElementById('outputHeader')?.addEventListener('click', toggleOutputPanel);
-  }
+  wireQuizButtons();
 
   modal.classList.remove("hidden");
   modal.classList.add("active");
@@ -794,11 +788,23 @@ async function submitQuizCode() {
   } finally { _running = false; }
 }
 
+// Wires the quiz editor's Run/Submit/Close/output-toggle buttons exactly
+// once each, regardless of how many times openQuizEditor/initializeQuizEditor
+// run. Each button carries its own `_quizWired` flag so re-wiring is a no-op
+// (previously this same wiring happened in two separate places with two
+// independent "already bound" guards — see #2496).
 function wireQuizButtons() {
-  const runBtn = document.getElementById('quizRunBtn');
-  const submitBtn = document.getElementById('quizSubmitBtn');
-  if (runBtn && !runBtn._quizWired) { runBtn.addEventListener('click', runQuizCode); runBtn._quizWired = true; }
-  if (submitBtn && !submitBtn._quizWired) { submitBtn.addEventListener('click', submitQuizCode); submitBtn._quizWired = true; }
+  const bind = (id, handler) => {
+    const el = document.getElementById(id);
+    if (el && !el._quizWired) {
+      el.addEventListener('click', handler);
+      el._quizWired = true;
+    }
+  };
+  bind('quizRunBtn', runQuizCode);
+  bind('quizSubmitBtn', submitQuizCode);
+  bind('quizModalClose', closeQuizEditor);
+  bind('outputHeader', toggleOutputPanel);
 }
 
 function initializeQuizEditor() {
@@ -816,6 +822,14 @@ function initializeQuizEditor() {
     if (e.key === 'Tab') { e.preventDefault(); const start = editor.selectionStart; const end = editor.selectionEnd; const value = editor.value; editor.value = `${value.slice(0, start)}    ${value.slice(end)}`; editor.selectionStart = editor.selectionEnd = start + 4; syncEditorState(); }
     else if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); runQuizCode(); }
     else if (e.ctrlKey && e.key === 's') { e.preventDefault(); submitQuizCode(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('quizEditorModal');
+      if (modal && modal.classList.contains('active')) {
+        closeQuizEditor();
+      }
+    }
   });
   wireQuizButtons();
   if (languageSelect) languageSelect.addEventListener('change', () => { const editor = document.getElementById('codeEditor'); if (editor && currentProblem) { editor.value = getDefaultCode(languageSelect.value, currentProblem); editor.scrollTop = 0; editor.scrollLeft = 0; } syncEditorState(); updateEditorDisplayMode(); });

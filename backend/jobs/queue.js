@@ -6,8 +6,11 @@ import { Queue } from 'bullmq';
 // back to an in-process queue (bullmq is never instantiated).
 
 export const batchStore = new Map();
+export const reportStore = new Map();
 
 let bulkAuditQueue = null;
+let reportQueue = null;
+let leaderboardQueue = null;
 let redisAvailable = false;
 export let redisClient = null;
 
@@ -28,7 +31,17 @@ async function checkRedis() {
       enableOfflineQueue: false,
     });
     bulkAuditQueue = new Queue('bulk-audit-queue', { connection: redisClient });
-    bulkAuditQueue.on('error', (err) => {
+    bulkAuditQueue.on('error', (_err) => {
+      void 0;
+    });
+
+    reportQueue = new Queue('report-queue', { connection: redisClient });
+    reportQueue.on('error', (_err) => {
+      void 0;
+    });
+
+    leaderboardQueue = new Queue('leaderboard-queue', { connection: redisClient });
+    leaderboardQueue.on('error', (_err) => {
       void 0;
     });
   } catch {
@@ -62,13 +75,13 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
       completed: 0,
       failed: 0,
       results: JSON.stringify([]),
-      status: 'processing'
+      status: 'processing',
     });
     await redisClient.expire(`batch:${batchId}`, 86400); // 24h expiry
 
     const jobs = repoUrls.map((url, index) => ({
       name: `audit-${batchId}-${index}`,
-      data: { batchId, repoUrl: url }
+      data: { batchId, repoUrl: url },
     }));
     try {
       await bulkAuditQueue.addBulk(jobs);
@@ -84,7 +97,7 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
     completed: 0,
     failed: 0,
     results: [],
-    status: 'processing'
+    status: 'processing',
   });
 
   setImmediate(async () => {
@@ -100,10 +113,16 @@ export async function enqueueBulkAudit(batchId, repoUrls) {
           if (result.score > bestScore) bestScore = result.score;
         }
         const batch = batchStore.get(batchId);
-        if (batch) { batch.completed += 1; batch.results.push({ repoUrl: url, score: bestScore }); }
+        if (batch) {
+          batch.completed += 1;
+          batch.results.push({ repoUrl: url, score: bestScore });
+        }
       } catch (err) {
         const batch = batchStore.get(batchId);
-        if (batch) { batch.failed += 1; batch.results.push({ repoUrl: url, error: err.message, score: 0 }); }
+        if (batch) {
+          batch.failed += 1;
+          batch.results.push({ repoUrl: url, error: err.message, score: 0 });
+        }
       }
     }
   });
@@ -145,4 +164,77 @@ export async function getBatchProgress(batchId) {
   return { ...batch, progress };
 }
 
-export { bulkAuditQueue, redisAvailable, redisReady };
+/**
+ * Enqueues a report generation job.
+ */
+export async function enqueueReport(jobId, session, type) {
+  if (redisAvailable && redisClient && reportQueue) {
+    await redisClient.hmset(`report:${jobId}`, {
+      status: 'processing',
+      data: '',
+      error: '',
+      type: type,
+    });
+    await redisClient.expire(`report:${jobId}`, 86400); // 24h expiry
+
+    try {
+      await reportQueue.add('generate-report', { jobId, session, type });
+      return;
+    } catch (err) {
+      console.error(`Failed to enqueue report generation ${jobId}:`, err);
+    }
+  }
+
+  // In-process fallback
+  reportStore.set(jobId, { status: 'processing', data: null, error: null, type });
+
+  setImmediate(async () => {
+    const { generateReportBuffer } = await import('../reports/reportGenerator.js');
+    try {
+      const buffer = await generateReportBuffer(session, type);
+      const report = reportStore.get(jobId);
+      if (report) {
+        report.status = 'completed';
+        report.data = buffer.toString('base64');
+      }
+    } catch (err) {
+      const report = reportStore.get(jobId);
+      if (report) {
+        report.status = 'failed';
+        report.error = err.message;
+      }
+    }
+  });
+}
+
+/**
+ * Gets the status and result of a report generation job.
+ */
+export async function getReportStatus(jobId) {
+  if (redisAvailable && redisClient) {
+    const data = await redisClient.hgetall(`report:${jobId}`);
+    if (!data || Object.keys(data).length === 0) return null;
+    return {
+      status: data.status,
+      data: data.data || null,
+      error: data.error || null,
+      type: data.type || 'pdf',
+    };
+  }
+
+  // Fallback
+  const report = reportStore.get(jobId);
+  return report || null;
+}
+
+export async function enqueueLeaderboardUpdate(userId, xp) {
+  if (redisAvailable && redisClient && leaderboardQueue) {
+    try {
+      await leaderboardQueue.add('update-score', { userId, xp: Number(xp) });
+    } catch (err) {
+      console.error(`[LEADERBOARD] Failed to enqueue update for user ${userId}:`, err);
+    }
+  }
+}
+
+export { bulkAuditQueue, reportQueue, leaderboardQueue, redisAvailable, redisReady };

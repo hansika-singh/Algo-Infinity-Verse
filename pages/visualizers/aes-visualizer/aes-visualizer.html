@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AES Round Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Step-by-step interactive visualizer for the AES (Advanced Encryption Standard) encryption rounds."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="aes-visualizer.css" />
+  </head>
+  <body class="aes-body">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <i class="fas fa-infinity"></i>
+        <span>Algo Infinity Verse</span>
+      </div>
+      <ul class="nav-links">
+        <li>
+          <a href="/index.html"><i class="fas fa-home"></i> <span>Home</span></a>
+        </li>
+        <li>
+          <a href="/pages/visualizers/visualizers.html"
+            ><i class="fas fa-project-diagram"></i> <span>Visualizers</span></a
+          >
+        </li>
+        <li class="active">
+          <a href="#"><i class="fas fa-shield-halved"></i> <span>AES-128</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="main-content">
+      <header class="app-header">
+        <div class="header-title">
+          <h1><i class="fas fa-shield-halved"></i> AES Round Visualizer</h1>
+          <p>Explore the inner workings of symmetric AES-128 block cipher encryption rounds</p>
+        </div>
+        <div class="controls-card glassy">
+          <div class="input-row">
+            <div class="input-group">
+              <label for="plaintextInput">Plaintext (16 chars or 32 Hex)</label>
+              <input
+                type="text"
+                id="plaintextInput"
+                placeholder="Enter plaintext..."
+                value="Hello AES Visual"
+              />
+            </div>
+            <div class="input-group">
+              <label for="keyInput">Cipher Key (16 chars or 32 Hex)</label>
+              <input
+                type="text"
+                id="keyInput"
+                placeholder="Enter cipher key..."
+                value="MySecretAESKey12"
+              />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button id="btnRandomize" class="btn btn-secondary" title="Random Plaintext and Key">
+              <i class="fas fa-random"></i> Randomize
+            </button>
+            <button id="btnReset" class="btn btn-secondary">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <button id="btnPrev" class="btn btn-secondary" disabled>
+              <i class="fas fa-step-backward"></i> Back
+            </button>
+            <button id="btnStep" class="btn btn-primary">
+              <i class="fas fa-step-forward"></i> Step Forward
+            </button>
+            <button id="btnPlayPause" class="btn btn-accent">
+              <i class="fas fa-play"></i> Auto Play
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-grid">
+        <!-- Key Schedule / Expanded Keys -->
+        <section class="panel glassy key-expansion-panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-key"></i> Key Schedule & Round Keys</h2>
+          </div>
+          <div class="panel-body">
+            <p class="info-text">
+              AES-128 uses Key Expansion to expand the 128-bit master key into 11 Round Keys (each
+              128 bits/16 bytes).
+            </p>
+            <div class="round-keys-container" id="roundKeysContainer">
+              <!-- Round key matrices injected here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Current Round Status Indicator -->
+        <div class="round-progress-wrapper glassy">
+          <div class="round-indicator" id="roundIndicator">
+            Round <span id="currentRoundNum">0</span>/10
+          </div>
+          <div class="steps-progress" id="stepsProgress">
+            <div class="progress-step active" id="prog-init">Initial</div>
+            <div class="progress-step" id="prog-sub">SubBytes</div>
+            <div class="progress-step" id="prog-shift">ShiftRows</div>
+            <div class="progress-step" id="prog-mix">MixColumns</div>
+            <div class="progress-step" id="prog-xor">AddRoundKey</div>
+          </div>
+        </div>
+
+        <!-- Main State Visualization -->
+        <div class="visualization-arena">
+          <!-- Left: State Matrix (4x4) -->
+          <section class="panel glassy state-panel">
+            <div class="panel-header">
+              <h2><i class="fas fa-table-cells"></i> Current State Matrix (4×4)</h2>
+              <span class="status-badge active" id="state-status">Active</span>
+            </div>
+            <div class="panel-body">
+              <p class="info-text">
+                The 16 bytes of the block are arranged in a 4×4 grid in column-major order.
+              </p>
+              <div class="state-grid-wrapper">
+                <div class="matrix-grid" id="stateMatrixGrid">
+                  <!-- 16 state cells injected here -->
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right: Operation Visual Animation Area -->
+          <section class="panel glassy logic-panel">
+            <div class="panel-header">
+              <h2>
+                <i class="fas fa-microchip"></i> Current Operation:
+                <span id="opTitle">Initial Plaintext</span>
+              </h2>
+            </div>
+            <div class="panel-body operation-details" id="operationDetailsArea">
+              <!-- Dynamically populated per step -->
+            </div>
+          </section>
+        </div>
+
+        <!-- Educational Explanation & Details -->
+        <section class="panel glassy explanation-panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-book-open"></i> Educational Explanations & Math</h2>
+          </div>
+          <div class="panel-body">
+            <div class="explanation-content" id="explanationText">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="aes-visualizer.js"></script>
+  </body>
+</html>

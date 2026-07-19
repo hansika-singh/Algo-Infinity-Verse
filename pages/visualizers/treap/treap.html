@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treap Visualizer · Algo Infinity Verse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="treap.css">
+</head>
+<body>
+
+<div class="starfield" id="starfield"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">∞</span>
+    <div class="brand-text">
+      <span class="brand-name">Algo</span>
+      <span class="brand-sub">INFINITY VERSE</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <span>Learn</span><span>Practice</span><span class="active">Interview</span><span>Discussions</span>
+  </nav>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <p class="eyebrow">DSA TOPIC · RANDOMIZED BALANCED TREES</p>
+    <h1>Treap <span class="accent">Dual&#8209;Order Engine</span></h1>
+    <p class="subhead">One node set. Two orders. Balanced by a dice roll, not a rulebook.</p>
+    <p class="lede">A treap keeps <strong>BST order on keys</strong> and <strong>max&#8209;heap order on random priorities</strong> at the same time. No rotation invariants to memorize, no amortized proofs — just randomness doing the balancing for you, in expectation O(log n) every time.</p>
+  </section>
+
+  <section class="panel controls-panel">
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="keyInput">Key</label>
+        <input type="number" id="keyInput" placeholder="e.g. 42">
+      </div>
+      <button class="btn btn-primary" id="btnInsert">🎲 Insert</button>
+      <button class="btn btn-ghost" id="btnDelete">✂ Delete</button>
+      <button class="btn btn-ghost" id="btnRandom">🔀 Insert Random</button>
+      <button class="btn btn-danger-ghost" id="btnClear">Clear Treap</button>
+    </div>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="splitInput">Split at key</label>
+        <input type="number" id="splitInput" placeholder="e.g. 30">
+      </div>
+      <button class="btn btn-secondary" id="btnSplit">⑂ Split</button>
+      <button class="btn btn-secondary" id="btnMerge" disabled>⑃ Merge Back</button>
+      <span class="roundtrip-badge" id="roundtripBadge"></span>
+    </div>
+    <div class="status-line" id="statusLine">Ready. Insert a key to roll its priority and drop it into the treap.</div>
+  </section>
+
+  <section class="panel dual-view" id="dualViewPanel">
+    <div class="view-col">
+      <div class="view-header">
+        <h2>BST View <span class="view-tag">ordered by key</span></h2>
+      </div>
+      <svg id="bstSvg" viewBox="0 0 900 420" preserveAspectRatio="xMidYMin meet"></svg>
+    </div>
+    <div class="view-divider">
+      <span class="divider-label">same tree</span>
+    </div>
+    <div class="view-col">
+      <div class="view-header">
+        <h2>Heap View <span class="view-tag">ordered by priority</span></h2>
+      </div>
+      <svg id="heapSvg" viewBox="0 0 900 420" preserveAspectRatio="xMidYMin meet"></svg>
+    </div>
+  </section>
+
+  <section class="panel split-panel hidden" id="splitPanel">
+    <div class="view-header">
+      <h2>Split Result <span class="view-tag">key &le; k stays left, key &gt; k moves right</span></h2>
+    </div>
+    <div class="split-halves">
+      <div class="split-half">
+        <h3>Left treap <span id="leftCount" class="count-badge">0</span></h3>
+        <svg id="leftSvg" viewBox="0 0 420 320" preserveAspectRatio="xMidYMin meet"></svg>
+      </div>
+      <div class="split-half">
+        <h3>Right treap <span id="rightCount" class="count-badge">0</span></h3>
+        <svg id="rightSvg" viewBox="0 0 420 320" preserveAspectRatio="xMidYMin meet"></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel telemetry-panel">
+    <div class="view-header">
+      <h2>Expected&#8209;Height Telemetry <span class="view-tag">empirical vs. theoretical O(log n)</span></h2>
+    </div>
+    <p class="telemetry-copy">Run a batch of randomized insertions and compare the measured tree height against the theoretical <code>~3&nbsp;log₂(n)</code> expected bound for treaps. Then try the adversarial case — keys inserted in strictly sorted order, which would collapse a plain BST into a linked list.</p>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="trialSize">Keys per trial (n)</label>
+        <input type="number" id="trialSize" value="128" min="4" max="4096">
+      </div>
+      <div class="control-group">
+        <label for="trialCount">Trials</label>
+        <input type="number" id="trialCount" value="200" min="1" max="2000">
+      </div>
+      <button class="btn btn-primary" id="btnRunRandom">▶ Run Random&#8209;Order Trials</button>
+      <button class="btn btn-secondary" id="btnRunSorted">▶ Run Adversarial (Sorted) Trials</button>
+    </div>
+    <div class="telemetry-body">
+      <svg id="histSvg" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="telemetry-stats" id="telemetryStats">
+        <div class="stat"><span class="stat-label">Trials run</span><span class="stat-value" id="statTrials">–</span></div>
+        <div class="stat"><span class="stat-label">Avg height</span><span class="stat-value" id="statAvg">–</span></div>
+        <div class="stat"><span class="stat-label">Max height</span><span class="stat-value" id="statMax">–</span></div>
+        <div class="stat"><span class="stat-label">Theoretical 3·log₂(n)</span><span class="stat-value" id="statTheory">–</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot-note">
+    Built as a Dual&#8209;Order Engine for issue <strong>#2449</strong> · Algo Infinity Verse
+  </footer>
+
+</main>
+
+<script src="treap.js"></script>
+</body>
+</html>

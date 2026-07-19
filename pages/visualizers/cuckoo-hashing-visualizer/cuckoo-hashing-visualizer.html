@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuckoo Hashing Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Watch cuckoo hashing achieve true O(1) worst-case lookup — two tables, two hash functions, and eviction chains that kick keys back and forth until they land, or trigger a rehash." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="cuckoo-hashing-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="cuckoo-hashing-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="ck-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="ck-hero-inner">
+        <div class="ck-hero-eyebrow">🐦 Guaranteed O(1) Worst-Case Lookup</div>
+        <h1 class="ck-hero-title">Cuckoo Hashing Visualizer</h1>
+        <p class="ck-hero-sub">Two tables. Two hashes. Never more than 2 checks to find anything.</p>
+        <p class="ck-hero-desc">Every other hash table gives you average O(1) lookup with no worst-case guarantee. Cuckoo hashing gives you a real one: every key lives in exactly one of two possible slots. Inserting can kick out the resident key like a cuckoo chick pushing eggs from a nest — that evicted key then tries its own second table, potentially chaining several evictions deep.</p>
+        <a href="#lab" class="btn btn-primary ck-btn-primary"><i class="fas fa-table-cells"></i> Open the Nest</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section ck-section">
+      <div class="container">
+
+        <div class="ck-control-card">
+          <div class="ck-row">
+            <label for="ckKeyInput" class="ck-row-label">Key</label>
+            <input type="text" id="ckKeyInput" class="ck-text-input" placeholder="type a key" maxlength="10" />
+            <button class="btn ck-btn-primary ck-insert-btn" id="ckInsertBtn"><i class="fas fa-plus"></i> Insert</button>
+            <button class="btn btn-secondary ck-lookup-btn" id="ckLookupBtn"><i class="fas fa-magnifying-glass"></i> Lookup</button>
+            <button class="btn btn-secondary ck-reset-btn" id="ckResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+          <div class="ck-row">
+            <span class="ck-row-label">Table size</span>
+            <div class="ck-size-btns">
+              <button class="ck-size-btn active" data-size="8">8 slots</button>
+              <button class="ck-size-btn" data-size="12">12 slots</button>
+            </div>
+            <button class="btn btn-secondary ck-cycle-demo-btn" id="ckCycleDemoBtn"><i class="fas fa-rotate"></i> Trigger Cycle Demo</button>
+          </div>
+        </div>
+
+        <div class="ck-status" id="ckStatus">Insert a key. If both its slots are taken, watch the eviction chain animate.</div>
+
+        <div class="ck-main-layout">
+
+          <div class="ck-tables-section">
+            <div class="ck-table-block">
+              <div class="ck-panel-title"><i class="fas fa-table-cells"></i> Table 1 (hash h1)</div>
+              <div class="ck-slots-row" id="ckTable1"></div>
+            </div>
+            <div class="ck-table-block">
+              <div class="ck-panel-title"><i class="fas fa-table-cells"></i> Table 2 (hash h2)</div>
+              <div class="ck-slots-row" id="ckTable2"></div>
+            </div>
+          </div>
+
+          <div class="ck-right-panel">
+
+            <div class="ck-panel-card">
+              <div class="ck-panel-title"><i class="fas fa-arrows-turn-right"></i> Eviction Chain Log</div>
+              <div class="ck-log" id="ckLog"><div class="ck-empty">No insertions yet.</div></div>
+            </div>
+
+            <div class="ck-panel-card">
+              <div class="ck-panel-title"><i class="fas fa-gauge-high"></i> Stats</div>
+              <div class="ck-stat-rows">
+                <div class="ck-stat-row"><span>Keys stored</span><span id="ckKeyCount">0</span></div>
+                <div class="ck-stat-row"><span>Load factor</span><span id="ckLoadFactor">0%</span></div>
+                <div class="ck-stat-row"><span>Total evictions</span><span id="ckEvictionCount">0</span></div>
+                <div class="ck-stat-row"><span>Rehashes triggered</span><span id="ckRehashCount">0</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🐦</span> How the Nest Works</h2>
+        <div class="ck-learn-grid">
+          <div class="ck-learn-card" style="--lc:#06b6d4">
+            <div class="ck-learn-icon">🎯</div>
+            <h3>Exactly 2 Possible Homes</h3>
+            <p>Every key has exactly one valid slot in Table 1 (via h1) and one valid slot in Table 2 (via h2). Lookup checks both — never more, regardless of how full or contended the tables are. That's the genuine O(1) worst case.</p>
+          </div>
+          <div class="ck-learn-card" style="--lc:#a855f7">
+            <div class="ck-learn-icon">🔄</div>
+            <h3>The Eviction Chain</h3>
+            <p>If a key's target slot is occupied, the resident is evicted and the new key takes its place. The evicted key then tries ITS other table via its own second hash — this can chain several evictions deep before everything settles.</p>
+          </div>
+          <div class="ck-learn-card" style="--lc:#22c55e">
+            <div class="ck-learn-icon">♻️</div>
+            <h3>Cycle Detection & Rehash</h3>
+            <p>Occasionally an eviction chain loops back on itself forever. After a bounded number of kicks, the algorithm gives up, generates two brand-new hash functions, and re-inserts every key from scratch — a full rehash.</p>
+          </div>
+          <div class="ck-learn-card" style="--lc:#f59e0b">
+            <div class="ck-learn-icon">📊</div>
+            <h3>The 50% Load Factor Wall</h3>
+            <p>Cuckoo hashing works cleanly up to roughly 50% load factor. Beyond that, eviction chains grow long and rehashes become frequent — a real tradeoff against chaining-based hash tables, which degrade more gracefully but never offer the O(1) worst-case guarantee.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="cuckoo-hashing-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

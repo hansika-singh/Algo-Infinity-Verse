@@ -62,6 +62,7 @@ const upload = multer({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = __dirname;
+const PAGE_404 = path.join(ROOT, '..', '404.html');
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const MEMORY_FILE = path.join(DATA_DIR, 'memory.json');
@@ -289,7 +290,9 @@ async function readUsers() {
 
 async function writeUsers(users) {
   await ensureUserStore();
-  await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`);
+  const tmpPath = `${USERS_FILE}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmpPath, `${JSON.stringify(users, null, 2)}\n`);
+  await fs.rename(tmpPath, USERS_FILE);
 }
 
 // ── Memory Scanner (Spaced Repetition, SM-2) ─────────────────────────────────
@@ -385,6 +388,11 @@ function validateSignup({ name, email, password, confirmPassword }) {
 }
 
 async function readJsonBody(req) {
+  const contentType = req.headers['content-type'] || '';
+  if (!contentType.startsWith('application/json')) {
+    throw new Error('Invalid Content-Type. Expected application/json.');
+  }
+
   let body = '';
   for await (const chunk of req) {
     body += chunk;
@@ -547,14 +555,36 @@ async function serveStatic(req, res, pathname) {
     });
     res.end(content);
   } catch {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('Not found');
+    try {
+      const errorContent = await fs.readFile(PAGE_404, 'utf8');
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(errorContent);
+    } catch {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Not found');
+    }
   }
 }
 
 const server = http.createServer(async (req, res) => {
   try {
-    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const hostHeader = req.headers.host;
+
+    const ALLOWED_HOSTS = new Set(
+      (process.env.ALLOWED_HOSTS || 'localhost:3000,localhost,127.0.0.1:3000,127.0.0.1')
+        .split(',')
+        .map(h => h.trim())
+        .filter(Boolean)
+    );
+
+    if (!hostHeader || typeof hostHeader !== 'string' || !ALLOWED_HOSTS.has(hostHeader)) {
+      return sendJson(res, 400, { error: 'Invalid or unexpected Host header.' });
+    }
+
+    
+    const protocol = req.socket?.encrypted ? 'https' : 'http';
+    const url = new URL(req.url, `${protocol}://${hostHeader}`);
+
     const pathname = normalizePathname(decodeURIComponent(url.pathname));
 
     const requestValidation = validateRequest(req);
@@ -585,6 +615,9 @@ const server = http.createServer(async (req, res) => {
     return await serveStatic(req, res, pathname);
   } catch (error) {
     console.error(error);
+    if (error.message === 'Invalid Content-Type. Expected application/json.') {
+      return sendJson(res, 415, { error: 'Unsupported Media Type. Please set Content-Type: application/json.' });
+    }
     sendJson(res, 500, { error: 'Something went wrong.' });
   }
 });
@@ -603,13 +636,7 @@ if (process.env.VERCEL !== '1') {
       const port = Number(process.env.PORT || 3000);
       const host = process.env.HOST || '127.0.0.1';
 
-      server.listen(port, host, () => {
-        const url = `http://${host}:${port}`;
-        void 0;
-        if (!process.env.SESSION_SECRET) {
-          void 0;
-        }
-      });
+      server.listen(port, host, () => {});
     })
     .catch((error) => {
       console.error('Failed to load environment configuration:', error);

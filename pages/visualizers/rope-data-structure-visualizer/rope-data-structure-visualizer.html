@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rope Data Structure Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="See how VS Code and Google Docs edit huge documents in O(log n) using ropes — binary trees of string fragments with split, concat, and weight-guided indexing." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="rope-data-structure-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="rope-data-structure-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="rp-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="rp-hero-inner">
+        <div class="rp-hero-eyebrow">📝 VS Code · Google Docs · Text Editor Internals</div>
+        <h1 class="rp-hero-title">Rope Data Structure Visualizer</h1>
+        <p class="rp-hero-sub">Edit a million-character document without shifting a single byte.</p>
+        <p class="rp-hero-desc">A plain string buffer makes insert-at-position cost O(n) — every character after it must shift. A Rope is a binary tree of small string fragments where insert, delete, and character access all cost O(log n), no matter how large the document gets.</p>
+        <a href="#lab" class="btn btn-primary rp-btn-primary"><i class="fas fa-sitemap"></i> Open the Rope</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section rp-section">
+      <div class="container">
+
+        <div class="rp-control-card">
+          <div class="rp-row">
+            <span class="rp-row-label">Build from</span>
+            <input type="text" id="rpBuildInput" class="rp-text-input" value="The quick brown fox jumps over the lazy dog" maxlength="60" />
+            <button class="btn rp-btn-primary rp-build-btn" id="rpBuildBtn"><i class="fas fa-hammer"></i> Build Rope</button>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Position</span>
+            <input type="number" id="rpPosInput" class="rp-num-input" value="4" min="0" />
+            <span class="rp-row-label">Text</span>
+            <input type="text" id="rpTextInput" class="rp-text-input" value="very " maxlength="20" />
+            <button class="btn rp-btn-primary rp-op-btn" id="rpInsertBtn"><i class="fas fa-plus"></i> Insert</button>
+            <button class="btn btn-secondary rp-op-btn" id="rpIndexBtn"><i class="fas fa-magnifying-glass"></i> Index Char</button>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Delete range</span>
+            <input type="number" id="rpDelStart" class="rp-num-input" value="0" min="0" />
+            <span class="rp-row-label">to</span>
+            <input type="number" id="rpDelEnd" class="rp-num-input" value="4" min="0" />
+            <button class="btn btn-secondary rp-op-btn" id="rpDeleteBtn"><i class="fas fa-minus"></i> Delete</button>
+            <button class="btn btn-secondary rp-rebalance-btn" id="rpRebalanceBtn"><i class="fas fa-scale-balanced"></i> Rebalance</button>
+            <button class="btn btn-secondary rp-reset-btn" id="rpResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+        </div>
+
+        <div class="rp-status" id="rpStatus">Build a rope, then insert/delete/index to see O(log n) tree operations instead of character shifting.</div>
+
+        <div class="rp-current-text">
+          <div class="rp-panel-title"><i class="fas fa-align-left"></i> Current Document</div>
+          <div class="rp-text-display" id="rpTextDisplay"></div>
+        </div>
+
+        <div class="rp-main-layout">
+
+          <div class="rp-tree-section">
+            <div class="rp-panel-title"><i class="fas fa-diagram-project"></i> Rope Tree Structure</div>
+            <div class="rp-tree-wrap"><svg id="rpTreeSvg" class="rp-tree-svg"></svg></div>
+            <div class="rp-legend">
+              <span class="rp-leg"><span class="rp-leg-dot rp-leg-leaf"></span>Leaf (string fragment)</span>
+              <span class="rp-leg"><span class="rp-leg-dot rp-leg-internal"></span>Internal node (weight = left subtree length)</span>
+              <span class="rp-leg"><span class="rp-leg-dot rp-leg-path"></span>Traversal path</span>
+            </div>
+          </div>
+
+          <div class="rp-right-panel">
+
+            <div class="rp-panel-card">
+              <div class="rp-panel-title"><i class="fas fa-list-ol"></i> Operation Log</div>
+              <div class="rp-log" id="rpLog"><div class="rp-empty">No operations yet.</div></div>
+            </div>
+
+            <div class="rp-panel-card">
+              <div class="rp-panel-title"><i class="fas fa-scale-balanced"></i> Rope vs Naive Buffer</div>
+              <div class="rp-stat-rows">
+                <div class="rp-stat-row"><span>Document length</span><span id="rpDocLength">0</span></div>
+                <div class="rp-stat-row"><span>Tree depth</span><span id="rpTreeDepth">0</span></div>
+                <div class="rp-stat-row"><span>Rope: chars touched</span><span id="rpRopeCost">—</span></div>
+                <div class="rp-stat-row"><span>Naive: chars shifted</span><span id="rpNaiveCost">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">📝</span> Why Editors Use Ropes</h2>
+        <div class="rp-learn-grid">
+          <div class="rp-learn-card" style="--lc:#06b6d4">
+            <div class="rp-learn-icon">⚖️</div>
+            <h3>The Weight Field</h3>
+            <p>Every internal node stores the total character count of its LEFT subtree. To find character i, compare i against the node's weight: go left if i is smaller, or go right with i minus the weight if larger — no scanning required.</p>
+          </div>
+          <div class="rp-learn-card" style="--lc:#a855f7">
+            <div class="rp-learn-icon">✂️</div>
+            <h3>Split and Concat</h3>
+            <p>Every edit is built from two primitives: split (break a rope into two ropes at a position) and concat (join two ropes with a new root). Insert is split + concat; delete is two splits plus discarding the middle piece.</p>
+          </div>
+          <div class="rp-learn-card" style="--lc:#22c55e">
+            <div class="rp-learn-icon">🌳</div>
+            <h3>Rebalancing</h3>
+            <p>Repeated edits without rebalancing can degrade a rope into a long chain — O(n) worst case. Periodically flattening the leaves and rebuilding a balanced tree restores the O(log n) guarantee.</p>
+          </div>
+          <div class="rp-learn-card" style="--lc:#f59e0b">
+            <div class="rp-learn-icon">💻</div>
+            <h3>Real Editors</h3>
+            <p>VS Code's text buffer, Xi editor, and Google Docs' internal representation all use rope-like structures specifically so that typing in a 100,000-line file feels instant regardless of where the cursor is.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="rope-data-structure-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

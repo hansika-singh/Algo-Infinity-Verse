@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gRPC & HTTP/2 Multiplexing Visualizer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="grpc-simulator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>gRPC & HTTP/2 Multiplexing Simulator</h1>
+            <p>Compare HTTP/1.1 head-of-line blocking against HTTP/2 multiplexed streams and Protobuf binary compression.</p>
+        </header>
+
+        <main class="simulator-layout">
+            <div class="toolbar">
+                <button id="btn-send-requests" class="primary-btn"><i class="fa-solid fa-play"></i> Send 12 Requests</button>
+                <button id="btn-reset" class="secondary-btn"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+            </div>
+
+            <div class="comparison-panel">
+                <!-- HTTP/1.1 Panel -->
+                <div class="protocol-section">
+                    <h2>HTTP/1.1 (REST / JSON)</h2>
+                    <div class="stats">
+                        <p>Connection Limit: 6 parallel connections</p>
+                        <p>Format: Text (JSON)</p>
+                    </div>
+                    
+                    <div class="network-view" id="http1-network">
+                        <div class="client"><i class="fa-solid fa-laptop"></i> Client</div>
+                        <div class="connections" id="http1-connections">
+                            <div class="conn-track" id="http1-track-1"></div>
+                            <div class="conn-track" id="http1-track-2"></div>
+                            <div class="conn-track" id="http1-track-3"></div>
+                            <div class="conn-track" id="http1-track-4"></div>
+                            <div class="conn-track" id="http1-track-5"></div>
+                            <div class="conn-track" id="http1-track-6"></div>
+                        </div>
+                        <div class="server"><i class="fa-solid fa-server"></i> Server</div>
+                    </div>
+                    
+                    <div class="queue-view">
+                        <h3>Pending Queue</h3>
+                        <div class="queue-container" id="http1-queue"></div>
+                    </div>
+                </div>
+
+                <!-- HTTP/2 Panel -->
+                <div class="protocol-section">
+                    <h2>HTTP/2 (gRPC / Protobuf)</h2>
+                    <div class="stats">
+                        <p>Connection Limit: 1 connection (Multiplexed)</p>
+                        <p>Format: Binary (Protobuf)</p>
+                    </div>
+
+                    <div class="network-view" id="http2-network">
+                        <div class="client"><i class="fa-solid fa-laptop"></i> Client</div>
+                        <div class="connections" id="http2-connections">
+                            <div class="conn-track multiplex-track" id="http2-track"></div>
+                        </div>
+                        <div class="server"><i class="fa-solid fa-server"></i> Server</div>
+                    </div>
+
+                    <div class="queue-view">
+                        <h3>Pending Queue</h3>
+                        <div class="queue-container" id="http2-queue"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payload Comparison -->
+            <div class="payload-comparison">
+                <h3>Payload Size Comparison</h3>
+                <div class="payloads">
+                    <div class="payload-box json-payload">
+                        <h4>JSON (HTTP/1.1)</h4>
+                        <pre><code>{
+  "id": 12345,
+  "name": "Alice",
+  "active": true
+}</code></pre>
+                        <div class="size-badge">Size: ~55 bytes</div>
+                    </div>
+                    <div class="payload-box proto-payload">
+                        <h4>Protobuf (gRPC)</h4>
+                        <div class="binary-data">
+                            <span>08 39 30 12</span>
+                            <span>05 41 6c 69</span>
+                            <span>63 65 18 01</span>
+                        </div>
+                        <div class="size-badge">Size: ~12 bytes</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="grpc-simulator.js"></script>
+</body>
+</html>

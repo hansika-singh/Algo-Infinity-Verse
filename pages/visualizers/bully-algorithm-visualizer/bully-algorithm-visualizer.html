@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bully Algorithm Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Watch the Bully Algorithm elect a leader — highest surviving ID always wins, even through concurrent failures and network partitions." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="bully-algorithm-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="bully-algorithm-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="bl-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="bl-hero-inner">
+        <div class="bl-hero-eyebrow">👑 Leader Election · Coordinator Failure Recovery</div>
+        <h1 class="bl-hero-title">Bully Algorithm Visualizer</h1>
+        <p class="bl-hero-sub">No voting rounds. The biggest ID alive simply wins.</p>
+        <p class="bl-hero-desc">When a coordinator fails, any node that notices sends ELECTION messages to every higher-ID node. If a higher node answers, it takes over the election. If nobody answers, the caller declares itself the new leader and broadcasts it. Simple, deterministic, and it correctly handles nodes failing mid-election.</p>
+        <a href="#lab" class="btn btn-primary bl-btn-primary"><i class="fas fa-crown"></i> Open the Cluster</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section bl-section">
+      <div class="container">
+
+        <div class="bl-control-card">
+          <div class="bl-row">
+            <span class="bl-row-label">Nodes</span>
+            <div class="bl-node-btns">
+              <button class="bl-node-btn" data-n="5">5</button>
+              <button class="bl-node-btn active" data-n="7">7</button>
+              <button class="bl-node-btn" data-n="9">9</button>
+            </div>
+            <button class="btn btn-secondary bl-reset-btn" id="blResetBtn"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+          <div class="bl-row">
+            <button class="btn bl-btn-primary bl-partition-btn" id="blPartitionBtn"><i class="fas fa-scissors"></i> Simulate Network Partition</button>
+            <button class="btn btn-secondary bl-heal-btn" id="blHealBtn" disabled><i class="fas fa-link"></i> Heal Partition</button>
+          </div>
+        </div>
+
+        <div class="bl-status" id="blStatus">Click any node to kill it. If it's the coordinator, watch surviving nodes detect the failure and elect a new leader.</div>
+
+        <div class="bl-main-layout">
+
+          <div class="bl-cluster-section">
+            <div class="bl-panel-title"><i class="fas fa-circle-nodes"></i> Cluster — Click a Node to Kill It, Click a Dead Node to Revive It</div>
+            <div class="bl-canvas-wrap" id="blCanvasWrap"><canvas id="blCanvas" class="bl-canvas"></canvas></div>
+            <div class="bl-legend">
+              <span class="bl-leg"><span class="bl-leg-dot bl-leg-coord"></span>Coordinator</span>
+              <span class="bl-leg"><span class="bl-leg-dot bl-leg-alive"></span>Alive node</span>
+              <span class="bl-leg"><span class="bl-leg-dot bl-leg-dead"></span>Dead node</span>
+              <span class="bl-leg"><span class="bl-leg-dot bl-leg-electing"></span>Electing</span>
+            </div>
+          </div>
+
+          <div class="bl-right-panel">
+
+            <div class="bl-panel-card">
+              <div class="bl-panel-title"><i class="fas fa-list-ol"></i> Election Log</div>
+              <div class="bl-log" id="blLog"><div class="bl-empty">No elections yet.</div></div>
+            </div>
+
+            <div class="bl-panel-card">
+              <div class="bl-panel-title"><i class="fas fa-gauge-high"></i> Cluster State</div>
+              <div class="bl-stat-rows">
+                <div class="bl-stat-row"><span>Current coordinator</span><span id="blCoordinator">—</span></div>
+                <div class="bl-stat-row"><span>Alive nodes</span><span id="blAliveCount">—</span></div>
+                <div class="bl-stat-row"><span>Elections triggered</span><span id="blElectionCount">0</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">👑</span> How the Bully Algorithm Works</h2>
+        <div class="bl-learn-grid">
+          <div class="bl-learn-card" style="--lc:#06b6d4">
+            <div class="bl-learn-icon">📡</div>
+            <h3>Detecting Failure</h3>
+            <p>Nodes periodically ping the coordinator. When a ping times out, the node concludes the coordinator is down and starts an election — no central authority tells anyone this happened.</p>
+          </div>
+          <div class="bl-learn-card" style="--lc:#a855f7">
+            <div class="bl-learn-icon">📢</div>
+            <h3>The Election Message</h3>
+            <p>The node that noticed the failure sends ELECTION to every node with a HIGHER id. If any of them respond, they take over the election and the original node steps back — "bullied" out by a bigger node, hence the name.</p>
+          </div>
+          <div class="bl-learn-card" style="--lc:#22c55e">
+            <div class="bl-learn-icon">🏆</div>
+            <h3>Declaring Victory</h3>
+            <p>If a node sends ELECTION to all higher IDs and gets no response, it means it's the highest surviving node. It declares itself coordinator and broadcasts COORDINATOR to everyone.</p>
+          </div>
+          <div class="bl-learn-card" style="--lc:#f59e0b">
+            <div class="bl-learn-icon">🔀</div>
+            <h3>Concurrent Elections Still Converge</h3>
+            <p>Multiple nodes can notice the failure and start elections at the same time. Because every election independently discovers and defers to the highest alive ID, they all converge to the exact same winner regardless of timing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="bully-algorithm-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

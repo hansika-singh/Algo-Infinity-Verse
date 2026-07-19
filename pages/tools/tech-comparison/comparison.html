@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Comparison Radar — Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Compare technologies side by side: React vs Vue, MongoDB vs PostgreSQL, REST vs GraphQL, Docker vs Podman, and more. Radar charts, feature matrices, syntax comparisons, and decision flows."
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="comparison.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = t || (p ? 'light' : 'dark');
+          if (theme === 'light') document.documentElement.classList.add('light-mode');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body data-page="tech-comparison" data-no-loading>
+    <!-- Scroll to Top Button -->
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <main>
+      <!-- ═══ HERO ═══ -->
+      <section class="tc-hero">
+        <div class="tc-hero-bg" aria-hidden="true"></div>
+        <button type="button" class="tc-back-btn" id="tcBackBtn" aria-label="Go back to previous page">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back</span>
+        </button>
+        <div class="tc-hero-content">
+          <h1 class="tc-hero-title">Tech Comparison Radar</h1>
+          <p class="tc-hero-subtitle">
+            Make informed technology decisions. Compare frameworks, databases, cloud providers, and
+            API approaches across multiple dimensions — side by side.
+          </p>
+
+          <!-- Search & Filter -->
+          <div class="tc-controls">
+            <div class="tc-search-wrapper">
+              <div class="tc-search">
+                <i class="fas fa-search tc-search-icon"></i>
+                <input
+                  type="text"
+                  id="tcSearchInput"
+                  class="tc-search-input"
+                  placeholder="Search comparisons..."
+                  aria-label="Search comparisons"
+                  autocomplete="off"
+                />
+                <button type="button" id="tcClearBtn" class="tc-clear-btn" aria-label="Clear search">
+                  <i class="fas fa-times"></i>
+                </button>
+                <span class="tc-search-hint">⌘K</span>
+              </div>
+            </div>
+
+            <div class="tc-filters" id="tcFilters">
+              <button type="button" class="tc-filter-chip active" data-category="all">All</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ COMPARISON VIEWER ═══ -->
+      <section class="tc-section" id="tcViewer">
+        <div class="tc-container">
+          <!-- Picker Cards -->
+          <div class="tc-picker" id="tcPicker">
+            <p class="tc-picker-message" id="tcPickerMessage">
+              <i class="fas fa-arrow-up"></i> Select a comparison above to begin.
+            </p>
+          </div>
+
+          <!-- Active Comparison -->
+          <div class="tc-comparison" id="tcComparison" style="display: none">
+            <!-- Header -->
+            <div class="tc-compare-header" id="tcCompareHeader"></div>
+
+            <!-- Tabs -->
+            <div class="tc-tabs" role="tablist" aria-label="Comparison views">
+              <button
+                type="button"
+                class="tc-tab active"
+                role="tab"
+                aria-selected="true"
+                data-tab="radar"
+              >
+                <i class="fas fa-chart-pie"></i> Radar
+              </button>
+              <button
+                type="button"
+                class="tc-tab"
+                role="tab"
+                aria-selected="false"
+                data-tab="features"
+              >
+                <i class="fas fa-list-check"></i> Features
+              </button>
+              <button
+                type="button"
+                class="tc-tab"
+                role="tab"
+                aria-selected="false"
+                data-tab="syntax"
+              >
+                <i class="fas fa-code"></i> Syntax
+              </button>
+              <button
+                type="button"
+                class="tc-tab"
+                role="tab"
+                aria-selected="false"
+                data-tab="migration"
+              >
+                <i class="fas fa-arrow-right-arrow-left"></i> Migration
+              </button>
+              <button
+                type="button"
+                class="tc-tab"
+                role="tab"
+                aria-selected="false"
+                data-tab="decision"
+              >
+                <i class="fas fa-square-poll-vertical"></i> Decision Flow
+              </button>
+            </div>
+
+            <!-- Tab Panels -->
+            <div class="tc-panels">
+              <!-- RADAR CHART -->
+              <div class="tc-panel active" id="panel-radar" role="tabpanel">
+                <div class="tc-radar-layout">
+                  <div class="tc-radar-chart-wrap">
+                    <h3 class="tc-panel-title">Dimension Comparison</h3>
+                    <div class="tc-radar-svg-wrap">
+                      <svg id="tcRadarChart" viewBox="0 0 360 380" aria-label="Radar chart comparing technologies across dimensions"></svg>
+                    </div>
+                  </div>
+                  <div class="tc-radar-legend" id="tcRadarLegend"></div>
+                </div>
+              </div>
+
+              <!-- FEATURES TABLE -->
+              <div class="tc-panel" id="panel-features" role="tabpanel">
+                <h3 class="tc-panel-title">Feature Matrix</h3>
+                <div class="tc-table-wrap">
+                  <table class="tc-feature-table" id="tcFeatureTable">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th id="tcThA">Tech A</th>
+                        <th id="tcThB">Tech B</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tcFeatureBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- SYNTAX COMPARISON -->
+              <div class="tc-panel" id="panel-syntax" role="tabpanel">
+                <h3 class="tc-panel-title">Syntax Comparison</h3>
+                <p class="tc-panel-desc">The same task implemented in both technologies.</p>
+                <div class="tc-syntax-selector">
+                  <label for="tcSyntaxSelect">Choose task:</label>
+                  <select id="tcSyntaxSelect" class="tc-select"></select>
+                </div>
+                <div class="tc-syntax-grid" id="tcSyntaxGrid">
+                  <div class="tc-syntax-col">
+                    <div class="tc-syntax-header" id="tcSyntaxAHeader">Tech A</div>
+                    <pre class="tc-syntax-code" id="tcSyntaxA"><code></code></pre>
+                  </div>
+                  <div class="tc-syntax-col">
+                    <div class="tc-syntax-header" id="tcSyntaxBHeader">Tech B</div>
+                    <pre class="tc-syntax-code" id="tcSyntaxB"><code></code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MIGRATION GUIDE -->
+              <div class="tc-panel" id="panel-migration" role="tabpanel">
+                <h3 class="tc-panel-title">Migration Guide</h3>
+                <p class="tc-panel-desc">
+                  High-level steps for migrating from <span id="tcMigrateA">Tech A</span> to
+                  <span id="tcMigrateB">Tech B</span>.
+                </p>
+                <div class="tc-migration-steps" id="tcMigrationSteps"></div>
+              </div>
+
+              <!-- DECISION FLOW -->
+              <div class="tc-panel" id="panel-decision" role="tabpanel">
+                <h3 class="tc-panel-title">Decision Flow</h3>
+                <p class="tc-panel-desc">
+                  Answer a few questions to see which technology fits your needs best.
+                </p>
+                <div class="tc-decision-flow" id="tcDecisionFlow">
+                  <div class="tc-decision-question" id="tcDecisionQuestion"></div>
+                  <div class="tc-decision-options" id="tcDecisionOptions"></div>
+                  <div class="tc-decision-result" id="tcDecisionResult" style="display: none"></div>
+                  <div class="tc-decision-nav">
+                    <button type="button" class="tc-btn tc-btn-secondary" id="tcDecisionPrev" style="display: none">
+                      <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="tc-btn tc-btn-primary" id="tcDecisionNext" style="display: none">
+                      Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="tc-btn tc-btn-outline" id="tcDecisionReset" style="display: none">
+                      <i class="fas fa-undo"></i> Start Over
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Share -->
+            <div class="tc-share-bar">
+              <span class="tc-share-label">Share this comparison:</span>
+              <button type="button" class="tc-btn tc-btn-sm" id="tcShareBtn">
+                <i class="fas fa-copy"></i> Copy Link
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/auth.js"></script>
+    <script src="/bootstrap-legacy.js"></script>
+    <script src="/script.js"></script>
+    <script type="module" src="/dist/legacy-bundle.mjs"></script>
+    <script src="/theme.js"></script>
+    <script src="/data/tech-comparisons.js"></script>
+    <script src="comparison.js"></script>
+  </body>
+</html>

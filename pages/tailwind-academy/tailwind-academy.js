@@ -530,14 +530,20 @@ function setupEventListeners() {
 }
 
 function changeViewportSize(size) {
-    DOM.previewFrameWrapper.className = "preview-container-wrapper flex-1 bg-white flex flex-col"; // reset base
+    // Remove all viewport-specific classes but keep the base layout classes
+    DOM.previewFrameWrapper.classList.remove('preview-mobile', 'preview-tablet', 'preview-desktop');
     
-    // Reset buttons
+    // flex-1 (flex: 1 1 0%) overrides explicit width, so we remove it
+    // for mobile/tablet where a fixed width must take effect, and add it
+    // back for desktop so the preview fills available space.
+    DOM.previewFrameWrapper.classList.remove('flex-1');
+    
+    // Reset button active styles
     DOM.viewportBtns.forEach(btn => {
         btn.classList.remove('bg-sky-100', 'text-sky-700', 'border-sky-300');
     });
 
-    // Add active sizes
+    // Add active size class and highlight the clicked button
     if (size === 'mobile') {
         DOM.previewFrameWrapper.classList.add('preview-mobile');
         document.getElementById('btn-view-mobile').classList.add('bg-sky-100', 'text-sky-700', 'border-sky-300');
@@ -545,7 +551,7 @@ function changeViewportSize(size) {
         DOM.previewFrameWrapper.classList.add('preview-tablet');
         document.getElementById('btn-view-tablet').classList.add('bg-sky-100', 'text-sky-700', 'border-sky-300');
     } else {
-        DOM.previewFrameWrapper.classList.add('preview-desktop');
+        DOM.previewFrameWrapper.classList.add('preview-desktop', 'flex-1');
         document.getElementById('btn-view-desktop').classList.add('bg-sky-100', 'text-sky-700', 'border-sky-300');
     }
 }
@@ -658,7 +664,7 @@ function renderLesson(lesson) {
         <div class="max-w-3xl mx-auto animate-fade-in">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">${lesson.title}</h2>
             <div class="prose max-w-none text-gray-800">
-                ${lesson.content}
+                ${(window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, (window.eli5TailwindData || {})[lesson.id] || '') : lesson.content)}
             </div>
             
             <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
@@ -669,6 +675,10 @@ function renderLesson(lesson) {
         </div>
     `;
 
+  /* ELI5 toggle */
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('tailwind', DOM.tabLesson.firstElementChild);
+  }
     const btn = document.getElementById('mark-lesson-complete');
     if (!isCompleted) {
         btn.addEventListener('click', () => {

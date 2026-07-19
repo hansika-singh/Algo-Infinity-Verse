@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { sendJson, readJsonBody, getSession } from '../../server.js';
+import { sendJson, readJsonBody } from '../utils/helpers.js';
+import { getSession } from '../utils/sessionToken.js';
 
-import { DATA_DIR } from '../../server.js';
+import { DATA_DIR } from '../utils/helpers.js';
 
 // NOTE: We store session timelines in Firestore only if initialized in server.js.
 // server.js exposes a single boolean (useFirestore) only in runtime, so for this
@@ -19,7 +20,22 @@ import path from 'path';
 
 const LEARNING_SESSIONS_FILE = path.join(DATA_DIR, 'learning_sessions.json');
 const LEARNING_EVENTS_FILE = path.join(DATA_DIR, 'learning_session_events.json');
-
+// 🔥 ISSUE #2209 FIX: Define supported event types
+const SUPPORTED_LEARNING_EVENT_TYPES = [
+  'session_started',
+  'session_ended',
+  'video_started',
+  'video_paused',
+  'video_ended',
+  'problem_attempted',
+  'problem_solved',
+  'quiz_attempted',
+  'quiz_completed',
+  'xp_earned',
+  'badge_unlocked',
+  'topic_visited',
+  'code_playground_used'
+];
 async function ensureFile(filePath, initial) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   try {
@@ -167,6 +183,15 @@ export async function setupLearningSessionRoutes(req, res, pathname) {
     if (!sessionUser) return sendJson(res, 401, { error: 'Authentication required.' });
 
     const sessionId = timelineMatch[1];
+
+    if (!sessionId || sessionId.trim() === '') {
+      return sendJson(res, 400, { error: 'Session identifier cannot be empty or contain only whitespace.' });
+    }
+    // Enforce exact format: `sess_` followed by standard UUID v4
+    if (!/^sess_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(sessionId)) {
+      return sendJson(res, 400, { error: 'Invalid session identifier format. Must start with "sess_" and follow the expected UUID format.' });
+    }
+
     const sessions = await readArray(LEARNING_SESSIONS_FILE);
     const events = await readArray(LEARNING_EVENTS_FILE);
 
@@ -201,7 +226,47 @@ export async function setupLearningSessionRoutes(req, res, pathname) {
     if (!sessionUser) return sendJson(res, 401, { error: 'Authentication required.' });
 
     const payload = await readJsonBody(req);
-    const type = String(payload?.type || payload?.eventType || 'unknown_event');
+
+    const type = String(payload?.type || payload?.eventType || '');
+const SUPPORTED_LEARNING_EVENT_TYPES = [
+  'problem_attempted',
+  'problem_solved',
+  'quiz_attempted',
+  'xp_earned',
+  'badge_unlocked',
+  'topic_visited',
+  'code_playground_used',
+  'session_started',
+];
+
+async function setupLearningSessionRoutes(req, res, pathname) {
+    if (!type || !SUPPORTED_LEARNING_EVENT_TYPES.includes(type)) {
+      return sendJson(res, 400, {
+        success: false,
+        error: `Invalid learning event type: "${type}". Supported types are: ${SUPPORTED_LEARNING_EVENT_TYPES.join(', ')}.`
+      });
+    }
+
+    const rawTopicKey = payload?.topicKey ?? payload?.topic ?? null;
+    let validatedTopicKey = null;
+    const MAX_TOPIC_KEY_LENGTH = 150;
+
+    if (rawTopicKey !== null) {
+      if (typeof rawTopicKey !== 'string') {
+        return sendJson(res, 400, { success: false, error: 'topicKey must be a string if provided.' });
+      }
+      const trimmedTopicKey = rawTopicKey.trim();
+      if (trimmedTopicKey.length === 0) {
+        return sendJson(res, 400, { success: false, error: 'topicKey cannot be empty or contain only whitespace.' });
+      }
+      if (trimmedTopicKey.length > MAX_TOPIC_KEY_LENGTH) {
+        return sendJson(res, 400, { success: false, error: `topicKey cannot exceed ${MAX_TOPIC_KEY_LENGTH} characters.` });
+      }
+      if (!/^[a-zA-Z0-9 _-]+$/.test(trimmedTopicKey)) {
+        return sendJson(res, 400, { success: false, error: 'Invalid topicKey format. Only letters, numbers, spaces, hyphens, and underscores are allowed.' });
+      }
+      validatedTopicKey = trimmedTopicKey;
+    }
 
     const event = {
       id: `evt_${uuidv4()}`,
@@ -209,7 +274,7 @@ export async function setupLearningSessionRoutes(req, res, pathname) {
       sessionId: null,
       type,
       timestamp: nowIso(),
-      topicKey: payload?.topicKey || payload?.topic || null,
+      topicKey: validatedTopicKey, // Sanitized value assigned
       payload: normalizeEventPayload(payload?.payload || payload?.data || {}),
     };
 

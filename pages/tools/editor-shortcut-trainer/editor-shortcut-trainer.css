@@ -1,0 +1,405 @@
+/* ===== Keyboard Shortcut Trainer ===== */
+:root {
+  --est-glass: rgba(255, 255, 255, 0.04);
+  --est-border: rgba(255, 255, 255, 0.1);
+  --est-muted: rgba(255, 255, 255, 0.62);
+  --est-accent: #38bdf8;
+  --est-accent-dim: rgba(56, 189, 248, 0.14);
+  --est-good: #4ade80;
+  --est-bad: #f87171;
+}
+
+html.light-mode {
+  --est-glass: rgba(15, 23, 42, 0.04);
+  --est-border: rgba(15, 23, 42, 0.12);
+  --est-muted: rgba(15, 23, 42, 0.65);
+  --est-accent-dim: rgba(14, 165, 233, 0.1);
+}
+
+.est-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--est-accent);
+  color: #0a0a14;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.est-skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.est-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 7.5rem 1.5rem 3.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--est-border);
+  background:
+    radial-gradient(ellipse at top right, rgba(56, 189, 248, 0.14), transparent 55%),
+    radial-gradient(ellipse at bottom left, rgba(167, 139, 250, 0.1), transparent 50%);
+}
+
+.est-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: var(--est-accent-dim);
+  color: var(--est-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.est-hero h1 {
+  margin: 0 0 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.est-hero-accent {
+  display: inline-block;
+  background: linear-gradient(135deg, #38bdf8, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.est-hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--est-muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.est-main {
+  padding: 2rem 0 4rem;
+}
+
+.est-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(320px, 1.25fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .est-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.est-panel {
+  padding: 1.35rem;
+  border: 1px solid var(--est-border);
+  border-radius: 18px;
+  background: var(--est-glass);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.est-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--est-border);
+}
+
+.est-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.est-panel-title h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.est-panel-icon {
+  color: var(--est-accent);
+}
+
+.est-mod-hint {
+  font-size: 0.72rem;
+  color: var(--est-muted);
+}
+
+.est-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.est-stat {
+  padding: 0.7rem;
+  border: 1px solid var(--est-border);
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+html.light-mode .est-stat {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.est-stat-val {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--est-accent);
+}
+
+.est-stat-label {
+  font-size: 0.7rem;
+  color: var(--est-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.est-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.est-select {
+  width: 100%;
+  margin-bottom: 0.9rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--est-border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: inherit;
+}
+
+html.light-mode .est-select {
+  background: #fff;
+}
+
+.est-select:focus {
+  outline: 2px solid var(--est-accent);
+  outline-offset: 2px;
+}
+
+.est-timer-wrap {
+  margin-bottom: 0.9rem;
+}
+
+.est-timer-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.est-timer-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--est-accent), #a78bfa);
+  transition: width 0.2s linear;
+}
+
+.est-timer-text {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--est-muted);
+  font-family: 'Fira Code', monospace;
+}
+
+.est-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.1rem;
+}
+
+.est-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.est-cheat-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+}
+
+.est-cheat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.est-cheat-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--est-border);
+  font-size: 0.75rem;
+}
+
+.est-cheat-list .keys {
+  font-family: 'Fira Code', monospace;
+  color: var(--est-accent);
+  white-space: nowrap;
+}
+
+/* Arena */
+.est-idle,
+.est-round-over {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--est-muted);
+}
+
+.est-idle i,
+.est-round-over i {
+  font-size: 2rem;
+  color: var(--est-accent);
+  margin-bottom: 0.75rem;
+}
+
+.est-play {
+  text-align: center;
+  padding: 1rem 0.5rem 0.5rem;
+}
+
+.est-prompt-label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--est-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.est-prompt {
+  margin: 0.4rem 0 0.35rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 900;
+}
+
+.est-prompt-desc {
+  margin: 0 0 1.25rem;
+  color: var(--est-muted);
+  font-size: 0.9rem;
+}
+
+.est-keys-target,
+.est-keys-live {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  min-height: 2.5rem;
+}
+
+.est-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--est-border);
+  background: rgba(0, 0, 0, 0.35);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+html.light-mode .est-key {
+  background: #fff;
+  box-shadow: 0 2px 0 rgba(15, 23, 42, 0.12);
+}
+
+.est-key.muted {
+  opacity: 0.55;
+  font-weight: 400;
+}
+
+.est-key.plus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  min-width: auto;
+  padding: 0 0.15rem;
+  opacity: 0.5;
+}
+
+.est-live-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--est-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.est-feedback {
+  min-height: 1.6em;
+  margin: 0.5rem 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.est-feedback.good {
+  color: var(--est-good);
+}
+
+.est-feedback.bad {
+  color: var(--est-bad);
+}
+
+.est-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--est-muted);
+}
+
+.est-arena.pulse-good {
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.45);
+}
+
+.est-arena.pulse-bad {
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .est-timer-fill {
+    transition: none;
+  }
+}

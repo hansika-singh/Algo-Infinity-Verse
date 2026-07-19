@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Source PR Checklist Generator | Algo Infinity Verse</title>
+  <meta name="description" content="Generate an AIV-flavored PR checklist, conventional commit template, and HTML/CSS/JS separation reminder for cleaner Algo Infinity Verse contributions." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="pr-checklist-generator.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="pr-checklist-generator">
+  <a href="#prc-main" class="prc-skip-link">Skip to main content</a>
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="prc-hero">
+    <div class="prc-hero-badge">
+      <i class="fas fa-code-branch" aria-hidden="true"></i>
+      AIV Contribution Helper
+    </div>
+    <h1>
+      Open Source PR
+      <span class="prc-hero-accent">Checklist Generator</span>
+    </h1>
+    <p>
+      Pick your contribution type, get a tailored PR checklist, a conventional commit template,
+      and a reminder to keep HTML, CSS, and JS in separate files — the AIV way.
+    </p>
+  </header>
+
+  <main id="prc-main" class="prc-main">
+    <div class="container">
+      <div class="prc-workspace">
+        <!-- Controls -->
+        <section class="prc-panel" aria-labelledby="prc-setup-title">
+          <div class="prc-panel-header">
+            <div class="prc-panel-title">
+              <i class="fas fa-sliders prc-panel-icon" aria-hidden="true"></i>
+              <h2 id="prc-setup-title">Contribution setup</h2>
+            </div>
+          </div>
+
+          <fieldset class="prc-types" aria-labelledby="prc-type-legend">
+            <legend id="prc-type-legend" class="prc-label">Contribution type</legend>
+            <div class="prc-type-grid" role="radiogroup" aria-label="Contribution type">
+              <label class="prc-type-card">
+                <input type="radio" name="contribType" value="visualizer" checked />
+                <span class="prc-type-inner">
+                  <i class="fas fa-eye" aria-hidden="true"></i>
+                  <strong>Visualizer</strong>
+                  <span>pages/visualizers/</span>
+                </span>
+              </label>
+              <label class="prc-type-card">
+                <input type="radio" name="contribType" value="tool" />
+                <span class="prc-type-inner">
+                  <i class="fas fa-wrench" aria-hidden="true"></i>
+                  <strong>Tool</strong>
+                  <span>pages/tools/</span>
+                </span>
+              </label>
+              <label class="prc-type-card">
+                <input type="radio" name="contribType" value="academy" />
+                <span class="prc-type-inner">
+                  <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                  <strong>Academy</strong>
+                  <span>pages/*-academy/</span>
+                </span>
+              </label>
+              <label class="prc-type-card">
+                <input type="radio" name="contribType" value="bugfix" />
+                <span class="prc-type-inner">
+                  <i class="fas fa-bug" aria-hidden="true"></i>
+                  <strong>Bug fix</strong>
+                  <span>fix / patch</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="prc-fields">
+            <div class="prc-field">
+              <label class="prc-label" for="prcTitle">Feature / fix title</label>
+              <input type="text" id="prcTitle" class="prc-input" placeholder="e.g. Accessibility Audit Toolkit" autocomplete="off" />
+            </div>
+            <div class="prc-field-row">
+              <div class="prc-field">
+                <label class="prc-label" for="prcScope">Commit scope</label>
+                <input type="text" id="prcScope" class="prc-input" placeholder="e.g. a11y-audit-toolkit" autocomplete="off" />
+              </div>
+              <div class="prc-field">
+                <label class="prc-label" for="prcIssue">Issue number</label>
+                <input type="text" id="prcIssue" class="prc-input" placeholder="e.g. 2606" inputmode="numeric" autocomplete="off" />
+              </div>
+            </div>
+            <div class="prc-field">
+              <label class="prc-label" for="prcSummary">Short summary (imperative)</label>
+              <input type="text" id="prcSummary" class="prc-input" placeholder="e.g. add PR checklist generator for contributors" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="prc-reminder" role="note">
+            <div class="prc-reminder-icon" aria-hidden="true"><i class="fas fa-folder-tree"></i></div>
+            <div>
+              <strong>Keep HTML, CSS, and JS separate</strong>
+              <p>
+                AIV expects co-located triad files (e.g. <code>feature.html</code>, <code>feature.css</code>, <code>feature.js</code>) —
+                avoid large inline <code>&lt;style&gt;</code> / <code>&lt;script&gt;</code> blocks when adding pages.
+              </p>
+            </div>
+          </div>
+
+          <div class="prc-actions">
+            <button type="button" id="prcGenerateBtn" class="btn btn-primary">
+              <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Generate
+            </button>
+            <button type="button" id="prcResetBtn" class="btn btn-secondary">
+              <i class="fas fa-rotate-left" aria-hidden="true"></i> Reset
+            </button>
+          </div>
+        </section>
+
+        <!-- Output -->
+        <section class="prc-panel prc-output-panel" aria-labelledby="prc-output-title">
+          <div class="prc-panel-header">
+            <div class="prc-panel-title">
+              <i class="fas fa-clipboard-check prc-panel-icon" aria-hidden="true"></i>
+              <h2 id="prc-output-title">Generated output</h2>
+            </div>
+          </div>
+
+          <div class="prc-output-block">
+            <div class="prc-output-header">
+              <h3>Conventional commit</h3>
+              <button type="button" class="prc-copy-btn" id="prcCopyCommit" disabled>
+                <i class="fas fa-copy" aria-hidden="true"></i> Copy
+              </button>
+            </div>
+            <pre class="prc-pre" id="prcCommitOut" aria-live="polite">Select a type and click Generate.</pre>
+          </div>
+
+          <div class="prc-output-block">
+            <div class="prc-output-header">
+              <h3>PR checklist</h3>
+              <button type="button" class="prc-copy-btn" id="prcCopyChecklist" disabled>
+                <i class="fas fa-copy" aria-hidden="true"></i> Copy
+              </button>
+            </div>
+            <pre class="prc-pre" id="prcChecklistOut" aria-live="polite">Your tailored checklist will appear here.</pre>
+          </div>
+
+          <div class="prc-output-block">
+            <div class="prc-output-header">
+              <h3>Full PR body</h3>
+              <button type="button" class="prc-copy-btn" id="prcCopyAll" disabled>
+                <i class="fas fa-copy" aria-hidden="true"></i> Copy all
+              </button>
+            </div>
+            <pre class="prc-pre prc-pre-tall" id="prcFullOut" aria-live="polite">Checklist + commit tip in one pasteable PR description.</pre>
+          </div>
+
+          <p id="prcCopyStatus" class="prc-copy-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="pr-checklist-generator.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

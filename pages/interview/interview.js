@@ -21,6 +21,7 @@ const interviewTools = [
   // ── Tracking & Analytics ──
   { name: "Interview Experiences", path: "/pages/interview/interview-experience/interview-experience.html", category: "Tracking & Analytics", icon: "fa-book-open", desc: "Read and share real interview experiences from top tech companies." },
   { name: "Interview Heatmap", path: "/pages/interview/interview-heatmap/interview-heatmap.html", category: "Tracking & Analytics", icon: "fa-fire", desc: "Track your interview preparation activity and identify focus areas." },
+  { name: "Interview Self-Scorecard", path: "/pages/interview/interview-scorecard/interview-scorecard.html", category: "Tracking & Analytics", icon: "fa-clipboard-check", desc: "After a mock: score clarity, correctness, complexity, and communication — radar chart, weak areas, and revision deep links." },
   { name: "Interview Mistakes", path: "/pages/interview/interview-mistakes/interview-mistakes.html", category: "Tracking & Analytics", icon: "fa-exclamation-triangle", desc: "Learn from common coding interview mistakes with detailed explanations." },
   { name: "Company Questions", path: "/pages/interview/company-interview/company-interview.html", category: "Tracking & Analytics", icon: "fa-building", desc: "Browse company-specific interview questions from FAANG and top tech firms." },
 

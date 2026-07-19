@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Self-Scorecard | Algo Infinity Verse</title>
+  <meta name="description" content="Score your mock interview on clarity, correctness, complexity, and communication. See a radar chart of weak areas and jump to revision topics." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="interview-scorecard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="isc-body" data-page="interview-scorecard">
+  <a href="#isc-main" class="isc-skip-link">Skip to main content</a>
+
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="isc-hero">
+    <div class="isc-hero-badge">
+      <i class="fas fa-clipboard-check" aria-hidden="true"></i>
+      Post-Mock Reflection
+    </div>
+    <h1>
+      Interview Self-
+      <span class="isc-accent">Scorecard</span>
+    </h1>
+    <p>
+      Rate clarity, correctness, complexity, and communication (1–5).
+      Spot weak areas on a radar chart, then jump straight into revision topics.
+    </p>
+  </header>
+
+  <main id="isc-main" class="isc-main">
+    <div class="container isc-layout">
+      <!-- Score form -->
+      <section class="isc-card" aria-labelledby="isc-form-title">
+        <div class="isc-card-head">
+          <h2 id="isc-form-title"><i class="fas fa-sliders" aria-hidden="true"></i> Rate this mock</h2>
+        </div>
+
+        <div class="isc-field">
+          <label class="isc-label" for="iscProblem">Problem / topic (optional)</label>
+          <input type="text" id="iscProblem" class="isc-input" placeholder="e.g. Two Sum, LRU Cache, System Design — URL shortener" maxlength="120" autocomplete="off" />
+        </div>
+
+        <div class="isc-field">
+          <label class="isc-label" for="iscNotes">Quick notes (optional)</label>
+          <textarea id="iscNotes" class="isc-textarea" rows="2" placeholder="What felt shaky? What would you redo?" maxlength="400"></textarea>
+        </div>
+
+        <fieldset class="isc-scores" id="iscScores">
+          <legend class="isc-legend">Dimensions (1 = weak · 5 = strong)</legend>
+
+          <div class="isc-score-row" data-dim="clarity">
+            <div class="isc-score-meta">
+              <span class="isc-score-name"><i class="fas fa-bullseye" aria-hidden="true"></i> Clarity</span>
+              <span class="isc-score-hint">Problem understanding & approach explanation</span>
+            </div>
+            <div class="isc-stars" role="radiogroup" aria-label="Clarity score"></div>
+          </div>
+
+          <div class="isc-score-row" data-dim="correctness">
+            <div class="isc-score-meta">
+              <span class="isc-score-name"><i class="fas fa-check-double" aria-hidden="true"></i> Correctness</span>
+              <span class="isc-score-hint">Bugs, edge cases, test coverage</span>
+            </div>
+            <div class="isc-stars" role="radiogroup" aria-label="Correctness score"></div>
+          </div>
+
+          <div class="isc-score-row" data-dim="complexity">
+            <div class="isc-score-meta">
+              <span class="isc-score-name"><i class="fas fa-gauge-high" aria-hidden="true"></i> Complexity</span>
+              <span class="isc-score-hint">Time/space analysis & optimization choices</span>
+            </div>
+            <div class="isc-stars" role="radiogroup" aria-label="Complexity score"></div>
+          </div>
+
+          <div class="isc-score-row" data-dim="communication">
+            <div class="isc-score-meta">
+              <span class="isc-score-name"><i class="fas fa-comments" aria-hidden="true"></i> Communication</span>
+              <span class="isc-score-hint">Think-aloud, tradeoffs, collaboration</span>
+            </div>
+            <div class="isc-stars" role="radiogroup" aria-label="Communication score"></div>
+          </div>
+        </fieldset>
+
+        <div class="isc-actions">
+          <button type="button" class="btn btn-primary" id="iscSave">
+            <i class="fas fa-save" aria-hidden="true"></i> Save scorecard
+          </button>
+          <button type="button" class="btn btn-outline" id="iscReset">
+            <i class="fas fa-undo" aria-hidden="true"></i> Reset
+          </button>
+        </div>
+        <p class="isc-save-msg" id="iscSaveMsg" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- Radar + weak areas -->
+      <section class="isc-right">
+        <div class="isc-card" aria-labelledby="isc-radar-title">
+          <div class="isc-card-head isc-row-between">
+            <h2 id="isc-radar-title"><i class="fas fa-chart-pie" aria-hidden="true"></i> Radar</h2>
+            <span class="isc-avg" id="iscAvg">Avg —</span>
+          </div>
+          <div class="isc-radar-wrap">
+            <svg id="iscRadar" class="isc-radar" viewBox="0 0 320 320" role="img" aria-label="Radar chart of interview self-scores"></svg>
+          </div>
+          <ul class="isc-legend-list" id="iscLegend" aria-hidden="true"></ul>
+        </div>
+
+        <div class="isc-card" aria-labelledby="isc-weak-title">
+          <div class="isc-card-head">
+            <h2 id="isc-weak-title"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Weak areas → revise</h2>
+          </div>
+          <div id="iscWeakAreas" class="isc-weak-list">
+            <p class="isc-muted">Score yourself to unlock revision links.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- History -->
+    <div class="container">
+      <section class="isc-card" aria-labelledby="isc-history-title">
+        <div class="isc-card-head isc-row-between">
+          <h2 id="isc-history-title"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i> Saved scorecards</h2>
+          <button type="button" class="isc-link-btn" id="iscClearHistory" disabled>Clear all</button>
+        </div>
+        <div id="iscHistory" class="isc-history" role="list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js?v=20260601"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="interview-scorecard.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

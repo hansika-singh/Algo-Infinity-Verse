@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banker's Algorithm & Deadlock Detection · Algo Infinity Verse</title>
+<meta name="description" content="A Resource Safety Engine — Banker's Algorithm safety checks, a Resource Allocation Graph with cycle detection, and a what-if request simulator, all backed by the real multi-instance-aware algorithms.">
+<link rel="stylesheet" href="bankers.css">
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <span class="logo-mark">🏦</span>
+      <span class="name">Algo Infinity Verse</span>
+    </a>
+
+    <div class="page-title">
+      <h1>Banker's Algorithm &amp; Deadlock Detection</h1>
+      <p>Resource Safety Engine · avoidance and detection, side by side</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="crumb">Visualizers / <strong>Deadlock</strong></span>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace">
+
+    <!-- ---------- Left panel: scenario setup ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Scenario</h2></div>
+      <div class="panel-body">
+
+        <div class="control-group">
+          <div class="control-label"><span>Processes</span></div>
+          <div class="stepper-row">
+            <button class="stepper-btn" id="procMinus">−</button>
+            <input type="text" class="text-input" id="procCount" value="5" readonly>
+            <button class="stepper-btn" id="procPlus">+</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Resource types</span></div>
+          <div class="stepper-row">
+            <button class="stepper-btn" id="resMinus">−</button>
+            <input type="text" class="text-input" id="resCount" value="3" readonly>
+            <button class="stepper-btn" id="resPlus">+</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <button class="btn primary full" id="loadClassicBtn">📖 Load classic textbook example</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="randomizeBtn">🎲 Randomize scenario</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="demoDeadlockBtn">🔴 Demo: single-instance deadlock</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="demoFalseAlarmBtn">🟡 Demo: multi-instance false alarm</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="clearRequestsBtn">Clear pending requests</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Animation speed</span><span class="val" id="speedVal">550ms/step</span></div>
+          <input type="range" id="speedSlider" min="120" max="1200" step="20" value="550">
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="legend-item"><span class="swatch alloc"></span> Allocation edge (resource → process)</div>
+        <div class="legend-item"><span class="swatch req"></span> Request edge (process → resource)</div>
+        <div class="legend-item"><span class="swatch cycle"></span> Cycle in the wait-for graph</div>
+        <div class="legend-item"><span class="swatch-dot safe"></span> Safe / granted</div>
+        <div class="legend-item"><span class="swatch-dot unsafe"></span> Unsafe / deadlocked</div>
+
+      </div>
+    </aside>
+
+    <!-- ---------- Center: graph / matrix tabs ---------- -->
+    <section class="panel viewport-panel">
+      <div id="viewport">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabGraphBtn" data-tab="graph">Resource Allocation Graph</button>
+          <button class="tab-btn" id="tabMatrixBtn" data-tab="matrix">Banker's Matrices</button>
+        </div>
+
+        <div class="viewport-overlay">
+          <span class="chip">Processes <strong id="chipProcs">5</strong></span>
+          <span class="chip">Resources <strong id="chipRes">3</strong></span>
+          <span class="chip">Instances <strong id="chipMulti">multi</strong></span>
+        </div>
+        <div class="phase-badge" id="phaseBadge">Idle</div>
+
+        <div class="tab-view active" id="graphView">
+          <svg id="graphSvg" viewBox="0 0 720 460">
+            <defs>
+              <marker id="arrowAlloc" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#06b6d4"></path>
+              </marker>
+              <marker id="arrowRequest" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#facc15"></path>
+              </marker>
+            </defs>
+            <g id="edgeLayer"></g>
+            <g id="nodeLayer"></g>
+          </svg>
+        </div>
+
+        <div class="tab-view" id="matrixView">
+          <div class="matrix-section">
+            <h3>Available (Total − Σ Allocation)</h3>
+            <div class="avail-row" id="availRow"></div>
+          </div>
+          <div class="matrix-section">
+            <h3>Allocation</h3>
+            <table class="matrix-table" id="allocTable"></table>
+          </div>
+          <div class="matrix-section">
+            <h3>Max</h3>
+            <table class="matrix-table" id="maxTable"></table>
+          </div>
+          <div class="matrix-section">
+            <h3>Need = Max − Allocation</h3>
+            <table class="matrix-table" id="needTable"></table>
+          </div>
+          <div class="matrix-section">
+            <h3>Pending Requests (waiting on — drives the graph's dashed edges)</h3>
+            <table class="matrix-table" id="requestTable"></table>
+          </div>
+          <div class="matrix-section">
+            <h3>Safe sequence</h3>
+            <div class="seq-strip" id="seqStrip"></div>
+          </div>
+        </div>
+
+        <div class="loading-veil" id="loadingVeil">
+          <div class="spinner"></div>
+          <p>loading scenario…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right panel: actions + telemetry ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Resource Safety Engine</h2></div>
+      <div class="panel-body">
+
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn primary" id="findSafeBtn">🔎 Find Safe Sequence</button>
+          <button class="btn" id="runDetectionBtn">🕸️ Run Detection</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+          <div class="rtitle">Verdict</div>
+          <div class="rval" id="resultVal">Run the safety check or detection algorithm to see a verdict here.</div>
+        </div>
+
+        <div class="control-label"><span>Algorithm step log</span></div>
+        <div class="step-log" id="stepLog"><div class="log-line">Waiting for a run…</div></div>
+
+        <div class="divider"></div>
+
+        <div class="panel-header" style="padding:0 0 10px; border:none;"><h2>What-If Request Simulator</h2></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Requesting process</span></div>
+          <select class="text-input" id="whatifProcess"></select>
+        </div>
+
+        <div class="control-label"><span>Request vector</span></div>
+        <div class="whatif-grid" id="whatifGrid"></div>
+
+        <button class="btn primary full" id="submitRequestBtn">Submit Request</button>
+
+        <div class="verdict-box" id="verdictBox"></div>
+
+        <div class="divider"></div>
+        <p class="hint">A request is granted only if it doesn't exceed the process's declared Need, doesn't exceed what's currently Available, and — critically — a full safety re-check on the resulting tentative state still finds a safe sequence. Otherwise the grant is rolled back and the request is denied.</p>
+      </div>
+    </aside>
+
+  </main>
+</div>
+
+<script src="bankers.js"></script>
+</body>
+</html>

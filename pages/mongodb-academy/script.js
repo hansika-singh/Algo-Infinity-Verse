@@ -287,7 +287,10 @@ function loadLesson(mIndex, lIndex) {
   }
 
   // Render lesson content
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('mongodb', elements.lessonContent);
+  }
 
   // Set simulator default code
   elements.mongoEditor.value = lesson.defaultCode || '';

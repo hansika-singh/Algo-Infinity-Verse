@@ -1,3 +1,19 @@
+// Shared level thresholds/names used across gamification and the mini-game
+// modal. Keeping a single source of truth avoids the arrays drifting apart,
+// and clampLevel() guards every array access below (#2494).
+const LEVEL_THRESHOLDS = [0, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
+const LEVEL_NAMES = ["Beginner", "Novice", "Intermediate", "Advanced", "Expert", "Master", "Grandmaster", "Legend"];
+
+/**
+ * Clamp a level value to the valid [1, LEVEL_THRESHOLDS.length] range.
+ * Guards against 0, undefined, negative, or out-of-range values so
+ * LEVEL_NAMES[level - 1] / topic arrays are never indexed unsafely.
+ */
+function clampLevel(level) {
+  const numericLevel = Number(level) || 1;
+  return Math.min(Math.max(Math.trunc(numericLevel), 1), LEVEL_THRESHOLDS.length);
+}
+
 function initGamification() { updateXPBar(); }
 
 function initDailyChallenge() {
@@ -27,6 +43,24 @@ function getDayOfYear() {
 
 function addXP(amount, source = "general", meta = {}) {
   const userProgress = window.userProgress || {};
+  // Apply XP Booster if active
+  if (userProgress.inventory?.xpBoostersTimer?.problemsRemaining > 0) {
+    amount = amount * 2;
+    userProgress.inventory.xpBoostersTimer.problemsRemaining -= 1;
+    if (userProgress.inventory.xpBoostersTimer.problemsRemaining <= 0) {
+      delete userProgress.inventory.xpBoostersTimer;
+      if (typeof showNotification === 'function') {
+        setTimeout(() => showNotification('⚡ XP Booster expired!', 'info'), 300);
+      }
+    } else {
+      if (typeof showNotification === 'function') {
+        setTimeout(() => showNotification(
+          `⚡ Booster active! ${userProgress.inventory.xpBoostersTimer.problemsRemaining} problems remaining.`,
+          'info'
+        ), 300);
+      }
+    }
+  }
   userProgress.xp += amount;
   if (typeof recordAnalyticsEvent === 'function') recordAnalyticsEvent("xp", { amount, source, ...meta });
   checkLevelUp();
@@ -35,24 +69,23 @@ function addXP(amount, source = "general", meta = {}) {
 
 function checkLevelUp() {
   const userProgress = window.userProgress || {};
-  const levels = [0, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
-  const levelNames = ["Beginner", "Novice", "Intermediate", "Advanced", "Expert", "Master", "Grandmaster", "Legend"];
   let newLevel = 1;
-  for (let i = levels.length - 1; i >= 0; i--) { if (userProgress.xp >= levels[i]) { newLevel = i + 1; break; } }
-  if (newLevel > userProgress.level) { if (typeof showNotification === 'function') showNotification(`🎉 Level Up! You're now Level ${newLevel} - ${levelNames[newLevel - 1]}`, "success"); }
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) { if (userProgress.xp >= LEVEL_THRESHOLDS[i]) { newLevel = i + 1; break; } }
+  newLevel = clampLevel(newLevel);
+  const currentLevel = clampLevel(userProgress.level);
+  if (newLevel > currentLevel) { if (typeof showNotification === 'function') showNotification(`🎉 Level Up! You're now Level ${newLevel} - ${LEVEL_NAMES[newLevel - 1]}`, "success"); }
   userProgress.level = newLevel;
   const levelBadge = document.getElementById("levelBadge");
-  if (levelBadge) levelBadge.textContent = `Level ${newLevel} - ${levelNames[newLevel - 1]}`;
+  if (levelBadge) levelBadge.textContent = `Level ${newLevel} - ${LEVEL_NAMES[newLevel - 1]}`;
 }
 
 function updateGamification() { updateXPBar(); if (typeof updateBadges === 'function') updateBadges(); }
 
 function updateXPBar() {
   const userProgress = window.userProgress || {};
-  const levels = [0, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
-  const currentLevel = userProgress.level;
-  const currentLevelXP = levels[currentLevel - 1] || 0;
-  const nextLevelXP = levels[currentLevel] || 100000;
+  const currentLevel = clampLevel(userProgress.level);
+  const currentLevelXP = LEVEL_THRESHOLDS[currentLevel - 1] || 0;
+  const nextLevelXP = LEVEL_THRESHOLDS[currentLevel] || LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1];
   const xpProgress = ((userProgress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
   setTimeout(() => { 
     const xpBar = document.getElementById("xpBar");
@@ -62,9 +95,11 @@ function updateXPBar() {
   }, 300);
 }
 
-window.addXP = addXP;
+if (typeof window !== 'undefined') {
+  window.addXP = addXP;
+}
 
-export { initGamification, initDailyChallenge, checkLevelUp, updateGamification, updateXPBar, addXP };
+export { initGamification, initDailyChallenge, checkLevelUp, updateGamification, updateXPBar, addXP, clampLevel, LEVEL_THRESHOLDS, LEVEL_NAMES };
 
 let currentGame = {
   type: null, topic: null, questions: [],
@@ -133,10 +168,9 @@ function openGameModal() {
   const modal = document.getElementById("gameModal");
   if (!modal) return;
   const userProgress = window.userProgress || {};
-  const level = userProgress.level || 1;
-  const levelNames = ["Beginner","Novice","Intermediate","Advanced","Expert","Master","Grandmaster","Legend"];
+  const level = clampLevel(userProgress.level);
   document.getElementById("gameModalTitle").textContent = 
-    `🎮 Level ${level} - ${levelNames[level-1] || 'Level ' + level} Games`;
+    `🎮 Level ${level} - ${LEVEL_NAMES[level - 1]} Games`;
   showGameTypeSelector();
   modal.classList.add("active");
 }
@@ -155,11 +189,12 @@ function showGameTypeSelector() {
   clearInterval(currentGame.timer);
 }
 
+const LEVEL_TOPICS = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
+
 function getTopicForLevel() {
   const userProgress = window.userProgress || {};
-  const level = userProgress.level || 1;
-  const topics = ["arrays","strings","linkedlist","trees","graphs","dp","arrays","strings"];
-  return topics[level - 1] || "arrays";
+  const level = clampLevel(userProgress.level);
+  return LEVEL_TOPICS[level - 1] || "arrays";
 }
 
 function startGame(type) {
@@ -305,9 +340,11 @@ function resetGame() {
   };
 }
 
-window.openGameModal = openGameModal;
-window.closeGameModal = closeGameModal;
-window.startGame = startGame;
-window.selectGameAnswer = selectGameAnswer;
-window.restartGame = restartGame;
-window.resetGame = resetGame;
+if (typeof window !== 'undefined') {
+  window.openGameModal = openGameModal;
+  window.closeGameModal = closeGameModal;
+  window.startGame = startGame;
+  window.selectGameAnswer = selectGameAnswer;
+  window.restartGame = restartGame;
+  window.resetGame = resetGame;
+}

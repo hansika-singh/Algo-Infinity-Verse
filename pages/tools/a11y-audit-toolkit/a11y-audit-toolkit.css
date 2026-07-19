@@ -1,0 +1,550 @@
+/* ===== Accessibility Audit Toolkit ===== */
+:root {
+  --a11y-glass: rgba(255, 255, 255, 0.04);
+  --a11y-border: rgba(255, 255, 255, 0.1);
+  --a11y-muted: rgba(255, 255, 255, 0.62);
+  --a11y-accent: #22d3ee;
+  --a11y-accent-dim: rgba(34, 211, 238, 0.15);
+  --a11y-critical: #f87171;
+  --a11y-serious: #fb923c;
+  --a11y-moderate: #fbbf24;
+  --a11y-pass: #4ade80;
+}
+
+html.light-mode {
+  --a11y-glass: rgba(15, 23, 42, 0.04);
+  --a11y-border: rgba(15, 23, 42, 0.12);
+  --a11y-muted: rgba(15, 23, 42, 0.65);
+  --a11y-accent-dim: rgba(8, 145, 178, 0.12);
+}
+
+.a11y-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--a11y-accent);
+  color: #0a0a14;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.a11y-skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Hero */
+.a11y-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 7.5rem 1.5rem 4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--a11y-border);
+  background:
+    radial-gradient(ellipse at top right, rgba(34, 211, 238, 0.14), transparent 55%),
+    radial-gradient(ellipse at bottom left, rgba(74, 222, 128, 0.08), transparent 50%);
+}
+
+.a11y-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: var(--a11y-accent-dim);
+  color: var(--a11y-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.a11y-hero h1 {
+  margin: 0 0 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.a11y-hero-accent {
+  display: inline-block;
+  background: linear-gradient(135deg, #22d3ee, #4ade80);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.a11y-hero p {
+  max-width: 680px;
+  margin: 0 auto 2rem;
+  color: var(--a11y-muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.a11y-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.a11y-stat {
+  min-width: 110px;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 14px;
+  background: var(--a11y-glass);
+}
+
+.a11y-stat-val {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.a11y-stat-label {
+  font-size: 0.75rem;
+  color: var(--a11y-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+#statCritical { color: var(--a11y-critical); }
+#statSerious { color: var(--a11y-serious); }
+#statModerate { color: var(--a11y-moderate); }
+
+/* Layout */
+.a11y-main {
+  padding: 2rem 0 4rem;
+}
+
+.a11y-workspace {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.15fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .a11y-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.a11y-panel {
+  padding: 1.4rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 18px;
+  background: var(--a11y-glass);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.a11y-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--a11y-border);
+}
+
+.a11y-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.a11y-panel-title h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.a11y-panel-icon {
+  color: var(--a11y-accent);
+}
+
+/* Tabs */
+.a11y-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.1rem;
+}
+
+.a11y-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.a11y-tab:hover,
+.a11y-tab:focus-visible {
+  border-color: rgba(34, 211, 238, 0.5);
+  outline: none;
+}
+
+.a11y-tab.active {
+  background: var(--a11y-accent-dim);
+  border-color: rgba(34, 211, 238, 0.55);
+  color: var(--a11y-accent);
+  font-weight: 600;
+}
+
+.a11y-tab-panel[hidden] {
+  display: none;
+}
+
+.a11y-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.a11y-hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.78rem;
+  color: var(--a11y-muted);
+  line-height: 1.45;
+}
+
+.a11y-hint-block {
+  margin-bottom: 0.85rem;
+}
+
+.a11y-or-divider {
+  margin: 0.9rem 0;
+  text-align: center;
+  color: var(--a11y-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.a11y-select,
+.a11y-input,
+.a11y-textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+html.light-mode .a11y-select,
+html.light-mode .a11y-input,
+html.light-mode .a11y-textarea {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.a11y-select:focus,
+.a11y-input:focus,
+.a11y-textarea:focus {
+  outline: 2px solid var(--a11y-accent);
+  outline-offset: 2px;
+  border-color: rgba(34, 211, 238, 0.55);
+}
+
+.a11y-textarea {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 180px;
+}
+
+.a11y-demo-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.a11y-demo-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--a11y-border);
+  font-size: 0.82rem;
+}
+
+.a11y-demo-list i {
+  color: var(--a11y-accent);
+}
+
+.a11y-checks {
+  margin: 1.2rem 0;
+  padding: 0.9rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 12px;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.a11y-check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.a11y-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--a11y-accent);
+}
+
+.a11y-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.a11y-controls .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* Filters */
+.a11y-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.a11y-filter {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.a11y-filter:hover,
+.a11y-filter:focus-visible {
+  border-color: rgba(34, 211, 238, 0.5);
+  outline: none;
+}
+
+.a11y-filter.active {
+  background: var(--a11y-accent-dim);
+  border-color: rgba(34, 211, 238, 0.5);
+  color: var(--a11y-accent);
+  font-weight: 600;
+}
+
+/* States */
+.a11y-empty,
+.a11y-loading,
+.a11y-error {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--a11y-muted);
+}
+
+.a11y-empty i,
+.a11y-loading i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--a11y-accent);
+  opacity: 0.8;
+}
+
+.a11y-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 1rem;
+  border: 3px solid var(--a11y-border);
+  border-top-color: var(--a11y-accent);
+  border-radius: 50%;
+  animation: a11y-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-spinner {
+    animation: none;
+    border-top-color: var(--a11y-accent);
+  }
+}
+
+@keyframes a11y-spin {
+  to { transform: rotate(360deg); }
+}
+
+.a11y-error {
+  color: var(--a11y-critical);
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 12px;
+  text-align: left;
+}
+
+/* Results */
+.a11y-page-block {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--a11y-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.a11y-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--a11y-border);
+}
+
+html.light-mode .a11y-page-header {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.a11y-page-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.a11y-page-meta {
+  font-size: 0.75rem;
+  color: var(--a11y-muted);
+}
+
+.a11y-page-pass {
+  padding: 1rem;
+  color: var(--a11y-pass);
+  font-size: 0.9rem;
+}
+
+.a11y-issue {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid var(--a11y-border);
+}
+
+.a11y-issue:last-child {
+  border-bottom: none;
+}
+
+.a11y-issue-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.a11y-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.a11y-badge.critical {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--a11y-critical);
+}
+
+.a11y-badge.serious {
+  background: rgba(251, 146, 60, 0.15);
+  color: var(--a11y-serious);
+}
+
+.a11y-badge.moderate {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--a11y-moderate);
+}
+
+.a11y-rule {
+  font-size: 0.72rem;
+  color: var(--a11y-muted);
+  font-family: 'Fira Code', monospace;
+}
+
+.a11y-issue-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.a11y-issue-detail,
+.a11y-issue-fix {
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--a11y-muted);
+}
+
+.a11y-issue-fix strong {
+  color: inherit;
+}
+
+.a11y-issue-selector {
+  margin-top: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.72rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+html.light-mode .a11y-issue-selector {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.a11y-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.a11y-summary-chip {
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--a11y-border);
+  font-size: 0.78rem;
+}

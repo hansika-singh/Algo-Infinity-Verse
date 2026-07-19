@@ -5,10 +5,29 @@ function initChatbot() {
   const close = document.getElementById("chatbotClose");
   const input = document.getElementById("chatbotInput");
   const send = document.getElementById("chatbotSend");
+  const messagesContainer = document.getElementById("chatbotMessages");
   const quickQs = document.querySelectorAll(".quick-q");
   if (!toggle || !windowEl || !close || !input || !send) return;
 
+  // Chatbot markup is duplicated across many pages without ARIA semantics.
+  // Apply them here once at init time instead of editing every page's HTML
+  // (see #2495): dialog semantics on the window, a live region on the
+  // message log so new messages/typing status are announced, and
+  // aria-expanded state on the toggle button.
   const header = windowEl.querySelector(".chatbot-header");
+  const headerTitleForAria = header?.querySelector("h4");
+  if (!windowEl.hasAttribute("role")) windowEl.setAttribute("role", "dialog");
+  if (!windowEl.hasAttribute("aria-modal")) windowEl.setAttribute("aria-modal", "false");
+  if (headerTitleForAria) {
+    if (!headerTitleForAria.id) headerTitleForAria.id = "chatbotWindowTitle";
+    if (!windowEl.hasAttribute("aria-labelledby")) windowEl.setAttribute("aria-labelledby", headerTitleForAria.id);
+  }
+  toggle.setAttribute("aria-expanded", windowEl.classList.contains("hidden") ? "false" : "true");
+  if (messagesContainer) {
+    messagesContainer.setAttribute("role", "log");
+    messagesContainer.setAttribute("aria-live", "polite");
+    messagesContainer.setAttribute("aria-relevant", "additions");
+  }
   if (header && !document.getElementById("doubtGenToggle")) {
     if (!document.getElementById("doubt-gen-styles")) {
       const styleEl = document.createElement("style");
@@ -30,12 +49,33 @@ function initChatbot() {
     }
   }
 
-  toggle.addEventListener("click", () => { windowEl.classList.toggle("hidden"); const badge = toggle.querySelector(".chatbot-badge"); if (badge) badge.style.display = "none"; });
-  close.addEventListener("click", () => windowEl.classList.add("hidden"));
+  toggle.addEventListener("click", () => {
+    windowEl.classList.toggle("hidden");
+    toggle.setAttribute("aria-expanded", windowEl.classList.contains("hidden") ? "false" : "true");
+    const badge = toggle.querySelector(".chatbot-badge");
+    if (badge) badge.style.display = "none";
+  });
+  close.addEventListener("click", () => {
+    windowEl.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+
+  // Guards against rapid double-activation (e.g. clicking two quick-question
+  // buttons in a row, or holding Enter) stacking multiple pending responses
+  // and duplicate "typing" indicators. See #2497.
+  let responsePending = false;
+
+  function setSendControlsDisabled(disabled) {
+    send.disabled = disabled;
+    quickQs.forEach((btn) => { btn.disabled = disabled; });
+  }
 
   function sendMessage() {
+    if (responsePending) return;
     const message = input.value.trim();
     if (!message) return;
+    responsePending = true;
+    setSendControlsDisabled(true);
     addChatMessage(message, "user");
     input.value = "";
     const loadingEl = document.createElement("div");
@@ -44,7 +84,13 @@ function initChatbot() {
     const messagesContainer = document.getElementById("chatbotMessages");
     messagesContainer.appendChild(loadingEl);
     messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: "smooth" });
-    setTimeout(() => { loadingEl.remove(); const response = getBotResponse(message); addChatMessage(response, "bot", { html: true }); }, 1000);
+    setTimeout(() => {
+      loadingEl.remove();
+      const response = getBotResponse(message);
+      addChatMessage(response, "bot", { html: true });
+      responsePending = false;
+      setSendControlsDisabled(false);
+    }, 1000);
   }
 
   send.addEventListener("click", sendMessage);

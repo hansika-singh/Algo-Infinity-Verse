@@ -769,6 +769,109 @@
   text-decoration: underline;
 }
 
+/* ─── Surprise Me Button ─── */
+.pp-surprise-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pp-surprise-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid var(--pp-border);
+  border-radius: 100px;
+  background: var(--pp-surface);
+  color: var(--pp-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.pp-surprise-btn:hover {
+  border-color: #ffb3ba;
+  color: #ffb3ba;
+  background: rgba(255, 179, 186, 0.08);
+}
+
+.pp-surprise-btn:active {
+  transform: translateY(0);
+}
+
+.pp-surprise-btn .pp-surprise-icon {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.pp-surprise-btn:hover .pp-surprise-icon {
+  transform: rotate(45deg);
+}
+
+/* Button animation on click */
+.pp-surprise-btn.pp-surprise-rolling {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.pp-surprise-btn.pp-surprise-rolling .pp-surprise-icon.pp-icon-spin {
+  animation: ppIconSpin 0.6s ease-in-out;
+}
+
+@keyframes ppIconSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Highlight animation for the selected problem card */
+@keyframes ppSurpriseHighlight {
+  0% {
+    border-color: var(--pp-border);
+  }
+  30% {
+    border-color: var(--pp-search);
+    background: rgba(var(--pp-search-rgb), 0.06);
+  }
+  60% {
+    border-color: var(--pp-search);
+    background: rgba(var(--pp-search-rgb), 0.03);
+  }
+  100% {
+    border-color: var(--pp-border);
+    background: transparent;
+  }
+}
+
+.pp-card.pp-surprise-highlight {
+  animation: ppSurpriseHighlight 4s ease;
+  border-color: var(--pp-search) !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .pp-surprise-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    gap: 0.35rem;
+  }
+  .pp-surprise-btn .pp-surprise-icon {
+    font-size: 0.8rem;
+  }
+}
+
 /* ─── Animation ─── */
 [data-page="practice"] .pp-card {
   animation: ppCardFadeIn 0.35s ease both;
@@ -940,5 +1043,28 @@
 
   .pp-hero-title {
     animation: none;
+  }
+
+  /* Surprise Me - reduced motion */
+  .pp-surprise-btn {
+    transition: none;
+  }
+  .pp-surprise-btn:hover {
+    border-color: var(--pp-border);
+    color: #ffb3ba;
+    background: rgba(255, 179, 186, 0.08);
+  }
+  .pp-surprise-btn:hover .pp-surprise-icon {
+    transform: none;
+  }
+  .pp-surprise-btn.pp-surprise-rolling {
+    opacity: 1;
+  }
+  .pp-surprise-btn.pp-surprise-rolling .pp-surprise-icon.pp-icon-spin {
+    animation: none;
+  }
+  .pp-card.pp-surprise-highlight {
+    animation: none;
+    border-color: var(--pp-search) !important;
   }
 }

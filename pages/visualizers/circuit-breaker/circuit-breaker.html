@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuit Breaker Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Circuit Breaker pattern visualizer — CLOSED, OPEN, HALF-OPEN states, failure thresholds, cooldown timer, and without-breaker comparison." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="circuit-breaker.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="circuit-breaker">
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero cbv-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">How Does Netflix Prevent One Failing Service From Taking Down Everything?</span>
+        <span class="main-title cbv-gradient">Circuit Breaker</span>
+        <span class="subtitle">CLOSED → OPEN → HALF-OPEN — The Resilience Pattern Behind Every Production System</span>
+      </h1>
+      <p class="section-subtitle">
+        Watch requests flow through a live state machine. Trigger failures, watch the breaker trip open, see it cooldown and cautiously test recovery — then compare the wasted cost of running without one.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary cbv-btn-primary">
+          <i class="fas fa-bolt"></i> Open Simulator
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Simulator -->
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <!-- Configuration -->
+      <div class="cbv-control-card">
+
+        <div class="cbv-config-grid">
+
+          <div class="cbv-config-group">
+            <div class="cbv-config-label"><i class="fas fa-sliders"></i> Failure Threshold</div>
+            <div class="cbv-config-row">
+              <input type="range" id="cbvThreshSlider" min="1" max="10" step="1" value="3" class="cbv-slider" />
+              <span class="cbv-slider-val" id="cbvThreshVal">3 consecutive failures</span>
+            </div>
+          </div>
+
+          <div class="cbv-config-group">
+            <div class="cbv-config-label"><i class="fas fa-clock"></i> Cooldown Timeout</div>
+            <div class="cbv-config-row">
+              <input type="range" id="cbvCooldownSlider" min="3" max="15" step="1" value="6" class="cbv-slider" />
+              <span class="cbv-slider-val" id="cbvCooldownVal">6 seconds</span>
+            </div>
+          </div>
+
+          <div class="cbv-config-group">
+            <div class="cbv-config-label"><i class="fas fa-percent"></i> Service Failure Rate</div>
+            <div class="cbv-config-row">
+              <input type="range" id="cbvFailRateSlider" min="0" max="100" step="5" value="0" class="cbv-slider" />
+              <span class="cbv-slider-val" id="cbvFailRateVal">0% (healthy)</span>
+            </div>
+          </div>
+
+          <div class="cbv-config-group">
+            <div class="cbv-config-label"><i class="fas fa-power-off"></i> Service Control</div>
+            <div class="cbv-config-row" style="gap:0.5rem;flex-wrap:wrap">
+              <button class="btn cbv-btn-danger cbv-ctl-btn" id="cbvKillBtn">
+                <i class="fas fa-skull"></i> Kill Service
+              </button>
+              <button class="btn cbv-btn-heal cbv-ctl-btn" id="cbvHealBtn">
+                <i class="fas fa-heart-pulse"></i> Heal Service
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cbv-actions-row">
+          <button class="btn cbv-btn-primary cbv-action-btn" id="cbvFireBtn">
+            <i class="fas fa-paper-plane"></i> Fire Request
+          </button>
+          <button class="btn cbv-btn-secondary cbv-action-btn" id="cbvAutoBtn">
+            <i class="fas fa-play"></i> Auto-Fire
+          </button>
+          <button class="btn cbv-btn-compare cbv-action-btn" id="cbvCompareBtn">
+            <i class="fas fa-scale-balanced"></i> Toggle Comparison
+          </button>
+          <button class="btn btn-secondary cbv-action-btn" id="cbvResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+          <label class="cbv-speed-label">
+            Auto-speed
+            <input type="range" id="cbvAutoSpeed" min="300" max="2500" step="100" value="1200" />
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Status bar -->
+      <div class="cbv-status" id="cbvStatus">
+        Configure the breaker, then fire requests to see the state machine in action.
+      </div>
+
+      <!-- Main layout -->
+      <div class="cbv-main-layout">
+
+        <!-- Left: state machine + pipeline -->
+        <div class="cbv-left-col">
+
+          <!-- State machine diagram -->
+          <div class="cbv-panel-card cbv-sm-card">
+            <div class="cbv-panel-title"><i class="fas fa-diagram-project"></i> Circuit Breaker State Machine</div>
+
+            <div class="cbv-sm-diagram">
+
+              <div class="cbv-sm-state cbv-state-closed" id="cbvStateClosed">
+                <div class="cbv-sm-state-icon"><i class="fas fa-lock-open"></i></div>
+                <div class="cbv-sm-state-name">CLOSED</div>
+                <div class="cbv-sm-state-desc">Requests pass through</div>
+              </div>
+
+              <div class="cbv-sm-arrows-col">
+                <div class="cbv-sm-arrow cbv-arrow-trip" id="cbvArrowTrip">
+                  <span class="cbv-arrow-label">Trip (N failures)</span>
+                  <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="cbv-sm-arrow cbv-arrow-recover" id="cbvArrowRecover">
+                  <i class="fas fa-arrow-left"></i>
+                  <span class="cbv-arrow-label">Test succeeded</span>
+                </div>
+              </div>
+
+              <div class="cbv-sm-state cbv-state-open" id="cbvStateOpen">
+                <div class="cbv-sm-state-icon"><i class="fas fa-ban"></i></div>
+                <div class="cbv-sm-state-name">OPEN</div>
+                <div class="cbv-sm-state-desc">Fail fast, no calls</div>
+                <div class="cbv-cooldown-wrap" id="cbvCooldownWrap" style="display:none">
+                  <div class="cbv-cooldown-bar" id="cbvCooldownBar"></div>
+                  <div class="cbv-cooldown-txt" id="cbvCooldownTxt">6s</div>
+                </div>
+              </div>
+
+              <div class="cbv-sm-arrow-down">
+                <div class="cbv-arrow-down-line"></div>
+                <div class="cbv-arrow-down-lbl">Cooldown expires</div>
+              </div>
+
+              <div class="cbv-sm-state cbv-state-halfopen" id="cbvStateHalfOpen">
+                <div class="cbv-sm-state-icon"><i class="fas fa-circle-half-stroke"></i></div>
+                <div class="cbv-sm-state-name">HALF-OPEN</div>
+                <div class="cbv-sm-state-desc">One test request allowed</div>
+              </div>
+
+              <div class="cbv-sm-arrow-down cbv-arrow-down-right">
+                <div class="cbv-arrow-down-line"></div>
+                <div class="cbv-arrow-down-lbl">Test failed → re-trip</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Request pipeline -->
+          <div class="cbv-panel-card cbv-pipeline-card">
+            <div class="cbv-panel-title"><i class="fas fa-route"></i> Request Pipeline</div>
+            <div class="cbv-pipeline" id="cbvPipeline">
+              <div class="cbv-pipeline-stage" id="cbvStageClient">
+                <div class="cbv-stage-icon"><i class="fas fa-desktop"></i></div>
+                <div class="cbv-stage-label">Client</div>
+              </div>
+              <div class="cbv-pipeline-connector" id="cbvConnA">
+                <div class="cbv-conn-line" id="cbvConnALine"></div>
+                <div class="cbv-conn-packet" id="cbvPacketA"></div>
+              </div>
+              <div class="cbv-pipeline-stage" id="cbvStageBreaker">
+                <div class="cbv-stage-icon cbv-breaker-icon" id="cbvBreakerIcon">
+                  <i class="fas fa-bolt" id="cbvBreakerIconI"></i>
+                </div>
+                <div class="cbv-stage-label">Circuit<br>Breaker</div>
+              </div>
+              <div class="cbv-pipeline-connector" id="cbvConnB">
+                <div class="cbv-conn-line" id="cbvConnBLine"></div>
+                <div class="cbv-conn-packet" id="cbvPacketB"></div>
+              </div>
+              <div class="cbv-pipeline-stage" id="cbvStageService">
+                <div class="cbv-stage-icon cbv-service-icon" id="cbvServiceIcon">
+                  <i class="fas fa-server"></i>
+                </div>
+                <div class="cbv-stage-label">Downstream<br>Service</div>
+                <div class="cbv-service-health" id="cbvServiceHealth">● Healthy</div>
+              </div>
+            </div>
+            <div class="cbv-pipeline-result" id="cbvPipelineResult"></div>
+          </div>
+
+        </div>
+
+        <!-- Right: stats + log -->
+        <div class="cbv-right-col">
+
+          <div class="cbv-panel-card cbv-stats-card">
+            <div class="cbv-panel-title"><i class="fas fa-chart-simple"></i> Breaker Stats</div>
+            <div class="cbv-stats-grid">
+              <div class="cbv-stat-box">
+                <div class="cbv-stat-val" id="cbvStatTotal">0</div>
+                <div class="cbv-stat-lbl">Total Requests</div>
+              </div>
+              <div class="cbv-stat-box cbv-stat-success">
+                <div class="cbv-stat-val cbv-val-success" id="cbvStatSuccess">0</div>
+                <div class="cbv-stat-lbl">Succeeded</div>
+              </div>
+              <div class="cbv-stat-box cbv-stat-fail">
+                <div class="cbv-stat-val cbv-val-fail" id="cbvStatFailed">0</div>
+                <div class="cbv-stat-lbl">Failed</div>
+              </div>
+              <div class="cbv-stat-box cbv-stat-blocked">
+                <div class="cbv-stat-val cbv-val-blocked" id="cbvStatBlocked">0</div>
+                <div class="cbv-stat-lbl">Fast-Failed</div>
+              </div>
+              <div class="cbv-stat-box">
+                <div class="cbv-stat-val" id="cbvStatConsec">0</div>
+                <div class="cbv-stat-lbl">Consec. Failures</div>
+              </div>
+              <div class="cbv-stat-box">
+                <div class="cbv-stat-val cbv-val-trips" id="cbvStatTrips">0</div>
+                <div class="cbv-stat-lbl">Times Tripped</div>
+              </div>
+            </div>
+            <div class="cbv-consec-wrap">
+              <div class="cbv-consec-label">Failure streak vs threshold</div>
+              <div class="cbv-consec-bar-wrap">
+                <div class="cbv-consec-bar" id="cbvConsecBar"></div>
+                <div class="cbv-consec-thresh-marker" id="cbvThreshMarker"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cbv-panel-card cbv-log-card">
+            <div class="cbv-panel-title"><i class="fas fa-list"></i> Request Log</div>
+            <div class="cbv-log-area" id="cbvLog">
+              <span class="cbv-empty-text">Requests appear here.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Comparison section -->
+      <div class="cbv-compare-section" id="cbvCompareSection" style="display:none">
+        <div class="cbv-compare-title">
+          <i class="fas fa-scale-balanced"></i> With Breaker vs Without Breaker
+        </div>
+        <div class="cbv-compare-grid">
+          <div class="cbv-compare-col">
+            <div class="cbv-compare-col-title cbv-col-with">✅ With Circuit Breaker</div>
+            <div class="cbv-compare-rows" id="cbvCmpWith"></div>
+          </div>
+          <div class="cbv-compare-col">
+            <div class="cbv-compare-col-title cbv-col-without">❌ Without Circuit Breaker</div>
+            <div class="cbv-compare-rows" id="cbvCmpWithout"></div>
+          </div>
+        </div>
+        <div class="cbv-compare-summary" id="cbvCompareSummary"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Learn section -->
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">⚡</span> Circuit Breaker Explained</h2>
+      <div class="cbv-learn-grid">
+
+        <div class="cbv-learn-card cbv-learn-closed">
+          <div class="cbv-learn-icon">🔒</div>
+          <h3>CLOSED — Normal Operation</h3>
+          <p>
+            The breaker is closed (think: a physical circuit is complete). All requests pass through to the downstream service normally. Failures are counted in a rolling window. When failures reach the threshold, the breaker trips.
+          </p>
+        </div>
+
+        <div class="cbv-learn-card cbv-learn-open">
+          <div class="cbv-learn-icon">🚫</div>
+          <h3>OPEN — Fail Fast</h3>
+          <p>
+            The breaker is open — the circuit is broken. Every incoming request is immediately rejected without touching the downstream service. This protects an already-struggling service from more load and gives the caller an instant error instead of hanging for a timeout.
+          </p>
+        </div>
+
+        <div class="cbv-learn-card cbv-learn-halfopen">
+          <div class="cbv-learn-icon">🔆</div>
+          <h3>HALF-OPEN — Cautious Probe</h3>
+          <p>
+            After the cooldown expires, exactly one test request is allowed through. If it succeeds, the breaker resets to CLOSED — service recovered. If it fails, the breaker trips back to OPEN and the cooldown restarts.
+          </p>
+        </div>
+
+        <div class="cbv-learn-card cbv-learn-why">
+          <div class="cbv-learn-icon">⚡</div>
+          <h3>Why It Matters at Scale</h3>
+          <p>
+            Without a breaker, every caller hangs waiting for a timeout (often 30s+) on every request to a dead service. With a breaker OPEN, failures return in microseconds, threads are freed, and the cascade stops. Netflix's Hystrix, Resilience4j, and Istio all implement this pattern.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="circuit-breaker.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

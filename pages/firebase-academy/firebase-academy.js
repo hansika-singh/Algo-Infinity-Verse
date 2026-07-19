@@ -359,7 +359,10 @@ function loadLesson(mIndex, lIndex) {
     markLessonComplete(lesson.id);
   }
 
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('firebase', elements.lessonContent);
+  }
   elements.firebaseEditor.value = lesson.defaultCode || '';
 
   // Clear editor console

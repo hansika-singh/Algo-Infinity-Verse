@@ -124,12 +124,6 @@
             </a>
           </div>
         </li>
-        <li class="nav-item nav-cta desktop-only">
-          <a href="index.html#practice" class="btn btn-primary nav-cta-btn">
-            <i class="fas fa-rocket"></i>
-            Start Learning
-          </a>
-        </li>
       </ul>
       <div class="nav-buttons">
         <button id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode">

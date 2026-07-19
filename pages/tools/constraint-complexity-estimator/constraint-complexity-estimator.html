@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constraint → Complexity Estimator | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Map contest constraints (n, m, time, memory) to safe Big-O complexities with operation budgets and TLE warnings."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="constraint-complexity-estimator.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="constraint-complexity-estimator">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero cc-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Constraints → Big-O</span>
+          <span class="main-title cc-gradient">Constraint → Complexity Estimator</span>
+          <span class="subtitle">Contest prep: know what’s safe before you code</span>
+        </h1>
+        <p class="section-subtitle">
+          Enter n, m, time limit, and memory — get allowed complexities, operation budgets, and
+          clear TLE warnings for unsafe choices like O(n²) on large n.
+        </p>
+        <div class="hero-buttons">
+          <a href="#estimator" class="btn btn-primary cc-btn-primary"
+            ><i class="fas fa-calculator"></i> Open Estimator</a
+          >
+          <a href="#guide" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> How It Works</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="estimator" class="section">
+      <div class="container">
+        <div class="cc-layout">
+          <div class="cc-card cc-inputs">
+            <h3><i class="fas fa-sliders"></i> Constraints</h3>
+
+            <div class="cc-field">
+              <label for="ccN">n (main input size)</label>
+              <input type="text" id="ccN" value="1e5" spellcheck="false" autocomplete="off" />
+            </div>
+            <div class="cc-field">
+              <label for="ccM">m (optional edges / second size)</label>
+              <input type="text" id="ccM" value="" placeholder="e.g. 2e5" spellcheck="false" autocomplete="off" />
+            </div>
+            <div class="cc-field-row">
+              <div class="cc-field">
+                <label for="ccTime">Time limit (seconds)</label>
+                <input type="number" id="ccTime" value="2" min="0.1" max="10" step="0.1" />
+              </div>
+              <div class="cc-field">
+                <label for="ccMem">Memory (MB)</label>
+                <input type="number" id="ccMem" value="256" min="16" max="2048" step="16" />
+              </div>
+            </div>
+            <div class="cc-field">
+              <label for="ccOps">Approx. ops / second</label>
+              <input type="text" id="ccOps" value="1e8" spellcheck="false" autocomplete="off" />
+              <p class="cc-hint">Typical contest rule of thumb: ~10⁸ operations per second.</p>
+            </div>
+
+            <div class="cc-presets" role="group" aria-label="Constraint presets">
+              <button type="button" class="cc-preset" data-n="100" data-m="" data-time="1">n ≤ 100</button>
+              <button type="button" class="cc-preset" data-n="1000" data-m="" data-time="1">n ≤ 1e3</button>
+              <button type="button" class="cc-preset" data-n="1e5" data-m="2e5" data-time="2">n ≤ 1e5</button>
+              <button type="button" class="cc-preset" data-n="1e6" data-m="" data-time="2">n ≤ 1e6</button>
+              <button type="button" class="cc-preset" data-n="1e7" data-m="" data-time="2">n ≤ 1e7</button>
+              <button type="button" class="cc-preset" data-n="1e9" data-m="" data-time="1">n ≤ 1e9</button>
+            </div>
+
+            <button type="button" class="cc-estimate-btn" id="ccEstimateBtn">
+              <i class="fas fa-bolt"></i> Estimate Complexities
+            </button>
+          </div>
+
+          <div class="cc-results">
+            <div class="cc-card">
+              <h3><i class="fas fa-gauge-high"></i> Operation Budget</h3>
+              <dl class="cc-budget">
+                <div>
+                  <dt>Budget (ops)</dt>
+                  <dd id="ccBudget">—</dd>
+                </div>
+                <div>
+                  <dt>n</dt>
+                  <dd id="ccParsedN">—</dd>
+                </div>
+                <div>
+                  <dt>m</dt>
+                  <dd id="ccParsedM">—</dd>
+                </div>
+                <div>
+                  <dt>Space tip</dt>
+                  <dd id="ccSpaceTip">—</dd>
+                </div>
+              </dl>
+              <p class="cc-explain" id="ccExplain" role="status" aria-live="polite">
+                Enter constraints and click Estimate.
+              </p>
+            </div>
+
+            <div class="cc-card">
+              <h3><i class="fas fa-check-double"></i> Suggested Safe Complexities</h3>
+              <ul class="cc-safe-list" id="ccSafeList"></ul>
+            </div>
+
+            <div class="cc-card">
+              <h3><i class="fas fa-table"></i> Complexity Checklist</h3>
+              <div class="cc-table-wrap">
+                <table class="cc-table" aria-label="Complexity comparison">
+                  <thead>
+                    <tr>
+                      <th>Big-O</th>
+                      <th>Est. ops</th>
+                      <th>vs budget</th>
+                      <th>Verdict</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ccTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="section">
+      <div class="container">
+        <h2 class="section-title">How Constraint Mapping Works</h2>
+        <div class="cc-guide-grid">
+          <div class="cc-guide-card">
+            <div class="cc-guide-num">01</div>
+            <h3>Estimate the budget</h3>
+            <p>
+              Rough budget ≈ time limit × ops/sec. With 2s and 10⁸ ops/s you get about 2×10⁸ safe
+              operations.
+            </p>
+          </div>
+          <div class="cc-guide-card">
+            <div class="cc-guide-num">02</div>
+            <h3>Plug in n (and m)</h3>
+            <p>
+              Compare O(n), O(n log n), O(n√n), O(n²), … against the budget. Prefer the simplest
+              complexity that still fits.
+            </p>
+          </div>
+          <div class="cc-guide-card">
+            <div class="cc-guide-num">03</div>
+            <h3>Watch memory too</h3>
+            <p>
+              Large arrays / matrices can blow memory before time. A few ints per element is fine;
+              O(n²) tables often are not.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="constraint-complexity-estimator.js"></script>
+  </body>
+</html>

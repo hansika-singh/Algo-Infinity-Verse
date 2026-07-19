@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interval Tree Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive Interval Tree — augmented BST with max-endpoint, overlap queries, subtree pruning, and calendar conflict demo." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="interval-tree.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="interval-tree">
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="hero ivt-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Which Meetings Conflict With This New One?</span>
+        <span class="main-title ivt-gradient">Interval Tree</span>
+        <span class="subtitle">Augmented BST — Max-Endpoint Pruning Visualized</span>
+      </h1>
+      <p class="section-subtitle">
+        An Interval Tree stores ranges and answers "what overlaps this?" in O(log n + k) by augmenting every BST node with the largest endpoint in its subtree — skipping entire branches that provably cannot overlap.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary ivt-btn-primary">
+          <i class="fas fa-sitemap"></i> Open Visualizer
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <div class="ivt-control-card">
+
+        <div class="ivt-row">
+          <span class="ivt-row-label">Insert interval:</span>
+          <span class="ivt-input-group">
+            <input type="number" id="ivtInsertLo" class="ivt-num-input" value="2" min="0" max="99" />
+            <span class="ivt-dash">–</span>
+            <input type="number" id="ivtInsertHi" class="ivt-num-input" value="8" min="0" max="99" />
+          </span>
+          <input type="text" id="ivtInsertLabel" class="ivt-text-input" placeholder="Label (optional)" maxlength="20" />
+          <button class="btn ivt-btn-primary ivt-action-btn" id="ivtInsertBtn">
+            <i class="fas fa-plus"></i> Insert
+          </button>
+        </div>
+
+        <div class="ivt-row">
+          <span class="ivt-row-label">Query overlap:</span>
+          <span class="ivt-input-group">
+            <input type="number" id="ivtQueryLo" class="ivt-num-input" value="5" min="0" max="99" />
+            <span class="ivt-dash">–</span>
+            <input type="number" id="ivtQueryHi" class="ivt-num-input" value="10" min="0" max="99" />
+          </span>
+          <button class="btn ivt-btn-secondary ivt-action-btn" id="ivtQueryBtn">
+            <i class="fas fa-magnifying-glass"></i> Find Overlaps
+          </button>
+        </div>
+
+        <div class="ivt-row">
+          <span class="ivt-row-label">Presets:</span>
+          <button class="btn ivt-btn-primary ivt-action-btn" id="ivtCalendarBtn">
+            <i class="fas fa-calendar-days"></i> Calendar Demo
+          </button>
+          <button class="btn ivt-btn-warning ivt-action-btn" id="ivtRandomBtn">
+            <i class="fas fa-shuffle"></i> Random Intervals
+          </button>
+          <button class="btn btn-secondary ivt-action-btn" id="ivtResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+      </div>
+
+      <div class="ivt-status" id="ivtStatus">
+        Insert intervals to build the tree, then query for overlaps to see pruning in action.
+      </div>
+
+      <div class="ivt-main-layout">
+
+        <div class="ivt-tree-col">
+          <div class="ivt-panel-card ivt-tree-card">
+            <div class="ivt-panel-title">
+              <i class="fas fa-sitemap"></i> Augmented BST
+              <span class="ivt-legend-inline">
+                <span class="ivt-ldot ivt-ldot-overlap"></span>Overlaps query
+                <span class="ivt-ldot ivt-ldot-visited"></span>Visited
+                <span class="ivt-ldot ivt-ldot-pruned"></span>Pruned
+              </span>
+            </div>
+            <div class="ivt-tree-wrap" id="ivtTreeWrap">
+              <svg id="ivtSvg" class="ivt-svg"></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="ivt-right-col">
+
+          <div class="ivt-panel-card">
+            <div class="ivt-panel-title"><i class="fas fa-ruler-horizontal"></i> Interval Timeline</div>
+            <div class="ivt-timeline-wrap">
+              <canvas id="ivtTimeline" class="ivt-timeline-canvas" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="ivt-panel-card">
+            <div class="ivt-panel-title"><i class="fas fa-chart-simple"></i> Query Stats</div>
+            <div class="ivt-stats-grid" id="ivtStats">
+              <div class="ivt-stat-box">
+                <div class="ivt-stat-val" id="ivtStatTotal">0</div>
+                <div class="ivt-stat-lbl">Total nodes</div>
+              </div>
+              <div class="ivt-stat-box">
+                <div class="ivt-stat-val ivt-val-visited" id="ivtStatVisited">—</div>
+                <div class="ivt-stat-lbl">Visited</div>
+              </div>
+              <div class="ivt-stat-box">
+                <div class="ivt-stat-val ivt-val-pruned" id="ivtStatPruned">—</div>
+                <div class="ivt-stat-lbl">Pruned</div>
+              </div>
+              <div class="ivt-stat-box">
+                <div class="ivt-stat-val ivt-val-found" id="ivtStatFound">—</div>
+                <div class="ivt-stat-lbl">Found</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ivt-panel-card" id="ivtResultCard" style="display:none">
+            <div class="ivt-panel-title"><i class="fas fa-list-check"></i> Overlapping Intervals</div>
+            <div class="ivt-result-list" id="ivtResultList"></div>
+          </div>
+
+          <div class="ivt-panel-card">
+            <div class="ivt-panel-title"><i class="fas fa-list"></i> Inserted Intervals</div>
+            <div class="ivt-inserted-list" id="ivtInsertedList">
+              <span class="ivt-empty-text">No intervals yet.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🌳</span> Interval Tree Explained</h2>
+      <div class="ivt-learn-grid">
+
+        <div class="ivt-learn-card ivt-learn-bst">
+          <div class="ivt-learn-icon">🌲</div>
+          <h3>BST Ordered by Low Endpoint</h3>
+          <p>
+            Intervals are inserted like a plain BST using their low (start) endpoint as the key. This gives O(log n) insert and a structural property we can exploit for search.
+          </p>
+        </div>
+
+        <div class="ivt-learn-card ivt-learn-aug">
+          <div class="ivt-learn-icon">📈</div>
+          <h3>Augmentation: max Field</h3>
+          <p>
+            Each node stores <em>max</em> — the largest high endpoint in its entire subtree. On every insert, max is updated up the ancestor chain. This single extra integer is what enables pruning.
+          </p>
+        </div>
+
+        <div class="ivt-learn-card ivt-learn-query">
+          <div class="ivt-learn-icon">✂️</div>
+          <h3>Pruning With max</h3>
+          <p>
+            During a query [lo, hi]: if a subtree's max &lt; lo, every interval in it ends before our query starts — skip the entire branch. This reduces comparisons from O(n) to O(log n + k).
+          </p>
+        </div>
+
+        <div class="ivt-learn-card ivt-learn-use">
+          <div class="ivt-learn-icon">📅</div>
+          <h3>Real-World Uses</h3>
+          <p>
+            Calendar conflict detection, genome region lookup, compiler register allocation, computational geometry sweep-lines, and database query planners all rely on interval overlap queries.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="interval-tree.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

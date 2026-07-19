@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Merkle Tree Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Watch a Merkle tree propagate a single-bit change all the way to the root, and verify any leaf using only O(log n) sibling hashes instead of downloading everything." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="merkle-tree-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="merkle-tree-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="mk-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="mk-hero-inner">
+        <div class="mk-hero-eyebrow">🌲 Git · Bitcoin · BitTorrent · Certificate Transparency</div>
+        <h1 class="mk-hero-title">Merkle Tree Visualizer</h1>
+        <p class="mk-hero-sub">Verify one piece of data without downloading the rest.</p>
+        <p class="mk-hero-desc">A Merkle tree hashes data blocks in pairs, all the way up to a single root hash. Change one bit anywhere and the change propagates to the root — instant tamper evidence. Verify any single leaf using only its O(log n) sibling hashes, the "Merkle proof," without touching any other block.</p>
+        <a href="#lab" class="btn btn-primary mk-btn-primary"><i class="fas fa-diagram-project"></i> Open the Tree</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section mk-section">
+      <div class="container">
+
+        <div class="mk-control-card">
+          <div class="mk-row">
+            <span class="mk-row-label">Blocks (N)</span>
+            <div class="mk-n-btns">
+              <button class="mk-n-btn" data-n="8" aria-pressed="false">8</button>
+              <button class="mk-n-btn active" data-n="16" aria-pressed="true">16</button>
+            </div>
+            <button class="btn btn-secondary mk-randomize-btn" id="mkRandomizeBtn"><i class="fas fa-shuffle"></i> Randomize Blocks</button>
+          </div>
+        </div>
+
+        <div class="mk-status" id="mkStatus">Click any leaf below to edit its data and watch the change propagate to the root.</div>
+
+        <div class="mk-main-layout">
+
+          <div class="mk-tree-section">
+            <div class="mk-panel-title"><i class="fas fa-sitemap"></i> Merkle Tree</div>
+            <div class="mk-tree-wrap"><svg id="mkTreeSvg" class="mk-tree-svg" role="img" aria-label="Merkle tree diagram"></svg></div>
+            <div class="mk-legend">
+              <span class="mk-leg"><span class="mk-leg-dot mk-leg-normal"></span>Unchanged hash</span>
+              <span class="mk-leg"><span class="mk-leg-dot mk-leg-changed"></span>Recomputed (on path to root)</span>
+              <span class="mk-leg"><span class="mk-leg-dot mk-leg-proof"></span>Proof sibling</span>
+              <span class="mk-leg"><span class="mk-leg-dot mk-leg-root"></span>Root</span>
+            </div>
+          </div>
+
+          <div class="mk-right-panel">
+
+            <div class="mk-panel-card">
+              <div class="mk-panel-title"><i class="fas fa-shield-halved"></i> Merkle Proof</div>
+              <div class="mk-row">
+                <select id="mkProofLeafSelect" class="mk-select" aria-label="Leaf to prove"></select>
+                <button class="btn mk-btn-primary mk-proof-btn" id="mkGenProofBtn"><i class="fas fa-key"></i> Generate Proof</button>
+              </div>
+              <div class="mk-proof-result" id="mkProofResult">
+                <div class="mk-empty">Select a leaf and generate its proof.</div>
+              </div>
+            </div>
+
+            <div class="mk-panel-card">
+              <div class="mk-panel-title"><i class="fas fa-scale-balanced"></i> Naive vs Proof — Bytes Needed</div>
+              <div class="mk-stat-rows">
+                <div class="mk-stat-row"><span>Naive (download all blocks)</span><span id="mkNaiveBytes">—</span></div>
+                <div class="mk-stat-row"><span>Merkle proof (O(log n) hashes)</span><span id="mkProofBytes">—</span></div>
+                <div class="mk-stat-row mk-savings"><span>Savings</span><span id="mkSavings">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="mk-tamper-card">
+          <div class="mk-tamper-header"><i class="fas fa-user-secret"></i> Tamper Simulation</div>
+          <p class="mk-tamper-desc">Generate a proof for a leaf, then click "Tamper" to have an attacker silently modify that leaf's claimed data without updating the tree. The verifier recomputes the root from the (now-stale) proof and immediately detects the mismatch.</p>
+          <div class="mk-tamper-controls">
+            <button class="btn btn-secondary mk-tamper-btn" id="mkTamperBtn" disabled><i class="fas fa-user-secret"></i> Attacker Tampers With This Leaf</button>
+            <button class="btn mk-btn-primary mk-verify-btn" id="mkVerifyBtn" disabled><i class="fas fa-check-double"></i> Verify Proof</button>
+          </div>
+          <div class="mk-tamper-result hidden" id="mkTamperResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🌲</span> Why This Structure Is Everywhere</h2>
+        <div class="mk-learn-grid">
+          <div class="mk-learn-card" style="--lc:#06b6d4">
+            <div class="mk-learn-icon">📦</div>
+            <h3>Git Commit Integrity</h3>
+            <p>Every Git commit is (indirectly) a Merkle tree of blobs and subtrees. Change one line in one file, and the change propagates up through every parent tree hash to the commit hash — this is why Git commit hashes are tamper-evident.</p>
+          </div>
+          <div class="mk-learn-card" style="--lc:#a855f7">
+            <div class="mk-learn-icon">₿</div>
+            <h3>Bitcoin's SPV Clients</h3>
+            <p>Lightweight Bitcoin wallets ("SPV clients") verify a transaction is included in a block using only the block header and a Merkle proof — a handful of hashes — without downloading the full block's thousands of transactions.</p>
+          </div>
+          <div class="mk-learn-card" style="--lc:#22c55e">
+            <div class="mk-learn-icon">🌐</div>
+            <h3>BitTorrent Chunk Verification</h3>
+            <p>BitTorrent v2 verifies each downloaded file chunk independently against a Merkle root, so a single corrupted chunk from a malicious peer is detected and re-downloaded without invalidating the rest of the file.</p>
+          </div>
+          <div class="mk-learn-card" style="--lc:#f59e0b">
+            <div class="mk-learn-icon">📜</div>
+            <h3>Certificate Transparency</h3>
+            <p>Certificate Transparency logs use append-only Merkle trees so anyone can cryptographically verify a certificate was logged — and that the log hasn't been secretly altered — without trusting the log operator.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="merkle-tree-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

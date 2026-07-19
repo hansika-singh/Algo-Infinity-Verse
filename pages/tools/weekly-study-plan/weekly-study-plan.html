@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly DSA Study Plan Generator | Algo Infinity Verse</title>
+  <meta name="description" content="Enter hours/week, weak topics, and an interview goal date to generate a 7-day DSA plan with quiz and visualizer deep links." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="weekly-study-plan.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="wsp-body" data-page="weekly-study-plan">
+  <a href="#wsp-main" class="wsp-skip-link">Skip to main content</a>
+
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="wsp-hero">
+    <div class="wsp-hero-badge">
+      <i class="fas fa-calendar-week" aria-hidden="true"></i>
+      Interview-Ready Scheduling
+    </div>
+    <h1>
+      Weekly DSA
+      <span class="wsp-accent">Study Plan</span>
+    </h1>
+    <p>
+      Tell us your hours, weak topics, and interview date — get a concrete 7-day plan
+      with deep links to quizzes, visualizers, and learning pages.
+    </p>
+  </header>
+
+  <main id="wsp-main" class="wsp-main">
+    <div class="container wsp-layout">
+      <!-- Inputs -->
+      <section class="wsp-card" aria-labelledby="wsp-form-title">
+        <div class="wsp-card-head">
+          <h2 id="wsp-form-title"><i class="fas fa-sliders" aria-hidden="true"></i> Plan inputs</h2>
+        </div>
+
+        <div class="wsp-field">
+          <label class="wsp-label" for="wspHours">Hours per week</label>
+          <div class="wsp-slider-row">
+            <input type="range" id="wspHours" class="wsp-range" min="3" max="28" step="1" value="10" />
+            <span class="wsp-slider-val" id="wspHoursVal">10h</span>
+          </div>
+          <p class="wsp-hint">Spread across 7 days (light on rest days if hours are low).</p>
+        </div>
+
+        <div class="wsp-field">
+          <label class="wsp-label" for="wspGoal">Interview / goal date</label>
+          <input type="date" id="wspGoal" class="wsp-input" />
+          <p class="wsp-hint" id="wspGoalHint">Pick a target date to see countdown intensity.</p>
+        </div>
+
+        <fieldset class="wsp-topics">
+          <legend class="wsp-label">Weak topics (select at least one)</legend>
+          <div class="wsp-topic-grid" id="wspTopicGrid" role="group" aria-label="Weak topics"></div>
+        </fieldset>
+
+        <div class="wsp-actions">
+          <button type="button" class="btn btn-primary" id="wspGenerate">
+            <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Generate 7-day plan
+          </button>
+          <button type="button" class="btn btn-outline" id="wspClear">
+            <i class="fas fa-trash" aria-hidden="true"></i> Clear saved
+          </button>
+        </div>
+        <p class="wsp-status" id="wspStatus" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- Summary -->
+      <aside class="wsp-card wsp-summary" aria-labelledby="wsp-summary-title">
+        <div class="wsp-card-head">
+          <h2 id="wsp-summary-title"><i class="fas fa-chart-simple" aria-hidden="true"></i> Week snapshot</h2>
+        </div>
+        <div class="wsp-stats">
+          <div class="wsp-stat">
+            <span class="wsp-stat-lbl">Daily budget</span>
+            <span class="wsp-stat-val" id="wspDailyBudget">—</span>
+          </div>
+          <div class="wsp-stat">
+            <span class="wsp-stat-lbl">Days to goal</span>
+            <span class="wsp-stat-val" id="wspDaysLeft">—</span>
+          </div>
+          <div class="wsp-stat">
+            <span class="wsp-stat-lbl">Topics selected</span>
+            <span class="wsp-stat-val" id="wspTopicCount">0</span>
+          </div>
+          <div class="wsp-stat">
+            <span class="wsp-stat-lbl">Sessions done</span>
+            <span class="wsp-stat-val wsp-cyan" id="wspDoneCount">0 / 0</span>
+          </div>
+        </div>
+        <div class="wsp-xp-note">
+          <i class="fas fa-bolt" aria-hidden="true"></i>
+          Mark a day complete to earn <strong>+25 XP</strong> when gamification is available on this page.
+        </div>
+        <div class="wsp-progress-bar" aria-hidden="true">
+          <div class="wsp-progress-fill" id="wspProgressFill"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Plan output -->
+    <div class="container">
+      <section class="wsp-card" aria-labelledby="wsp-plan-title">
+        <div class="wsp-card-head wsp-row-between">
+          <h2 id="wsp-plan-title"><i class="fas fa-list-check" aria-hidden="true"></i> Your 7-day plan</h2>
+          <span class="wsp-muted" id="wspPlanMeta">Generate a plan to get started</span>
+        </div>
+        <div class="wsp-days" id="wspDays" role="list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js?v=20260601"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="weekly-study-plan.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

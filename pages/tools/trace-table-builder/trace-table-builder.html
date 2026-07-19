@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trace Table / Desk-Check Builder | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Build teacher/interviewer-style algorithm trace tables with custom variables, step rows, manual desk-check or guided auto-fill."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="trace-table-builder.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="trace-table-builder">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero tt-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Variables · Steps · Values</span>
+          <span class="main-title tt-gradient">Trace Table / Desk-Check Builder</span>
+          <span class="subtitle">Dry-run like teachers and interviewers do</span>
+        </h1>
+        <p class="section-subtitle">
+          Define variable columns, add step rows, fill values by hand, or auto-fill guided samples
+          (bubble sort pass, two pointers, factorial loop).
+        </p>
+        <div class="hero-buttons">
+          <a href="#builder" class="btn btn-primary tt-btn-primary"
+            ><i class="fas fa-table"></i> Open Builder</a
+          >
+          <a href="#guide" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> How Desk-Check Works</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="builder" class="section">
+      <div class="container">
+        <div class="tt-toolbar tt-card">
+          <div class="tt-toolbar-row">
+            <span class="tt-label">Sample:</span>
+            <div class="tt-sample-btns" role="group" aria-label="Sample algorithms">
+              <button type="button" class="tt-chip" data-sample="blank">Blank table</button>
+              <button type="button" class="tt-chip active" data-sample="bubble">
+                Bubble sort pass
+              </button>
+              <button type="button" class="tt-chip" data-sample="twoPointers">Two pointers</button>
+              <button type="button" class="tt-chip" data-sample="factorial">Factorial loop</button>
+            </div>
+          </div>
+
+          <div class="tt-toolbar-row">
+            <span class="tt-label">Columns:</span>
+            <input
+              type="text"
+              id="ttColName"
+              class="tt-input"
+              placeholder="variable name (e.g. sum)"
+              maxlength="24"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button type="button" class="tt-btn" id="ttAddColBtn">
+              <i class="fas fa-plus"></i> Add column
+            </button>
+            <button type="button" class="tt-btn" id="ttAddRowBtn">
+              <i class="fas fa-plus"></i> Add step
+            </button>
+          </div>
+
+          <div class="tt-toolbar-row tt-actions">
+            <button type="button" class="tt-btn tt-primary" id="ttAutoFillBtn">
+              <i class="fas fa-magic"></i> Auto-fill sample
+            </button>
+            <button type="button" class="tt-btn" id="ttHighlightBtn">
+              <i class="fas fa-highlighter"></i> Next step highlight
+            </button>
+            <button type="button" class="tt-btn" id="ttCopyBtn">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+            <button type="button" class="tt-btn" id="ttExportBtn">
+              <i class="fas fa-file-csv"></i> Export CSV
+            </button>
+            <button type="button" class="tt-btn tt-danger" id="ttResetBtn">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <span class="tt-status" id="ttStatus" role="status" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="tt-card tt-table-card">
+          <div class="tt-table-wrap">
+            <table class="tt-table" id="ttTable" aria-label="Algorithm trace table">
+              <thead id="ttHead"></thead>
+              <tbody id="ttBody"></tbody>
+            </table>
+          </div>
+          <p class="tt-hint">
+            Tip: edit any cell for manual desk-check. Use <strong>Auto-fill sample</strong> for guided
+            values, then step with <strong>Next step highlight</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="section">
+      <div class="container">
+        <h2 class="section-title">How Desk-Check Works</h2>
+        <div class="tt-guide-grid">
+          <div class="tt-guide-card">
+            <div class="tt-guide-num">01</div>
+            <h3>Name your variables</h3>
+            <p>
+              Add columns for every piece of state you care about — indices, accumulators, temps,
+              flags.
+            </p>
+          </div>
+          <div class="tt-guide-card">
+            <div class="tt-guide-num">02</div>
+            <h3>One row per step</h3>
+            <p>
+              After each statement or loop iteration, record a new row. Highlight the current step
+              while you reason aloud.
+            </p>
+          </div>
+          <div class="tt-guide-card">
+            <div class="tt-guide-num">03</div>
+            <h3>Export &amp; review</h3>
+            <p>
+              Copy or download CSV to share with a mentor, paste into notes, or compare with an
+              expected dry-run.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="trace-table-builder.js"></script>
+  </body>
+</html>

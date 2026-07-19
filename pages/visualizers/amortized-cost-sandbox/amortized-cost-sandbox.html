@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amortized Cost Sandbox | Algo Infinity Verse</title>
+  <meta name="description" content="Interactive amortized analysis sandbox for dynamic arrays and hash maps. Watch per-op costs, resize spikes, and the cumulative average prove amortized O(1)." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="amortized-cost-sandbox.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="acs-body" data-page="amortized-cost-sandbox">
+  <div id="loading-screen" class="hidden">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+  </div>
+
+  <button type="button" id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="hero acs-hero">
+    <div class="hero-background">
+      <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Aggregate Analysis · Visual Proof</span>
+        <span class="main-title acs-gradient">Amortized Cost Sandbox</span>
+        <span class="subtitle">Dynamic Array · Hash Map Rehash · Cumulative Average</span>
+      </h1>
+      <p class="section-subtitle">
+        Occasional resizes look expensive — but the <strong>cumulative average</strong> stays constant.
+        Push, watch cost bars spike, and see why amortized complexity is <strong>O(1)</strong>.
+      </p>
+    </div>
+  </section>
+
+  <main class="acs-workspace container" id="lab">
+    <div class="acs-layout">
+      <!-- Controls -->
+      <aside class="acs-panel-left" aria-label="Sandbox controls">
+        <div class="acs-card">
+          <div class="acs-card-header">
+            <h2><i class="fas fa-layer-group"></i> Structure</h2>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-mode-toggle" role="tablist" aria-label="Structure mode">
+              <button type="button" class="acs-mode-btn active" role="tab" aria-selected="true" data-mode="array" id="modeArray">
+                <i class="fas fa-list"></i> Dynamic Array
+              </button>
+              <button type="button" class="acs-mode-btn" role="tab" aria-selected="false" data-mode="hashmap" id="modeHash">
+                <i class="fas fa-table"></i> Hash Map
+              </button>
+            </div>
+            <p class="acs-hint" id="modeHint">
+              Capacity doubles on overflow. Resize cost = copy all existing elements + insert.
+            </p>
+          </div>
+        </div>
+
+        <div class="acs-card">
+          <div class="acs-card-header">
+            <h2><i class="fas fa-sliders-h"></i> Operations</h2>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-control-group">
+              <label class="acs-label" for="initialCap">Initial capacity</label>
+              <div class="acs-slider-wrap">
+                <input type="range" id="initialCap" class="acs-range" min="1" max="8" step="1" value="2" />
+                <span class="acs-slider-val" id="initialCapVal">2</span>
+              </div>
+            </div>
+
+            <div class="acs-control-group" id="loadFactorGroup" hidden>
+              <label class="acs-label" for="loadFactor">Rehash load factor</label>
+              <div class="acs-slider-wrap">
+                <input type="range" id="loadFactor" class="acs-range" min="50" max="90" step="5" value="75" />
+                <span class="acs-slider-val" id="loadFactorVal">0.75</span>
+              </div>
+            </div>
+
+            <div class="acs-btn-row">
+              <button type="button" class="btn btn-primary acs-flex" id="btnPush">
+                <i class="fas fa-plus"></i> <span id="pushLabel">Push</span>
+              </button>
+              <button type="button" class="btn btn-outline acs-flex" id="btnPop" disabled>
+                <i class="fas fa-minus"></i> Pop
+              </button>
+            </div>
+
+            <div class="acs-btn-row">
+              <button type="button" class="btn btn-outline acs-flex" id="btnPlay">
+                <i class="fas fa-play"></i> Auto Push ×10
+              </button>
+              <button type="button" class="btn btn-danger acs-flex" id="btnReset">
+                <i class="fas fa-undo"></i> Reset
+              </button>
+            </div>
+
+            <div class="acs-control-group">
+              <label class="acs-label" for="playSpeed">Auto speed</label>
+              <div class="acs-slider-wrap">
+                <input type="range" id="playSpeed" class="acs-range" min="100" max="800" step="50" value="350" />
+                <span class="acs-slider-val" id="playSpeedVal">350ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="acs-card">
+          <div class="acs-card-header">
+            <h2><i class="fas fa-chart-line"></i> Telemetry</h2>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-stats-grid">
+              <div class="acs-stat">
+                <span class="acs-stat-lbl">Size / Capacity</span>
+                <span class="acs-stat-val" id="statSizeCap">0 / 2</span>
+              </div>
+              <div class="acs-stat">
+                <span class="acs-stat-lbl">Operations</span>
+                <span class="acs-stat-val" id="statOps">0</span>
+              </div>
+              <div class="acs-stat">
+                <span class="acs-stat-lbl">Last op cost</span>
+                <span class="acs-stat-val acs-amber" id="statLastCost">—</span>
+              </div>
+              <div class="acs-stat">
+                <span class="acs-stat-lbl">Total cost</span>
+                <span class="acs-stat-val" id="statTotal">0</span>
+              </div>
+              <div class="acs-stat acs-stat-wide">
+                <span class="acs-stat-lbl">Cumulative average</span>
+                <span class="acs-stat-val acs-cyan" id="statAvg">0.00</span>
+              </div>
+              <div class="acs-stat acs-stat-wide">
+                <span class="acs-stat-lbl">Resizes / rehashes</span>
+                <span class="acs-stat-val acs-purple" id="statResizes">0</span>
+              </div>
+            </div>
+
+            <div class="acs-callout" id="amortizedCallout" hidden role="status" aria-live="polite">
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>Amortized O(1) visible</strong>
+                <p>Cumulative average is settling near a constant despite resize spikes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="acs-card">
+          <div class="acs-card-header">
+            <h2><i class="fas fa-graduation-cap"></i> Theory</h2>
+          </div>
+          <div class="acs-card-body">
+            <p class="acs-edu" id="theoryText">
+              Doubling capacity means each element is copied at most <code>O(log n)</code> times across its lifetime.
+              Sum of all resize costs is <code>&lt; 2n</code>, so average cost per push is <strong>O(1)</strong>.
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Visualization -->
+      <section class="acs-panel-right" aria-label="Visualization">
+        <div class="acs-card">
+          <div class="acs-card-header acs-flex-between">
+            <h2><i class="fas fa-memory"></i> <span id="structureTitle">Array slots</span></h2>
+            <span class="acs-subtitle" id="structureSub">capacity = 2</span>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-slots" id="slotsView" role="region" aria-label="Structure slots"></div>
+            <p class="acs-status" id="mainStatus" role="status" aria-live="polite">
+              Ready. Push elements to watch amortized cost unfold.
+            </p>
+          </div>
+        </div>
+
+        <div class="acs-card">
+          <div class="acs-card-header acs-flex-between">
+            <h2><i class="fas fa-chart-column"></i> Per-operation cost</h2>
+            <div class="acs-legend">
+              <span class="acs-legend-item"><i class="acs-swatch acs-swatch-cheap"></i> Cheap (1)</span>
+              <span class="acs-legend-item"><i class="acs-swatch acs-swatch-resize"></i> Resize / rehash</span>
+              <span class="acs-legend-item"><i class="acs-swatch acs-swatch-avg"></i> Cumulative avg</span>
+            </div>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-chart-wrap">
+              <svg id="costChart" class="acs-chart" viewBox="0 0 640 220" role="img" aria-label="Bar chart of per-operation costs with cumulative average line"></svg>
+              <p class="acs-chart-empty" id="chartEmpty">No operations yet — cost bars will appear here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="acs-card">
+          <div class="acs-card-header">
+            <h2><i class="fas fa-terminal"></i> Event log</h2>
+          </div>
+          <div class="acs-card-body">
+            <div class="acs-log" id="eventLog" aria-live="polite">
+              <div class="acs-log-entry sys">&gt; Sandbox ready. Mode: Dynamic Array.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js?v=20260601"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="/auth-gate.js"></script>
+  <script src="amortized-cost-sandbox.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palindromic Tree (Eertree) · Algo Infinity Verse</title>
+<meta name="description" content="A Twin-Root Palindrome Engine — watch the Eertree build online via suffix-link walks, discover new palindromes, and propagate occurrence counts in a real second pass.">
+<link rel="stylesheet" href="eertree.css">
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <span class="logo-mark">🪞</span>
+      <span class="name">Algo Infinity Verse</span>
+    </a>
+
+    <div class="page-title">
+      <h1>Palindromic Tree (Eertree)</h1>
+      <p>Twin-Root Palindrome Engine · every node is a distinct palindrome</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="crumb">Visualizers / <strong>Eertree</strong></span>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace">
+
+    <!-- ---------- Left panel: input + playback ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Input</h2></div>
+      <div class="panel-body">
+
+        <div class="control-group">
+          <div class="control-label"><span>Source string</span></div>
+          <input type="text" class="text-input" id="sourceInput" value="forgeeksskeegfor" maxlength="24" spellcheck="false" autocomplete="off">
+          <p class="error-text" id="inputError"></p>
+        </div>
+
+        <div class="control-group">
+          <button class="btn primary full" id="applyBtn">▶ Build &amp; Run</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Playback speed</span><span class="val" id="speedVal">400ms/step</span></div>
+          <input type="range" id="speedSlider" min="60" max="900" step="20" value="400">
+        </div>
+
+        <div class="btn-row" style="margin-bottom:10px;">
+          <button class="btn" id="restartBtn">⏮ Restart</button>
+          <button class="btn" id="stepBtn">Step ⏭</button>
+        </div>
+        <button class="btn primary full" id="playBtn" style="margin-bottom:10px;">▶ Play</button>
+        <button class="btn gold full" id="finalizeBtn" disabled>Σ Finalize &amp; Propagate Counts</button>
+
+        <div class="divider"></div>
+
+        <div class="legend-item"><span class="swatch-dot root"></span> Twin roots — root(−1) &amp; root(0)</div>
+        <div class="legend-item"><span class="swatch link"></span> Suffix-link edge (the actual tree)</div>
+        <div class="legend-item"><span class="swatch-dot walk1"></span> Walk 1 — checking extension</div>
+        <div class="legend-item"><span class="swatch-dot walk2"></span> Walk 2 — finding the new node's own suffix link</div>
+        <div class="legend-item"><span class="swatch-dot new"></span> Newly created palindrome</div>
+
+      </div>
+    </aside>
+
+    <!-- ---------- Center: string strip + eertree ---------- -->
+    <section class="panel viewport-panel">
+      <div id="viewport">
+        <div class="viewport-overlay">
+          <span class="chip">i <strong id="chipI">-1</strong></span>
+          <span class="chip">last (longest suffix) <strong id="chipLast">—</strong></span>
+          <span class="chip">len(last) <strong id="chipLenLast">0</strong></span>
+        </div>
+        <div class="phase-badge" id="phaseBadge">Ready</div>
+
+        <div class="strip-wrap-outer">
+          <div class="stage" id="stage">
+            <div class="strip-wrap" id="stripWrap">
+              <div class="char-row" id="charRow"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tree-stage" id="treeStage">
+          <svg class="tree-svg" id="treeSvg"></svg>
+        </div>
+
+        <div class="loading-veil" id="loadingVeil">
+          <div class="spinner"></div>
+          <p>planting the twin roots…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right panel: telemetry ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Telemetry</h2></div>
+      <div class="panel-body">
+
+        <div class="result-box" id="resultBox">
+          <div class="rtitle">Status</div>
+          <div id="resultVal">Build a string, then Play or Step through the insertion.</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num" id="statDistinct">0</div><div class="lbl">Distinct palindromes</div></div>
+          <div class="stat-box"><div class="num" id="statTotal">—</div><div class="lbl">Total occurrences</div></div>
+        </div>
+
+        <div class="readout" id="stepReadout">
+          <div><span class="k">Longest palindromic suffix</span> <span class="v" id="roLongest">—</span></div>
+          <div><span class="k">Nodes created so far</span> <span class="v" id="roNodes">0</span></div>
+          <div><span class="k">Counts finalized?</span> <span class="v" id="roFinalized">no</span></div>
+        </div>
+
+        <div class="control-label"><span>Step log</span></div>
+        <div class="step-log" id="stepLog"><div class="log-line">Ready.</div></div>
+
+        <div class="divider"></div>
+        <p class="hint">The "Total occurrences" counter reads <strong>—</strong> until you finalize. Occurrence counts are only correct after a real second pass that propagates each node's count up through its suffix link, processed in reverse creation order — exactly as the technical constraints require, not folded into insertion.</p>
+      </div>
+    </aside>
+
+  </main>
+</div>
+
+<script src="eertree.js"></script>
+</body>
+</html>

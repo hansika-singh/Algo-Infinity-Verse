@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Structure Memory Layout Explorer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Compare how arrays, linked lists, trees, hash tables, queues, and stacks are actually laid out in memory — contiguous vs scattered, pointer overhead, and cache locality, side by side."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="data-structure-memory-layout-explorer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Theme Initialization Script — applies saved theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body data-page="data-structure-memory-layout-explorer">
+    <div id="navbar-placeholder"></div>
+
+    <!-- Global SVG defs — arrowhead marker shared by every diagram on this page -->
+    <svg width="0" height="0" style="position: absolute">
+      <defs>
+        <marker
+          id="dsml-arrowhead"
+          markerWidth="8"
+          markerHeight="8"
+          refX="6"
+          refY="3"
+          orient="auto"
+        >
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--accent, #06b6d4)" />
+        </marker>
+      </defs>
+    </svg>
+
+    <!-- ================= HERO ================= -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Same Data, Different Homes</span>
+          <span class="main-title gradient-text">Memory Layout Explorer</span>
+          <span class="subtitle">
+            Where Arrays, Linked Lists, Trees, Hash Tables, Queues &amp; Stacks Actually Live in RAM
+          </span>
+        </h1>
+        <p class="section-subtitle">
+          Every data structure looks tidy in code — but underneath, memory doesn't know about
+          "structure" at all. Explore how each one really sits in RAM: packed tight in a row,
+          scattered across scattered addresses, or somewhere in between.
+        </p>
+        <div class="hero-buttons">
+          <a href="#overview" class="btn btn-primary">
+            <i class="fas fa-table-cells"></i> Explore Layouts
+          </a>
+          <a href="#comparison-table" class="btn btn-secondary">
+            <i class="fas fa-scale-balanced"></i> Compare All
+          </a>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <section class="section">
+      <!-- ================= OVERVIEW GRID ================= -->
+      <div id="overview" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">Overview</span>
+          <h2>Six Structures, Six Layouts</h2>
+          <p class="dsml-lede">Click any card to jump to its detailed memory diagram.</p>
+        </div>
+
+        <div class="dsml-overview-grid">
+          <a href="#ds-array" class="dsml-overview-card">
+            <i class="fas fa-grip-lines"></i>
+            <h4>Array</h4>
+            <span class="dsml-tag dsml-tag-contiguous">Contiguous</span>
+          </a>
+          <a href="#ds-linkedlist" class="dsml-overview-card">
+            <i class="fas fa-link"></i>
+            <h4>Linked List</h4>
+            <span class="dsml-tag dsml-tag-scattered">Scattered</span>
+          </a>
+          <a href="#ds-tree" class="dsml-overview-card">
+            <i class="fas fa-sitemap"></i>
+            <h4>Tree</h4>
+            <span class="dsml-tag dsml-tag-scattered">Scattered</span>
+          </a>
+          <a href="#ds-hashtable" class="dsml-overview-card">
+            <i class="fas fa-hashtag"></i>
+            <h4>Hash Table</h4>
+            <span class="dsml-tag dsml-tag-hybrid">Hybrid</span>
+          </a>
+          <a href="#ds-queue" class="dsml-overview-card">
+            <i class="fas fa-arrow-right-arrow-left"></i>
+            <h4>Queue</h4>
+            <span class="dsml-tag dsml-tag-contiguous">Contiguous</span>
+          </a>
+          <a href="#ds-stack" class="dsml-overview-card">
+            <i class="fas fa-layer-group"></i>
+            <h4>Stack</h4>
+            <span class="dsml-tag dsml-tag-contiguous">Contiguous</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= ARRAY ================= -->
+      <div id="ds-array" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">1 · Array</span>
+          <h2>Contiguous Block</h2>
+          <p class="dsml-lede">
+            All elements sit back-to-back in one unbroken block. Address of any element is computed
+            directly — no traversal needed.
+          </p>
+        </div>
+
+        <div class="dsml-diagram-wrapper">
+          <svg viewBox="0 0 820 160" xmlns="http://www.w3.org/2000/svg" class="dsml-svg">
+            <!-- memory cells -->
+            <g font-family="Fira Code, monospace" font-size="12">
+              <!-- cells -->
+              <g>
+                <rect
+                  id="dsml-array-cell-0"
+                  x="20"
+                  y="40"
+                  width="90"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <rect
+                  id="dsml-array-cell-1"
+                  x="120"
+                  y="40"
+                  width="90"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <rect
+                  id="dsml-array-cell-2"
+                  x="220"
+                  y="40"
+                  width="90"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <rect
+                  id="dsml-array-cell-3"
+                  x="320"
+                  y="40"
+                  width="90"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <rect
+                  x="420"
+                  y="40"
+                  width="90"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-empty"
+                />
+              </g>
+              <text x="65" y="75" text-anchor="middle" class="dsml-cell-text">12</text>
+              <text x="165" y="75" text-anchor="middle" class="dsml-cell-text">7</text>
+              <text x="265" y="75" text-anchor="middle" class="dsml-cell-text">45</text>
+              <text x="365" y="75" text-anchor="middle" class="dsml-cell-text">3</text>
+              <text x="465" y="75" text-anchor="middle" class="dsml-cell-text dsml-dim">·</text>
+
+              <text x="65" y="122" text-anchor="middle" class="dsml-addr">0x00</text>
+              <text x="165" y="122" text-anchor="middle" class="dsml-addr">0x04</text>
+              <text x="265" y="122" text-anchor="middle" class="dsml-addr">0x08</text>
+              <text x="365" y="122" text-anchor="middle" class="dsml-addr">0x0C</text>
+              <text x="465" y="122" text-anchor="middle" class="dsml-addr">0x10</text>
+
+              <text x="65" y="30" text-anchor="middle" class="dsml-idx">arr[0]</text>
+              <text x="165" y="30" text-anchor="middle" class="dsml-idx">arr[1]</text>
+              <text x="265" y="30" text-anchor="middle" class="dsml-idx">arr[2]</text>
+              <text x="365" y="30" text-anchor="middle" class="dsml-idx">arr[3]</text>
+            </g>
+            <text x="600" y="70" class="dsml-formula">address = base + (index × size)</text>
+            <text x="600" y="95" class="dsml-formula-sub">e.g. arr[2] = 0x00 + (2 × 4) = 0x08</text>
+          </svg>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Access</span><span class="dsml-fact-value">O(1)</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Extra overhead</span
+            ><span class="dsml-fact-value">None</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value dsml-good">Excellent</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Resize cost</span
+            ><span class="dsml-fact-value">O(n) — reallocate &amp; copy</span>
+          </div>
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-calculator"></i> Try it: index → address
+          </h4>
+          <div class="dsml-interactive-row">
+            <label for="dsml-array-index">Index (0–3)</label>
+            <input
+              type="number"
+              id="dsml-array-index"
+              class="dsml-input"
+              min="0"
+              max="3"
+              value="2"
+            />
+            <button class="dsml-btn" id="dsml-array-compute">Compute address</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-array-result">
+            Pick an index and compute to see the formula in action.
+          </p>
+        </div>
+      </div>
+
+      <!-- ================= LINKED LIST ================= -->
+      <div id="ds-linkedlist" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">2 · Linked List</span>
+          <h2>Scattered Nodes</h2>
+          <p class="dsml-lede">
+            Each node is its own tiny allocation, wherever the memory allocator finds space. Order
+            only exists because each node points to the next one's address.
+          </p>
+        </div>
+
+        <div class="dsml-diagram-wrapper">
+          <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" class="dsml-svg">
+            <g font-family="Fira Code, monospace" font-size="12">
+              <!-- Node 1 at 0x1A -->
+              <g id="dsml-ll-node-0">
+                <rect
+                  x="40"
+                  y="40"
+                  width="130"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <line x1="105" y1="40" x2="105" y2="100" stroke="var(--glass-border)" />
+                <text x="72" y="75" text-anchor="middle" class="dsml-cell-text">12</text>
+                <text x="137" y="75" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                  0x77
+                </text>
+                <text x="105" y="30" text-anchor="middle" class="dsml-idx">node @ 0x1A</text>
+                <text x="105" y="122" text-anchor="middle" class="dsml-addr">data | next</text>
+              </g>
+
+              <!-- Node 2 at 0x77 -->
+              <g id="dsml-ll-node-1">
+                <rect
+                  x="330"
+                  y="130"
+                  width="130"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <line x1="395" y1="130" x2="395" y2="190" stroke="var(--glass-border)" />
+                <text x="362" y="165" text-anchor="middle" class="dsml-cell-text">7</text>
+                <text x="427" y="165" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                  0x4F
+                </text>
+                <text x="395" y="120" text-anchor="middle" class="dsml-idx">node @ 0x77</text>
+              </g>
+
+              <!-- Node 3 at 0x4F -->
+              <g id="dsml-ll-node-2">
+                <rect
+                  x="620"
+                  y="20"
+                  width="130"
+                  height="60"
+                  rx="6"
+                  class="dsml-cell dsml-cell-filled"
+                />
+                <line x1="685" y1="20" x2="685" y2="80" stroke="var(--glass-border)" />
+                <text x="652" y="55" text-anchor="middle" class="dsml-cell-text">45</text>
+                <text x="717" y="55" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                  NULL
+                </text>
+                <text x="685" y="10" text-anchor="middle" class="dsml-idx">node @ 0x4F</text>
+              </g>
+
+              <!-- arrows -->
+              <path
+                id="dsml-ll-arrow-0"
+                d="M170,70 C 250,20 260,140 330,155"
+                fill="none"
+                class="dsml-arrow"
+              />
+              <path
+                id="dsml-ll-arrow-1"
+                d="M460,155 C 540,150 560,60 620,50"
+                fill="none"
+                class="dsml-arrow"
+              />
+            </g>
+          </svg>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Access</span
+            ><span class="dsml-fact-value">O(n) — must traverse</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Extra overhead</span
+            ><span class="dsml-fact-value">+1 pointer per node (8 bytes, 64-bit)</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value dsml-bad">Poor</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Insert/delete</span
+            ><span class="dsml-fact-value">O(1) once located</span>
+          </div>
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-shoe-prints"></i> Try it: step through the traversal
+          </h4>
+          <div class="dsml-interactive-row">
+            <button class="dsml-btn" id="dsml-ll-step">Start traversal</button>
+            <button class="dsml-btn dsml-btn-secondary" id="dsml-ll-reset">Reset</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-ll-result">
+            Click "Start traversal" to follow the pointers one hop at a time — this is the only way
+            to reach node 3, there's no shortcut like arr[2].
+          </p>
+        </div>
+      </div>
+
+      <!-- ================= TREE ================= -->
+      <div id="ds-tree" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">3 · Tree</span>
+          <h2>Two Ways to Store the Same Shape</h2>
+          <p class="dsml-lede">
+            Trees can live in memory two very different ways: pointer-based nodes scattered like a
+            linked list, or packed into a flat array using index math (common for heaps).
+          </p>
+        </div>
+
+        <div class="dsml-compare-grid">
+          <div class="dsml-card">
+            <h3><i class="fas fa-diagram-project"></i> Pointer-based (scattered)</h3>
+            <div class="dsml-diagram-wrapper dsml-diagram-small">
+              <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" class="dsml-svg">
+                <g font-family="Fira Code, monospace" font-size="11">
+                  <line x1="200" y1="45" x2="110" y2="115" class="dsml-arrow" />
+                  <line x1="200" y1="45" x2="290" y2="115" class="dsml-arrow" />
+                  <rect
+                    x="155"
+                    y="15"
+                    width="90"
+                    height="55"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <text x="200" y="38" text-anchor="middle" class="dsml-cell-text">10</text>
+                  <text x="200" y="55" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                    L R
+                  </text>
+                  <rect
+                    x="65"
+                    y="115"
+                    width="90"
+                    height="55"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <text x="110" y="138" text-anchor="middle" class="dsml-cell-text">5</text>
+                  <text x="110" y="155" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                    L R
+                  </text>
+                  <rect
+                    x="245"
+                    y="115"
+                    width="90"
+                    height="55"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <text x="290" y="138" text-anchor="middle" class="dsml-cell-text">15</text>
+                  <text x="290" y="155" text-anchor="middle" class="dsml-cell-text dsml-ptr">
+                    L R
+                  </text>
+                </g>
+              </svg>
+            </div>
+            <p>
+              Each node stores its value plus left/right pointers (16 extra bytes on 64-bit). Nodes
+              can end up anywhere in memory, unrelated to tree position.
+            </p>
+          </div>
+          <div class="dsml-card">
+            <h3><i class="fas fa-grip-lines"></i> Array-based (heap layout)</h3>
+            <div class="dsml-diagram-wrapper dsml-diagram-small">
+              <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" class="dsml-svg">
+                <g font-family="Fira Code, monospace" font-size="11">
+                  <rect
+                    id="dsml-heap-cell-0"
+                    x="20"
+                    y="60"
+                    width="60"
+                    height="50"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <rect
+                    id="dsml-heap-cell-1"
+                    x="90"
+                    y="60"
+                    width="60"
+                    height="50"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <rect
+                    id="dsml-heap-cell-2"
+                    x="160"
+                    y="60"
+                    width="60"
+                    height="50"
+                    rx="6"
+                    class="dsml-cell dsml-cell-filled"
+                  />
+                  <text x="50" y="90" text-anchor="middle" class="dsml-cell-text">10</text>
+                  <text x="120" y="90" text-anchor="middle" class="dsml-cell-text">5</text>
+                  <text x="190" y="90" text-anchor="middle" class="dsml-cell-text">15</text>
+                  <text x="50" y="50" text-anchor="middle" class="dsml-idx">[0]</text>
+                  <text x="120" y="50" text-anchor="middle" class="dsml-idx">[1]</text>
+                  <text x="190" y="50" text-anchor="middle" class="dsml-idx">[2]</text>
+                </g>
+                <text x="20" y="150" class="dsml-formula-sub">
+                  left child = 2i + 1, right child = 2i + 2
+                </text>
+              </svg>
+            </div>
+            <p>
+              No pointers at all — a child's position is <em>computed</em> from its parent's index.
+              Fully contiguous, but only practical for complete trees like heaps.
+            </p>
+          </div>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Access (pointer-based)</span
+            ><span class="dsml-fact-value">O(log n) balanced</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Overhead (pointer-based)</span
+            ><span class="dsml-fact-value">2–3 pointers/node</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Overhead (array-based)</span
+            ><span class="dsml-fact-value">None — index math only</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value">Poor (pointer) / Excellent (array)</span>
+          </div>
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-calculator"></i> Try it: parent index → children (array-based)
+          </h4>
+          <div class="dsml-interactive-row">
+            <label for="dsml-heap-index">Parent index</label>
+            <input
+              type="number"
+              id="dsml-heap-index"
+              class="dsml-input"
+              min="0"
+              max="2"
+              value="0"
+            />
+            <button class="dsml-btn" id="dsml-heap-compute">Compute children</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-heap-result">
+            Pick a parent index and compute — only indices 0–2 exist in this small example, but the
+            formula works at any size.
+          </p>
+        </div>
+      </div>
+
+      <!-- ================= HASH TABLE ================= -->
+      <div id="ds-hashtable" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">4 · Hash Table</span>
+          <h2>Contiguous Buckets, Scattered Collisions</h2>
+          <p class="dsml-lede">
+            The bucket array itself is one contiguous block — but when two keys hash to the same
+            bucket, that bucket typically holds a small linked chain of scattered nodes.
+          </p>
+        </div>
+
+        <div class="dsml-diagram-wrapper">
+          <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" class="dsml-svg">
+            <g font-family="Fira Code, monospace" font-size="11">
+              <!-- bucket array -->
+              <rect
+                id="dsml-bucket-0"
+                x="20"
+                y="20"
+                width="80"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-filled"
+              />
+              <rect
+                id="dsml-bucket-1"
+                x="20"
+                y="70"
+                width="80"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-filled"
+              />
+              <rect
+                id="dsml-bucket-2"
+                x="20"
+                y="120"
+                width="80"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-empty"
+              />
+              <rect
+                x="20"
+                y="170"
+                width="80"
+                height="20"
+                rx="4"
+                class="dsml-cell dsml-cell-empty"
+              />
+              <text x="60" y="45" text-anchor="middle" class="dsml-idx">bucket[0]</text>
+              <text x="60" y="95" text-anchor="middle" class="dsml-idx">bucket[1]</text>
+              <text x="60" y="145" text-anchor="middle" class="dsml-idx dsml-dim">bucket[2]</text>
+
+              <!-- chain from bucket 0 -->
+              <path d="M100,45 C 160,45 160,45 220,45" class="dsml-arrow" fill="none" />
+              <rect
+                x="220"
+                y="20"
+                width="120"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-filled"
+              />
+              <text x="280" y="48" text-anchor="middle" class="dsml-cell-text">"cat" → 3</text>
+              <path d="M340,45 C 400,45 400,-10 460,10" class="dsml-arrow" fill="none" />
+              <rect
+                x="460"
+                y="-15"
+                width="120"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-filled"
+                transform="translate(0,25)"
+              />
+              <text x="520" y="35" text-anchor="middle" class="dsml-cell-text">"bat" → 9</text>
+
+              <!-- chain from bucket 1 -->
+              <path d="M100,95 C 160,95 160,95 220,95" class="dsml-arrow" fill="none" />
+              <rect
+                x="220"
+                y="70"
+                width="120"
+                height="50"
+                rx="6"
+                class="dsml-cell dsml-cell-filled"
+              />
+              <text x="280" y="98" text-anchor="middle" class="dsml-cell-text">"dog" → 1</text>
+
+              <text x="600" y="80" class="dsml-formula">index = hash(key) % capacity</text>
+              <text x="600" y="105" class="dsml-formula-sub">
+                "cat" and "bat" collided at bucket[0]
+              </text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Access (avg)</span
+            ><span class="dsml-fact-value">O(1)</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Access (worst)</span
+            ><span class="dsml-fact-value">O(n) — all keys collide</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Extra overhead</span
+            ><span class="dsml-fact-value">Empty slots (load factor &lt; 1) + chain pointers</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value">Good for buckets, poor for chains</span>
+          </div>
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-hashtag"></i> Try it: hash a key (capacity = 3)
+          </h4>
+          <div class="dsml-interactive-row">
+            <label for="dsml-hash-key">Key</label>
+            <input
+              type="text"
+              id="dsml-hash-key"
+              class="dsml-input dsml-input-text"
+              maxlength="24"
+              value="cat"
+            />
+            <button class="dsml-btn" id="dsml-hash-compute">Hash it</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-hash-result">
+            Type a key and hash it to see which bucket it lands in — try a few different keys and
+            watch for two landing in the same bucket, that's a collision.
+          </p>
+        </div>
+      </div>
+
+      <!-- ================= QUEUE ================= -->
+      <div id="ds-queue" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">5 · Queue</span>
+          <h2>Contiguous, with Wraparound</h2>
+          <p class="dsml-lede">
+            Array-backed queues use two pointers — front and rear — and often wrap around the end of
+            the buffer back to the start (a "circular buffer") instead of shifting everything on
+            dequeue.
+          </p>
+        </div>
+
+        <div class="dsml-diagram-wrapper" id="dsml-queue-svg-container">
+          <!-- rendered by JS: renderQueue() -->
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-arrow-right-arrow-left"></i> Try it: enqueue &amp; dequeue
+          </h4>
+          <div class="dsml-interactive-row">
+            <label for="dsml-queue-value">Value</label>
+            <input type="number" id="dsml-queue-value" class="dsml-input" value="4" />
+            <button class="dsml-btn" id="dsml-queue-enqueue">Enqueue</button>
+            <button class="dsml-btn dsml-btn-secondary" id="dsml-queue-dequeue">Dequeue</button>
+            <button class="dsml-btn dsml-btn-secondary" id="dsml-queue-reset">Reset</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-queue-result">
+            This is a 6-slot circular buffer — enqueue adds at REAR, dequeue removes from FRONT, and
+            both wrap around to index 0 when they hit the end.
+          </p>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Enqueue/Dequeue</span
+            ><span class="dsml-fact-value">O(1)</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Extra overhead</span
+            ><span class="dsml-fact-value">Two index pointers only</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value dsml-good">Excellent</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Alternative</span
+            ><span class="dsml-fact-value">Linked-list-backed = scattered, no resize needed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= STACK ================= -->
+      <div id="ds-stack" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">6 · Stack</span>
+          <h2>Contiguous, Grows in One Direction</h2>
+          <p class="dsml-lede">
+            An array-backed stack is just a contiguous block with a single "stack pointer" tracking
+            the top. Push/pop only ever touch that one end.
+          </p>
+        </div>
+
+        <div class="dsml-diagram-wrapper" id="dsml-stack-svg-container">
+          <!-- rendered by JS: renderStack() -->
+        </div>
+
+        <div class="dsml-interactive">
+          <h4 class="dsml-interactive-title">
+            <i class="fas fa-layer-group"></i> Try it: push &amp; pop
+          </h4>
+          <div class="dsml-interactive-row">
+            <label for="dsml-stack-value">Value</label>
+            <input type="number" id="dsml-stack-value" class="dsml-input" value="9" />
+            <button class="dsml-btn" id="dsml-stack-push">Push</button>
+            <button class="dsml-btn dsml-btn-secondary" id="dsml-stack-pop">Pop</button>
+            <button class="dsml-btn dsml-btn-secondary" id="dsml-stack-reset">Reset</button>
+          </div>
+          <p class="dsml-interactive-result" id="dsml-stack-result">
+            Push and pop only ever touch the top — that's why both are O(1) regardless of how many
+            elements are below.
+          </p>
+        </div>
+
+        <div class="dsml-facts-grid">
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Push/Pop</span><span class="dsml-fact-value">O(1)</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Extra overhead</span
+            ><span class="dsml-fact-value">One stack-pointer index</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Cache locality</span
+            ><span class="dsml-fact-value dsml-good">Excellent</span>
+          </div>
+          <div class="dsml-fact">
+            <span class="dsml-fact-label">Real-world example</span
+            ><span class="dsml-fact-value">The call stack itself works this way</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= COMPARISON TABLE ================= -->
+      <div id="comparison-table" class="dsml-topic">
+        <div class="dsml-topic-header">
+          <span class="dsml-badge">Summary</span>
+          <h2>All Six, Side by Side</h2>
+          <p class="dsml-lede">The full picture in one table.</p>
+        </div>
+
+        <div class="dsml-table-wrapper">
+          <table class="dsml-table">
+            <thead>
+              <tr>
+                <th>Structure</th>
+                <th>Layout</th>
+                <th>Extra memory / element</th>
+                <th>Cache locality</th>
+                <th>Typical access</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Array</td>
+                <td><span class="dsml-tag dsml-tag-contiguous">Contiguous</span></td>
+                <td>None</td>
+                <td class="dsml-good">Excellent</td>
+                <td>O(1) by index</td>
+              </tr>
+              <tr>
+                <td>Linked List</td>
+                <td><span class="dsml-tag dsml-tag-scattered">Scattered</span></td>
+                <td>1 pointer (8 bytes)</td>
+                <td class="dsml-bad">Poor</td>
+                <td>O(n) traversal</td>
+              </tr>
+              <tr>
+                <td>Tree (pointer-based)</td>
+                <td><span class="dsml-tag dsml-tag-scattered">Scattered</span></td>
+                <td>2–3 pointers</td>
+                <td class="dsml-bad">Poor</td>
+                <td>O(log n) balanced</td>
+              </tr>
+              <tr>
+                <td>Hash Table</td>
+                <td><span class="dsml-tag dsml-tag-hybrid">Hybrid</span></td>
+                <td>Empty slots + chain pointers</td>
+                <td class="dsml-mid">Mixed</td>
+                <td>O(1) average</td>
+              </tr>
+              <tr>
+                <td>Queue (array-backed)</td>
+                <td><span class="dsml-tag dsml-tag-contiguous">Contiguous</span></td>
+                <td>2 index pointers total</td>
+                <td class="dsml-good">Excellent</td>
+                <td>O(1) enqueue/dequeue</td>
+              </tr>
+              <tr>
+                <td>Stack (array-backed)</td>
+                <td><span class="dsml-tag dsml-tag-contiguous">Contiguous</span></td>
+                <td>1 index pointer total</td>
+                <td class="dsml-good">Excellent</td>
+                <td>O(1) push/pop</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="dsml-note">
+          <i class="fas fa-info-circle"></i>
+          <p>
+            <strong>Why this matters:</strong> two structures with the same Big-O time complexity
+            can perform very differently in practice because of cache locality. Contiguous
+            structures let the CPU prefetch nearby memory efficiently; scattered structures cause
+            cache misses on almost every step. This is part of why an array can outperform a linked
+            list for sequential access even though both are "technically O(n)."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <script src="/modules/utils.js" type="module"></script>
+    <script src="/theme.js"></script>
+    <script src="data-structure-memory-layout-explorer.js"></script>
+    <script>
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+    </script>
+  </body>
+</html>

@@ -49,6 +49,9 @@ jest.unstable_mockModule('fs/promises', () => {
 jest.unstable_mockModule('../backend/jobs/queue.js', () => ({
   enqueueBulkAudit: jest.fn(),
   getBatchProgress: jest.fn(),
+  enqueueReport: jest.fn(),
+  getReportStatus: jest.fn(),
+  enqueueLeaderboardUpdate: jest.fn(),
   MAX_BULK_AUDIT_URLS: 50,
   batchStore: new Map(),
   bulkAuditQueue: {
@@ -125,7 +128,7 @@ describe('updateMemoryStore atomicity and mutator behavior', () => {
       return newStore; // returns a new store object
     };
 
-    const result = await updateMemoryStore(mutator);
+    await updateMemoryStore(mutator);
 
     expect(overrides.writeFile).toHaveBeenCalled();
     const writeArgs = overrides.writeFile.mock.calls[0];

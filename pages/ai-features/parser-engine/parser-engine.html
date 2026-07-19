@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LL(1) / LR(1) Parser Engine | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive context-free grammar parser builder and visualizer for LL(1) and LR(1) parsing."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="parser-engine.css" />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script src="/theme.js"></script>
+  </head>
+  <body class="pe-body">
+    <!-- Navigation Bar -->
+    <nav class="navbar pe-nav">
+      <a href="/index.html" class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </a>
+      <div class="engine-badge" id="engineBadge">
+        <i class="fas fa-microchip"></i> Parser Engine: Ready
+      </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="pe-workspace">
+      <!-- Left Panel: Grammar Editor & Inputs -->
+      <div class="panel-left">
+        <div class="panel-header">
+          <h3><i class="fas fa-edit"></i> Grammar & Settings</h3>
+        </div>
+
+        <div class="control-section">
+          <!-- Grammar Input -->
+          <div class="input-group">
+            <label for="grammarInput">Context-Free Grammar</label>
+            <textarea
+              id="grammarInput"
+              placeholder="Enter grammar rule per line...&#10;E -> T E'&#10;E' -> + T E' | epsilon"
+              spellcheck="false"
+            ></textarea>
+            <small class="help-text">
+              Use <code>-></code> for production and <code>|</code> for alternatives. Use
+              <code>epsilon</code> or <code>ε</code> for empty. Symbols must be space-separated
+              (e.g. <code>+ T</code>).
+            </small>
+          </div>
+
+          <!-- Parser Type Selector -->
+          <div class="input-group">
+            <label for="parserTypeSelect">Parser Type</label>
+            <select id="parserTypeSelect">
+              <option value="LL1">LL(1) (Top-Down)</option>
+              <option value="LR1">LR(1) (Bottom-Up)</option>
+            </select>
+          </div>
+
+          <!-- Parse String Input -->
+          <div class="input-group">
+            <label for="stringInput">Parse Input String</label>
+            <input
+              type="text"
+              id="stringInput"
+              placeholder="e.g. id + id * id"
+              value="id + id * id"
+            />
+            <small class="help-text"
+              >Tokens must be space-separated matching terminal symbols.</small
+            >
+          </div>
+
+          <!-- Build Action Button -->
+          <button type="button" class="btn btn-accent w-100" id="btnBuild">
+            <i class="fas fa-cogs"></i> Build Parser Table
+          </button>
+
+          <!-- Status Logs -->
+          <div class="input-group">
+            <label>Compiler Output</label>
+            <div class="engine-logs" id="engineLogs">
+              <div class="log-line sys">> Awaiting parser building...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Panel: Set Generation & Parsing Table -->
+      <div class="panel-center">
+        <div class="pe-tabs">
+          <button type="button" class="tab-btn active" data-target="setsTab" id="tabSetsBtn">
+            <i class="fas fa-list"></i> First & Follow
+          </button>
+          <button type="button" class="tab-btn" data-target="tableTab" id="tabTableBtn">
+            <i class="fas fa-table"></i> Parsing Table
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            data-target="lrSetsTab"
+            id="tabLrSetsBtn"
+            style="display: none"
+          >
+            <i class="fas fa-network-wired"></i> LR(1) States
+          </button>
+        </div>
+
+        <!-- FIRST & FOLLOW Sets Tab -->
+        <div class="pe-tab-content active" id="setsTab">
+          <div class="tab-empty-state" id="setsEmpty">
+            <i class="fas fa-info-circle"></i>
+            <p>Build the parser to view FIRST & FOLLOW sets.</p>
+          </div>
+          <div class="sets-grid" id="setsGrid" style="display: none"></div>
+        </div>
+
+        <!-- Parsing Table Tab -->
+        <div class="pe-tab-content" id="tableTab">
+          <div class="tab-empty-state" id="tableEmpty">
+            <i class="fas fa-info-circle"></i>
+            <p>Build the parser to view the parsing table.</p>
+          </div>
+          <div id="tableContent" style="display: none">
+            <!-- Conflict Banner if not LL(1) / LR(1) -->
+            <div class="conflict-banner" id="conflictBanner" style="display: none">
+              <div class="conflict-banner-title">
+                <i class="fas fa-exclamation-triangle"></i> Conflict Detected
+              </div>
+              <div id="conflictText">Grammar has shift/reduce or reduce/reduce conflicts!</div>
+            </div>
+            <div class="table-wrapper">
+              <table class="parse-table" id="parseTable">
+                <thead>
+                  <tr id="parseTableHead"></tr>
+                </thead>
+                <tbody id="parseTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- LR(1) States Tab -->
+        <div class="pe-tab-content" id="lrSetsTab">
+          <div class="tab-empty-state" id="lrSetsEmpty">
+            <i class="fas fa-info-circle"></i>
+            <p>Select LR(1) and build to view Canonical Item Sets.</p>
+          </div>
+          <div class="item-sets-container" id="itemSetsContainer" style="display: none"></div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Simulation Engine & AST Output -->
+      <div class="panel-right">
+        <div class="panel-header">
+          <h3><i class="fas fa-play-circle"></i> Parser Execution Simulator</h3>
+          <div class="simulator-controls">
+            <button type="button" class="btn-icon" id="btnStep" title="Step Forward" disabled>
+              <i class="fas fa-step-forward"></i>
+            </button>
+            <button type="button" class="btn-icon" id="btnPlay" title="Auto Run" disabled>
+              <i class="fas fa-play"></i>
+            </button>
+            <button type="button" class="btn-icon" id="btnReset" title="Reset Simulation" disabled>
+              <i class="fas fa-undo"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sim-container">
+          <!-- Stack & Tape Display -->
+          <div class="sim-top-row">
+            <!-- Stack Viewer -->
+            <div class="sim-module stack-viewer-module">
+              <div class="sim-module-header">Stack</div>
+              <div class="stack-content" id="stackContent">
+                <div class="tab-empty-state" style="height: 100%; margin: 0">Stack Empty</div>
+              </div>
+            </div>
+            <!-- Input Tape / Stream Viewer -->
+            <div class="sim-module tape-viewer-module">
+              <div class="sim-module-header">Input Stream Buffer</div>
+              <div class="tape-content">
+                <div class="tape-cells" id="tapeCells">
+                  <span class="help-text">Awaiting build...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parse Tree / AST Graph SVG -->
+          <div class="sim-tree-row">
+            <div class="sim-module-header">Live Parse Tree (AST)</div>
+            <div class="tree-canvas-wrapper" id="treeCanvasWrapper">
+              <svg class="tree-svg" id="treeSvg" xmlns="http://www.w3.org/2000/svg">
+                <!-- SVG lines and circles injected by JS -->
+              </svg>
+              <div class="tree-legend">
+                <div class="legend-item"><span class="legend-dot nt"></span> Non-terminal</div>
+                <div class="legend-item"><span class="legend-dot t"></span> Terminal</div>
+                <div class="legend-item"><span class="legend-dot active"></span> Active Node</div>
+              </div>
+            </div>
+
+            <!-- Execution step logs -->
+            <div class="sim-logs" id="simLogs">
+              <div style="color: #475569; font-style: italic">Awaiting simulation start...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="parser-engine.js"></script>
+  </body>
+</html>

@@ -11,14 +11,15 @@ function scheduleNextRevision(topicId) {
   }
   const now = new Date();
   const schedule = userProgress.revisionSchedule[topicId];
-  const maxIdx = REVISION_INTERVALS.length - 1;
+  const intervals = window.revisionIntervals || [1, 3, 7, 14, 30];
+  const maxIdx = intervals.length - 1;
   const safeStage = Math.min(Math.max(0, schedule.currentStage), maxIdx);
-  const daysToAdd = REVISION_INTERVALS[safeStage] || 1;
+  const daysToAdd = intervals[safeStage] || 1;
   const nextDate = new Date();
   nextDate.setDate(now.getDate() + daysToAdd);
   schedule.nextReviewDate = nextDate.toISOString();
   schedule.history.push({ reviewedAt: now.toISOString(), stageCompleted: schedule.currentStage, daysCalculated: daysToAdd, nextReviewDueDate: nextDate.toISOString() });
-  if (schedule.currentStage < REVISION_INTERVALS.length - 1) schedule.currentStage++;
+  if (schedule.currentStage < intervals.length - 1) schedule.currentStage++;
   if (typeof saveUserData === "function") saveUserData();
   else localStorage.setItem("algoInfinityVerse", JSON.stringify(userProgress));
   void 0;

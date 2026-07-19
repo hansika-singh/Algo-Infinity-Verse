@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suffix Tree Visualizer (Ukkonen's) | Algo Infinity Verse</title>
+    <meta name="description" content="Watch Ukkonen's algorithm build a suffix tree online in O(n) — active point tracking, rule 2/3 extensions, suffix links, and the trick that avoids O(n²)." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="suffix-tree-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="suffix-tree-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="st-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="st-hero-inner">
+        <div class="st-hero-eyebrow">🌲 1995 · Esko Ukkonen · O(n) Online Construction</div>
+        <h1 class="st-hero-title">Suffix Tree Visualizer</h1>
+        <p class="st-hero-sub">It took until 1995 to build this in O(n). Watch exactly why it's hard.</p>
+        <p class="st-hero-desc">A naive suffix tree construction is O(n²). Ukkonen's algorithm builds it online, one character at a time, in true O(n) — by tracking an "active point" and using suffix links to jump between suffixes without ever re-walking from the root.</p>
+        <a href="#lab" class="btn btn-primary st-btn-primary"><i class="fas fa-sitemap"></i> Build One</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section st-section">
+      <div class="container">
+
+        <div class="st-control-card">
+          <div class="st-row">
+            <span class="st-row-label">String</span>
+            <input type="text" id="stInput" class="st-text-input" value="banana" maxlength="12" />
+            <div class="st-preset-btns">
+              <button class="st-preset-btn" data-str="banana">banana</button>
+              <button class="st-preset-btn" data-str="abcabxabcd">abcabxabcd</button>
+              <button class="st-preset-btn" data-str="mississippi">mississippi</button>
+            </div>
+            <button class="btn st-btn-primary st-build-btn" id="stBuildBtn"><i class="fas fa-hammer"></i> Build Suffix Tree</button>
+          </div>
+        </div>
+
+        <div class="st-status" id="stStatus">Enter a string (a "$" terminator is appended automatically) and build to watch Ukkonen's algorithm construct the tree online.</div>
+
+        <div class="st-active-point-card">
+          <div class="st-panel-title"><i class="fas fa-crosshairs"></i> Active Point (the cursor that makes O(n) possible)</div>
+          <div class="st-ap-row">
+            <div class="st-ap-item"><span class="st-ap-label">Active Node</span><span class="st-ap-val" id="stApNode">root</span></div>
+            <div class="st-ap-item"><span class="st-ap-label">Active Edge</span><span class="st-ap-val" id="stApEdge">—</span></div>
+            <div class="st-ap-item"><span class="st-ap-label">Active Length</span><span class="st-ap-val" id="stApLength">0</span></div>
+            <div class="st-ap-item"><span class="st-ap-label">Remaining Suffixes</span><span class="st-ap-val" id="stApRemaining">0</span></div>
+          </div>
+        </div>
+
+        <div class="st-main-layout">
+
+          <div class="st-tree-section">
+            <div class="st-panel-title"><i class="fas fa-diagram-project"></i> Suffix Tree</div>
+            <div class="st-tree-wrap"><svg id="stTreeSvg" class="st-tree-svg"></svg></div>
+            <div class="st-legend">
+              <span class="st-leg"><span class="st-leg-dot st-leg-leaf"></span>Leaf</span>
+              <span class="st-leg"><span class="st-leg-dot st-leg-internal"></span>Internal node</span>
+              <span class="st-leg"><span class="st-leg-line st-leg-suffixlink"></span>Suffix link (dashed)</span>
+            </div>
+          </div>
+
+          <div class="st-right-panel">
+
+            <div class="st-panel-card">
+              <div class="st-panel-title"><i class="fas fa-list-ol"></i> Extension Log — Rule Applied Per Step</div>
+              <div class="st-log" id="stLog"><div class="st-empty">No construction yet.</div></div>
+            </div>
+
+            <div class="st-panel-card">
+              <div class="st-panel-title"><i class="fas fa-scale-balanced"></i> O(n) vs O(n²)</div>
+              <div class="st-stat-rows">
+                <div class="st-stat-row"><span>String length</span><span id="stStrLen">0</span></div>
+                <div class="st-stat-row"><span>Ukkonen: extension steps</span><span id="stUkkonenSteps">0</span></div>
+                <div class="st-stat-row"><span>Naive: character comparisons</span><span id="stNaiveSteps">0</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="st-apps-card">
+          <div class="st-panel-title"><i class="fas fa-wand-magic-sparkles"></i> Applications — Computed Live From the Built Tree</div>
+          <div class="st-apps-grid">
+            <div class="st-app-item">
+              <div class="st-app-title">Longest Repeated Substring</div>
+              <div class="st-app-result" id="stLrsResult">Build a tree first.</div>
+            </div>
+            <div class="st-app-item">
+              <div class="st-app-title">Longest Common Substring (two strings)</div>
+              <div class="st-lcs-inputs">
+                <input type="text" id="stLcsA" class="st-text-input" value="xmississippi" maxlength="16" />
+                <input type="text" id="stLcsB" class="st-text-input" value="ississipissy" maxlength="16" />
+                <button class="btn st-btn-primary st-lcs-btn" id="stLcsBtn"><i class="fas fa-play"></i> Find LCS</button>
+              </div>
+              <div class="st-app-result" id="stLcsResult">—</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🌲</span> The Trick That Makes This O(n)</h2>
+        <div class="st-learn-grid">
+          <div class="st-learn-card" style="--lc:#06b6d4">
+            <div class="st-learn-icon">1️⃣</div>
+            <h3>Rule 1 — Implicit Leaf Extension</h3>
+            <p>Every leaf edge uses a single shared "global end" reference instead of a fixed endpoint. When the string grows by one character, EVERY leaf extends automatically — zero extra work, this is what avoids re-touching every existing leaf.</p>
+          </div>
+          <div class="st-learn-card" style="--lc:#a855f7">
+            <div class="st-learn-icon">2️⃣</div>
+            <h3>Rule 2 — New Leaf or Split</h3>
+            <p>If the current suffix doesn't continue along an existing edge, either a brand new leaf edge is created, or an existing edge is split and a new leaf branches off — the "interesting" case that actually creates tree structure.</p>
+          </div>
+          <div class="st-learn-card" style="--lc:#22c55e">
+            <div class="st-learn-icon">3️⃣</div>
+            <h3>Rule 3 — Show Stopper</h3>
+            <p>If the next character already exists along the current edge, nothing is created — the algorithm just advances the active point and stops the current phase early. This early stop is the second half of what makes the whole algorithm linear.</p>
+          </div>
+          <div class="st-learn-card" style="--lc:#f59e0b">
+            <div class="st-learn-icon">🔗</div>
+            <h3>Suffix Links</h3>
+            <p>After creating an internal node via a split, a suffix link connects it to the NEXT internal node that will be created for the next suffix in the same phase — letting the algorithm jump there directly instead of walking from the root again.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="suffix-tree-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

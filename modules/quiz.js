@@ -734,31 +734,31 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
     
     const isComplete = unanswered === 0;
     const icon = isComplete ? '✅' : '⚠️';
-    const iconColor = isComplete ? '#22c55e' : '#eab308';
+    const statusClass = isComplete ? 'is-complete' : 'is-incomplete';
     const statusText = isComplete ? 'All Questions Answered!' : `${unanswered} Question${unanswered > 1 ? 's' : ''} Unanswered`;
     
     modal.innerHTML = `
       <div class="quiz-confirm-modal-content">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="font-size: 48px; margin-bottom: 12px;">${icon}</div>
-          <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">${title}</h3>
-          <p style="color: ${iconColor}; font-weight: 600; font-size: 14px; margin: 0;">${statusText}</p>
+        <div class="quiz-confirm-header">
+          <div class="quiz-confirm-icon">${icon}</div>
+          <h3 class="quiz-confirm-title">${title}</h3>
+          <p class="quiz-confirm-status ${statusClass}">${statusText}</p>
         </div>
         
-        <div style="background: var(--bg-primary); border-radius: 12px; padding: 16px; margin-bottom: 24px; border: 1px solid var(--border-color);">
-          <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin: 0;">
+        <div class="quiz-confirm-message-box">
+          <p class="quiz-confirm-message">
             ${message}
           </p>
           ${unanswered > 0 ? `
-            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
-              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">
+            <div class="quiz-confirm-unanswered-note">
+              <p>
                 💡 <strong>${unanswered}</strong> question${unanswered > 1 ? 's' : ''} left unanswered
               </p>
             </div>
           ` : ''}
         </div>
         
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <div class="quiz-confirm-actions">
           <button id="quizConfirmCancel" class="btn-cancel">${cancelText}</button>
           <button id="quizConfirmSubmit" class="btn-confirm ${isComplete ? 'complete' : ''}">${confirmText}</button>
         </div>
@@ -787,18 +787,71 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
           animation: quizFadeIn 0.3s ease;
         }
         .quiz-confirm-modal-content {
-          background: var(--bg-secondary);
+          background: var(--dark-surface);
           border-radius: 20px;
           padding: 32px;
           max-width: 440px;
           width: 90%;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-          border: 1px solid var(--border-color);
+          border: 1px solid var(--glass-border);
           animation: quizScaleIn 0.3s ease;
+        }
+        .quiz-confirm-header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .quiz-confirm-icon {
+          font-size: 48px;
+          margin-bottom: 12px;
+        }
+        .quiz-confirm-title {
+          font-size: 20px;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: 0 0 4px 0;
+        }
+        .quiz-confirm-status {
+          font-weight: 600;
+          font-size: 14px;
+          margin: 0;
+        }
+        .quiz-confirm-status.is-complete {
+          color: #22c55e;
+        }
+        .quiz-confirm-status.is-incomplete {
+          color: #eab308;
+        }
+        .quiz-confirm-message-box {
+          background: var(--dark-card);
+          border-radius: 12px;
+          padding: 16px;
+          margin-bottom: 24px;
+          border: 1px solid var(--glass-border);
+        }
+        .quiz-confirm-message {
+          color: var(--text-secondary);
+          font-size: 14px;
+          line-height: 1.6;
+          margin: 0;
+        }
+        .quiz-confirm-unanswered-note {
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid var(--glass-border);
+        }
+        .quiz-confirm-unanswered-note p {
+          font-size: 13px;
+          color: var(--text-secondary);
+          margin: 0;
+        }
+        .quiz-confirm-actions {
+          display: flex;
+          gap: 12px;
+          justify-content: flex-end;
         }
         .quiz-confirm-modal .btn-cancel {
           padding: 10px 20px;
-          border: 1px solid var(--border-color);
+          border: 1px solid var(--glass-border);
           border-radius: 10px;
           background: transparent;
           color: var(--text-secondary);
@@ -809,13 +862,13 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
           flex: 1;
         }
         .quiz-confirm-modal .btn-cancel:hover {
-          background: var(--bg-hover);
+          background: var(--dark-card);
         }
         .quiz-confirm-modal .btn-confirm {
           padding: 10px 20px;
           border: none;
           border-radius: 10px;
-          background: linear-gradient(135deg, #7c3aed, #6d28d9);
+          background: linear-gradient(135deg, var(--primary), var(--secondary));
           color: white;
           cursor: pointer;
           font-weight: 600;
@@ -828,7 +881,7 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
         }
         .quiz-confirm-modal .btn-confirm:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+          box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.4);
         }
         @keyframes quizFadeIn {
           from { opacity: 0; }
@@ -837,17 +890,6 @@ export function initQuiz({ containerId, questions, duration = 60 }) {
         @keyframes quizScaleIn {
           from { transform: scale(0.9); opacity: 0; }
           to { transform: scale(1); opacity: 1; }
-        }
-        .dark .quiz-confirm-modal-content {
-          background: #1e293b;
-          border-color: #334155;
-        }
-        .dark .quiz-confirm-modal .btn-cancel {
-          color: #94a3b8;
-          border-color: #334155;
-        }
-        .dark .quiz-confirm-modal .btn-cancel:hover {
-          background: #334155;
         }
         @media (max-width: 480px) {
           .quiz-confirm-modal-content {

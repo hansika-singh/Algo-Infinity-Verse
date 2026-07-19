@@ -94,36 +94,36 @@ export function toggleTheme() {
 }
 
 /**
- * Update theme toggle button icon
+ * Update all theme toggle button icons
  * @param {string} theme - 'light' or 'dark'
  */
 function updateThemeIcon(theme) {
-    const toggle = document.getElementById("darkModeToggle");
-    if (!toggle) return;
-    
-    const icon = toggle.querySelector("i");
-    if (!icon) return;
+    const toggles = document.querySelectorAll("[data-theme-toggle]");
+    if (!toggles.length) return;
     
     const isLight = theme === THEMES.LIGHT;
     
-    if (isLight) {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-    } else {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-    }
+    toggles.forEach(toggle => {
+        const icon = toggle.querySelector("i");
+        if (!icon) return;
+        
+        if (isLight) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        } else {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+        }
+    });
 }
 
 /**
  * Initialize theme on page load
  */
 export function initTheme() {
-    const toggle = document.getElementById("darkModeToggle");
-    if (!toggle) return;
+    const toggles = document.querySelectorAll("[data-theme-toggle]");
+    if (!toggles.length) return;
 
-    const icon = toggle.querySelector("i");
-    
     // Get current theme
     const theme = getCurrentTheme();
     currentTheme = theme;
@@ -131,23 +131,25 @@ export function initTheme() {
     // Apply theme to DOM
     applyThemeToDOM(theme);
     
-    // Sync icon
-    if (icon) {
-        if (theme === THEMES.LIGHT) {
-            icon.classList.remove("fa-moon");
-            icon.classList.add("fa-sun");
-        } else {
-            icon.classList.remove("fa-sun");
-            icon.classList.add("fa-moon");
+    // Sync all toggle icons
+    toggles.forEach(toggle => {
+        const icon = toggle.querySelector("i");
+        if (icon) {
+            if (theme === THEMES.LIGHT) {
+                icon.classList.remove("fa-moon");
+                icon.classList.add("fa-sun");
+            } else {
+                icon.classList.remove("fa-sun");
+                icon.classList.add("fa-moon");
+            }
         }
-    }
+    });
 
-    // Toggle click handler
-    toggle.addEventListener("click", () => {
-        const nextTheme = toggleTheme();
-        
-        // The toggleTheme function already handles everything
-        // But we need to update the icon which is done in setTheme
+    // Toggle click handler for all toggles
+    toggles.forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            toggleTheme();
+        });
     });
 
     // Sync across tabs
@@ -159,8 +161,10 @@ export function initTheme() {
             // Apply theme
             applyThemeToDOM(newTheme);
             
-            // Update icon
-            if (icon) {
+            // Update all toggle icons
+            toggles.forEach(toggle => {
+                const icon = toggle.querySelector("i");
+                if (!icon) return;
                 if (isLight) {
                     icon.classList.remove("fa-moon");
                     icon.classList.add("fa-sun");
@@ -168,7 +172,7 @@ export function initTheme() {
                     icon.classList.remove("fa-sun");
                     icon.classList.add("fa-moon");
                 }
-            }
+            });
             
             // Update current theme
             currentTheme = newTheme;

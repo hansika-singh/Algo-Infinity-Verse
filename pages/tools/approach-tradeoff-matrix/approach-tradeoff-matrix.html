@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Approach Tradeoff Matrix | Algo Infinity Verse</title>
+  <meta name="description" content="Compare brute-force, better, and optimal DSA approaches across time, space, code length, and interview wow factor. Save comparisons in localStorage." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="approach-tradeoff-matrix.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="approach-tradeoff-matrix">
+  <a href="#atm-main" class="atm-skip-link">Skip to main content</a>
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="atm-hero">
+    <div class="atm-hero-badge">
+      <i class="fas fa-table-cells" aria-hidden="true"></i>
+      Interview Approach Lab
+    </div>
+    <h1>
+      Approach Tradeoff
+      <span class="atm-hero-accent">Matrix</span>
+    </h1>
+    <p>
+      Pick a DSA problem and compare brute, better, and optimal solutions across
+      time, space, code length, and interview “wow factor” — then save your notes.
+    </p>
+  </header>
+
+  <main id="atm-main" class="atm-main">
+    <div class="container">
+      <div class="atm-workspace">
+        <!-- Picker + saved -->
+        <aside class="atm-panel" aria-labelledby="atm-picker-title">
+          <div class="atm-panel-header">
+            <div class="atm-panel-title">
+              <i class="fas fa-list-check atm-panel-icon" aria-hidden="true"></i>
+              <h2 id="atm-picker-title">Problem picker</h2>
+            </div>
+          </div>
+
+          <label class="atm-label" for="atmSearch">Search problems</label>
+          <input type="search" id="atmSearch" class="atm-input" placeholder="Two Sum, LIS, islands…" autocomplete="off" />
+
+          <label class="atm-label" for="atmDifficulty">Difficulty</label>
+          <select id="atmDifficulty" class="atm-select" aria-label="Filter by difficulty">
+            <option value="all">All</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+
+          <div class="atm-problem-list" id="atmProblemList" role="listbox" aria-label="Practice problems"></div>
+
+          <div class="atm-saved-block">
+            <div class="atm-saved-header">
+              <h3>Saved comparisons</h3>
+              <button type="button" id="atmClearAllBtn" class="atm-link-btn" disabled>Clear all</button>
+            </div>
+            <ul class="atm-saved-list" id="atmSavedList" aria-label="Saved comparisons"></ul>
+            <p class="atm-hint" id="atmSavedEmpty">No saved matrices yet.</p>
+          </div>
+        </aside>
+
+        <!-- Matrix -->
+        <section class="atm-panel atm-matrix-panel" aria-labelledby="atm-matrix-title">
+          <div class="atm-panel-header">
+            <div class="atm-panel-title">
+              <i class="fas fa-scale-balanced atm-panel-icon" aria-hidden="true"></i>
+              <h2 id="atm-matrix-title">Tradeoff matrix</h2>
+            </div>
+            <div class="atm-actions">
+              <button type="button" id="atmSaveBtn" class="btn btn-primary" disabled>
+                <i class="fas fa-floppy-disk" aria-hidden="true"></i> Save
+              </button>
+              <button type="button" id="atmResetBtn" class="btn btn-secondary" disabled>
+                <i class="fas fa-rotate-left" aria-hidden="true"></i> Reset row defaults
+              </button>
+            </div>
+          </div>
+
+          <div id="atmEmptyState" class="atm-empty">
+            <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+            <p>Select a problem from the picker to build your approach matrix.</p>
+          </div>
+
+          <div id="atmMatrixWrap" hidden>
+            <div class="atm-problem-meta" id="atmProblemMeta"></div>
+
+            <div class="atm-table-scroll" role="region" aria-label="Approach tradeoff table" tabindex="0">
+              <table class="atm-table" id="atmTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Approach</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Space</th>
+                    <th scope="col">Code length</th>
+                    <th scope="col">Interview wow</th>
+                    <th scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="atmTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="atm-notes-block">
+              <label class="atm-label" for="atmOverallNotes">Overall comparison notes</label>
+              <textarea id="atmOverallNotes" class="atm-textarea" rows="3" placeholder="When would you pick brute vs optimal in an interview?"></textarea>
+            </div>
+
+            <p id="atmStatus" class="atm-status" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/data/practice-problems.js"></script>
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="approach-tradeoff-matrix.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

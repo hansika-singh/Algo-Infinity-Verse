@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boyer-Moore Voting Visualizer | Algo Infinity Verse</title>
+  <meta name="description" content="Boyer-Moore Voting Algorithm — find majority element in O(n) time, O(1) space, with verification pass and n/3 extension." />
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="stylesheet" href="boyer-moore-voting.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body data-page="boyer-moore-voting">
+  <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+    <i class="fas fa-circle-chevron-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="hero bmv-hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Find the Majority in One Pass, Zero Extra Space</span>
+        <span class="main-title bmv-gradient">Boyer-Moore Voting</span>
+        <span class="subtitle">O(n) Time · O(1) Space · Verification Required</span>
+      </h1>
+      <p class="section-subtitle">
+        Watch a counter tick up on a match and down on a mismatch. When it hits zero, the candidate resets — yet the true majority always survives. Then see why a second verification pass is not optional.
+      </p>
+      <div class="hero-buttons">
+        <a href="#simulator" class="btn btn-primary bmv-btn-primary">
+          <i class="fas fa-vote-yea"></i> Open Visualizer
+        </a>
+        <a href="#learn" class="btn btn-secondary">
+          <i class="fas fa-graduation-cap"></i> How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator" class="section">
+    <div class="container">
+
+      <div class="bmv-control-card">
+
+        <div class="bmv-row">
+          <span class="bmv-row-label">Mode:</span>
+          <div class="bmv-seg" id="bmvModeSeg" role="group" aria-label="Algorithm mode">
+            <button type="button" class="bmv-seg-btn active" data-mode="n2" aria-pressed="true">n/2 Majority</button>
+            <button type="button" class="bmv-seg-btn" data-mode="n3" aria-pressed="false">n/3 Extension</button>
+          </div>
+        </div>
+
+        <div class="bmv-row">
+          <label class="bmv-row-label" for="bmvSeqInput">Sequence:</label>
+          <input type="text" id="bmvSeqInput" class="bmv-text-input" placeholder="e.g. A B A A B A C A" maxlength="80" />
+          <button class="btn bmv-btn-primary bmv-action-btn" id="bmvLoadBtn">
+            <i class="fas fa-upload"></i> Load
+          </button>
+        </div>
+
+        <div class="bmv-row">
+          <span class="bmv-row-label">Presets:</span>
+          <button class="btn bmv-btn-primary bmv-action-btn" id="bmvPresetMajBtn">
+            <i class="fas fa-crown"></i> Clear Majority
+          </button>
+          <button class="btn bmv-btn-warning bmv-action-btn" id="bmvPresetNoBtn">
+            <i class="fas fa-ban"></i> No Majority Trap
+          </button>
+          <button class="btn bmv-btn-secondary bmv-action-btn" id="bmvPresetN3Btn">
+            <i class="fas fa-trophy"></i> n/3 Demo
+          </button>
+        </div>
+
+        <div class="bmv-row">
+          <span class="bmv-row-label">Playback:</span>
+          <button class="btn bmv-btn-primary bmv-action-btn" id="bmvStepBtn">
+            <i class="fas fa-step-forward"></i> Step
+          </button>
+          <button class="btn btn-secondary bmv-action-btn" id="bmvPlayBtn">
+            <i class="fas fa-play"></i> Play
+          </button>
+          <button class="btn btn-secondary bmv-action-btn" id="bmvResetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+          <label class="bmv-speed-label">
+            Speed
+            <input type="range" id="bmvSpeed" min="200" max="2000" step="100" value="800" />
+          </label>
+        </div>
+
+      </div>
+
+      <div class="bmv-status" id="bmvStatus" role="status" aria-live="polite" aria-atomic="true">
+        Load a sequence or pick a preset, then step through the voting process.
+      </div>
+
+      <div class="bmv-step-bar">
+        <span id="bmvStepCounter">Step 0 / 0</span>
+        <div class="bmv-step-track">
+          <div class="bmv-step-fill" id="bmvStepFill"></div>
+        </div>
+      </div>
+
+      <div class="bmv-main-layout">
+
+        <div class="bmv-seq-col">
+          <div class="bmv-panel-card">
+            <div class="bmv-panel-title"><i class="fas fa-stream"></i> Input Stream</div>
+            <div class="bmv-seq-area" id="bmvSeqArea"></div>
+          </div>
+
+          <div class="bmv-panel-card bmv-phase-card" id="bmvPhaseCard">
+            <div class="bmv-panel-title"><i class="fas fa-circle-nodes"></i> Phase</div>
+            <div class="bmv-phase-badge" id="bmvPhaseBadge">Voting Pass</div>
+            <div class="bmv-phase-desc" id="bmvPhaseDesc">Process each element one at a time.</div>
+          </div>
+        </div>
+
+        <div class="bmv-state-col">
+
+          <div class="bmv-panel-card bmv-candidate-card" id="bmvCandidateCard">
+            <div class="bmv-panel-title"><i class="fas fa-user-check"></i> n/2 — Candidate &amp; Counter</div>
+            <div class="bmv-cand-display" id="bmvCandDisplay">
+              <div class="bmv-cand-box" id="bmvCandBox">
+                <div class="bmv-cand-label">Candidate</div>
+                <div class="bmv-cand-val" id="bmvCandVal">—</div>
+              </div>
+              <div class="bmv-counter-box" id="bmvCounterBox">
+                <div class="bmv-cand-label">Counter</div>
+                <div class="bmv-counter-val" id="bmvCounterVal">0</div>
+              </div>
+            </div>
+            <div class="bmv-counter-bar-wrap">
+              <div class="bmv-counter-bar" id="bmvCounterBar"></div>
+            </div>
+          </div>
+
+          <div class="bmv-panel-card bmv-n3-card" id="bmvN3Card" style="display:none">
+            <div class="bmv-panel-title"><i class="fas fa-users"></i> n/3 — Two Candidates</div>
+            <div class="bmv-n3-display">
+              <div class="bmv-cand-box bmv-n3-box" id="bmvN3CandBox1">
+                <div class="bmv-cand-label">Candidate 1</div>
+                <div class="bmv-cand-val" id="bmvN3Cand1">—</div>
+                <div class="bmv-n3-count" id="bmvN3Count1">0</div>
+              </div>
+              <div class="bmv-cand-box bmv-n3-box" id="bmvN3CandBox2">
+                <div class="bmv-cand-label">Candidate 2</div>
+                <div class="bmv-cand-val" id="bmvN3Cand2">—</div>
+                <div class="bmv-n3-count" id="bmvN3Count2">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bmv-panel-card bmv-verify-card" id="bmvVerifyCard" style="display:none">
+            <div class="bmv-panel-title"><i class="fas fa-check-double"></i> Verification Pass</div>
+            <div class="bmv-verify-area" id="bmvVerifyArea"></div>
+          </div>
+
+        </div>
+
+        <div class="bmv-log-col">
+          <div class="bmv-panel-card">
+            <div class="bmv-panel-title"><i class="fas fa-list"></i> Operation Log</div>
+            <div class="bmv-log-area" id="bmvLog">
+              <span class="bmv-empty-text">Steps appear here.</span>
+            </div>
+          </div>
+
+          <div class="bmv-panel-card">
+            <div class="bmv-panel-title"><i class="fas fa-chart-bar"></i> Frequency Count</div>
+            <div class="bmv-freq-area" id="bmvFreqArea">
+              <span class="bmv-empty-text">Frequencies shown after stream ends.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="title-icon">🗳️</span> Boyer-Moore Voting Explained</h2>
+      <div class="bmv-learn-grid">
+
+        <div class="bmv-learn-card bmv-learn-vote">
+          <div class="bmv-learn-icon">⚡</div>
+          <h3>The Voting Intuition</h3>
+          <p>
+            Think of elements as voters and the current candidate as a surviving champion. Every mismatch is a "cancellation" — one vote for and one against annihilate each other. Because the majority appears more than n/2 times, it can absorb all cancellations and still survive.
+          </p>
+        </div>
+
+        <div class="bmv-learn-card bmv-learn-zero">
+          <div class="bmv-learn-icon">🔄</div>
+          <h3>Counter Hits Zero</h3>
+          <p>
+            When the counter reaches 0, it means equal votes for and against have cancelled. The next element becomes the new candidate with counter = 1. The majority element may or may not be the current candidate at this moment — it doesn't matter, it will win again.
+          </p>
+        </div>
+
+        <div class="bmv-learn-card bmv-learn-verify">
+          <div class="bmv-learn-icon">✅</div>
+          <h3>Verification is Mandatory</h3>
+          <p>
+            Boyer-Moore only guarantees: "IF a majority exists, this is it." It does NOT guarantee a majority exists. A no-majority sequence still outputs a candidate. A second O(n) pass counting actual occurrences is required to confirm count &gt; n/2.
+          </p>
+        </div>
+
+        <div class="bmv-learn-card bmv-learn-n3">
+          <div class="bmv-learn-icon">🏆</div>
+          <h3>n/3 Extension</h3>
+          <p>
+            Track two candidates and two counters. When an element matches neither candidate and both counters are positive, decrement both. Elements appearing more than n/3 times survive. Used in LeetCode 229 — Majority Element II.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../../../auth.js"></script>
+  <script src="../../../script.js"></script>
+  <script src="../../../theme.js"></script>
+  <script src="../../../auth-gate.js"></script>
+  <script src="boyer-moore-voting.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

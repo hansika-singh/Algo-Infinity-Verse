@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CQRS & Event Sourcing Visualizer | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive simulator for Command Query Responsibility Segregation (CQRS) and Event Sourcing architectures."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="cqrs-visualizer.css" />
+    <script src="/theme.js"></script>
+  </head>
+  <body class="cqrs-body">
+    <nav class="navbar cqrs-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge" id="engineBadge">
+        <i class="fas fa-check-circle"></i> System Eventual Consistency:
+        <span id="consistencyStatus">Synced</span>
+      </div>
+    </nav>
+
+    <main class="cqrs-workspace">
+      <!-- Write Side (Commands & Event Store) -->
+      <section class="cqrs-panel write-side">
+        <div class="panel-header">
+          <h2><i class="fas fa-pen-nib"></i> Command Side (Write API)</h2>
+          <span class="badge badge-primary">High Throughput</span>
+        </div>
+
+        <div class="control-group">
+          <h3>Submit Command</h3>
+          <div class="form-row">
+            <select id="commandType">
+              <option value="CreateUser">CreateUser</option>
+              <option value="UpdateEmail">UpdateEmail</option>
+              <option value="ChangeAddress">ChangeAddress</option>
+            </select>
+            <input type="text" id="commandPayload" placeholder="Payload (e.g. email: a@b.com)" />
+            <button class="btn btn-action" id="btnSubmitCommand">
+              <i class="fas fa-paper-plane"></i> Execute
+            </button>
+          </div>
+        </div>
+
+        <div class="event-store-container">
+          <div class="section-title">
+            <h3><i class="fas fa-database"></i> Event Store (Append-Only Ledger)</h3>
+            <button class="btn btn-sm" id="btnReplay">
+              <i class="fas fa-history"></i> Replay Events
+            </button>
+          </div>
+          <div class="event-log" id="eventLog">
+            <!-- Events append here -->
+            <div class="empty-state" id="eventLogEmpty">
+              No events yet. Submit a command to begin.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Message Bus / Async Bridge -->
+      <section class="cqrs-bridge">
+        <div class="bus-title">Event Bus / Kafka</div>
+        <div class="bus-pipe">
+          <div class="bus-flow-track" id="busFlowTrack">
+            <!-- Flowing events animate here -->
+          </div>
+        </div>
+        <div class="bus-metrics">Lag: <span id="busLag">0</span> events</div>
+      </section>
+
+      <!-- Read Side (Projections & Query API) -->
+      <section class="cqrs-panel read-side">
+        <div class="panel-header">
+          <h2><i class="fas fa-search"></i> Query Side (Read API)</h2>
+          <span class="badge badge-success">Optimized for Reads</span>
+        </div>
+
+        <div class="projection-container">
+          <h3>Materialized View (User Projection)</h3>
+          <p class="helper-text">
+            This view is rebuilt automatically by applying events to a snapshot. It is purely
+            optimized for fast JSON retrieval.
+          </p>
+
+          <div class="code-editor">
+            <div class="editor-header">
+              <span class="filename">user_projection.json</span>
+              <div class="dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+            </div>
+            <pre><code id="jsonProjection" class="language-json">{
+  "status": "Not Initialized"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="query-tester">
+          <h3>Test Read Query</h3>
+          <div class="query-result" id="queryResult">
+            // Execute a query to view instantaneous read performance
+          </div>
+          <button class="btn btn-secondary" id="btnRunQuery">
+            <i class="fas fa-bolt"></i> GET /api/users/1
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="cqrs-visualizer.js"></script>
+  </body>
+</html>

@@ -7,7 +7,7 @@ export class RateLimiter {
     this.cooldownMs = options.cooldownMs || 15 * 60 * 1000; // 15 mins default cooldown
     this.backoffType = options.backoffType || 'fixed'; // 'fixed' or 'exponential'
     this.maxCooldownMs = options.maxCooldownMs || 24 * 60 * 60 * 1000; // max 24 hours backoff
-    
+
     this.attempts = new Map(); // key -> timestamps[]
     this.cooldowns = new Map(); // key -> { blockUntil: timestamp, consecutiveBlocks: number }
     this.sweeper = null;
@@ -19,7 +19,7 @@ export class RateLimiter {
   // Returns { allowed: boolean, retryAfter: number, remaining: number }
   check(key) {
     const now = Date.now();
-    
+
     // 1. Check current cooldown block
     const cooldown = this.cooldowns.get(key);
     if (cooldown && now < cooldown.blockUntil) {
@@ -27,13 +27,13 @@ export class RateLimiter {
       return {
         allowed: false,
         retryAfter,
-        remaining: 0
+        remaining: 0,
       };
     }
 
     // 2. Count attempts in the current sliding window
     let timestamps = this.attempts.get(key) || [];
-    timestamps = timestamps.filter(t => now - t < this.windowMs);
+    timestamps = timestamps.filter((t) => now - t < this.windowMs);
     this.attempts.set(key, timestamps);
 
     if (timestamps.length >= this.maxAttempts) {
@@ -53,12 +53,12 @@ export class RateLimiter {
 
       const blockUntil = now + duration;
       this.cooldowns.set(key, { blockUntil, consecutiveBlocks });
-      
+
       const retryAfter = Math.ceil(duration / 1000);
       return {
         allowed: false,
         retryAfter,
-        remaining: 0
+        remaining: 0,
       };
     }
 
@@ -66,7 +66,7 @@ export class RateLimiter {
     return {
       allowed: true,
       retryAfter: 0,
-      remaining
+      remaining,
     };
   }
 
@@ -74,7 +74,7 @@ export class RateLimiter {
   record(key) {
     const now = Date.now();
     let timestamps = this.attempts.get(key) || [];
-    timestamps = timestamps.filter(t => now - t < this.windowMs);
+    timestamps = timestamps.filter((t) => now - t < this.windowMs);
     timestamps.push(now);
     this.attempts.set(key, timestamps);
   }
@@ -88,9 +88,9 @@ export class RateLimiter {
   startSweeper(intervalMs = 30 * 60 * 1000) {
     this.sweeper = setInterval(() => {
       const now = Date.now();
-      
+
       for (const [key, timestamps] of this.attempts.entries()) {
-        const fresh = timestamps.filter(t => now - t < this.windowMs);
+        const fresh = timestamps.filter((t) => now - t < this.windowMs);
         if (fresh.length === 0) {
           this.attempts.delete(key);
         } else {
@@ -213,23 +213,36 @@ export const logErrorLimiter = new RateLimiter({
   cooldownMs: 15 * 60 * 1000,
 });
 
+export const aiHintLimiter = new RateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxAttempts: 15,
+  cooldownMs: 15 * 60 * 1000,
+});
+
 // Centralized helper to check and apply rate limits on HTTP server requests
-export function applyRateLimit(req, res, limiter, errorMessage = "Too many attempts. Please try again later.") {
+export function applyRateLimit(
+  req,
+  res,
+  limiter,
+  errorMessage = 'Too many attempts. Please try again later.'
+) {
   const key = getClientIdentifier(req);
   const checkResult = limiter.check(key);
-  
+
   if (!checkResult.allowed) {
     res.writeHead(429, {
-      "Content-Type": "application/json; charset=utf-8",
-      "Retry-After": String(checkResult.retryAfter),
+      'Content-Type': 'application/json; charset=utf-8',
+      'Retry-After': String(checkResult.retryAfter),
     });
-    res.end(JSON.stringify({
-      error: errorMessage,
-      retryAfter: checkResult.retryAfter,
-    }));
+    res.end(
+      JSON.stringify({
+        error: errorMessage,
+        retryAfter: checkResult.retryAfter,
+      })
+    );
     return false;
   }
-  
+
   limiter.record(key);
   return true;
 }

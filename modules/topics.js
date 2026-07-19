@@ -19,7 +19,7 @@ function getDifficultyClass(difficulty) {
 }
 
 function getTopicProgress(topicName) {
-  const userProgress = window.userProgress || {};
+  const userProgress = window.userProgress || { completedProblems: [], xp: 0, level: 1 };
   const practiceProblems = window.practiceProblems || [];
   const categoryMap = {
     Arrays: 'arrays',

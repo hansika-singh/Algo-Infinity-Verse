@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Case Builder Studio | Algo Infinity Verse</title>
+  <meta name="description" content="Build practice-editor ready test cases: generate min/max/empty/duplicates/sorted/random inputs, assert expected outputs, and copy as JSON." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="testcase-builder-studio.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="tcb-body" data-page="testcase-builder-studio">
+  <a href="#tcb-main" class="tcb-skip-link">Skip to main content</a>
+
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-circle-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="tcb-hero">
+    <div class="tcb-hero-badge">
+      <i class="fas fa-vial" aria-hidden="true"></i>
+      Builder + Assert · Practice Editor Ready
+    </div>
+    <h1>
+      Test Case
+      <span class="tcb-accent">Builder Studio</span>
+    </h1>
+    <p>
+      Generate edge-case families, attach expected outputs, edit the suite,
+      then copy JSON shaped for the practice editor (<code>input</code> + <code>expected</code>).
+    </p>
+  </header>
+
+  <main id="tcb-main" class="tcb-main">
+    <div class="container tcb-layout">
+      <!-- Generator -->
+      <section class="tcb-card" aria-labelledby="tcb-gen-title">
+        <div class="tcb-card-head">
+          <h2 id="tcb-gen-title"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Generate</h2>
+        </div>
+
+        <div class="tcb-field">
+          <label class="tcb-label" for="tcbShape">Input shape</label>
+          <select id="tcbShape" class="tcb-select">
+            <option value="array">Single array (nums)</option>
+            <option value="array-target">Array + target</option>
+            <option value="two-arrays">Two arrays</option>
+            <option value="string">String</option>
+            <option value="matrix">Matrix (grid)</option>
+          </select>
+        </div>
+
+        <div class="tcb-field-row">
+          <div class="tcb-field">
+            <label class="tcb-label" for="tcbSize">Size / length</label>
+            <input type="number" id="tcbSize" class="tcb-input" value="6" min="0" max="50" />
+          </div>
+          <div class="tcb-field">
+            <label class="tcb-label" for="tcbMin">Min value</label>
+            <input type="number" id="tcbMin" class="tcb-input" value="-5" />
+          </div>
+          <div class="tcb-field">
+            <label class="tcb-label" for="tcbMax">Max value</label>
+            <input type="number" id="tcbMax" class="tcb-input" value="20" />
+          </div>
+        </div>
+
+        <fieldset class="tcb-presets">
+          <legend class="tcb-label">Case type presets</legend>
+          <div class="tcb-preset-grid" id="tcbPresets" role="group" aria-label="Case type presets"></div>
+        </fieldset>
+
+        <div class="tcb-field">
+          <label class="tcb-label" for="tcbExpected">Expected output (assert)</label>
+          <input type="text" id="tcbExpected" class="tcb-input tcb-mono" placeholder='e.g. [0,1]  ·  true  ·  6  ·  "ok"' autocomplete="off" />
+          <p class="tcb-hint">JSON value. Leave blank to add the case and fill expected later.</p>
+        </div>
+
+        <div class="tcb-field">
+          <label class="tcb-label" for="tcbNote">Label / note (optional)</label>
+          <input type="text" id="tcbNote" class="tcb-input" placeholder="e.g. empty nums, all duplicates" maxlength="80" />
+        </div>
+
+        <div class="tcb-actions">
+          <button type="button" class="btn btn-primary" id="tcbAddGenerated">
+            <i class="fas fa-plus" aria-hidden="true"></i> Add generated case
+          </button>
+          <button type="button" class="btn btn-outline" id="tcbAddBlank">
+            <i class="fas fa-pen" aria-hidden="true"></i> Add blank case
+          </button>
+        </div>
+      </section>
+
+      <!-- Preview + export -->
+      <aside class="tcb-card" aria-labelledby="tcb-export-title">
+        <div class="tcb-card-head tcb-row-between">
+          <h2 id="tcb-export-title"><i class="fas fa-file-code" aria-hidden="true"></i> JSON export</h2>
+          <span class="tcb-count" id="tcbCount">0 cases</span>
+        </div>
+        <pre class="tcb-preview" id="tcbPreview" tabindex="0" aria-label="JSON preview">[]</pre>
+        <div class="tcb-actions">
+          <button type="button" class="btn btn-primary" id="tcbCopy">
+            <i class="fas fa-copy" aria-hidden="true"></i> Copy as JSON
+          </button>
+          <button type="button" class="btn btn-outline" id="tcbDownload">
+            <i class="fas fa-download" aria-hidden="true"></i> Download
+          </button>
+          <button type="button" class="btn btn-danger" id="tcbClear">
+            <i class="fas fa-trash" aria-hidden="true"></i> Clear all
+          </button>
+        </div>
+        <p class="tcb-status" id="tcbStatus" role="status" aria-live="polite"></p>
+        <p class="tcb-hint">
+          Format matches practice problems:
+          <code>{ "input": [...], "expected": ... }</code>
+        </p>
+      </aside>
+    </div>
+
+    <div class="container">
+      <section class="tcb-card" aria-labelledby="tcb-list-title">
+        <div class="tcb-card-head">
+          <h2 id="tcb-list-title"><i class="fas fa-list" aria-hidden="true"></i> Editable case list</h2>
+        </div>
+        <div class="tcb-cases" id="tcbCases" role="list"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js?v=20260601"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="testcase-builder-studio.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html').then(function () {
+        if (typeof initNavbar === 'function') initNavbar();
+      });
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>

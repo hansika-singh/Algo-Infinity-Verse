@@ -7,20 +7,27 @@ const practiceTools = [
   { name: "Complexity Analyzer", path: "/pages/tools/complexity-analyzer/complexity-analyzer.html", category: "Analysis", icon: "fa-chart-line", desc: "Analyze time and space complexity of your algorithms with detailed breakdowns and Big-O notation." },
   { name: "Complexity Calculator", path: "/pages/tools/complexity-calculator/complexity-calculator.html", category: "Analysis", icon: "fa-calculator", desc: "Calculate and visualize the computational complexity of your code snippets in real time." },
   { name: "Complexity Comparator", path: "/pages/tools/complexity-comparator/complexity-comparator.html", category: "Analysis", icon: "fa-scale-balanced", desc: "Compare the time and space complexity of multiple algorithms side by side." },
+  { name: "Constraint → Complexity Estimator", path: "/pages/tools/constraint-complexity-estimator/constraint-complexity-estimator.html", category: "Analysis", icon: "fa-gauge", desc: "Map contest constraints (n, m, time, memory) to safe Big-O complexities with operation budgets and TLE warnings." },
   { name: "Reverse Complexity", path: "/pages/tools/reverse-complexity/reverse-complexity.html", category: "Analysis", icon: "fa-arrow-right-arrow-left", desc: "Given a target complexity, reverse-engineer what kind of algorithm would achieve it." },
   { name: "Cognitive Load Analyzer", path: "/pages/tools/cognitive-load-analyzer/cognitive-load-analyzer.html", category: "Analysis", icon: "fa-brain", desc: "Analyze your coding patterns to measure cognitive load and identify areas for improvement." },
+  { name: "Accessibility Audit Toolkit", path: "/pages/tools/a11y-audit-toolkit/a11y-audit-toolkit.html", category: "Analysis", icon: "fa-universal-access", desc: "Scan visualizer pages for WCAG-aligned issues: headings, alt text, contrast, focus order, and ARIA — with severity and fix guidance." },
 
   // ── Practice Aids ──
   { name: "Problem Solving Framework", path: "/pages/tools/problem-solving-framework/problem-solving-framework.html", category: "Practice Aids", icon: "fa-sitemap", desc: "Structured framework to break down problems: understand, brute force, optimize, code, test." },
   { name: "Think-Aloud AI Judge", path: "/pages/tools/think-aloud-judge/think-aloud-judge.html", category: "Practice Aids", icon: "fa-ear-listen", desc: "Verbally explain your thought process while coding and get AI feedback on your reasoning." },
   { name: "Pattern Recognition Trainer", path: "/pages/tools/pattern-trainer/pattern-trainer.html", category: "Practice Aids", icon: "fa-puzzle-piece", desc: "Train your ability to recognize common DSA problem patterns with interactive challenges." },
   { name: "Edge Case Generator", path: "/pages/tools/edge-case-generator/edge-case-generator.html", category: "Practice Aids", icon: "fa-shield-halved", desc: "Generate tricky edge cases for your solutions to ensure robust problem coverage." },
+  { name: "Test Case Builder Studio", path: "/pages/tools/testcase-builder-studio/testcase-builder-studio.html", category: "Practice Aids", icon: "fa-vial", desc: "Build min/max/empty/duplicates/sorted/random cases with expected asserts and copy practice-editor JSON." },
   { name: "Algorithm Decision Tree", path: "/pages/tools/algorithm-decision-tree/algorithm-decision-tree.html", category: "Practice Aids", icon: "fa-diagram-project", desc: "Interactive decision tree to help you pick the right algorithm for any problem." },
   { name: "Algorithm Personality", path: "/pages/tools/algorithm-personality/algorithm-personality.html", category: "Practice Aids", icon: "fa-face-smile", desc: "Discover which algorithm matches your coding personality through a fun assessment quiz." },
   { name: "Problem Deconstructor", path: "/pages/tools/problem-deconstructor/problem-deconstructor.html", category: "Practice Aids", icon: "fa-cubes", desc: "Deconstruct complex problems into sub-problems and identify reusable solution templates." },
+  { name: "Approach Tradeoff Matrix", path: "/pages/tools/approach-tradeoff-matrix/approach-tradeoff-matrix.html", category: "Practice Aids", icon: "fa-table-cells", desc: "Compare brute, better, and optimal approaches on time, space, code length, and interview wow factor — save to localStorage." },
+  { name: "Brute → Optimal Diff Studio", path: "/pages/tools/brute-to-optimal-studio/brute-to-optimal-studio.html", category: "Practice Aids", icon: "fa-code-compare", desc: "Side-by-side brute vs optimal code with annotated evolution steps (e.g. sorted → two pointers) and complexity upgrades." },
+  { name: "Keyboard Shortcut Trainer", path: "/pages/tools/editor-shortcut-trainer/editor-shortcut-trainer.html", category: "Practice Aids", icon: "fa-keyboard", desc: "Practice code-editor shortcuts (run, format, comment, undo) in a score-and-streak trainer game." },
 
   // ── Learning Tools ──
   { name: "Spaced Repetition Queue", path: "/pages/tools/spaced-repetition/review-queue.html", category: "Learning Tools", icon: "fa-rotate", desc: "Optimized review queue using SM-2 spaced repetition to maximize long-term retention." },
+  { name: "DSA Focus Pomodoro", path: "/pages/tools/dsa-focus-timer/dsa-focus-timer.html", category: "Learning Tools", icon: "fa-clock", desc: "Topic-linked 25/5 pomodoro with DSA tags, localStorage session history, and study analytics." },
   { name: "AI Memory Scanner", path: "/pages/tools/memory-scanner/memory-scanner.html", category: "Learning Tools", icon: "fa-magnifying-glass", desc: "Scan your memory gaps and get personalized recommendations for topics to revisit." },
   { name: "My Notes & Mnemonics", path: "/pages/tools/my-notes/my-notes.html", category: "Learning Tools", icon: "fa-note-sticky", desc: "Create, organize, and review personal notes and mnemonics for DSA concepts." },
   { name: "Wrong Turn Replay", path: "/pages/tools/wrong-turn-replay/wrong-turn-replay.html", category: "Learning Tools", icon: "fa-rotate-left", desc: "Replay your incorrect solution attempts to understand where you went wrong." },
@@ -30,6 +37,7 @@ const practiceTools = [
 
   // ── Debugging ──
   { name: "Dry Run Simulator", path: "/pages/tools/dry-run-simulator/dry-run-simulator.html", category: "Debugging", icon: "fa-play", desc: "Step through your code execution line by line to trace variables and find bugs." },
+  { name: "Desk-Check / Trace Table Builder", path: "/pages/tools/trace-table-builder/trace-table-builder.html", category: "Debugging", icon: "fa-table", desc: "Build teacher-style algorithm trace tables with custom variables, manual desk-check, or guided auto-fill." },
   { name: "Solution Evolution", path: "/pages/tools/solution-evolution/solution-evolution.html", category: "Debugging", icon: "fa-code-branch", desc: "Visualize how brute-force solutions evolve into optimized ones through iterative refinement." },
   { name: "Algorithm Crime Lab", path: "/pages/tools/investigation-lab/investigation-lab.html", category: "Debugging", icon: "fa-flask", desc: "Investigate algorithmic failures and bugs in a forensic-style debugging environment." },
   { name: "DSA Detective Mode", path: "/pages/tools/dsa-detective/dsa-detective.html", category: "Debugging", icon: "fa-gun", desc: "Guess the correct algorithm from clues in a detective-style interactive challenge." },
@@ -39,6 +47,7 @@ const practiceTools = [
   { name: "Learning Insights Dashboard", path: "/pages/tools/learning-insights-dashboard/learning-insights-dashboard.html", category: "Dashboards", icon: "fa-lightbulb", desc: "Actionable insights on your learning patterns, strengths, and areas needing focus." },
   { name: "Weakness Dashboard", path: "/pages/tools/topic-weakness-dashboard/topic-weakness-dashboard.html", category: "Dashboards", icon: "fa-triangle-exclamation", desc: "Identify your weakest DSA topics with detailed performance breakdowns and recommendations." },
   { name: "Personalized Learning Path", path: "/pages/tools/personalized-learning-path/personalized-learning-path.html", category: "Dashboards", icon: "fa-route", desc: "Generate a custom learning path based on your current skill level and target goals." },
+  { name: "Weekly DSA Study Plan", path: "/pages/tools/weekly-study-plan/weekly-study-plan.html", category: "Dashboards", icon: "fa-calendar-week", desc: "Hours/week + weak topics + interview date → auto 7-day plan with quiz/visualizer deep links and localStorage XP hooks." },
 
   // ── Simulators ──
   { name: "Algorithm Arena", path: "/pages/tools/algorithm-arena/algorithm-arena.html", category: "Simulators", icon: "fa-gamepad", desc: "Pit algorithms against each other in head-to-head performance battles." },
@@ -50,12 +59,15 @@ const practiceTools = [
 
   // ── Other ──
   { name: "Comparison Tool", path: "/pages/tools/compare/compare.html", category: "Other", icon: "fa-not-equal", desc: "Compare two code snippets or algorithms to highlight differences in approach and performance." },
+  { name: "Tech Comparison Radar", path: "/pages/tools/tech-comparison/comparison.html", category: "Other", icon: "fa-chart-scatter", desc: "Compare technologies side by side: React vs Vue, MongoDB vs PostgreSQL, REST vs GraphQL, and more with radar charts." },
   { name: "AST Code Formatter", path: "/pages/tools/ast-formatter/ast-formatter.html", category: "Other", icon: "fa-code", desc: "Format and transform code using AST-based analysis with customizable formatting rules." },
   { name: "Spatial Complexity Profiler", path: "/pages/tools/spatial-profiler/spatial-profiler.html", category: "Other", icon: "fa-cube", desc: "Profile the memory and spatial complexity of your data structures and algorithms." },
   { name: "Algorithms in Real Apps", path: "/pages/tools/everyday-apps/everyday-apps.html", category: "Other", icon: "fa-mobile-screen", desc: "See how DSA concepts power real-world applications like search, maps, and social media." },
   { name: "Compiler Explorer", path: "/pages/tools/compiler-explorer/compiler-explorer.html", category: "Other", icon: "fa-microchip", desc: "Explore how different compilers translate your code into assembly and machine instructions." },
   { name: "LeetCode Sync", path: "/pages/tools/leetcode/leetcode.html", category: "Other", icon: "fa-cloud-arrow-up", desc: "Sync your LeetCode submissions and track your progress across platforms." },
   { name: "Assessments", path: "/pages/tools/quiz-system/quiz-system.html", category: "Other", icon: "fa-clipboard-question", desc: "Take structured assessments to evaluate your DSA knowledge and track improvement over time." },
+  { name: "CSS Design Token Playground", path: "/pages/tools/design-token-playground/design-token-playground.html", category: "Other", icon: "fa-palette", desc: "Edit AIV :root tokens (colors, spacing, fonts) and live-preview quiz card and navbar — matching README Customization." },
+  { name: "Open Source PR Checklist Generator", path: "/pages/tools/pr-checklist-generator/pr-checklist-generator.html", category: "Other", icon: "fa-code-branch", desc: "Generate AIV-flavored PR checklists, conventional commit templates, and HTML/CSS/JS separation reminders by contribution type." },
 ];
 
 /* ─── Categories ─── */

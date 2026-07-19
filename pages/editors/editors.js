@@ -5,147 +5,151 @@
 const editors = [
   // ── Mainstream Languages ──
   {
-    name: "Python Editor",
-    path: "/pages/editors/python-editor/python-editor.html",
-    category: "Mainstream Languages",
-    icon: "fa-python",
-    desc: "Write Python code and see real-time execution output. Supports standard libraries, data structures, and algorithms."
+    name: 'Python Editor',
+    path: '/pages/editors/python-editor/python-editor.html',
+    category: 'Mainstream Languages',
+    icon: 'fa-python',
+    desc: 'Write Python code and see real-time execution output. Supports standard libraries, data structures, and algorithms.',
   },
   {
-    name: "Java Editor",
-    path: "/pages/editors/java-editor/java-editor.html",
-    category: "Mainstream Languages",
-    icon: "fa-java",
-    desc: "Compile and run Java code with syntax highlighting, examples, and output panels — all in your browser."
+    name: 'Java Editor',
+    path: '/pages/editors/java-editor/java-editor.html',
+    category: 'Mainstream Languages',
+    icon: 'fa-java',
+    desc: 'Compile and run Java code with syntax highlighting, examples, and output panels — all in your browser.',
   },
   {
-    name: "C++ Editor",
-    path: "/pages/editors/cpp-editor/cpp-editor.html",
-    category: "Mainstream Languages",
-    icon: "fa-code-fork",
-    desc: "Write C++ code and see real-time execution output. Supports standard libraries, OOP concepts, and more."
+    name: 'C++ Editor',
+    path: '/pages/editors/cpp-editor/cpp-editor.html',
+    category: 'Mainstream Languages',
+    icon: 'fa-code-fork',
+    desc: 'Write C++ code and see real-time execution output. Supports standard libraries, OOP concepts, and more.',
   },
   {
-    name: "C Editor",
-    path: "/pages/editors/c-editor/c-editor.html",
-    category: "Mainstream Languages",
-    icon: "fa-c",
-    desc: "Write C code with real-time execution. Perfect for learning variables, loops, functions, and pointers."
+    name: 'C Editor',
+    path: '/pages/editors/c-editor/c-editor.html',
+    category: 'Mainstream Languages',
+    icon: 'fa-c',
+    desc: 'Write C code with real-time execution. Perfect for learning variables, loops, functions, and pointers.',
   },
   {
-    name: "JavaScript Sandbox",
-    path: "/pages/editors/js-sandbox.html",
-    category: "Mainstream Languages",
-    icon: "fa-js",
-    desc: "Run JavaScript in a sandboxed environment with sample tests, debug transcripts, and hidden test cases."
+    name: 'JavaScript Sandbox',
+    path: '/pages/editors/js-sandbox.html',
+    category: 'Mainstream Languages',
+    icon: 'fa-js',
+    desc: 'Run JavaScript in a sandboxed environment with sample tests, debug transcripts, and hidden test cases.',
   },
 
   // ── Web Technologies ──
   {
-    name: "HTML Editor",
-    path: "/pages/editors/html-editor/html-editor.html",
-    category: "Web Technologies",
-    icon: "fa-html5",
-    desc: "Write HTML and watch it render in real time — no server, no setup. Perfect for learning tags, forms, and layout."
+    name: 'HTML Editor',
+    path: '/pages/editors/html-editor/html-editor.html',
+    category: 'Web Technologies',
+    icon: 'fa-html5',
+    desc: 'Write HTML and watch it render in real time — no server, no setup. Perfect for learning tags, forms, and layout.',
   },
   {
-    name: "CSS Editor",
-    path: "/pages/editors/css-editor/css-editor.html",
-    category: "Web Technologies",
-    icon: "fa-css3-alt",
-    desc: "Write CSS and watch a real HTML template restyle in real time — perfect for flexbox, grid, and animations."
+    name: 'CSS Editor',
+    path: '/pages/editors/css-editor/css-editor.html',
+    category: 'Web Technologies',
+    icon: 'fa-css3-alt',
+    desc: 'Write CSS and watch a real HTML template restyle in real time — perfect for flexbox, grid, and animations.',
   },
   {
-    name: "React Playground",
-    path: "/pages/editors/react-playground/react-playground.html",
-    category: "Web Technologies",
-    icon: "fa-react",
-    desc: "Write React components with JSX, render them instantly in the preview panel. No setup, no installs."
+    name: 'React Playground',
+    path: '/pages/editors/react-playground/react-playground.html',
+    category: 'Web Technologies',
+    icon: 'fa-react',
+    desc: 'Write React components with JSX, render them instantly in the preview panel. No setup, no installs.',
   },
 
   // ── Scripting Languages ──
   {
-    name: "Ruby Editor",
-    path: "/pages/editors/ruby-editor/ruby-editor.html",
-    category: "Scripting Languages",
-    icon: "fa-gem",
-    desc: "Write Ruby scripts and execute them via a real Ruby interpreter. Powered by the Piston sandboxed API."
+    name: 'Ruby Editor',
+    path: '/pages/editors/ruby-editor/ruby-editor.html',
+    category: 'Scripting Languages',
+    icon: 'fa-gem',
+    desc: 'Write Ruby scripts and execute them via a real Ruby interpreter. Powered by the Piston sandboxed API.',
   },
   {
-    name: "PHP Editor",
-    path: "/pages/editors/php-editor/php-editor.html",
-    category: "Scripting Languages",
-    icon: "fa-php",
-    desc: "Write PHP scripts with syntax highlighting, multiple examples, and simulated console output."
+    name: 'PHP Editor',
+    path: '/pages/editors/php-editor/php-editor.html',
+    category: 'Scripting Languages',
+    icon: 'fa-php',
+    desc: 'Write PHP scripts with syntax highlighting, multiple examples, and simulated console output.',
   },
   {
-    name: "Perl Editor",
-    path: "/pages/editors/perl/perl.html",
-    category: "Scripting Languages",
-    icon: "fa-scroll",
-    desc: "Write Perl scripts and see simulated output instantly. Supports variables, arrays, hashes, and subroutines."
+    name: 'Perl Editor',
+    path: '/pages/editors/perl/perl.html',
+    category: 'Scripting Languages',
+    icon: 'fa-scroll',
+    desc: 'Write Perl scripts and see simulated output instantly. Supports variables, arrays, hashes, and subroutines.',
   },
 
   // ── JVM & Functional ──
   {
-    name: "Kotlin Editor",
-    path: "/pages/editors/kotlin-editor/kotlin-editor.html",
-    category: "JVM & Functional",
-    icon: "fa-mobile-screen-button",
-    desc: "Write Kotlin with a multi-file project explorer, syntax highlighting, and simulated output."
+    name: 'Kotlin Editor',
+    path: '/pages/editors/kotlin-editor/kotlin-editor.html',
+    category: 'JVM & Functional',
+    icon: 'fa-mobile-screen-button',
+    desc: 'Write Kotlin with a multi-file project explorer, syntax highlighting, and simulated output.',
   },
   {
-    name: "Scala Editor",
-    path: "/pages/editors/scala-editor/scala-editor.html",
-    category: "JVM & Functional",
-    icon: "fa-cubes",
-    desc: "Write Scala code with support for variables, functions, collections, classes, and pattern matching."
+    name: 'Scala Editor',
+    path: '/pages/editors/scala-editor/scala-editor.html',
+    category: 'JVM & Functional',
+    icon: 'fa-cubes',
+    desc: 'Write Scala code with support for variables, functions, collections, classes, and pattern matching.',
   },
   {
-    name: "Haskell Editor",
-    path: "/pages/editors/haskell-editor/haskell-editor.html",
-    category: "JVM & Functional",
-    icon: "fa-hashtag",
-    desc: "Write Haskell with a file explorer, syntax highlighting, and support for recursion, modules, and ADTs."
+    name: 'Haskell Editor',
+    path: '/pages/editors/haskell-editor/haskell-editor.html',
+    category: 'JVM & Functional',
+    icon: 'fa-hashtag',
+    desc: 'Write Haskell with a file explorer, syntax highlighting, and support for recursion, modules, and ADTs.',
   },
 
   // ── Systems & Special ──
   {
-    name: "Go Editor",
-    path: "/pages/editors/go-editor/go-editor.html",
-    category: "Systems & Special",
-    icon: "fa-golang",
-    desc: "Learn Golang with a live simulated editor supporting variables, slices, functions, and more."
+    name: 'Go Editor',
+    path: '/pages/editors/go-editor/go-editor.html',
+    category: 'Systems & Special',
+    icon: 'fa-golang',
+    desc: 'Learn Golang with a live simulated editor supporting variables, slices, functions, and more.',
   },
   {
-    name: "SQL Editor",
-    path: "/pages/editors/sql-editor/sql-editor.html",
-    category: "Systems & Special",
-    icon: "fa-database",
-    desc: "Write SQL queries, manage tables, and see results instantly. Supports SELECT, INSERT, UPDATE, and more."
+    name: 'SQL Editor',
+    path: '/pages/editors/sql-editor/sql-editor.html',
+    category: 'Systems & Special',
+    icon: 'fa-database',
+    desc: 'Write SQL queries, manage tables, and see results instantly. Supports SELECT, INSERT, UPDATE, and more.',
   },
   {
-    name: "Pseudo Code Editor",
-    path: "/pages/editors/pseudo-code-editor/pseudo-code-editor.html",
-    category: "Systems & Special",
-    icon: "fa-pencil",
-    desc: "Design algorithms with instant syntax highlighting, auto-indent, and real-time linting for pseudo-code."
+    name: 'Pseudo Code Editor',
+    path: '/pages/editors/pseudo-code-editor/pseudo-code-editor.html',
+    category: 'Systems & Special',
+    icon: 'fa-pencil',
+    desc: 'Design algorithms with instant syntax highlighting, auto-indent, and real-time linting for pseudo-code.',
   },
 ];
 
 /* ─── Categories ─── */
 const categories = [
-  "All", "Mainstream Languages", "Web Technologies", "Scripting Languages",
-  "JVM & Functional", "Systems & Special"
+  'All',
+  'Mainstream Languages',
+  'Web Technologies',
+  'Scripting Languages',
+  'JVM & Functional',
+  'Systems & Special',
 ];
 
 /* ─── Category pastel colors (distinct, visible) — keys match catKey slugs ─── */
 const categoryColors = {
-  "mainstream-languages": "#7bb3d4",
-  "web-technologies": "#e8b890",
-  "scripting-languages": "#7bc9a0",
-  "jvm-functional": "#b898e0",
-  "systems-special": "#d898a8",
+  'mainstream-languages': '#7bb3d4',
+  'web-technologies': '#e8b890',
+  'scripting-languages': '#7bc9a0',
+  'jvm-functional': '#b898e0',
+  'systems-special': '#d898a8',
 };
 
 /* ─── DOM refs ─── */
@@ -156,31 +160,54 @@ const filterContainer = document.getElementById('edFilters');
 const emptyState = document.getElementById('edEmpty');
 const countDisplay = document.getElementById('edCountDisplay');
 
-let activeCategory = new URLSearchParams(window.location.search).get('category')
-  || localStorage.getItem('edFilterCategory')
-  || 'all';
+/* ─── Safe localStorage helper ─── */
+function lsGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (_) {
+    return null;
+  }
+}
+function lsSet(key, val) {
+  try {
+    localStorage.setItem(key, val);
+  } catch (_) {
+    /* noop */
+  }
+}
+function lsRemove(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (_) {
+    /* noop */
+  }
+}
+
+let activeCategory =
+  new URLSearchParams(window.location.search).get('category') || lsGet('edFilterCategory') || 'all';
 let searchQuery = '';
 const pageReferrer = document.referrer;
 
 /* ─── Build filter chips ─── */
 function buildFilters() {
-  categories.forEach(cat => {
+  categories.forEach((cat) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ed-filter-chip' + (cat === 'All' ? ' active' : '');
     btn.dataset.category = cat === 'All' ? 'all' : cat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     btn.setAttribute('role', 'tab');
     btn.setAttribute('aria-selected', cat === 'All' ? 'true' : 'false');
-    btn.textContent = cat + (cat !== 'All' ? ` (${editors.filter(v => v.category === cat).length})` : '');
+    btn.textContent =
+      cat + (cat !== 'All' ? ` (${editors.filter((v) => v.category === cat).length})` : '');
     btn.addEventListener('click', () => {
-      filterContainer.querySelectorAll('.ed-filter-chip').forEach(c => {
+      filterContainer.querySelectorAll('.ed-filter-chip').forEach((c) => {
         c.classList.remove('active');
         c.setAttribute('aria-selected', 'false');
       });
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
       activeCategory = btn.dataset.category;
-      localStorage.setItem('edFilterCategory', activeCategory);
+      lsSet('edFilterCategory', activeCategory);
       const url = new URL(window.location);
       if (activeCategory === 'all') {
         url.searchParams.delete('category');
@@ -197,11 +224,13 @@ function buildFilters() {
 /* ─── Render cards ─── */
 function render() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const filtered = editors.filter(v => {
-    const matchCategory = activeCategory === 'all' ||
+  const filtered = editors.filter((v) => {
+    const matchCategory =
+      activeCategory === 'all' ||
       v.category.toLowerCase().replace(/[^a-z0-9]+/g, '-') === activeCategory;
     const q = searchQuery.toLowerCase();
-    const matchSearch = !q ||
+    const matchSearch =
+      !q ||
       v.name.toLowerCase().includes(q) ||
       v.category.toLowerCase().includes(q) ||
       v.desc.toLowerCase().includes(q);
@@ -217,11 +246,21 @@ function render() {
   }
 
   emptyState.style.display = 'none';
-  grid.innerHTML = filtered.map((v, i) => {
-    const catKey = v.category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const brandIcons = new Set(['fa-python','fa-java','fa-js','fa-html5','fa-css3-alt','fa-react','fa-php','fa-golang']);
-    const iconClass = brandIcons.has(v.icon) ? `fab ${v.icon}` : `fas ${v.icon}`;
-    return `
+  grid.innerHTML = filtered
+    .map((v, i) => {
+      const catKey = v.category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const brandIcons = new Set([
+        'fa-python',
+        'fa-java',
+        'fa-js',
+        'fa-html5',
+        'fa-css3-alt',
+        'fa-react',
+        'fa-php',
+        'fa-golang',
+      ]);
+      const iconClass = brandIcons.has(v.icon) ? `fab ${v.icon}` : `fas ${v.icon}`;
+      return `
     <a href="${v.path}" class="ed-card" role="listitem" data-category="${catKey}" style="animation-delay:${reducedMotion ? '0s' : Math.min(i * 0.025, 0.8)}s">
       <span class="ed-card-icon" style="color:${categoryColors[catKey] || 'var(--ed-accent)'}"><i class="${iconClass}"></i></span>
       <span class="ed-card-title">${escHtml(v.name)}</span>
@@ -231,7 +270,8 @@ function render() {
         <span class="ed-card-arrow"><i class="fas fa-arrow-right"></i></span>
       </div>
     </a>`;
-  }).join('');
+    })
+    .join('');
 }
 
 function escHtml(str) {
@@ -276,7 +316,7 @@ document.addEventListener('keydown', (e) => {
 
 /* ─── Back button ─── */
 document.getElementById('edBackBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('edFilterCategory');
+  lsRemove('edFilterCategory');
   if (pageReferrer && new URL(pageReferrer).origin === window.location.origin) {
     window.location.href = pageReferrer;
   } else if (window.history.length > 1) {
@@ -302,17 +342,20 @@ function initTitleLetterAnimation() {
   if (!title) return;
 
   const text = title.textContent.trim();
-  title.innerHTML = text.split('').map((char) => {
-    if (char === ' ') return `<span class="ed-title-space"> </span>`;
-    return `<span class="ed-title-letter">${char}</span>`;
-  }).join('');
+  title.innerHTML = text
+    .split('')
+    .map((char) => {
+      if (char === ' ') return `<span class="ed-title-space"> </span>`;
+      return `<span class="ed-title-letter">${char}</span>`;
+    })
+    .join('');
 
   const letters = [...title.querySelectorAll('.ed-title-letter')];
   if (letters.length === 0) return;
 
   let rafId = null;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const prefersDark = true; // our theme is always dark bg
+  const _prefersDark = true; // our theme is always dark bg
 
   /* ── Compute 3D extrusion shadows ──
      Shadows extend in the direction OPPOSITE the cursor,
@@ -426,8 +469,12 @@ function initTitleLetterAnimation() {
         const scale = 0.82 + proximity * 0.46;
 
         // Color: dark slate → bright pink accent
-        const baseR = 71, baseG = 85, baseB = 105;
-        const accentR = 255, accentG = 215, accentB = 225;
+        const baseR = 71,
+          baseG = 85,
+          baseB = 105;
+        const accentR = 255,
+          accentG = 215,
+          accentB = 225;
         const r = Math.round(baseR + (accentR - baseR) * proximity);
         const g = Math.round(baseG + (accentG - baseG) * proximity);
         const b = Math.round(baseB + (accentB - baseB) * proximity);
@@ -524,10 +571,12 @@ function initCodeScrollBackground() {
   ];
 
   function renderLines() {
-    return codeSnippets.map((line) => {
-      const cls = line.c ? `ed-code-scroll-line ${line.c}` : 'ed-code-scroll-line';
-      return `<span class="${cls}">${escHtml(line.t) || '&nbsp;'}</span>`;
-    }).join('');
+    return codeSnippets
+      .map((line) => {
+        const cls = line.c ? `ed-code-scroll-line ${line.c}` : 'ed-code-scroll-line';
+        return `<span class="${cls}">${escHtml(line.t) || '&nbsp;'}</span>`;
+      })
+      .join('');
   }
 
   const inner = document.createElement('div');
@@ -579,9 +628,15 @@ buildFilters();
 initTitleLetterAnimation();
 initCodeScrollBackground();
 
+/* ─── Sync hero subtitle count to editors array length ─── */
+(function syncEditorCount() {
+  const countEl = document.querySelector('.ed-hero-subtitle strong');
+  if (countEl) countEl.textContent = editors.length;
+})();
+
 /* Restore active chip from URL */
 function syncChipFromURL() {
-  filterContainer.querySelectorAll('.ed-filter-chip').forEach(c => {
+  filterContainer.querySelectorAll('.ed-filter-chip').forEach((c) => {
     const isActive = c.dataset.category === activeCategory;
     c.classList.toggle('active', isActive);
     c.setAttribute('aria-selected', isActive ? 'true' : 'false');
@@ -592,9 +647,10 @@ render();
 
 /* Handle browser back/forward */
 window.addEventListener('popstate', () => {
-  activeCategory = new URLSearchParams(window.location.search).get('category')
-    || localStorage.getItem('edFilterCategory')
-    || 'all';
+  activeCategory =
+    new URLSearchParams(window.location.search).get('category') ||
+    lsGet('edFilterCategory') ||
+    'all';
   syncChipFromURL();
   render();
 });

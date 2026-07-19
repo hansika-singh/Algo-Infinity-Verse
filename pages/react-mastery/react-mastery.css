@@ -4,6 +4,23 @@ html, body {
     padding: 0;
 }
 
+/* Soft pastel palette */
+:root {
+    --accent-indigo: #6366f1;
+    --accent-indigo-light: #e0e7ff;
+    --accent-teal: #14b8a6;
+    --accent-teal-light: #ccfbf1;
+    --accent-amber: #fbbf24;
+    --accent-amber-light: #fef3c7;
+    --accent-sky: #38bdf8;
+    --accent-sky-light: #e0f2fe;
+    --accent-emerald: #34d399;
+    --accent-emerald-light: #d1fae5;
+    --sidebar-bg: #faf5ff;
+    --sidebar-active: #eef2ff;
+    --sidebar-active-border: #6366f1;
+}
+
 /* Animations for Tab Switching */
 .tab-content {
     display: none;
@@ -12,19 +29,24 @@ html, body {
 }
 
 .tab-content.active {
-    display: block; /* For flex layouts we handle this via js class swaps, but default to block */
+    display: block;
     opacity: 1;
 }
 
 #tab-playground.active {
-    display: flex; /* Override for playground split pane */
+    display: flex;
 }
 
 /* Active tab button styles */
 .tab-btn.active {
     background-color: white;
-    color: #2563eb; /* blue-600 */
+    color: var(--accent-indigo);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.tab-btn:hover {
+    color: var(--accent-indigo);
 }
 
 /* Code Editor Specific Styles */
@@ -32,10 +54,10 @@ html, body {
     font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
     line-height: 1.5;
-    tab-size: 4; /* Fixed tab size */
+    tab-size: 4;
     -moz-tab-size: 4;
     -o-tab-size: 4;
-    resize: none; /* No resize */
+    resize: none;
     white-space: pre;
     overflow-wrap: normal;
     overflow-x: auto;
@@ -48,19 +70,19 @@ html, body {
 }
 
 #code-editor::-webkit-scrollbar-track {
-    background: #1f2937; /* gray-800 */
+    background: #1f2937;
 }
 
 #code-editor::-webkit-scrollbar-thumb {
-    background: #4b5563; /* gray-600 */
+    background: #4b5563;
     border-radius: 5px;
 }
 
 #code-editor::-webkit-scrollbar-thumb:hover {
-    background: #6b7280; /* gray-500 */
+    background: #6b7280;
 }
 
-/* Main Content Scrollbar (general) */
+/* Main Content Scrollbar */
 .overflow-y-auto::-webkit-scrollbar {
     width: 6px;
 }
@@ -75,6 +97,21 @@ html, body {
     background: #94a3b8;
 }
 
+/* Sidebar gradient */
+#sidebar {
+    background: linear-gradient(180deg, #faf5ff 0%, #f0fdfa 100%);
+}
+
+/* Lesson content callout overrides */
+.lesson-content .bg-blue-50 {
+    background-color: var(--accent-sky-light);
+}
+
+/* Quiz option hover effects */
+label.flex.items-center.p-4.border:hover {
+    border-color: #a5b4fc;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
@@ -83,4 +120,31 @@ html, body {
 
 .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Spin animation for React logo */
+@keyframes react-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+    animation: react-spin 20s linear infinite;
+}
+
+/* Smooth hover transitions for sidebar items */
+#module-list button {
+    transition: all 0.2s ease-in-out;
+}
+
+#module-list button:hover {
+    transform: translateX(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .tab-btn {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
 }

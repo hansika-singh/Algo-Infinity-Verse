@@ -35,11 +35,12 @@ container.appendChild(span);
 
 When you must interpolate string HTML templates (e.g. for rich text rendering), always run the user-controlled fields through the centralized sanitization utility.
 
-The sanitization module is available at: [domSanitizer.js](file:///c:/Users/Rushabh%20Mahajan/Documents/GitHub/Algo-Infinity-Verse/modules/domSanitizer.js).
+The sanitization module is available at: [domSanitizer.js](../modules/domSanitizer.js).
 
 #### Under ES Modules (ESM)
+
 ```javascript
-import { escapeHtml, sanitizeHTML } from "/modules/domSanitizer.js";
+import { escapeHtml, sanitizeHTML } from '/modules/domSanitizer.js';
 
 // For plain text:
 const safeName = escapeHtml(userProgress.name);
@@ -51,7 +52,9 @@ element.innerHTML = `<div class="rich-text">${safeBody}</div>`;
 ```
 
 #### Under Classic Scripts
+
 Ensure `/modules/domSanitizer.js` is loaded prior to your script in the HTML file. It will be available globally via the `window.DOMSanitizer` namespace:
+
 ```javascript
 const safeTitle = DOMSanitizer.escapeHtml(post.title);
 titleEl.innerHTML = `<h4 class="post-title">${safeTitle}</h4>`;
@@ -62,6 +65,7 @@ titleEl.innerHTML = `<h4 class="post-title">${safeTitle}</h4>`;
 ## 🛡️ Guidelines Checklist for PR Reviews
 
 When reviewing code, look for:
+
 - [ ] Any use of `innerHTML` or `insertAdjacentHTML` incorporating dynamic/user variables.
 - [ ] Event handler attributes (like `onclick="..."`) defined inline in template strings. Prefer `.addEventListener(...)` on elements.
 - [ ] Verification that `DOMSanitizer.escapeHtml` or DOM node creation is applied to any imported JSON or network responses before rendering.

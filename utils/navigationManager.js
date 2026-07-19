@@ -8,18 +8,90 @@ class NavigationManager {
     this.state = this.parseUrlState();
     this.breadcrumbsContainer = null;
     this.onStateChangeCallbacks = [];
+    this.lastScrollY = window.scrollY;
+    this.scrollTick = null;
 
     // Bind methods
     this.handlePopState = this.handlePopState.bind(this);
+    this.initBreadcrumbs = this.initBreadcrumbs.bind(this);
+    this.syncBreadcrumbVisibility = this.syncBreadcrumbVisibility.bind(this);
     
     // Listen to browser back/forward
     window.addEventListener('popstate', this.handlePopState);
+    // Track scroll for bottom breadcrumb visibility
+    window.addEventListener('scroll', this.syncBreadcrumbVisibility, { passive: true });
     
-    // Initial setup
-    document.addEventListener('DOMContentLoaded', () => {
-      this.breadcrumbsContainer = document.getElementById('dynamic-breadcrumbs');
-      this.renderBreadcrumbs();
+    // Try to find breadcrumb container immediately (if DOM already ready)
+    this.initBreadcrumbs();
+    // Watch for the element to appear (handles async partial loading on any page)
+    this.observeBreadcrumbs();
+  }
+
+  syncBreadcrumbVisibility() {
+    if (!this.breadcrumbsContainer) return;
+    if (this.scrollTick) return;
+    this.scrollTick = requestAnimationFrame(() => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - this.lastScrollY;
+      const isAtBottom = window.innerHeight + currentScrollY >= document.documentElement.scrollHeight - 120;
+      const isAtTop = currentScrollY <= 120;
+
+      if (isAtTop || isAtBottom) {
+        this.breadcrumbsContainer.classList.add('breadcrumb-visible');
+      } else if (Math.abs(delta) > 15) {
+        if (delta > 0) {
+          this.breadcrumbsContainer.classList.remove('breadcrumb-visible');
+        } else {
+          this.breadcrumbsContainer.classList.add('breadcrumb-visible');
+        }
+      }
+      this.lastScrollY = currentScrollY;
+      this.scrollTick = null;
     });
+  }
+
+  initBreadcrumbs() {
+    if (this.breadcrumbsContainer) return;
+    const el = document.getElementById('dynamic-breadcrumbs');
+    if (el) {
+      // Prefer the element inside the navbar partial if one exists.
+      const navbarEl = document.getElementById('navbar-placeholder')
+        && document.getElementById('navbar-placeholder').querySelector('#dynamic-breadcrumbs');
+      this.breadcrumbsContainer = navbarEl || el;
+      this.breadcrumbsContainer.classList.add('breadcrumb-visible');
+      this.renderBreadcrumbs();
+    }
+  }
+
+  observeBreadcrumbs() {
+    if (!document.body) {
+      document.addEventListener('DOMContentLoaded', () => this.observeBreadcrumbs());
+      return;
+    }
+    if (this._observer) return;
+    this._observer = new MutationObserver(() => {
+      const el = document.getElementById('dynamic-breadcrumbs');
+      if (!el) return;
+
+      // If we already have an element, only upgrade to a "better" one
+      // (i.e. the element that lives inside the navbar partial).
+      if (this.breadcrumbsContainer) {
+        if (el === this.breadcrumbsContainer) return;
+        const newIsInNavbar = !!el.closest('#navbar-placeholder');
+        if (!newIsInNavbar) return; // keep the current element
+      }
+
+      this.breadcrumbsContainer = el;
+      this.breadcrumbsContainer.classList.add('breadcrumb-visible');
+      this.renderBreadcrumbs();
+
+      // Once the navbar's element is in play we're done — stop observing.
+      if (el.closest('#navbar-placeholder')) {
+        this._observer.disconnect();
+        this._observer = null;
+      }
+    });
+    this._observer.observe(document.body, { childList: true, subtree: true });
   }
 
   // Parse query parameters into a state object
@@ -88,37 +160,14 @@ class NavigationManager {
     const crumbs = [];
     crumbs.push({ label: 'Home', state: { tab: 'practice', filter: 'all', search: '', problem: null, step: null } });
 
-    // Tab level
-    if (this.state.tab === 'practice') {
-      crumbs.push({ label: 'Practice Problems', state: { tab: 'practice', filter: 'all', search: '', problem: null, step: null } });
-      
-      if (this.state.filter !== 'all') {
-        const filterLabel = this.state.filter.charAt(0).toUpperCase() + this.state.filter.slice(1);
-        crumbs.push({ label: `Filter: ${filterLabel}`, state: { tab: 'practice', filter: this.state.filter, search: '', problem: null, step: null } });
-      }
-      
-      if (this.state.search) {
-        crumbs.push({ label: `Search: "${this.state.search}"`, state: { tab: 'practice', filter: this.state.filter, search: this.state.search, problem: null, step: null } });
-      }
-      
-      if (this.state.problem) {
-        // We might not know the problem title here, rely on the main script to update it if needed.
-        // But we'll put a placeholder
-        crumbs.push({ label: `Problem #${this.state.problem}`, state: this.state, isActive: true });
-      }
-    } else if (this.state.tab === 'roadmap') {
-      crumbs.push({ label: 'Learning Roadmaps', state: { tab: 'roadmap', step: null } });
-      
-      const typeLabel = this.state.roadmapType === 'advanced' ? 'Advanced' : 'Basic';
-      crumbs.push({ label: `${typeLabel} Path`, state: { tab: 'roadmap', roadmapType: this.state.roadmapType, step: null } });
-      
-      if (this.state.step) {
-        crumbs.push({ label: `Step ${this.state.step}`, state: this.state, isActive: true });
-      }
-    } else if (this.state.tab === 'leaderboard') {
-      crumbs.push({ label: 'Leaderboard', state: this.state, isActive: true });
-    } else if (this.state.tab === 'community') {
-      crumbs.push({ label: 'Community', state: this.state, isActive: true });
+    const hasSearchParams = !!window.location.search;
+
+    if (hasSearchParams) {
+      // SPA navigation on index.html — build crumbs from URL params
+      this._buildSPACrumbs(crumbs);
+    } else {
+      // Sub-page (standalone HTML) — build from URL path + title
+      this._buildSubPageCrumbs(crumbs);
     }
 
     // Mark the last as active if not already
@@ -149,6 +198,104 @@ class NavigationManager {
         this.updateState(targetState);
       });
     });
+  }
+
+  // SPA breadcrumb logic — driven by URL query params
+  _buildSPACrumbs(crumbs) {
+    const isHomepage =
+      this.state.tab === 'practice' &&
+      this.state.filter === 'all' &&
+      !this.state.search &&
+      !this.state.problem &&
+      !this.state.step;
+
+    if (isHomepage) return;
+
+    if (this.state.tab === 'practice') {
+      crumbs.push({ label: 'Practice Problems', state: { tab: 'practice', filter: 'all', search: '', problem: null, step: null } });
+
+      if (this.state.filter !== 'all') {
+        const filterLabel = this.state.filter.charAt(0).toUpperCase() + this.state.filter.slice(1);
+        crumbs.push({ label: `Filter: ${filterLabel}`, state: { tab: 'practice', filter: this.state.filter, search: '', problem: null, step: null } });
+      }
+
+      if (this.state.search) {
+        crumbs.push({ label: `Search: "${this.state.search}"`, state: { tab: 'practice', filter: this.state.filter, search: this.state.search, problem: null, step: null } });
+      }
+
+      if (this.state.problem) {
+        crumbs.push({ label: `Problem #${this.state.problem}`, state: this.state, isActive: true });
+      }
+    } else if (this.state.tab === 'roadmap') {
+      crumbs.push({ label: 'Learning Roadmaps', state: { tab: 'roadmap', step: null } });
+
+      const typeLabel = this.state.roadmapType === 'advanced' ? 'Advanced' : 'Basic';
+      crumbs.push({ label: `${typeLabel} Path`, state: { tab: 'roadmap', roadmapType: this.state.roadmapType, step: null } });
+
+      if (this.state.step) {
+        crumbs.push({ label: `Step ${this.state.step}`, state: this.state, isActive: true });
+      }
+    } else if (this.state.tab === 'leaderboard') {
+      crumbs.push({ label: 'Leaderboard', state: this.state, isActive: true });
+    } else if (this.state.tab === 'community') {
+      crumbs.push({ label: 'Community', state: this.state, isActive: true });
+    }
+  }
+
+  // Build breadcrumb crumbs for standalone sub-pages from URL path + title.
+  // Detects /pages/[category]/[subcategory]/ patterns to insert a parent crumb.
+  _buildSubPageCrumbs(crumbs) {
+    const path = window.location.pathname;
+    const segments = path.split('/').filter(Boolean);
+    const pageTitle = this._getSubPageTitle();
+
+    // Under /pages/[category]/… — insert the category as a parent crumb
+    if (segments.length >= 3 && segments[0] === 'pages') {
+      const category = segments[1];
+      const categoryLabel = category
+        .split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+
+      // Skip if the page title already begins with the category name
+      // (e.g. /pages/interview/interview.html with title "Interview Preparation")
+      const titleStarts = pageTitle &&
+        pageTitle.toLowerCase().startsWith(categoryLabel.toLowerCase());
+      if (!titleStarts) {
+        crumbs.push({
+          label: categoryLabel,
+          state: this.state,
+        });
+      }
+    }
+
+    if (pageTitle) {
+      crumbs.push({ label: pageTitle, state: this.state, isActive: true });
+    }
+  }
+
+  // Derive a breadcrumb label for standalone sub-pages from document.title
+  _getSubPageTitle() {
+    const raw = document.title || '';
+    // Most sub-pages use "Page Name — Algo Infinity Verse" or "Page Name | ..."
+    const parts = raw.split(/\s*[—|–]\s*/).map(s => s.trim()).filter(Boolean);
+    if (parts.length > 0) {
+      const title = parts[0];
+      if (title && title !== 'Home' && !/^Algo\s+Infinity\s+Verse/i.test(title)) {
+        return title;
+      }
+    }
+
+    // Fallback: derive from the URL path folder name
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    if (segments.length >= 2) {
+      const folder = segments[segments.length - 2];
+      return folder
+        .split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+    return null;
   }
 
   // Update the label of the active problem or step dynamically

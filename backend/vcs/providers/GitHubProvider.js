@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml';
 
 export class GitHubProvider extends VCSProvider {
   async getCIConfigFiles() {
-    const match = this.repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    const match = this.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
     if (!match) throw new Error("Invalid GitHub URL");
 
     const owner = match[1];

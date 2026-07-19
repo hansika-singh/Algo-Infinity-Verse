@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sliding Window Invariant Lab | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive sliding window lab focused on invariants: watch expand/shrink live, track sum/count, and learn why each move happens."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="sliding-window-lab.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="sliding-window-lab">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero sw-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Expand · Shrink · Maintain</span>
+          <span class="main-title sw-gradient">Sliding Window Invariant Lab</span>
+          <span class="subtitle">See why each move happens — not just what happens</span>
+        </h1>
+        <p class="section-subtitle">
+          Watch the window grow and shrink live, track the active invariant (sum / count), and read a
+          short explanation for every expand, shrink, or slide.
+        </p>
+        <div class="hero-buttons">
+          <a href="#lab" class="btn btn-primary sw-btn-primary"
+            ><i class="fas fa-play"></i> Open Lab</a
+          >
+          <a href="#learn" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> How Invariants Work</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="lab" class="section">
+      <div class="container">
+        <div class="sw-control-card">
+          <div class="sw-row">
+            <span class="sw-row-label">Problem:</span>
+            <div class="sw-algo-btns" role="group" aria-label="Sample problem">
+              <button type="button" class="sw-algo-btn active" data-problem="maxSumK">
+                Max Sum (size K)
+              </button>
+              <button type="button" class="sw-algo-btn" data-problem="longestUnique">
+                Longest Unique
+              </button>
+            </div>
+          </div>
+
+          <div class="sw-row">
+            <span class="sw-row-label">Input:</span>
+            <input
+              type="text"
+              id="swInput"
+              class="sw-text-input"
+              value="2, 1, 5, 1, 3, 2"
+              aria-label="Array or string input"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <label class="sw-k-wrap" id="swKWrap" for="swK">
+              K
+              <input type="number" id="swK" class="sw-k-input" value="3" min="1" max="20" />
+            </label>
+            <button type="button" class="sw-action-btn" id="swApplyBtn">
+              <i class="fas fa-sync-alt"></i> Apply
+            </button>
+          </div>
+
+          <div class="sw-row">
+            <span class="sw-row-label">Presets:</span>
+            <div class="sw-preset-btns">
+              <button type="button" class="sw-preset-btn" data-preset="max1">[2,1,5,1,3,2] K=3</button>
+              <button type="button" class="sw-preset-btn" data-preset="max2">[1,4,2,10,2,3,1,0,20] K=4</button>
+              <button type="button" class="sw-preset-btn" data-preset="uniq1">abcabcbb</button>
+              <button type="button" class="sw-preset-btn" data-preset="uniq2">pwwkew</button>
+            </div>
+          </div>
+
+          <div class="sw-row sw-controls-row">
+            <span class="sw-row-label">Playback:</span>
+            <div class="sw-playback">
+              <button type="button" class="sw-ctrl-btn" id="swResetBtn" aria-label="Reset">
+                <i class="fas fa-undo"></i>
+              </button>
+              <button type="button" class="sw-ctrl-btn" id="swStepBackBtn" aria-label="Step back">
+                <i class="fas fa-step-backward"></i>
+              </button>
+              <button type="button" class="sw-ctrl-btn sw-play" id="swPlayBtn" aria-label="Play">
+                <i class="fas fa-play"></i>
+              </button>
+              <button type="button" class="sw-ctrl-btn" id="swStepBtn" aria-label="Step forward">
+                <i class="fas fa-step-forward"></i>
+              </button>
+              <label class="sw-speed-wrap" for="swSpeed">
+                Speed
+                <input type="range" id="swSpeed" min="1" max="5" value="3" />
+                <span id="swSpeedLabel">Normal</span>
+              </label>
+            </div>
+            <span class="sw-step-meta" id="swStepMeta" aria-live="polite">Step 0 / 0</span>
+          </div>
+        </div>
+
+        <div class="sw-workspace">
+          <div class="sw-main">
+            <div class="sw-card">
+              <h3><i class="fas fa-window-maximize"></i> Array / String Window</h3>
+              <div class="sw-array" id="swArray" role="list" aria-label="Input elements"></div>
+              <div class="sw-pointers" id="swPointers" aria-hidden="true"></div>
+              <div class="sw-legend">
+                <span><i class="sw-dot in-window"></i> In window</span>
+                <span><i class="sw-dot left-ptr"></i> Left (L)</span>
+                <span><i class="sw-dot right-ptr"></i> Right (R)</span>
+                <span><i class="sw-dot best"></i> Best answer region</span>
+              </div>
+            </div>
+
+            <div class="sw-card sw-why-card">
+              <h3><i class="fas fa-comment-dots"></i> Why this move</h3>
+              <p class="sw-why-text" id="swWhy" role="status" aria-live="polite">
+                Apply an input and press Play or Step to begin.
+              </p>
+              <div class="sw-move-badge" id="swMoveBadge">idle</div>
+            </div>
+          </div>
+
+          <aside class="sw-side">
+            <div class="sw-card">
+              <h3><i class="fas fa-shield-alt"></i> Current Invariant</h3>
+              <dl class="sw-invariant" id="swInvariant">
+                <div>
+                  <dt>Window [L, R]</dt>
+                  <dd id="invBounds">—</dd>
+                </div>
+                <div>
+                  <dt>Window size</dt>
+                  <dd id="invSize">—</dd>
+                </div>
+                <div>
+                  <dt id="invMetricLabel">Sum</dt>
+                  <dd id="invMetric">—</dd>
+                </div>
+                <div>
+                  <dt>Valid?</dt>
+                  <dd id="invValid">—</dd>
+                </div>
+                <div>
+                  <dt>Best so far</dt>
+                  <dd id="invBest">—</dd>
+                </div>
+              </dl>
+              <p class="sw-invariant-desc" id="invDesc">
+                Invariant: maintain a window that satisfies the problem constraint while optimizing
+                the answer.
+              </p>
+            </div>
+
+            <div class="sw-card">
+              <h3><i class="fas fa-list-ol"></i> Step Trace</h3>
+              <ol class="sw-trace" id="swTrace" aria-live="polite"></ol>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title">How Sliding Window Invariants Work</h2>
+        <div class="sw-learn-grid">
+          <div class="sw-learn-card">
+            <div class="sw-learn-num">01</div>
+            <h3>Expand (move R)</h3>
+            <p>
+              Grow the window to the right to include more candidates. Update the metric (sum /
+              frequency map) so the invariant stays accurate.
+            </p>
+          </div>
+          <div class="sw-learn-card">
+            <div class="sw-learn-num">02</div>
+            <h3>Shrink (move L)</h3>
+            <p>
+              When the window becomes invalid (duplicate chars, size &gt; K, etc.), move the left
+              pointer until the invariant holds again.
+            </p>
+          </div>
+          <div class="sw-learn-card">
+            <div class="sw-learn-num">03</div>
+            <h3>Record answer</h3>
+            <p>
+              While the window is valid, update the best answer (max sum, max length). Never trust a
+              window that breaks the invariant.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="sliding-window-lab.js"></script>
+  </body>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Search Boundary Finder | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Compare leftmost, rightmost, and insert-position binary search side-by-side with live lo/hi/mid highlights and mid±1 rules."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="binary-search-boundaries.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="binary-search-boundaries">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero bs-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Leftmost · Rightmost · Insert</span>
+          <span class="main-title bs-gradient">Binary Search Boundary Finder</span>
+          <span class="subtitle">Same array. Three answers. Clear mid±1 rules.</span>
+        </h1>
+        <p class="section-subtitle">
+          Watch lo, hi, and mid update on every step for first occurrence, last occurrence, and insert
+          position — side by side on one sorted array.
+        </p>
+        <div class="hero-buttons">
+          <a href="#lab" class="btn btn-primary bs-btn-primary"
+            ><i class="fas fa-play"></i> Open Finder</a
+          >
+          <a href="#learn" class="btn btn-secondary"
+            ><i class="fas fa-graduation-cap"></i> mid±1 Rules</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="lab" class="section">
+      <div class="container">
+        <div class="bs-control-card">
+          <div class="bs-row">
+            <span class="bs-row-label">Array:</span>
+            <input
+              type="text"
+              id="bsArrayInput"
+              class="bs-text-input"
+              value="1, 2, 2, 2, 3, 4, 5"
+              aria-label="Sorted array input"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <label class="bs-target-wrap" for="bsTarget">
+              Target
+              <input type="number" id="bsTarget" class="bs-target-input" value="2" />
+            </label>
+            <button type="button" class="bs-action-btn" id="bsApplyBtn">
+              <i class="fas fa-sync-alt"></i> Apply
+            </button>
+          </div>
+
+          <div class="bs-row">
+            <span class="bs-row-label">Presets:</span>
+            <div class="bs-preset-btns">
+              <button type="button" class="bs-preset-btn" data-preset="dup">
+                Duplicates [1,2,2,2,3] → 2
+              </button>
+              <button type="button" class="bs-preset-btn" data-preset="single">
+                Single [7] → 7
+              </button>
+              <button type="button" class="bs-preset-btn" data-preset="equal">
+                All equal [5,5,5,5] → 5
+              </button>
+              <button type="button" class="bs-preset-btn" data-preset="missing">
+                Missing [1,3,5,7] → 4
+              </button>
+              <button type="button" class="bs-preset-btn" data-preset="empty">Empty [] → 1</button>
+            </div>
+          </div>
+
+          <div class="bs-row bs-controls-row">
+            <span class="bs-row-label">Playback:</span>
+            <div class="bs-playback">
+              <button type="button" class="bs-ctrl-btn" id="bsResetBtn" aria-label="Reset">
+                <i class="fas fa-undo"></i>
+              </button>
+              <button type="button" class="bs-ctrl-btn" id="bsStepBackBtn" aria-label="Step back">
+                <i class="fas fa-step-backward"></i>
+              </button>
+              <button type="button" class="bs-ctrl-btn bs-play" id="bsPlayBtn" aria-label="Play">
+                <i class="fas fa-play"></i>
+              </button>
+              <button type="button" class="bs-ctrl-btn" id="bsStepBtn" aria-label="Step forward">
+                <i class="fas fa-step-forward"></i>
+              </button>
+              <label class="bs-speed-wrap" for="bsSpeed">
+                Speed
+                <input type="range" id="bsSpeed" min="1" max="5" value="3" />
+                <span id="bsSpeedLabel">Normal</span>
+              </label>
+            </div>
+            <span class="bs-step-meta" id="bsStepMeta" aria-live="polite">Step 0 / 0</span>
+          </div>
+        </div>
+
+        <div class="bs-results" id="bsResults" aria-live="polite">
+          <div class="bs-result-chip">
+            <span class="bs-result-label">Leftmost</span>
+            <strong id="resLeft">—</strong>
+          </div>
+          <div class="bs-result-chip">
+            <span class="bs-result-label">Rightmost</span>
+            <strong id="resRight">—</strong>
+          </div>
+          <div class="bs-result-chip">
+            <span class="bs-result-label">Insert pos</span>
+            <strong id="resInsert">—</strong>
+          </div>
+        </div>
+
+        <div class="bs-panels" id="bsPanels">
+          <!-- filled by JS -->
+        </div>
+
+        <div class="bs-card bs-rules-card">
+          <h3><i class="fas fa-book"></i> When to use mid±1</h3>
+          <p class="bs-why" id="bsWhy" role="status" aria-live="polite">
+            Apply an array and press Play or Step to begin.
+          </p>
+          <div class="bs-rules-grid">
+            <div class="bs-rule">
+              <h4>Leftmost (first)</h4>
+              <p>
+                If <code>arr[mid] &gt;= target</code> → <code>hi = mid - 1</code> (keep searching
+                left). Else <code>lo = mid + 1</code>.
+              </p>
+            </div>
+            <div class="bs-rule">
+              <h4>Rightmost (last)</h4>
+              <p>
+                If <code>arr[mid] &lt;= target</code> → <code>lo = mid + 1</code> (keep searching
+                right). Else <code>hi = mid - 1</code>.
+              </p>
+            </div>
+            <div class="bs-rule">
+              <h4>Insert position</h4>
+              <p>
+                Lower bound: first index where <code>arr[i] &gt;= target</code>. Same bias as
+                leftmost; answer is final <code>lo</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title">Boundary Binary Search Cheatsheet</h2>
+        <div class="bs-learn-grid">
+          <div class="bs-learn-card">
+            <div class="bs-learn-num">01</div>
+            <h3>Why mid±1 matters</h3>
+            <p>
+              Inclusive <code>[lo, hi]</code> loops need careful updates. Wrong bias causes infinite
+              loops or missing the first/last duplicate.
+            </p>
+          </div>
+          <div class="bs-learn-card">
+            <div class="bs-learn-num">02</div>
+            <h3>Duplicates</h3>
+            <p>
+              Classic binary search may land on any match. Leftmost / rightmost keep going past the
+              match to pin the boundary.
+            </p>
+          </div>
+          <div class="bs-learn-card">
+            <div class="bs-learn-num">03</div>
+            <h3>Insert position</h3>
+            <p>
+              Even if the target is missing, lower-bound search returns where it <em>would</em> be
+              inserted to keep the array sorted.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="binary-search-boundaries.js"></script>
+  </body>
+</html>

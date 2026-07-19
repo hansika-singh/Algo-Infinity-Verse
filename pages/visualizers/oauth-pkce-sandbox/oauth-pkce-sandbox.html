@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth 2.0 PKCE Sandbox | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Interactive sandbox for the OAuth 2.0 Authorization Code Flow with PKCE."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="oauth-pkce-sandbox.css" />
+    <script src="/theme.js"></script>
+  </head>
+  <body class="oauth-body">
+    <nav class="navbar oauth-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge"><i class="fas fa-lock"></i> OAuth 2.0 Protocol Analyzer</div>
+    </nav>
+
+    <main class="oauth-workspace">
+      <!-- Three Columns for the 3 Actors -->
+      <div class="actor-columns">
+        <!-- Column 1: Client Application (SPA) -->
+        <section class="actor-col client-col">
+          <div class="col-header">
+            <h2><i class="fas fa-mobile-alt"></i> Client App (SPA)</h2>
+            <span class="badge badge-public">Public Client</span>
+          </div>
+
+          <div class="action-card" id="step1-card">
+            <h3>1. Initiate Login</h3>
+            <p>
+              The client needs to generate a random <code>code_verifier</code> and hash it to create
+              a <code>code_challenge</code>.
+            </p>
+            <div class="crypto-box">
+              <div class="crypto-row">
+                <label>Verifier:</label>
+                <input type="text" id="codeVerifier" readonly />
+              </div>
+              <div class="crypto-row">
+                <label>Challenge (SHA-256):</label>
+                <input type="text" id="codeChallenge" readonly />
+              </div>
+            </div>
+            <button class="btn btn-action" id="btnStep1">
+              <i class="fas fa-sign-in-alt"></i> Generate & Redirect to Auth
+            </button>
+          </div>
+
+          <div class="action-card disabled" id="step3-card">
+            <h3>3. Exchange Code for Token</h3>
+            <p>
+              The client receives the `authorization_code` from the redirect and POSTs it along with
+              the original `code_verifier`.
+            </p>
+            <button class="btn btn-action" id="btnStep3" disabled>
+              <i class="fas fa-exchange-alt"></i> POST /oauth/token
+            </button>
+          </div>
+
+          <div class="action-card disabled" id="step4-card">
+            <h3>4. Fetch Data</h3>
+            <p>Use the access token (JWT) to securely fetch data from the Resource Server.</p>
+            <button class="btn btn-action" id="btnStep4" disabled>
+              <i class="fas fa-download"></i> GET /api/user_data
+            </button>
+            <pre class="data-result hidden" id="userDataResult"></pre>
+          </div>
+        </section>
+
+        <!-- Column 2: Authorization Server (Auth0) -->
+        <section class="actor-col auth-col">
+          <div class="col-header">
+            <h2><i class="fas fa-server"></i> Auth Server</h2>
+            <span class="badge badge-secure">Trusted Environment</span>
+          </div>
+
+          <div class="action-card disabled" id="step2-card">
+            <h3>2. User Authentication</h3>
+            <p>
+              The user authenticates on the Auth Server. The Auth Server saves the `code_challenge`
+              for later.
+            </p>
+            <div class="server-state">
+              Saved Challenge: <span id="serverSavedChallenge" class="mono text-muted">None</span>
+            </div>
+            <button class="btn btn-secondary" id="btnStep2" disabled>
+              <i class="fas fa-user-check"></i> Simulate User Login
+            </button>
+          </div>
+
+          <div class="server-log" id="authServerLog">
+            <div class="log-title">Auth Server Logs</div>
+            <div class="log-content" id="authLogContent">Waiting for requests...</div>
+          </div>
+        </section>
+
+        <!-- Column 3: Resource Server (API) -->
+        <section class="actor-col resource-col">
+          <div class="col-header">
+            <h2><i class="fas fa-database"></i> Resource Server</h2>
+            <span class="badge badge-secure">Protected API</span>
+          </div>
+
+          <div class="server-log" id="resourceServerLog">
+            <div class="log-title">API Server Logs</div>
+            <div class="log-content" id="resourceLogContent">Waiting for API calls...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="oauth-pkce-sandbox.js"></script>
+  </body>
+</html>

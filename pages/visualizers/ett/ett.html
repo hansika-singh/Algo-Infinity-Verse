@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Euler Tour Tree Visualizer · Algo Infinity Verse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ett.css">
+</head>
+<body>
+
+<div class="starfield" id="starfield"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">∞</span>
+    <div class="brand-text">
+      <span class="brand-name">Algo</span>
+      <span class="brand-sub">INFINITY VERSE</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <span>Learn</span><span>Practice</span><span class="active">Interview</span><span>Discussions</span>
+  </nav>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <p class="eyebrow">DSA TOPIC · DYNAMIC UNDIRECTED CONNECTIVITY</p>
+    <h1>Tour&#8209;Sequence <span class="accent">Engine</span></h1>
+    <p class="subhead">A forest, folded into a sequence. A sequence, folded into a BST.</p>
+    <p class="lede">An Euler Tour Tree stores each tree in a forest as its <strong>Euler tour</strong> — every edge visited twice, a genuine 2n&minus;1&#8209;length sequence — kept inside a balanced BST. <code>link</code> and <code>cut</code> become substring splice/extract operations; <code>connected(u, v)</code> becomes "same BST." It's easy to confuse with Link&#8209;Cut Trees, but it solves undirected forest connectivity with completely different machinery.</p>
+  </section>
+
+  <section class="panel controls-panel">
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="nodeCount">Nodes (n)</label>
+        <input type="number" id="nodeCount" value="10" min="2" max="60">
+      </div>
+      <button class="btn btn-primary" id="btnGenerate">🌲 Generate Random Tree</button>
+      <button class="btn btn-secondary" id="btnBuildTour">▶ Animate Euler Tour Construction</button>
+      <button class="btn btn-ghost" id="btnReset">Reset (all isolated)</button>
+    </div>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="focusNode">Focus node (view its tour)</label>
+        <input type="number" id="focusNode" value="0" min="0">
+      </div>
+      <div class="control-group">
+        <label for="uInput">u</label>
+        <input type="number" id="uInput" value="0" min="0">
+      </div>
+      <div class="control-group">
+        <label for="vInput">v</label>
+        <input type="number" id="vInput" value="1" min="0">
+      </div>
+      <button class="btn btn-primary" id="btnLink">⑂ Link(u, v)</button>
+      <button class="btn btn-secondary" id="btnCut">✂ Cut(u, v)</button>
+    </div>
+    <div class="status-line" id="statusLine">Generate a tree, then animate its Euler tour construction — each edge is visited exactly twice.</div>
+  </section>
+
+  <section class="panel dual-view">
+    <div class="view-col strip-col">
+      <div class="view-header">
+        <h2>Tour Strip <span class="view-tag" id="stripTag">length —</span></h2>
+      </div>
+      <div class="tour-strip" id="tourStrip"></div>
+    </div>
+  </section>
+
+  <section class="panel dual-view">
+    <div class="view-col">
+      <div class="view-header">
+        <h2>Sequence&#8209;as&#8209;BST <span class="view-tag">in-order traversal = the tour above</span></h2>
+      </div>
+      <svg id="bstSvg" viewBox="0 0 900 380" preserveAspectRatio="xMidYMin meet"></svg>
+    </div>
+  </section>
+
+  <section class="panel connectivity-panel">
+    <div class="view-header">
+      <h2>Connectivity Query <span class="view-tag">O(log n) "same BST" check vs. brute-force BFS/DFS</span></h2>
+    </div>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="connU">u</label>
+        <input type="number" id="connU" value="0" min="0">
+      </div>
+      <div class="control-group">
+        <label for="connV">v</label>
+        <input type="number" id="connV" value="1" min="0">
+      </div>
+      <button class="btn btn-primary" id="btnCheckConn">🔍 Check connected(u, v)</button>
+    </div>
+    <div class="conn-results" id="connResults">
+      <div class="stat"><span class="stat-label">ETT answer (same BST)</span><span class="stat-value" id="connEtt">–</span></div>
+      <div class="stat"><span class="stat-label">Brute-force BFS/DFS</span><span class="stat-value" id="connBrute">–</span></div>
+      <div class="stat"><span class="stat-label">Match?</span><span class="stat-value" id="connMatch">–</span></div>
+    </div>
+  </section>
+
+  <section class="panel stress-panel">
+    <div class="view-header">
+      <h2>Stress&#8209;Test Verification <span class="view-tag">random link/cut sequences, cross-checked live</span></h2>
+    </div>
+    <p class="stress-copy">Fires a batch of random <code>link</code>/<code>cut</code> calls at the current forest and, after every single one, checks: every affected tour is still a genuine valid Euler tour of its component, and a sample of <code>connected(u, v)</code> queries match brute-force BFS/DFS exactly.</p>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="opCount">Operations</label>
+        <input type="number" id="opCount" value="150" min="10" max="2000">
+      </div>
+      <button class="btn btn-primary" id="btnStress">▶ Run Stress Test</button>
+    </div>
+    <div class="stress-results" id="stressResults">
+      <div class="stat"><span class="stat-label">Operations run</span><span class="stat-value" id="stressOps">–</span></div>
+      <div class="stat"><span class="stat-label">Connectivity checks</span><span class="stat-value" id="stressChecks">–</span></div>
+      <div class="stat"><span class="stat-label">Mismatches</span><span class="stat-value" id="stressMismatch">–</span></div>
+      <div class="stat"><span class="stat-label">Invalid tours found</span><span class="stat-value" id="stressInvalid">–</span></div>
+      <div class="stat"><span class="stat-label">Wrong accept/reject</span><span class="stat-value" id="stressBadReject">–</span></div>
+    </div>
+  </section>
+
+  <footer class="foot-note">
+    Built as a Tour&#8209;Sequence Engine for issue <strong>#2451</strong> · Algo Infinity Verse
+  </footer>
+
+</main>
+
+<script src="ett-core.js"></script>
+<script src="ett.js"></script>
+</body>
+</html>

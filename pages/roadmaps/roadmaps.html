@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Roadmaps Hub | Algo Infinity Verse</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="roadmaps.css" />
+    <script src="/theme.js"></script>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="roadmap-hub-container">
+      <button type="button" class="rm-back-btn" id="rmBackBtn" aria-label="Go back to previous page">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+
+      <header class="hub-header">
+        <h1 class="hub-title">Learning Roadmaps Hub</h1>
+        <p class="hub-subtitle">
+          Accelerate your learning path with our structured, step-by-step DSA roadmaps.
+          Choose your level and follow the path to mastery.
+        </p>
+      </header>
+
+      <nav class="hub-tab-nav" aria-label="Roadmap level selection">
+        <button type="button" class="hub-tab active" data-roadmap="beginner">
+          <span class="hub-tab-icon"><i class="fas fa-seedling"></i></span>
+          Beginner
+        </button>
+        <button type="button" class="hub-tab" data-roadmap="intermediate">
+          <span class="hub-tab-icon"><i class="fas fa-chart-line"></i></span>
+          Intermediate
+        </button>
+        <button type="button" class="hub-tab" data-roadmap="advanced">
+          <span class="hub-tab-icon"><i class="fas fa-crown"></i></span>
+          Advanced
+        </button>
+      </nav>
+
+      <div class="hub-main">
+
+        <!-- Roadmap Detail Section -->
+        <section class="hub-detail">
+          <div class="detail-header">
+            <h2 id="currentRoadmapTitle">Beginner DSA Roadmap</h2>
+            <p id="currentRoadmapDesc">Loading description...</p>
+            <div class="detail-meta">
+              <span id="currentRoadmapTime">Estimated: --</span>
+              <div class="view-toggle-wrapper">
+                <div class="view-toggle" id="viewToggle">
+                  <button type="button" id="listViewBtn" class="view-toggle-btn active" aria-label="List view">
+                    <i class="fas fa-list"></i> List
+                  </button>
+                  <button type="button" id="treeViewBtn" class="view-toggle-btn" aria-label="Tree view">
+                    <i class="fas fa-project-diagram"></i> Tree
+                  </button>
+                </div>
+              </div>
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="stepSearch" placeholder="Search steps..." />
+              </div>
+            </div>
+          </div>
+
+          <!-- List View -->
+          <div class="timeline" id="timelineContainer">
+            <!-- Dynamically populated steps -->
+          </div>
+
+          <!-- Tree View -->
+          <div class="tree-view-container hidden" id="treeViewContainer">
+            <div class="roadmap-container" id="roadmapVisualTree"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Roadmap Step Modal -->
+    <div class="modal" id="roadmapStepModal" role="dialog" aria-modal="true" aria-labelledby="roadmapStepModalTitle">
+      <div class="modal-content roadmap-modal-content">
+        <div class="modal-header">
+          <div class="step-badge-tag" id="roadmapStepBadge">Step 1</div>
+          <h3 id="roadmapStepModalTitle">Introduction to DSA</h3>
+          <button type="button" class="modal-close" id="roadmapStepModalClose" aria-label="Close roadmap step modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="roadmap-step-theory">
+            <h4><i class="fas fa-book-open"></i> Theory & Key Concepts</h4>
+            <div id="roadmapStepTheoryContent" class="theory-text"></div>
+          </div>
+
+          <div id="roadmapStepComplexitySection" class="roadmap-step-complexity hidden">
+            <h4><i class="fas fa-table"></i> Complexity Reference</h4>
+            <div class="table-responsive">
+              <table class="complexity-table">
+                <thead>
+                  <tr>
+                    <th>Operation</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                  </tr>
+                </thead>
+                <tbody id="roadmapStepComplexityBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="roadmapStepQuizSection" class="roadmap-step-quiz hidden">
+            <h4><i class="fas fa-graduation-cap"></i> Concept Verification Quiz</h4>
+            <p class="quiz-instruction-text">
+              Answer the questions below correctly to complete this step and earn +50 XP!
+            </p>
+            <div id="roadmapStepQuizContent"></div>
+            <button type="button" class="btn btn-primary" id="roadmapStepSubmitQuizBtn">Submit Quiz</button>
+          </div>
+
+          <div id="roadmapStepProblemsSection" class="roadmap-step-problems hidden">
+            <h4><i class="fas fa-code"></i> Curated Coding Practice</h4>
+            <p class="problems-instruction-text">
+              Solve at least one of the coding problems below to complete this step!
+            </p>
+            <ul class="roadmap-problems-list" id="roadmapStepProblemsList"></ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="roadmapStepModalCloseBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/interceptors.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/modules/roadmap-tree.js"></script>
+    <script src="roadmaps.js"></script>
+  </body>
+</html>

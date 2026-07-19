@@ -1,0 +1,364 @@
+/* ─────────────────────────────────────────────
+   Constraint → Complexity Estimator
+   ───────────────────────────────────────────── */
+
+.cc-gradient {
+  background: linear-gradient(135deg, #22c55e 0%, #06b6d4 50%, #3b82f6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.cc-btn-primary {
+  background: linear-gradient(135deg, #22c55e 0%, #06b6d4 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cc-hero .section-subtitle {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.cc-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.cc-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  backdrop-filter: blur(10px);
+}
+
+.cc-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cc-card h3 i {
+  color: var(--accent);
+}
+
+.cc-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: sticky;
+  top: 5.5rem;
+}
+
+.cc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cc-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.cc-field label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.cc-field input {
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text-primary);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+.cc-hint {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.cc-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cc-preset {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cc-preset:hover,
+.cc-preset.active {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.cc-preset.active {
+  background: rgba(6, 182, 212, 0.18);
+}
+
+.cc-estimate-btn {
+  margin-top: 0.25rem;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #22c55e, #06b6d4);
+  color: #fff;
+  font-weight: 700;
+  font-family: Poppins, sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cc-estimate-btn:hover {
+  filter: brightness(1.08);
+}
+
+.cc-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cc-budget {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 1rem;
+}
+
+.cc-budget > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cc-budget dt {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cc-budget dd {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cc-explain {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.cc-safe-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cc-safe-list:empty::after {
+  content: 'No estimate yet.';
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.cc-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.cc-table-wrap {
+  overflow-x: auto;
+}
+
+.cc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.cc-table th,
+.cc-table td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cc-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.cc-table td {
+  font-family: 'Fira Code', monospace;
+  color: var(--text-primary);
+}
+
+.cc-verdict {
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.cc-verdict.safe {
+  background: rgba(34, 197, 94, 0.18);
+  color: #86efac;
+}
+
+.cc-verdict.borderline {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.cc-verdict.unsafe {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.cc-ratio-bar {
+  display: block;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-top: 0.35rem;
+  overflow: hidden;
+  max-width: 120px;
+}
+
+.cc-ratio-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #22c55e;
+  max-width: 100%;
+}
+
+.cc-ratio-fill.borderline {
+  background: #f59e0b;
+}
+
+.cc-ratio-fill.unsafe {
+  background: #ef4444;
+}
+
+.cc-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.cc-guide-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.cc-guide-num {
+  font-family: Orbitron, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #22c55e, #06b6d4);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.cc-guide-card h3 {
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+}
+
+.cc-guide-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+body.light-theme .cc-field input {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.light-theme .cc-budget > div,
+body.light-theme .cc-table th,
+body.light-theme .cc-table td {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 900px) {
+  .cc-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cc-inputs {
+    position: static;
+  }
+
+  .cc-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .cc-field-row,
+  .cc-budget {
+    grid-template-columns: 1fr;
+  }
+}

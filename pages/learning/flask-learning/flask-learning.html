@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Flask | Algo Infinity Verse</title>
+  <meta name="description"
+    content="Learn Flask from beginner to advanced with examples, routing structures, database integrations, mini-projects, and interactive checkpoints." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="flask-learning.css" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css"
+    integrity="sha512-W/zrbCncQnky/EzL+/AYwTtosvrM+YG/V6piQLSe2HuKS6cmbw89kjYkp3tWFn1dkWV7L1ruvJyKbLz73Vlgfg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script>
+      (function() {
+        try {
+          var storedTheme = localStorage.getItem('theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+          } else {
+            document.documentElement.classList.remove('light-mode');
+          }
+        } catch (e) {}
+      })();
+    </script>
+</head>
+
+<body data-page="flask-learning">
+
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="infinity-loader">∞</div>
+      <h2>Algo Infinity Verse</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <section id="home" class="hero">
+    <div class="hero-background">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="title-line">Build Lightweight Web Apps With</span>
+        <span class="main-title gradient-text">Flask</span>
+        <span class="subtitle">The Elegant Python Micro-Framework</span>
+      </h1>
+      <div class="typing-container">
+        <span class="typing-text_flask" id="typingTextFlask"></span>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="hero-buttons">
+        <a href="#introduction" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Application
+        </a>
+        <a href="#blueprints" class="btn btn-secondary">
+          <i class="fas fa-cubes"></i> Architecture Patterns
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <span class="stat-number" data-target="9">0</span>
+          <span class="stat-label">Core Modules</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="4">0</span>
+          <span class="stat-label">Mini Projects</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="9">0</span>
+          <span class="stat-label">Checkpoint Quizzes</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <section id="flask-learning" class="section">
+    <div class="container">
+
+      <h2 class="section-title">
+        <span class="title-icon">🌶️</span>
+        Learn Flask
+      </h2>
+      <p class="section-subtitle">
+        Master lightweight minimalist backend development, dynamic routing templates, and structural RESTful endpoints.
+      </p>
+
+      <div class="flask-progress-bar" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Learning progress">
+        <span class="flask-progress-text">
+          <span id="progressCount">0</span> / 9 topics completed
+        </span>
+        <div class="flask-progress-track">
+          <div class="flask-progress-fill" id="progressFill"></div>
+        </div>
+        <span class="flask-progress-percent" id="progressPercent">0%</span>
+      </div>
+
+      <div class="flask-layout">
+
+        <aside class="flask-sidebar" aria-label="Topic navigation">
+          <div class="flask-sidebar-title">Modules</div>
+            <ul class="flask-sidebar-nav" id="topicNav">
+            <li><a href="#introduction" class="flask-nav-link"><span class="nav-icon">📖</span> Flask Basics</a></li>
+            <li><a href="#routing"      class="flask-nav-link"><span class="nav-icon">🔄</span> Routing & URLs</a></li>
+            <li><a href="#templates"    class="flask-nav-link"><span class="nav-icon">🎨</span> Jinja Templates</a></li>
+            <li><a href="#forms"        class="flask-nav-link"><span class="nav-icon">📝</span> Forms & WTF</a></li>
+            <li><a href="#sqlalchemy"   class="flask-nav-link"><span class="nav-icon">🗄️</span> SQLAlchemy ORM</a></li>
+            <li><a href="#auth"         class="flask-nav-link"><span class="nav-icon">🔒</span> Authentication</a></li>
+            <li><a href="#blueprints"   class="flask-nav-link"><span class="nav-icon">🧩</span> Blueprints Pattern</a></li>
+            <li><a href="#apis"         class="flask-nav-link"><span class="nav-icon">🚀</span> REST APIs</a></li>
+            <li><a href="#deployment"   class="flask-nav-link"><span class="nav-icon">🌐</span> Deployment Matrix</a></li>
+            </ul>
+        </aside>
+
+        <main class="flask-main-content" id="mainContent">
+
+          <article class="flask-lesson" id="introduction" data-topic="1">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">01</span>
+              <h3>Flask Basics</h3>
+            </div>
+            <p>
+              Flask is categorized as a micro-framework because it does not require specific code structures, form validation wrappers, or predefined database abstractions. It remains extremely lightweight while allowing open integration hooks for scalable extensions.
+            </p>
+            <div class="flask-concept-card">
+              <h4>Why Architecture with Flask?</h4>
+              <ul>
+                <li><strong>Minimalist Philosophy</strong> — Extensible by engineering choose-your-own wrappers</li>
+                <li><strong>No Database Lock-in</strong> — Freedom to choose raw SQL, MongoDB, or SQLAlchemy models</li>
+                <li><strong>Built-in WSGI Server</strong> — Local sandbox debugging runtime server out of the box</li>
+              </ul>
+            </div>
+            <div class="flask-code-block">
+              <div class="flask-code-header">
+                <span class="flask-code-lang">Python</span>
+                <button class="flask-code-copy" type="button">Copy</button>
+              </div>
+              <pre><code>from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "Application Online"</code></pre>
+            </div>
+            <div class="flask-quiz-card" data-quiz-id="q1">
+              <h5>Checkpoint Quiz:</h5>
+              <p>What core object pattern is initialized via the statement <code>Flask(__name__)</code>?</p>
+              <div class="quiz-options">
+                <label><input type="radio" name="q1" value="A"> A) An isolated WSGI Application Instance</label>
+                <label><input type="radio" name="q1" value="B"> B) A persistent background database engine hook</label>
+                <label><input type="radio" name="q1" value="C"> C) A routing middleware layer exclusively</label>
+              </div>
+              <button class="btn btn-quiz-check">Verify Answer</button>
+              <div class="quiz-feedback hidden"></div>
+            </div>
+          </article>
+
+          <article class="flask-lesson" id="routing" data-topic="2">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">02</span>
+              <h3>Routing & Dynamic URLs</h3>
+            </div>
+            <p>
+              Routing matches incoming browser requests directly to Python execution blocks via structural decorators. URL dynamic parameter conversion paths bind parameters directly into view logic arguments cleanly.
+            </p>
+            <div class="flask-code-block">
+              <div class="flask-code-header">
+                <span class="flask-code-lang">Python</span>
+                <button class="flask-code-copy" type="button">Copy</button>
+              </div>
+              <pre><code>@app.route("/user/&lt;string:username&gt;")
+def show_profile(username):
+    return f"User Dashboard: {username}"</code></pre>
+            </div>
+            <div class="flask-quiz-card" data-quiz-id="q2">
+              <h5>Checkpoint Quiz:</h5>
+              <p>Which default type converter constraint handles parameters if no prefix is supplied inside the <code>&lt;&gt;</code> dynamic URL bracket maps?</p>
+              <div class="quiz-options">
+                <label><input type="radio" name="q2" value="A"> A) string</label>
+                <label><input type="radio" name="q2" value="B"> B) path</label>
+                <label><input type="radio" name="q2" value="C"> C) int</label>
+              </div>
+              <button class="btn btn-quiz-check">Verify Answer</button>
+              <div class="quiz-feedback hidden"></div>
+            </div>
+          </article>
+
+          <article class="flask-lesson" id="templates" data-topic="3">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">03</span>
+              <h3>Jinja2 Templates</h3>
+            </div>
+            <p>
+              Flask uses the Jinja2 template engine to decouple data parsing models from direct client rendering. Templates support block inheritance overrides, looping expressions, and logical branching execution rules safely inside sandboxed markup.
+            </p>
+            <div class="flask-code-block">
+              <div class="flask-code-header">
+                <span class="flask-code-lang">HTML/Jinja</span>
+                <button class="flask-code-copy" type="button">Copy</button>
+              </div>
+              <pre><code>{% extends "base.html" %}
+{% block content %}
+  &lt;h1&gt;Welcome, {{ username }}&lt;/h1&gt;
+{% endblock %}</code></pre>
+            </div>
+          </article>
+
+          <article class="flask-lesson" id="forms" data-topic="4">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">04</span>
+              <h3>Forms & WTForms Validation</h3>
+            </div>
+            <p>
+              Flask-WTF provides clean object-oriented configurations for rendering HTML forms, validating fields automatically on the backend, and defending application boundaries using strict CSRF token validation keys.
+            </p>
+          </article>
+
+          <article class="flask-lesson" id="sqlalchemy" data-topic="5">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">05</span>
+              <h3>SQLAlchemy ORM Integration</h3>
+            </div>
+            <p>
+              Flask-SQLAlchemy connects your backend views to relational databases using declarative Object-Relational Mapping (ORM) classes. Manage data state definitions directly through structural Python object instances instead of hardcoded SQL strings.
+            </p>
+          </article>
+
+          <article class="flask-lesson" id="auth" data-topic="6">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">06</span>
+              <h3>Authentication and Session Tracking</h3>
+            </div>
+            <p>
+              Secure site access tracking uses the <code>Flask-Login</code> wrapper extension. It manages active session variables securely in client cookies, intercepting unauthorized request paths using the strict <code>@login_required</code> decorator wrapper.
+            </p>
+          </article>
+
+          <article class="flask-lesson" id="blueprints" data-topic="7">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">07</span>
+              <h3>Modular Blueprints Architecture</h3>
+            </div>
+            <p>
+              As programs expand, Blueprints isolate sub-components, routes, and custom assets into separate logical directory packages. This architectural design pattern scales team collaborative development without modifying the core App factory file context.
+            </p>
+          </article>
+
+          <article class="flask-lesson" id="apis" data-topic="8">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">08</span>
+              <h3>Building RESTful APIs</h3>
+            </div>
+            <p>
+              Serving structured headless single-page applications or microservices requires data serialization. Using Flask's native <code>jsonify()</code> method transforms Python dictionary variables instantly into standardized browser-scannable JSON payloads.
+            </p>
+          </article>
+
+          <article class="flask-lesson" id="deployment" data-topic="9">
+            <div class="flask-lesson-header">
+              <span class="flask-lesson-number">09</span>
+              <h3>Production Deployment</h3>
+            </div>
+            <p>
+              Flask's default tracking development environment is deliberately insecure for deployment. Production scale deployments bundle operations behind modern structural production application servers like <strong>Gunicorn</strong> layered under high-performance reverse proxies like <strong>Nginx</strong>.
+            </p>
+          </article>
+
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/script.js"></script>
+  <script src="/theme.js"></script>
+  <script src="./flask-learning.js"></script>
+
+  <script>
+    loadPartial('navbar-placeholder', '/partials/navbar.html');
+    loadPartial('footer-placeholder', '/partials/footer.html');
+  </script>
+</body>
+</html>

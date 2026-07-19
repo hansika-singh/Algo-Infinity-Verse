@@ -12,10 +12,15 @@ export function initScrollTop() {
   });
 
   scrollTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    scrollTopBtn.style.pointerEvents = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const onScrollEnd = () => {
+      if (window.scrollY === 0 || window.scrollY < 10) {
+        scrollTopBtn.style.pointerEvents = "";
+        window.removeEventListener("scroll", onScrollEnd);
+      }
+    };
+    window.addEventListener("scroll", onScrollEnd, { passive: true });
   });
 }
 

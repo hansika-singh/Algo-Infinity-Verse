@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Coloring Visualizer | Algo Infinity Verse</title>
+    <meta name="description" content="Color graph vertices so no two adjacent vertices share a color — greedy vs backtracking, exam scheduling, register allocation, and map coloring, all as the same NP-hard problem." />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="graph-coloring-visualizer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body data-page="graph-coloring-visualizer">
+
+    <div id="navbar-placeholder"></div>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top" class="scroll-top-btn">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <section class="gr-hero">
+      <div class="hero-background">
+        <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+      </div>
+      <div class="gr-hero-inner">
+        <div class="gr-hero-eyebrow">🎨 Exam Scheduling · Compiler Register Allocation · Map Coloring</div>
+        <h1 class="gr-hero-title">Graph Coloring Visualizer</h1>
+        <p class="gr-hero-sub">No two neighbors share a color. Using as few colors as possible.</p>
+        <p class="gr-hero-desc">Graph coloring is NP-hard in general — greedy gives a fast, order-dependent answer; backtracking finds the true minimum but can be slow. Both are exactly the algorithm behind exam timetabling, compiler register allocation, and map coloring.</p>
+        <a href="#lab" class="btn btn-primary gr-btn-primary"><i class="fas fa-palette"></i> Open the Lab</a>
+      </div>
+    </section>
+
+    <section id="lab" class="section gr-section">
+      <div class="container">
+
+        <div class="gr-control-card">
+          <div class="gr-row">
+            <span class="gr-row-label">Presets</span>
+            <div class="gr-preset-btns">
+              <button class="gr-preset-btn" data-preset="exam">Exam Scheduling</button>
+              <button class="gr-preset-btn" data-preset="register">Register Allocation</button>
+              <button class="gr-preset-btn" data-preset="map">Map Coloring</button>
+              <button class="gr-preset-btn active" data-preset="k4">K4 (needs 4 colors)</button>
+            </div>
+            <button class="btn btn-secondary gr-reset-btn" id="grResetBtn"><i class="fas fa-undo"></i> Clear Graph</button>
+          </div>
+          <div class="gr-row">
+            <span class="gr-row-label">Editor</span>
+            <div class="gr-tool-btns">
+              <button class="gr-tool-btn active" data-tool="vertex">Add Vertex (click canvas)</button>
+              <button class="gr-tool-btn" data-tool="edge">Add Edge (click 2 vertices)</button>
+              <button class="gr-tool-btn" data-tool="delete">Delete (click vertex)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="gr-status" id="grStatus">Choose a preset, or build your own graph using the editor tools above.</div>
+
+        <div class="gr-main-layout">
+
+          <div class="gr-graph-section">
+            <div class="gr-panel-title"><i class="fas fa-circle-nodes"></i> Graph</div>
+            <div class="gr-canvas-wrap" id="grCanvasWrap"><canvas id="grCanvas" class="gr-canvas"></canvas></div>
+          </div>
+
+          <div class="gr-right-panel">
+
+            <div class="gr-panel-card">
+              <div class="gr-panel-title"><i class="fas fa-fill-drip"></i> Greedy Coloring</div>
+              <div class="gr-order-btns">
+                <button class="gr-order-btn active" data-order="input">Input order</button>
+                <button class="gr-order-btn" data-order="degree">Degree-descending</button>
+                <button class="gr-order-btn" data-order="random">Random</button>
+              </div>
+              <button class="btn gr-btn-primary gr-greedy-btn" id="grGreedyBtn"><i class="fas fa-play"></i> Run Greedy</button>
+              <div class="gr-stat-rows">
+                <div class="gr-stat-row"><span>Colors used</span><span id="grGreedyColors">—</span></div>
+              </div>
+            </div>
+
+            <div class="gr-panel-card">
+              <div class="gr-panel-title"><i class="fas fa-magnifying-glass-chart"></i> Exact Solver (Backtracking)</div>
+              <button class="btn gr-btn-primary gr-exact-btn" id="grExactBtn"><i class="fas fa-play"></i> Find Chromatic Number</button>
+              <div class="gr-stat-rows">
+                <div class="gr-stat-row"><span>Chromatic number χ(G)</span><span id="grChromatic">—</span></div>
+                <div class="gr-stat-row"><span>Backtrack events</span><span id="grBacktracks">—</span></div>
+              </div>
+            </div>
+
+            <div class="gr-panel-card">
+              <div class="gr-panel-title"><i class="fas fa-list-ol"></i> Log</div>
+              <div class="gr-log" id="grLog"><div class="gr-empty">No operations yet.</div></div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="gr-order-compare-card">
+          <div class="gr-panel-title"><i class="fas fa-scale-balanced"></i> Vertex Order Matters — Compare All 3</div>
+          <p class="gr-oc-desc">Run greedy coloring with all 3 orderings on the current graph and compare the color count each one needs.</p>
+          <button class="btn gr-btn-primary gr-compare-btn" id="grCompareBtn"><i class="fas fa-play"></i> Compare All Orderings</button>
+          <div class="gr-oc-result" id="grOcResult"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="learn" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🎨</span> Greedy vs Exact — The Real Tradeoff</h2>
+        <div class="gr-learn-grid">
+          <div class="gr-learn-card" style="--lc:#06b6d4">
+            <div class="gr-learn-icon">⚡</div>
+            <h3>Greedy Is Order-Dependent</h3>
+            <p>Greedy assigns each vertex the lowest-numbered color not used by its already-colored neighbors. The SAME graph can need different numbers of colors depending purely on which order vertices are processed in — never more than Δ+1 colors (Δ = max degree), but often more than necessary.</p>
+          </div>
+          <div class="gr-learn-card" style="--lc:#a855f7">
+            <div class="gr-learn-icon">🔙</div>
+            <h3>Backtracking Finds the Truth</h3>
+            <p>Backtracking tries the minimum plausible color count first, exhaustively searching all valid colorings. When a partial coloring gets stuck, it backtracks and tries a different color — guaranteed to find the true chromatic number, at exponential worst-case cost.</p>
+          </div>
+          <div class="gr-learn-card" style="--lc:#22c55e">
+            <div class="gr-learn-icon">📅</div>
+            <h3>Exam Scheduling</h3>
+            <p>Courses sharing at least one student become an edge — colors become exam time slots. Minimum colors = minimum exam slots needed with zero student conflicts.</p>
+          </div>
+          <div class="gr-learn-card" style="--lc:#f59e0b">
+            <div class="gr-learn-icon">🖥️</div>
+            <h3>Register Allocation</h3>
+            <p>Variables alive at the same time become an edge (they can't share a CPU register). Colors become physical registers — compilers use graph coloring heuristics to minimize register spills to slow memory.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../auth.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../theme.js"></script>
+    <script src="../../../auth-gate.js"></script>
+    <script src="graph-coloring-visualizer.js"></script>
+    <script>
+      if (typeof loadPartial === 'function') {
+        loadPartial('navbar-placeholder', '/partials/navbar.html').then(function() {
+          if (typeof initNavbar === 'function') initNavbar();
+        });
+        loadPartial('footer-placeholder', '/partials/footer.html');
+      }
+    </script>
+  </body>
+</html>

@@ -1,56 +1,91 @@
-const facts = [
-    "The first computer virus, called 'Creeper', was created in 1971",
-    "The term 'bug' was coined when a moth got stuck in a computer in 1947",
-    "The first algorithm was written over 4,000 years ago by Babylonians",
-    "There are over 700 programming languages in use today",
-    "The first computer programmer was Ada Lovelace in the 1840s",
-    "Google processes over 3.5 billion searches per day",
-    "The first website is still online (info.cern.ch)",
-    "Python is named after Monty Python, not the snake",
-    "The first hard drive weighed over a ton and stored 5MB",
-    "JavaScript was created in just 10 days",
-    "The first computer mouse was made of wood",
-    "The first email was sent in 1971 by Ray Tomlinson",
-    "CAPTCHA stands for Completely Automated Public Turing test",
-    "The first webcam was used to monitor a coffee pot",
-    "There are more than 1.5 billion websites on the internet"
+let factCount = 0;
+let isLoading = false;
+
+const fallbackFacts = [
+  "The first computer programmer was Ada Lovelace, who wrote the first algorithm in the 1840s.",
+  "JavaScript was created by Brendan Eich in just 10 days in 1995.",
+  "Python is named after Monty Python's Flying Circus, not the snake.",
+  "The first computer mouse, invented by Douglas Engelbart in 1964, was made of wood.",
+  "The first website (info.cern.ch) is still online today.",
 ];
 
-function getDailyFact() {
-    const today = new Date().toDateString();
-    let hash = 0;
-    for (let i = 0; i < today.length; i++) {
-        hash = ((hash << 5) - hash) + today.charCodeAt(i);
-        hash = hash & hash;
-    }
-    const index = Math.abs(hash) % facts.length;
-    return facts[index];
+function decodeHTML(text) {
+  const el = document.createElement('textarea');
+  el.innerHTML = text;
+  return el.value;
+}
+
+async function fetchFromAPI() {
+  const res = await fetch('https://opentdb.com/api.php?amount=1&category=18');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (data.response_code !== 0) throw new Error('No results');
+
+  const q = data.results[0];
+  const question = decodeHTML(q.question);
+  const answer = decodeHTML(q.correct_answer);
+
+  if (q.type === 'boolean') {
+    if (answer === 'True') return question;
+    return 'Not quite: ' + question.charAt(0).toLowerCase() + question.slice(1);
+  }
+
+  if (question.endsWith('...')) {
+    return question.replace(/\.\.\.$/, '').trim() + ' ' + answer + '.';
+  }
+
+  return question + ' ' + answer + '.';
+}
+
+function getFallbackFact() {
+  return fallbackFacts[Math.floor(Math.random() * fallbackFacts.length)];
+}
+
+function updateCounter() {
+  const el = document.getElementById('factCounter');
+  if (el) el.textContent = `#${factCount}`;
+}
+
+async function updateFact(element) {
+  if (isLoading) return;
+  isLoading = true;
+
+  try {
+    element.style.opacity = '0';
+    await new Promise(r => setTimeout(r, 300));
+    element.textContent = 'Loading...';
+    element.style.opacity = '1';
+    await new Promise(r => setTimeout(r, 200));
+
+    element.style.opacity = '0';
+    await new Promise(r => setTimeout(r, 300));
+    element.textContent = await fetchFromAPI();
+  } catch {
+    element.style.opacity = '0';
+    await new Promise(r => setTimeout(r, 300));
+    element.textContent = getFallbackFact();
+  }
+
+  factCount++;
+  updateCounter();
+  element.style.opacity = '1';
+  isLoading = false;
 }
 
 function showNextFact() {
-    const factText = document.getElementById('factText');
-    const factDate = document.getElementById('factDate');
-    const randomIndex = Math.floor(Math.random() * facts.length);
-    if (factText) factText.textContent = facts[randomIndex];
-    if (factDate) factDate.textContent = `💡 Fun fact #${randomIndex + 1}`;
+  const el = document.getElementById('factText');
+  if (el) updateFact(el);
 }
 
-function showDailyFact() {
-    const factText = document.getElementById('factText');
-    const factDate = document.getElementById('factDate');
-    if (!factText || !factDate) {
-        void 0;
-        return;
-    }
-    factText.textContent = getDailyFact();
-    const today = new Date().toLocaleDateString();
-    factDate.textContent = `📅 Fact of the day • ${today}`;
+async function showDailyFact() {
+  const el = document.getElementById('factText');
+  if (el) updateFact(el);
 }
 
 window.showNextFact = showNextFact;
 
 export function initDidYouKnow() {
-    showDailyFact();
+  factCount = 0;
+  showDailyFact();
 }
-// Legacy global exports
 window.initDidYouKnow = initDidYouKnow;

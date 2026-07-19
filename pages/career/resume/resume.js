@@ -42,45 +42,57 @@ const dsaTopics = [
 const badgeTemplates = [
   {
     id: 1,
-    icon: "🌟",
+    icon: '<i class="fas fa-star"></i>',
     name: "First Steps",
     description: "Begin your journey",
     criteria: "Solve 1 problem",
+    color: "#f59e0b",
+    anim: "badge-hover-spin",
   },
   {
     id: 2,
-    icon: "🔥",
+    icon: '<i class="fas fa-fire"></i>',
     name: "On Fire",
     description: "Keep the momentum going",
     criteria: "Maintain a 7-day streak",
+    color: "#ef4444",
+    anim: "badge-hover-pulse",
   },
   {
     id: 3,
-    icon: "💎",
+    icon: '<i class="fas fa-gem"></i>',
     name: "Diamond",
     description: "Reach a major XP milestone",
     criteria: "Earn 5,000 XP",
+    color: "#8b5cf6",
+    anim: "badge-hover-float",
   },
   {
     id: 4,
-    icon: "🚀",
+    icon: '<i class="fas fa-rocket"></i>',
     name: "Rocket",
     description: "Speed through problems",
     criteria: "Solve 50 problems",
+    color: "#06b6d4",
+    anim: "badge-hover-bounce",
   },
   {
     id: 5,
-    icon: "👑",
+    icon: '<i class="fas fa-crown"></i>',
     name: "Master",
     description: "Achieve expert problem-solving",
     criteria: "Solve 100 problems",
+    color: "#ec4899",
+    anim: "badge-hover-glow",
   },
   {
     id: 6,
-    icon: "🎯",
+    icon: '<i class="fas fa-bullseye"></i>',
     name: "Sharpshooter",
     description: "Hit the target with consistency",
     criteria: "Solve 25 problems and earn 2,500 XP",
+    color: "#10b981",
+    anim: "badge-hover-wobble",
   },
 ];
 
@@ -210,10 +222,12 @@ function renderBadges() {
       if (badge.id === 6 && solvedCount >= 25 && userProgress.xp >= 2500) isEarned = true;
     }
 
+    const animClass = isEarned ? badge.anim : '';
+    const inlineStyle = isEarned ? `background:${badge.color};box-shadow:0 4px 14px ${badge.color}40` : '';
     return `
-      <div class="resume-badge-card ${isEarned ? 'earned' : 'locked'}">
+      <div class="resume-badge-card ${isEarned ? 'earned' : 'locked'} ${animClass}">
         ${!isEarned ? '<span class="resume-badge-lock"><i class="fas fa-lock"></i></span>' : ''}
-        <div class="resume-badge-icon">${badge.icon}</div>
+        <div class="resume-badge-icon" style="${inlineStyle}">${badge.icon}</div>
         <div class="resume-badge-name">${badge.name}</div>
         <div class="resume-badge-desc">${badge.description}</div>
       </div>

@@ -1,19 +1,26 @@
-import crypto from "crypto";
+import crypto from 'crypto';
+import securityConfig from '../config/security.js';
 
-export const ACCESS_TOKEN_MAX_AGE_SECONDS = 15 * 60; // 15 mins
-export const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
+export const {
+  SIGNUP_RATE_LIMIT,
+  SIGNUP_WINDOW_MS,
+  LOGIN_RATE_LIMIT,
+  LOGIN_WINDOW_MS,
+  AUTH_DELAY_MS,
+  MIN_PASSWORD_LENGTH,
+  PASSWORD_REGEX,
+  PBKDF2_ITERATIONS,
+  PASSWORD_KEY_LENGTH,
+  HASHING_ALGORITHM,
+  ACCESS_TOKEN_MAX_AGE_SECONDS,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
+} = securityConfig;
 
-import { redisAvailable, redisClient } from "../jobs/queue.js";
+import { redisAvailable, redisClient } from '../jobs/queue.js';
 
-// Tracking families for token rotation (fallback when Redis is not available)
 export const activeRefreshFamilies = new Map();
-const PBKDF2_ITERATIONS = 210000;
-const PASSWORD_KEY_LENGTH = 32;
-
-// ── Rate limiting ────────────────────────────────────────────────────────────
-const SIGNUP_RATE_LIMIT = 5;
-const SIGNUP_WINDOW_MS = 15 * 60 * 1000;
 const signupAttempts = new Map();
+const loginAttempts = new Map();
 
 export const _signupSweeper = setInterval(() => {
   const now = Date.now();
@@ -29,22 +36,51 @@ export const _signupSweeper = setInterval(() => {
 
 if (_signupSweeper.unref) _signupSweeper.unref();
 
+// Mirrors the signup-rate-limit sweeper above. #2535: isLoginRateLimited /
+// LOGIN_WINDOW_MS were previously imported by authHandlers.js without ever
+// being defined/exported here.
+export const _loginSweeper = setInterval(() => {
+  const now = Date.now();
+  for (const [identifier, timestamps] of loginAttempts) {
+    const fresh = timestamps.filter((t) => now - t < LOGIN_WINDOW_MS);
+    if (fresh.length === 0) {
+      loginAttempts.delete(identifier);
+    } else {
+      loginAttempts.set(identifier, fresh);
+    }
+  }
+}, LOGIN_WINDOW_MS);
+
+if (_loginSweeper.unref) _loginSweeper.unref();
+
 const TRUSTED_PROXIES = new Set(
-  (process.env.TRUSTED_PROXIES || "")
-    .split(",")
+  (process.env.TRUSTED_PROXIES || '')
+    .split(',')
     .map((s) => s.trim())
-    .filter(Boolean),
+    .filter(Boolean)
 );
 
+if (process.env.NODE_ENV === 'production' && TRUSTED_PROXIES.size === 0) {
+  console.warn(
+    '[SECURITY WARNING] TRUSTED_PROXIES is not configured in production. ' +
+      'If this server sits behind a reverse proxy or CDN, every request will ' +
+      "resolve to the proxy's IP for rate-limiting purposes, collapsing all " +
+      "clients into a single shared bucket (e.g. one user's failed logins can " +
+      "lock out the entire site). Set TRUSTED_PROXIES to the proxy's IP(s) so " +
+      'X-Forwarded-For is honoured, or ignore this warning if the server is ' +
+      'reachable directly with no proxy in front of it.'
+  );
+}
+
 export function getClientIdentifier(req) {
-  const remoteAddress = req.socket?.remoteAddress || "unknown";
+  const remoteAddress = req.socket?.remoteAddress || 'unknown';
 
   if (
-    remoteAddress !== "unknown" &&
+    remoteAddress !== 'unknown' &&
     TRUSTED_PROXIES.has(remoteAddress) &&
-    req.headers["x-forwarded-for"]
+    req.headers['x-forwarded-for']
   ) {
-    const leftmost = req.headers["x-forwarded-for"].split(",")[0].trim();
+    const leftmost = req.headers['x-forwarded-for'].split(',')[0].trim();
     if (leftmost) return leftmost;
   }
 
@@ -59,6 +95,22 @@ export function isSignupRateLimited(identifier) {
   return recentAttempts.length >= SIGNUP_RATE_LIMIT;
 }
 
+export function isLoginRateLimited(identifier) {
+  const now = Date.now();
+  const attempts = loginAttempts.get(identifier) || [];
+  const recentAttempts = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  loginAttempts.set(identifier, recentAttempts);
+  return recentAttempts.length >= LOGIN_RATE_LIMIT;
+}
+
+export function recordLoginAttempt(identifier) {
+  const now = Date.now();
+  const attempts = loginAttempts.get(identifier) || [];
+  const recentAttempts = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
+  recentAttempts.push(now);
+  loginAttempts.set(identifier, recentAttempts);
+}
+
 export function recordSignupAttempt(identifier) {
   const now = Date.now();
   const attempts = signupAttempts.get(identifier) || [];
@@ -68,74 +120,74 @@ export function recordSignupAttempt(identifier) {
 }
 
 export async function normalizeAuthDelay() {
-  return new Promise((resolve) => setTimeout(resolve, 500));
+  return new Promise((resolve) => setTimeout(resolve, AUTH_DELAY_MS));
 }
 
 // ── Authentication & Tokens ──────────────────────────────────────────────────
+
 function base64Url(input) {
   return Buffer.from(input)
-    .toString("base64")
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
 }
 
 function fromBase64Url(input) {
-  const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(normalized, "base64").toString("utf8");
+  const normalized = input.replace(/-/g, '+').replace(/_/g, '/');
+  return Buffer.from(normalized, 'base64').toString('utf8');
 }
 
 function sessionSecret() {
   const secret = process.env.SESSION_SECRET;
   if (!secret) {
-    // Fail closed: never fall back to a hardcoded secret, regardless of NODE_ENV.
-    // A known fallback would let anyone forge session JWTs.
     throw new Error(
-      "SESSION_SECRET is required. Set it in the environment before starting the server.",
+      'SESSION_SECRET is required. Set it in the environment before starting the server.'
     );
   }
   return secret;
 }
 
 function sign(value) {
-  return crypto
-    .createHmac("sha256", sessionSecret())
-    .update(value)
-    .digest("base64url");
+  return crypto.createHmac('sha256', sessionSecret()).update(value).digest('base64url');
 }
 
 export function createAccessToken(user) {
-  const header = base64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const header = base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const payload = base64Url(
     JSON.stringify({
       sub: user.id,
       name: user.name,
       email: user.email,
       exp: Math.floor(Date.now() / 1000) + ACCESS_TOKEN_MAX_AGE_SECONDS,
-      type: "access"
-    }),
+      type: 'access',
+    })
   );
   const body = `${header}.${payload}`;
   return `${body}.${sign(body)}`;
 }
 
-export async function createRefreshToken(user, familyId = crypto.randomUUID(), nonce = crypto.randomUUID()) {
+export async function createRefreshToken(
+  user,
+  familyId = crypto.randomUUID(),
+  nonce = crypto.randomUUID()
+) {
   if (redisAvailable && redisClient) {
     await redisClient.set(`refresh:${familyId}`, nonce, 'EX', REFRESH_TOKEN_MAX_AGE_SECONDS);
   } else {
     activeRefreshFamilies.set(familyId, { currentNonce: nonce });
   }
-  const header = base64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const header = base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const payload = base64Url(
     JSON.stringify({
       sub: user.id,
       name: user.name,
       email: user.email,
       exp: Math.floor(Date.now() / 1000) + REFRESH_TOKEN_MAX_AGE_SECONDS,
-      type: "refresh",
+      type: 'refresh',
       familyId,
-      nonce
-    }),
+      nonce,
+    })
   );
   const body = `${header}.${payload}`;
   return `${body}.${sign(body)}`;
@@ -151,7 +203,7 @@ export async function revokeTokenFamily(familyId) {
 
 export function verifyToken(token, expectedType) {
   if (!token) return null;
-  const parts = token.split(".");
+  const parts = token.split('.');
   if (parts.length !== 3) return null;
   const [header, payload, signature] = parts;
   const body = `${header}.${payload}`;
@@ -176,13 +228,13 @@ export function verifyToken(token, expectedType) {
 }
 
 export function verifyAccessToken(token) {
-  return verifyToken(token, "access");
+  return verifyToken(token, 'access');
 }
 
 export async function verifyRefreshToken(token) {
-  const session = verifyToken(token, "refresh");
+  const session = verifyToken(token, 'refresh');
   if (!session) return null;
-  
+
   if (redisAvailable && redisClient) {
     const currentNonce = await redisClient.get(`refresh:${session.familyId}`);
     if (!currentNonce) return null;
@@ -193,7 +245,7 @@ export async function verifyRefreshToken(token) {
   } else {
     const family = activeRefreshFamilies.get(session.familyId);
     if (!family) return null;
-    
+
     if (family.currentNonce !== session.nonce) {
       activeRefreshFamilies.delete(session.familyId);
       return null;
@@ -202,19 +254,19 @@ export async function verifyRefreshToken(token) {
   return session;
 }
 
-const PASSWORD_PEPPER = process.env.PASSWORD_PEPPER || "";
+const PASSWORD_PEPPER = process.env.PASSWORD_PEPPER || '';
 
-export function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
+export function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
   const hash = crypto
     .pbkdf2Sync(
       password + PASSWORD_PEPPER,
       salt,
       PBKDF2_ITERATIONS,
       PASSWORD_KEY_LENGTH,
-      "sha256",
+      HASHING_ALGORITHM
     )
-    .toString("hex");
-  return { salt, hash, iterations: PBKDF2_ITERATIONS, digest: "sha256" };
+    .toString('hex');
+  return { salt, hash, iterations: PBKDF2_ITERATIONS, digest: HASHING_ALGORITHM };
 }
 
 export function passwordMatches(password, stored) {
@@ -223,35 +275,34 @@ export function passwordMatches(password, stored) {
     stored.salt,
     stored.iterations || PBKDF2_ITERATIONS,
     PASSWORD_KEY_LENGTH,
-    stored.digest || "sha256",
+    stored.digest || HASHING_ALGORITHM
   );
-  const saved = Buffer.from(stored.hash, "hex");
-  return (
-    saved.length === calculated.length &&
-    crypto.timingSafeEqual(saved, calculated)
-  );
+  const saved = Buffer.from(stored.hash, 'hex');
+  return saved.length === calculated.length && crypto.timingSafeEqual(saved, calculated);
 }
 
 export function validateSignup({ name, email, password, confirmPassword }) {
-  const cleanName = String(name || "").trim();
-  const cleanEmail = String(email || "")
+  const cleanName = String(name || '').trim();
+  const cleanEmail = String(email || '')
     .trim()
     .toLowerCase();
-  const rawPassword = String(password || "");
-  const rawConfirm = String(confirmPassword || "");
+  const rawPassword = String(password || '');
+  const rawConfirm = String(confirmPassword || '');
 
-  if (cleanName.length < 2) return "Name must be at least 2 characters.";
+  if (cleanName.length < 2) return 'Name must be at least 2 characters.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-    return "Enter a valid email address.";
+    return 'Enter a valid email address.';
   }
-  if (rawPassword.length < 8) return "Password must be at least 8 characters.";
+  if (rawPassword.length < MIN_PASSWORD_LENGTH) {
+    return `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+  }
   if (
-    !/[a-z]/.test(rawPassword) ||
-    !/[A-Z]/.test(rawPassword) ||
-    !/\d/.test(rawPassword)
+    !PASSWORD_REGEX.lowercase.test(rawPassword) ||
+    !PASSWORD_REGEX.uppercase.test(rawPassword) ||
+    !PASSWORD_REGEX.digit.test(rawPassword)
   ) {
-    return "Password must include uppercase, lowercase, and a number.";
+    return 'Password must include uppercase, lowercase, and a number.';
   }
-  if (rawPassword !== rawConfirm) return "Passwords do not match.";
+  if (rawPassword !== rawConfirm) return 'Passwords do not match.';
   return null;
 }

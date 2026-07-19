@@ -1,490 +1,1213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Code Playground</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/monokai.min.css" />
+    <title>Code Playground - Algo Infinity Verse</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        body { font-family: Arial; padding: 20px; background: #f0f2f5; }
-        .container { max-width: 900px; margin: 0 auto; }
-        h1 { color: #7c3aed; }
-        .controls { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; align-items: center; }
-        .controls label { font-weight: 500; }
-        .controls select, .controls button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; }
-        .controls select:focus, .controls button:focus { outline: 2px solid #7c3aed; outline-offset: 2px; }
-        .controls button { background: #7c3aed; color: white; border: none; cursor: pointer; }
-        .controls button:hover { background: #6d28d9; }
-        .controls button:focus-visible { outline: 3px solid #7c3aed; outline-offset: 2px; }
-        .CodeMirror { height: 300px; border-radius: 8px; overflow: hidden; }
-        .output { background: #1a1a2e; color: #e4e4e4; padding: 15px; border-radius: 8px; margin-top: 10px; min-height: 60px; font-family: monospace; white-space: pre-wrap; }
-        .error { color: #ef4444; }
-        .success { color: #22c55e; }
-        .info { color: #60a5fa; }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
-        #output[aria-live="polite"] { transition: background 0.2s; }
-        .profiler-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .profiler-content { background: white; padding: 25px; border-radius: 12px; max-width: 650px; width: 95%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .profiler-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .profiler-header h2 { margin: 0; color: #1e1e1e; font-size: 1.5em; }
-        .profiler-close { background: none; border: none; font-size: 1.5em; cursor: pointer; color: #666; transition: color 0.2s; }
-        .profiler-close:hover { color: #000; }
-        .profiler-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0; }
-        .stat-box .label { font-size: 0.85em; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-        .stat-box .value { font-size: 1.5em; font-weight: 700; color: #0f172a; margin-top: 5px; }
-        .chart-container { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-        canvas#profilerChart { width: 100%; height: 300px; display: block; }
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+      :root {
+        --bg-color: #0b0f19;
+        --container-bg: rgba(22, 28, 45, 0.4);
+        --border-color: rgba(255, 255, 255, 0.08);
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --secondary-color: #3b82f6;
+        --secondary-hover: #2563eb;
+        --success-color: #10b981;
+        --success-hover: #059669;
+        --error-color: #ef4444;
+        --text-color: #f8fafc;
+        --text-muted: #94a3b8;
+        --card-bg: rgba(15, 23, 42, 0.6);
+        --shadow-color: rgba(0, 0, 0, 0.4);
+        --code-font: 'Fira Code', Consolas, Monaco, monospace;
+        --ui-font:
+          'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --modal-bg: #111827;
+        --stat-box-bg: rgba(255, 255, 255, 0.03);
+      }
+
+      html.light-mode {
+        --bg-color: #f1f5f9;
+        --container-bg: rgba(255, 255, 255, 0.8);
+        --border-color: rgba(0, 0, 0, 0.08);
+        --primary-color: #7c3aed;
+        --primary-hover: #6d28d9;
+        --secondary-color: #2563eb;
+        --secondary-hover: #1d4ed8;
+        --success-color: #10b981;
+        --success-hover: #059669;
+        --error-color: #dc2626;
+        --text-color: #0f172a;
+        --text-muted: #64748b;
+        --card-bg: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.05);
+        --modal-bg: #ffffff;
+        --stat-box-bg: #f8fafc;
+      }
+
+      body {
+        font-family: var(--ui-font);
+        background: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 30px 20px;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: var(--container-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px var(--shadow-color);
+      }
+
+      h1 {
+        color: var(--text-color);
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .controls label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+
+      .controls select {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-family: var(--ui-font);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        outline: none;
+      }
+
+      .controls select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+      }
+
+      .controls button {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-family: var(--ui-font);
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .controls button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .controls button:active {
+        transform: translateY(0);
+      }
+
+      #runBtn {
+        background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+        color: white;
+      }
+      #runBtn:hover {
+        background: linear-gradient(135deg, var(--primary-hover), #8b5cf6);
+      }
+
+      #profileBtn {
+        background: linear-gradient(135deg, var(--secondary-color), #60a5fa);
+        color: white;
+      }
+      #profileBtn:hover {
+        background: linear-gradient(135deg, var(--secondary-hover), #3b82f6);
+      }
+
+      #reviewBtn {
+        background: linear-gradient(135deg, var(--success-color), #34d399);
+        color: white;
+      }
+      #reviewBtn:hover {
+        background: linear-gradient(135deg, var(--success-hover), #10b981);
+      }
+
+      #templateBtn,
+      #clearBtn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
+      #templateBtn:hover,
+      #clearBtn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--text-muted);
+      }
+      html.light-mode #templateBtn:hover,
+      html.light-mode #clearBtn:hover {
+        background: rgba(0, 0, 0, 0.02);
+      }
+
+      #editor-container {
+        height: 400px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        margin-top: 15px;
+        box-shadow: 0 8px 24px var(--shadow-color);
+      }
+
+      .output {
+        background: #090d16;
+        color: #e2e8f0;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        min-height: 80px;
+        font-family: var(--code-font);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        border: 1px solid var(--border-color);
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+      html.light-mode .output {
+        background: #f1f5f9;
+        color: #1e293b;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .error {
+        color: var(--error-color);
+      }
+      .success {
+        color: var(--success-color);
+      }
+      .info {
+        color: var(--secondary-color);
+      }
+
+      #predictBtn {
+        margin-top: 15px;
+        background: linear-gradient(135deg, #ec4899, #f43f5e);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #predictBtn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      /* Modals & Popups styling */
+      .profiler-modal,
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+
+      .profiler-content,
+      .modal-content {
+        background: var(--modal-bg);
+        padding: 25px;
+        border-radius: 16px;
+        max-width: 650px;
+        width: 95%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
+
+      .profiler-header,
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .profiler-header h2,
+      .modal-header h3 {
+        margin: 0;
+        font-size: 1.5em;
+      }
+
+      .profiler-close,
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: color 0.2s;
+      }
+      .profiler-close:hover,
+      .modal-close:hover {
+        color: var(--text-color);
+      }
+
+      .profiler-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .stat-box {
+        background: var(--stat-box-bg);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-box .label {
+        font-size: 0.85em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-box .value {
+        font-size: 1.5em;
+        font-weight: 700;
+        margin-top: 5px;
+      }
+
+      .chart-container {
+        background: var(--stat-box-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      canvas#profilerChart {
+        width: 100%;
+        height: 300px;
+        display: block;
+      }
+
+      /* Monaco Line Highlights */
+      .ai-review-highlight-warning {
+        background: rgba(245, 158, 11, 0.12) !important;
+        border-bottom: 2px dashed #f59e0b;
+      }
+      .ai-review-highlight-error {
+        background: rgba(239, 68, 68, 0.12) !important;
+        border-bottom: 2px dashed #ef4444;
+      }
+
+      /* Monaco Glyphs in the margin */
+      .ai-review-glyph-warning::before {
+        content: '⚠️';
+        color: #f59e0b;
+        font-size: 14px;
+        margin-left: 4px;
+        cursor: pointer;
+      }
+      .ai-review-glyph-error::before {
+        content: '🚨';
+        color: #ef4444;
+        font-size: 14px;
+        margin-left: 4px;
+        cursor: pointer;
+      }
+
+      /* AI Review Zone Container & Card */
+      .ai-review-zone-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .ai-review-card {
+        font-family: var(--ui-font);
+        box-sizing: border-box;
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin: 6px 16px;
+        color: #f1f5f9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        flex-grow: 1;
+        position: relative;
+        z-index: 10;
+      }
+
+      html.light-mode .ai-review-card {
+        background: #ffffff;
+        border-color: rgba(0, 0, 0, 0.08);
+        color: #0f172a;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .ai-review-apply-btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-family: var(--ui-font);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .ai-review-apply-btn:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-1px);
+      }
+
+      .ai-review-dismiss-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f1f5f9;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-family: var(--ui-font);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .ai-review-dismiss-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      html.light-mode .ai-review-dismiss-btn {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.1);
+        color: #0f172a;
+      }
+      html.light-mode .ai-review-dismiss-btn:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .ai-review-card pre {
+        background: rgba(0, 0, 0, 0.25) !important;
+        border: 1px dashed rgba(16, 185, 129, 0.2);
+        margin: 6px 0 0 0;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-family: var(--code-font);
+        font-size: 11px;
+        color: #10b981;
+        overflow-x: auto;
+        max-height: 80px;
+      }
+      html.light-mode .ai-review-card pre {
+        background: #f8fafc !important;
+        border-color: rgba(16, 185, 129, 0.4);
+        color: #047857;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+      }
     </style>
-  <script src="/theme.js"></script>
-</head>
-<body>
+    <script src="/theme.js"></script>
+  </head>
+  <body>
     <!-- Profiler Modal -->
     <div id="profilerModal" class="profiler-modal">
-        <div class="profiler-content">
-            <div class="profiler-header">
-                <h2>📈 Time Complexity Profiler</h2>
-                <button class="profiler-close" id="closeProfilerBtn" aria-label="Close Profiler">&times;</button>
-            </div>
-            <div class="profiler-stats">
-                <div class="stat-box">
-                    <div class="label">Estimated Complexity</div>
-                    <div class="value" id="profComplexity">O(?)</div>
-                </div>
-                <div class="stat-box">
-                    <div class="label">Average Time</div>
-                    <div class="value" id="profAvgTime">- ms</div>
-                </div>
-                <div class="stat-box">
-                    <div class="label">Fastest Run</div>
-                    <div class="value" id="profFastest">- ms</div>
-                </div>
-                <div class="stat-box">
-                    <div class="label">Slowest Run</div>
-                    <div class="value" id="profSlowest">- ms</div>
-                </div>
-            </div>
-            <div class="chart-container">
-                <canvas id="profilerChart" width="600" height="300"></canvas>
-            </div>
-            <div style="text-align: right;">
-                <button id="rerunProfileBtn" style="background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Rerun Profiler</button>
-            </div>
+      <div class="profiler-content">
+        <div class="profiler-header">
+          <h2>📈 Time Complexity Profiler</h2>
+          <button class="profiler-close" id="closeProfilerBtn" aria-label="Close Profiler">
+            &times;
+          </button>
         </div>
+        <div class="profiler-stats">
+          <div class="stat-box">
+            <div class="label">Estimated Complexity</div>
+            <div class="value" id="profComplexity">O(?)</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Average Time</div>
+            <div class="value" id="profAvgTime">- ms</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Fastest Run</div>
+            <div class="value" id="profFastest">- ms</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Slowest Run</div>
+            <div class="value" id="profSlowest">- ms</div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="profilerChart" width="600" height="300"></canvas>
+        </div>
+        <div style="text-align: right">
+          <button
+            id="rerunProfileBtn"
+            style="
+              background: #2563eb;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+          >
+            Rerun Profiler
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="container">
-        <h1>💻 Code Playground</h1>
-        <div class="controls">
-            <label for="lang">Language:</label>
-            <select id="lang" aria-label="Select programming language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="java">Java</option>
-                <option value="cpp">C++</option>
-            </select>
-            <button type="button" id="runBtn" aria-label="Run code">▶ Run</button>
-            <button type="button" id="profileBtn" aria-label="Profile time complexity" style="background: #2563eb;">⏱️ Profile</button>
-            <button type="button" id="templateBtn" aria-label="Load template code">📄 Load Template</button>
-            <button type="button" id="clearBtn" aria-label="Clear editor">🗑️ Clear</button>
-        </div>
-        <textarea id="editor" aria-label="Code editor"></textarea>
-        <div class="output" id="output" role="status" aria-live="polite" aria-atomic="true">Run your code to see output here...</div>
-        <button id="predictBtn" class="btn btn-primary" type="button" aria-label="Predict acceptance">
-            <i class="fas fa-chart-line"></i> Predict Acceptance
+      <h1>💻 Code Playground</h1>
+      <div class="controls">
+        <label for="lang">Language:</label>
+        <select id="lang" aria-label="Select programming language">
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+        </select>
+        <button type="button" id="runBtn" aria-label="Run code">▶ Run</button>
+        <button type="button" id="profileBtn" aria-label="Profile time complexity">
+          ⏱️ Profile
         </button>
-        <div id="predictionModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>📊 Acceptance Prediction</h3>
-                    <button id="closePredictionBtn" class="modal-close" type="button">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div id="predictionResults">
-                        <!-- Results will be inserted here -->
-                    </div>
-                </div>
+        <button type="button" id="reviewBtn" aria-label="Request AI review">
+          <i class="fas fa-robot"></i> Request AI Review
+        </button>
+        <button type="button" id="templateBtn" aria-label="Load template code">
+          📄 Load Template
+        </button>
+        <button type="button" id="clearBtn" aria-label="Clear editor">🗑️ Clear</button>
+      </div>
+      <div id="editor-container" aria-label="Code editor"></div>
+      <div class="output" id="output" role="status" aria-live="polite" aria-atomic="true">
+        Run your code to see output here...
+      </div>
+      <button id="predictBtn" class="btn btn-primary" type="button" aria-label="Predict acceptance">
+        <i class="fas fa-chart-line"></i> Predict Acceptance
+      </button>
+      <div id="predictionModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>📊 Acceptance Prediction</h3>
+            <button id="closePredictionBtn" class="modal-close" type="button">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="predictionResults">
+              <!-- Results will be inserted here -->
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <!-- Monaco Editor AMD Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
     <script>
-        const templates = {
-            javascript: `function solve(input) {\n  console.log(input);\n  return input;\n}`,
-            python: `def solve(input):\n    print(input)\n    return input`,
-            java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello");\n    }\n}`,
-            cpp: `#include <iostream>\nusing namespace std;\nint main() {\n    cout << "Hello" << endl;\n    return 0;\n}`
+      const templates = {
+        javascript: `function solve(input) {\n  console.log(input);\n  return input;\n}`,
+        python: `def solve(input):\n    print(input)\n    return input`,
+        java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello");\n    }\n}`,
+        cpp: `#include <iostream>\nusing namespace std;\nint main() {\n    cout << "Hello" << endl;\n    return 0;\n}`,
+      };
+
+      let editor;
+      let monacoInstance;
+      let activeReviews = [];
+      let isReviewing = false;
+
+      // Load Monaco Editor
+      function loadEditor() {
+        require.config({
+          paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' },
+        });
+        require(['vs/editor/editor.main'], function () {
+          monacoInstance = monaco;
+
+          const isLight = document.documentElement.classList.contains('light-mode');
+          const initialTheme = isLight ? 'vs-light' : 'vs-dark';
+
+          editor = monacoInstance.editor.create(document.getElementById('editor-container'), {
+            value: templates.javascript,
+            language: 'javascript',
+            theme: initialTheme,
+            automaticLayout: true,
+            fontSize: 14,
+            fontFamily: 'var(--code-font)',
+            minimap: { enabled: false },
+            lineNumbers: 'on',
+            scrollBeyondLastLine: false,
+            tabSize: 2,
+            glyphMargin: true,
+            renderLineHighlight: 'all',
+          });
+
+          // Theme syncing observer
+          const observer = new MutationObserver(() => {
+            const isL = document.documentElement.classList.contains('light-mode');
+            monacoInstance.editor.setTheme(isL ? 'vs-light' : 'vs-dark');
+          });
+          observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+          });
+        });
+      }
+
+      loadEditor();
+
+      document.getElementById('lang').addEventListener('change', function () {
+        const modeMap = { javascript: 'javascript', python: 'python', java: 'java', cpp: 'cpp' };
+        const lang = modeMap[this.value];
+        if (editor && monacoInstance) {
+          const model = editor.getModel();
+          if (model) {
+            monacoInstance.editor.setModelLanguage(model, lang);
+          }
+        }
+      });
+
+      document.getElementById('templateBtn').addEventListener('click', () => {
+        if (editor) {
+          editor.setValue(templates[document.getElementById('lang').value]);
+        }
+      });
+
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        if (editor) {
+          editor.setValue('');
+        }
+        const output = document.getElementById('output');
+        output.textContent = 'Cleared. Write your code and run.';
+        output.className = 'output';
+        clearReviews();
+      });
+
+      // Safe output function
+      function setOutput(text, type) {
+        const output = document.getElementById('output');
+        output.textContent = text;
+        output.className = 'output ' + (type || '');
+      }
+
+      function appendOutput(text) {
+        const output = document.getElementById('output');
+        output.textContent += '\n' + text;
+      }
+
+      function drawProfilerChart(canvas, results) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!results.length) return;
+
+        const padding = 50;
+        const maxN = Math.max(...results.map((r) => r.N));
+        const maxTime = Math.max(...results.map((r) => r.time));
+
+        const scaleX = (canvas.width - 2 * padding) / (maxN || 1);
+        const scaleY = (canvas.height - 2 * padding) / (maxTime || 1);
+
+        // Draw Grid & Axes
+        ctx.beginPath();
+        ctx.strokeStyle = document.documentElement.classList.contains('light-mode')
+          ? '#e2e8f0'
+          : '#334155';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 5; i++) {
+          const y = canvas.height - padding - (i / 5) * (canvas.height - 2 * padding);
+          ctx.moveTo(padding, y);
+          ctx.lineTo(canvas.width - padding, y);
+
+          // Y-axis labels
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px Arial';
+          ctx.textAlign = 'right';
+          ctx.fillText(((maxTime * i) / 5).toFixed(1) + 'ms', padding - 10, y + 3);
+        }
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 2;
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.lineTo(canvas.width - padding, canvas.height - padding);
+        ctx.stroke();
+
+        // X-axis labels
+        results.forEach((r) => {
+          const x = padding + r.N * scaleX;
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(r.N, x, canvas.height - padding + 20);
+        });
+
+        // Draw line
+        ctx.beginPath();
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 3;
+        results.forEach((r, i) => {
+          const x = padding + r.N * scaleX;
+          const y = canvas.height - padding - r.time * scaleY;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Draw points
+        results.forEach((r) => {
+          const x = padding + r.N * scaleX;
+          const y = canvas.height - padding - r.time * scaleY;
+          ctx.beginPath();
+          ctx.fillStyle = '#2563eb';
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = 'white';
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function estimateComplexity(results) {
+        if (results.length < 2) return 'Unknown';
+        const shapes = {
+          'O(1)': (n) => 1,
+          'O(log n)': (n) => Math.log2(n || 1),
+          'O(n)': (n) => n,
+          'O(n log n)': (n) => n * Math.log2(n || 1),
+          'O(n²)': (n) => n * n,
+          'O(n³)': (n) => n * n * n,
         };
 
-        const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-            mode: 'javascript',
-            theme: 'monokai',
-            lineNumbers: true,
-            autoCloseBrackets: true,
-            tabSize: 2,
-        });
+        let bestFit = 'Unknown';
+        let minError = Infinity;
+        const maxN = results[results.length - 1].N;
+        const maxTime = results[results.length - 1].time || 0.001; // prevent /0
 
-        document.getElementById('lang').addEventListener('change', function() {
-            const modeMap = { javascript: 'javascript', python: 'python', java: 'text/x-java', cpp: 'text/x-c++src' };
-            editor.setOption('mode', modeMap[this.value]);
-        });
+        for (const [name, fn] of Object.entries(shapes)) {
+          let error = 0;
+          const scale = maxTime / (fn(maxN) || 1);
 
-        document.getElementById('templateBtn').addEventListener('click', () => {
-            editor.setValue(templates[document.getElementById('lang').value]);
-        });
+          for (const r of results) {
+            const expected = fn(r.N) * scale;
+            error += Math.pow((r.time - expected) / maxTime, 2);
+          }
 
-        document.getElementById('clearBtn').addEventListener('click', () => {
-            editor.setValue('');
-            const output = document.getElementById('output');
-            output.textContent = 'Cleared. Write your code and run.';
-            output.className = 'output';
-        });
+          if (error < minError) {
+            minError = error;
+            bestFit = name;
+          }
+        }
+        return bestFit;
+      }
 
-        // Safe output function (textContent + class-based styling)
-        function setOutput(text, type) {
-            const output = document.getElementById('output');
-            output.textContent = text;
-            output.className = 'output ' + (type || '');
+      async function runProfiler() {
+        const lang = document.getElementById('lang').value;
+        if (lang !== 'javascript') {
+          alert('The Interactive Profiler currently only supports JavaScript in the browser.');
+          return;
         }
 
-        function appendOutput(text) {
-            const output = document.getElementById('output');
-            output.textContent += '\n' + text;
+        if (!editor) return;
+        const code = editor.getValue();
+        if (!code.trim()) {
+          alert('Please write some code to profile.');
+          return;
         }
 
-        function drawProfilerChart(canvas, results) {
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (!results.length) return;
+        const modal = document.getElementById('profilerModal');
+        modal.style.display = 'flex';
 
-            const padding = 50;
-            const maxN = Math.max(...results.map(r => r.N));
-            const maxTime = Math.max(...results.map(r => r.time));
-            
-            const scaleX = (canvas.width - 2 * padding) / (maxN || 1);
-            const scaleY = (canvas.height - 2 * padding) / (maxTime || 1);
+        const sizes = [100, 1000, 10000, 100000];
+        const results = [];
 
-            // Draw Grid & Axes
-            ctx.beginPath();
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
-            for (let i = 0; i <= 5; i++) {
-                const y = canvas.height - padding - (i/5)*(canvas.height - 2*padding);
-                ctx.moveTo(padding, y);
-                ctx.lineTo(canvas.width - padding, y);
-                
-                // Y-axis labels
-                ctx.fillStyle = '#64748b';
-                ctx.font = '10px Arial';
-                ctx.textAlign = 'right';
-                ctx.fillText(((maxTime*i)/5).toFixed(1) + 'ms', padding - 10, y + 3);
-            }
-            ctx.stroke();
+        document.getElementById('profComplexity').textContent = 'Profiling...';
+        document.getElementById('profAvgTime').textContent = '- ms';
+        document.getElementById('profFastest').textContent = '- ms';
+        document.getElementById('profSlowest').textContent = '- ms';
 
-            ctx.beginPath();
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 2;
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, canvas.height - padding);
-            ctx.lineTo(canvas.width - padding, canvas.height - padding);
-            ctx.stroke();
-            
-            // X-axis labels
-            results.forEach(r => {
-                const x = padding + r.N * scaleX;
-                ctx.fillStyle = '#64748b';
-                ctx.textAlign = 'center';
-                ctx.fillText(r.N, x, canvas.height - padding + 20);
-            });
+        await new Promise((r) => setTimeout(r, 50));
 
-            // Draw line
-            ctx.beginPath();
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 3;
-            results.forEach((r, i) => {
-                const x = padding + r.N * scaleX;
-                const y = canvas.height - padding - r.time * scaleY;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
+        const origLog = console.log;
+        console.log = () => {};
 
-            // Draw points
-            results.forEach(r => {
-                const x = padding + r.N * scaleX;
-                const y = canvas.height - padding - r.time * scaleY;
-                ctx.beginPath();
-                ctx.fillStyle = '#2563eb';
-                ctx.arc(x, y, 6, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = 'white';
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
+        try {
+          const solveFn = new Function(
+            '"use strict";\n' + code + '\nreturn (typeof solve !== "undefined" ? solve : null);'
+          )();
 
-        function estimateComplexity(results) {
-            if (results.length < 2) return "Unknown";
-            const shapes = {
-                "O(1)": n => 1,
-                "O(log n)": n => Math.log2(n || 1),
-                "O(n)": n => n,
-                "O(n log n)": n => n * Math.log2(n || 1),
-                "O(n²)": n => n * n,
-                "O(n³)": n => n * n * n,
-            };
-            
-            let bestFit = "Unknown";
-            let minError = Infinity;
-            const maxN = results[results.length-1].N;
-            const maxTime = results[results.length-1].time || 0.001; // prevent /0
+          if (typeof solveFn !== 'function') {
+            throw new Error(
+              'Could not find a function named "solve". Please ensure your code exports or declares a solve() function.'
+            );
+          }
 
-            for (const [name, fn] of Object.entries(shapes)) {
-                let error = 0;
-                // find scale based on the last point to fit the curve
-                const scale = maxTime / (fn(maxN) || 1);
-                
-                for (const r of results) {
-                    const expected = fn(r.N) * scale;
-                    // normalized error
-                    error += Math.pow((r.time - expected) / maxTime, 2);
-                }
-                
-                if (error < minError) {
-                    minError = error;
-                    bestFit = name;
-                }
-            }
-            return bestFit;
-        }
+          let previousTime = 0;
+          for (const N of sizes) {
+            const input = Array.from({ length: N }, () => Math.floor(Math.random() * 1000));
 
-        async function runProfiler() {
-            const lang = document.getElementById('lang').value;
-            if (lang !== 'javascript') {
-                alert('The Interactive Profiler currently only supports JavaScript in the browser.');
-                return;
+            if (N === 100) {
+              try {
+                solveFn([...input]);
+              } catch (err) {
+                throw new Error('Error executing solve(): ' + err.message);
+              }
             }
 
-            const code = editor.getValue();
-            if (!code.trim()) {
-                alert('Please write some code to profile.');
-                return;
-            }
-
-            const modal = document.getElementById('profilerModal');
-            modal.style.display = 'flex';
-            
-            const sizes = [100, 1000, 10000, 100000];
-            const results = [];
-            
-            // Show loading state
-            document.getElementById('profComplexity').textContent = 'Profiling...';
-            document.getElementById('profAvgTime').textContent = '- ms';
-            document.getElementById('profFastest').textContent = '- ms';
-            document.getElementById('profSlowest').textContent = '- ms';
-            
-            // Allow UI to update
-            await new Promise(r => setTimeout(r, 50));
-
-            const origLog = console.log;
-            console.log = () => {}; // suppress logs during profiling
-
-            try {
-                // Setup isolated runner
-                const solveFn = new Function('"use strict";\n' + code + '\nreturn (typeof solve !== "undefined" ? solve : null);')();
-                
-                if (typeof solveFn !== 'function') {
-                    throw new Error('Could not find a function named "solve". Please ensure your code exports or declares a solve() function.');
-                }
-
-                let previousTime = 0;
-                for (const N of sizes) {
-                    // Generate random array of size N
-                    const input = Array.from({length: N}, () => Math.floor(Math.random() * 1000));
-                    
-                    // Warm up
-                    if (N === 100) {
-                        try {
-                            solveFn([...input]);
-                        } catch(err) {
-                            throw new Error("Error executing solve(): " + err.message);
-                        }
-                    }
-
-                    const start = performance.now();
-                    solveFn(input);
-                    const end = performance.now();
-                    const timeTaken = Math.max(0.01, end - start);
-                    
-                    results.push({ N, time: timeTaken });
-                    previousTime = timeTaken;
-                    
-                    // Small delay to prevent blocking UI completely
-                    await new Promise(r => setTimeout(r, 10));
-
-                    // Early exit to prevent browser hang on very slow algorithms (e.g. O(N^3))
-                    if (timeTaken > 800 && N !== sizes[sizes.length - 1]) {
-                        break;
-                    }
-                }
-
-                // Analyze results
-                const avgTime = results.reduce((acc, r) => acc + r.time, 0) / results.length;
-                const fastest = Math.min(...results.map(r => r.time));
-                const slowest = Math.max(...results.map(r => r.time));
-                const complexity = estimateComplexity(results);
-
-                document.getElementById('profComplexity').textContent = complexity;
-                document.getElementById('profAvgTime').textContent = avgTime.toFixed(2) + ' ms';
-                document.getElementById('profFastest').textContent = fastest.toFixed(2) + ' ms';
-                document.getElementById('profSlowest').textContent = slowest.toFixed(2) + ' ms';
-
-                const canvas = document.getElementById('profilerChart');
-                drawProfilerChart(canvas, results);
-
-            } catch (e) {
-                document.getElementById('profComplexity').textContent = 'Error';
-                alert(e.message || 'Error during profiling');
-                console.error(e);
-            } finally {
-                console.log = origLog; // restore logging
-            }
-        }
-
-        document.getElementById('profileBtn').addEventListener('click', runProfiler);
-        document.getElementById('rerunProfileBtn').addEventListener('click', runProfiler);
-        document.getElementById('closeProfilerBtn').addEventListener('click', () => {
-            document.getElementById('profilerModal').style.display = 'none';
-        });
-
-        document.getElementById('runBtn').addEventListener('click', async function() {
-            const output = document.getElementById('output');
             const start = performance.now();
-            const code = editor.getValue();
-            const lang = document.getElementById('lang').value;
+            solveFn(input);
+            const end = performance.now();
+            const timeTaken = Math.max(0.01, end - start);
 
-            if (!code.trim()) {
-                setOutput('❌ Please write some code first.', 'error');
-                return;
+            results.push({ N, time: timeTaken });
+            previousTime = timeTaken;
+
+            await new Promise((r) => setTimeout(r, 10));
+
+            if (timeTaken > 800 && N !== sizes[sizes.length - 1]) {
+              break;
             }
+          }
 
-            this.disabled = true;
-            setOutput('⏳ Running...', '');
+          const avgTime = results.reduce((acc, r) => acc + r.time, 0) / results.length;
+          const fastest = Math.min(...results.map((r) => r.time));
+          const slowest = Math.max(...results.map((r) => r.time));
+          const complexity = estimateComplexity(results);
 
-            try {
-                if (lang === 'javascript') {
-                    // Run in isolated sandbox (simplified)
-                    const logs = [];
-                    const origLog = console.log;
-                    console.log = (...args) => logs.push(args.join(' '));
-                    
-                    try {
-                        const result = new Function(`"use strict";\n${code}\nreturn solve();`)();
-                        console.log = origLog;
-                        const time = (performance.now() - start).toFixed(2);
-                        let complexityStr = '';
-                        try {
-                            if (typeof window.analyzeComplexity !== 'function') {
-                                await new Promise((resolve) => {
-                                    const script = document.createElement('script');
-                                    script.src = 'modules/complexity-client.js';
-                                    script.onload = resolve;
-                                    script.onerror = resolve;
-                                    document.head.appendChild(script);
-                                });
-                            }
-                            if (typeof window.analyzeComplexity === 'function') {
-                                const complexity = await window.analyzeComplexity(code);
-                                if (complexity) {
-                                    complexityStr = `\n\n📊 Time Complexity: ${complexity}`;
-                                }
-                            }
-                        } catch (err) {
-                            console.error("Complexity analysis failed", err);
-                        }
-                        const outputText = `📤 Output:\n${logs.join('\n') || '(no output)'}\n\n✅ Result: ${result !== undefined ? result : 'Done'}\n\n⏱️ ${time}ms${complexityStr}`;
-                        setOutput(outputText, 'success');
-                    } catch(e) {
-                        console.log = origLog;
-                        setOutput(`❌ Error: ${e.message}`, 'error');
-                    }
-                } else {
-                    // Piston API with proper error handling
-                    try {
-                        const res = await fetch('https://emkc.org/api/v2/piston/execute', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ language: lang, version: '*', files: [{ content: code }] })
-                        });
+          document.getElementById('profComplexity').textContent = complexity;
+          document.getElementById('profAvgTime').textContent = avgTime.toFixed(2) + ' ms';
+          document.getElementById('profFastest').textContent = fastest.toFixed(2) + ' ms';
+          document.getElementById('profSlowest').textContent = slowest.toFixed(2) + ' ms';
 
-                        if (!res.ok) {
-                            setOutput(`❌ API Error: ${res.status} ${res.statusText}`, 'error');
-                            return;
-                        }
+          const canvas = document.getElementById('profilerChart');
+          drawProfilerChart(canvas, results);
+        } catch (e) {
+          document.getElementById('profComplexity').textContent = 'Error';
+          alert(e.message || 'Error during profiling');
+          console.error(e);
+        } finally {
+          console.log = origLog;
+        }
+      }
 
-                        const data = await res.json();
+      document.getElementById('profileBtn').addEventListener('click', runProfiler);
+      document.getElementById('rerunProfileBtn').addEventListener('click', runProfiler);
+      document.getElementById('closeProfilerBtn').addEventListener('click', () => {
+        document.getElementById('profilerModal').style.display = 'none';
+      });
 
-                        // Check for compilation errors
-                        if (data.compile && data.compile.stderr) {
-                            setOutput(`❌ Compilation Error:\n${data.compile.stderr}`, 'error');
-                            return;
-                        }
+      document.getElementById('runBtn').addEventListener('click', async function () {
+        if (!editor) return;
+        const output = document.getElementById('output');
+        const start = performance.now();
+        const code = editor.getValue();
+        const lang = document.getElementById('lang').value;
 
-                        // Check for runtime errors
-                        if (data.run && data.run.stderr) {
-                            setOutput(`❌ Runtime Error:\n${data.run.stderr}`, 'error');
-                            return;
-                        }
-
-                        // Check exit code
-                        if (data.run && data.run.code !== undefined && data.run.code !== 0) {
-                            setOutput(`❌ Process exited with code ${data.run.code}\n${data.run.stderr || 'Unknown error'}`, 'error');
-                            return;
-                        }
-
-                        const time = (performance.now() - start).toFixed(2);
-                        const out = data.run?.stdout || data.run?.output || 'Done';
-                        setOutput(`📤 Output:\n${out}\n\n⏱️ ${time}ms`, 'success');
-                    } catch (fetchError) {
-                        setOutput(`❌ Network Error: ${fetchError.message}`, 'error');
-                    }
-                }
-            } catch(e) {
-                setOutput(`❌ ${e.message}`, 'error');
-            } finally {
-                this.disabled = false;
-            }
-        });
-
-        // Keyboard shortcut
-        // Keyboard shortcut: Ctrl+Enter to run
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('runBtn').click();
-            }
-        });
-
-        document.getElementById('predictBtn').addEventListener('click', () => {
-            document.getElementById('predictionModal').style.display = 'block';
-        });
-
-        document
-            .getElementById('closePredictionBtn')
-            .addEventListener('click', closePredictionModal);
-
-        function closePredictionModal() {
-            document.getElementById('predictionModal').style.display = 'none';
+        if (!code.trim()) {
+          setOutput('❌ Please write some code first.', 'error');
+          return;
         }
 
-        // Load initial template
-        editor.setValue(templates.javascript);
+        this.disabled = true;
+        setOutput('⏳ Running...', '');
+
+        try {
+          if (lang === 'javascript') {
+            const logs = [];
+            const origLog = console.log;
+            console.log = (...args) => logs.push(args.join(' '));
+
+            try {
+              const result = new Function(`"use strict";\n${code}\nreturn solve();`)();
+              console.log = origLog;
+              const time = (performance.now() - start).toFixed(2);
+              let complexityStr = '';
+              try {
+                if (typeof window.analyzeComplexity !== 'function') {
+                  await new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = 'modules/complexity-client.js';
+                    script.onload = resolve;
+                    script.onerror = resolve;
+                    document.head.appendChild(script);
+                  });
+                }
+                if (typeof window.analyzeComplexity === 'function') {
+                  const complexity = await window.analyzeComplexity(code);
+                  if (complexity) {
+                    complexityStr = `\n\n📊 Time Complexity: ${complexity}`;
+                  }
+                }
+              } catch (err) {
+                console.error('Complexity analysis failed', err);
+              }
+              const outputText = `📤 Output:\n${logs.join('\n') || '(no output)'}\n\n✅ Result: ${result !== undefined ? result : 'Done'}\n\n⏱️ ${time}ms${complexityStr}`;
+              setOutput(outputText, 'success');
+            } catch (e) {
+              console.log = origLog;
+              setOutput(`❌ Error: ${e.message}`, 'error');
+            }
+          } else {
+            try {
+              const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language: lang, version: '*', files: [{ content: code }] }),
+              });
+
+              if (!res.ok) {
+                setOutput(`❌ API Error: ${res.status} ${res.statusText}`, 'error');
+                return;
+              }
+
+              const data = await res.json();
+
+              if (data.compile && data.compile.stderr) {
+                setOutput(`❌ Compilation Error:\n${data.compile.stderr}`, 'error');
+                return;
+              }
+
+              if (data.run && data.run.stderr) {
+                setOutput(`❌ Runtime Error:\n${data.run.stderr}`, 'error');
+                return;
+              }
+
+              if (data.run && data.run.code !== undefined && data.run.code !== 0) {
+                setOutput(
+                  `❌ Process exited with code ${data.run.code}\n${data.run.stderr || 'Unknown error'}`,
+                  'error'
+                );
+                return;
+              }
+
+              const time = (performance.now() - start).toFixed(2);
+              const out = data.run?.stdout || data.run?.output || 'Done';
+              setOutput(`📤 Output:\n${out}\n\n⏱️ ${time}ms`, 'success');
+            } catch (fetchError) {
+              setOutput(`❌ Network Error: ${fetchError.message}`, 'error');
+            }
+          }
+        } catch (e) {
+          setOutput(`❌ ${e.message}`, 'error');
+        } finally {
+          this.disabled = false;
+        }
+      });
+
+      // Keyboard shortcut: Ctrl+Enter to run
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('runBtn').click();
+        }
+      });
+
+      document.getElementById('predictBtn').addEventListener('click', () => {
+        document.getElementById('predictionModal').style.display = 'block';
+      });
+
+      document.getElementById('closePredictionBtn').addEventListener('click', closePredictionModal);
+
+      function closePredictionModal() {
+        document.getElementById('predictionModal').style.display = 'none';
+      }
+
+      // ==========================================
+      // AI POWERED INLINE CODE REVIEWER
+      // ==========================================
+      function clearReviews() {
+        if (editor && monacoInstance) {
+          editor.changeViewZones((changeAccessor) => {
+            activeReviews.forEach((rev) => {
+              if (rev && rev.zoneId) {
+                changeAccessor.removeZone(rev.zoneId);
+              }
+            });
+          });
+
+          let allDecIds = [];
+          activeReviews.forEach((rev) => {
+            if (rev && rev.decorationIds) {
+              allDecIds.push(...rev.decorationIds);
+            }
+          });
+          editor.deltaDecorations(allDecIds, []);
+        }
+        activeReviews = [];
+      }
+
+      function dismissReview(index) {
+        const rev = activeReviews[index];
+        if (!rev) return;
+
+        if (editor) {
+          editor.changeViewZones((changeAccessor) => {
+            if (rev.zoneId) {
+              changeAccessor.removeZone(rev.zoneId);
+            }
+          });
+          if (rev.decorationIds) {
+            editor.deltaDecorations(rev.decorationIds, []);
+          }
+        }
+        activeReviews[index] = null;
+      }
+
+      function applyReviewRefactor(index) {
+        const rev = activeReviews[index];
+        if (!rev || !editor) return;
+
+        const model = editor.getModel();
+        if (!model) return;
+
+        const startLine = rev.lineStart;
+        const endLine = rev.lineEnd;
+        const range = new monacoInstance.Range(
+          startLine,
+          1,
+          endLine,
+          model.getLineMaxColumn(endLine)
+        );
+
+        editor.executeEdits('ai-reviewer', [
+          {
+            range: range,
+            text: rev.suggestionContent,
+            forceMoveMarkers: true,
+          },
+        ]);
+
+        clearReviews();
+        setOutput('✅ Applied refactoring suggestion successfully!', 'success');
+      }
+
+      function renderReviews(suggestions) {
+        if (!editor || !monacoInstance) return;
+
+        editor.changeViewZones((changeAccessor) => {
+          suggestions.forEach((s, index) => {
+            // Line decoration
+            const decIds = editor.deltaDecorations(
+              [],
+              [
+                {
+                  range: new monacoInstance.Range(s.lineStart, 1, s.lineEnd, 1),
+                  options: {
+                    isWholeLine: true,
+                    className:
+                      s.severity === 'error'
+                        ? 'ai-review-highlight-error'
+                        : 'ai-review-highlight-warning',
+                    glyphMarginClassName:
+                      s.severity === 'error' ? 'ai-review-glyph-error' : 'ai-review-glyph-warning',
+                    glyphMarginHoverMessage: { value: s.message },
+                  },
+                },
+              ]
+            );
+
+            // Container DOM Node
+            const domNode = document.createElement('div');
+            domNode.className = 'ai-review-zone-container';
+
+            const card = document.createElement('div');
+            card.className = `ai-review-card`;
+            card.style.borderLeft = `4px solid ${s.severity === 'error' ? '#ef4444' : '#f59e0b'}`;
+
+            const header = document.createElement('div');
+            header.style.display = 'flex';
+            header.style.justifyContent = 'space-between';
+            header.style.alignItems = 'center';
+            header.style.marginBottom = '6px';
+
+            const title = document.createElement('span');
+            title.style.fontWeight = 'bold';
+            title.style.color = s.severity === 'error' ? '#ef4444' : '#f59e0b';
+            title.style.display = 'flex';
+            title.style.alignItems = 'center';
+            title.style.gap = '6px';
+            title.innerHTML =
+              s.severity === 'error'
+                ? '<i class="fas fa-circle-exclamation"></i> AI Critical Issue'
+                : '<i class="fas fa-triangle-exclamation"></i> AI Improvement';
+
+            const actionContainer = document.createElement('div');
+            actionContainer.style.display = 'flex';
+            actionContainer.style.gap = '8px';
+
+            const applyBtn = document.createElement('button');
+            applyBtn.innerText = 'Apply';
+            applyBtn.className = 'ai-review-apply-btn';
+            applyBtn.onclick = () => applyReviewRefactor(index);
+
+            const dismissBtn = document.createElement('button');
+            dismissBtn.innerText = 'Dismiss';
+            dismissBtn.className = 'ai-review-dismiss-btn';
+            dismissBtn.onclick = () => dismissReview(index);
+
+            actionContainer.appendChild(applyBtn);
+            actionContainer.appendChild(dismissBtn);
+            header.appendChild(title);
+            header.appendChild(actionContainer);
+
+            const messageEl = document.createElement('div');
+            messageEl.style.lineHeight = '1.4';
+            messageEl.style.fontSize = '0.9rem';
+            messageEl.innerText = s.message;
+
+            card.appendChild(header);
+            card.appendChild(messageEl);
+
+            if (s.suggestionContent) {
+              const preview = document.createElement('pre');
+              preview.innerText = s.suggestionContent;
+              card.appendChild(preview);
+            }
+
+            domNode.appendChild(card);
+
+            const height = s.suggestionContent ? 150 : 100;
+
+            const zoneId = changeAccessor.addZone({
+              afterLineNumber: s.lineEnd,
+              heightInPx: height,
+              domNode: domNode,
+            });
+
+            activeReviews.push({
+              ...s,
+              decorationIds: decIds,
+              zoneId: zoneId,
+              domNode: domNode,
+            });
+          });
+        });
+      }
+
+      document.getElementById('reviewBtn').addEventListener('click', async () => {
+        if (!editor) return;
+        const code = editor.getValue();
+        const lang = document.getElementById('lang').value;
+
+        if (!code.trim()) {
+          setOutput('❌ Please write some code to review.', 'error');
+          return;
+        }
+
+        if (isReviewing) return;
+        isReviewing = true;
+
+        const btn = document.getElementById('reviewBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reviewing...';
+        setOutput(
+          '⏳ Requesting AI code audit... checking code safety, optimization, styling, and logic...',
+          'info'
+        );
+
+        try {
+          const res = await fetch('/api/ai/review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              code: code,
+              language: lang,
+              problemName: 'Playground Sandbox',
+              problemDescription: 'Code execution workspace for general problem solving.',
+            }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setOutput(`❌ AI Review Error: ${data.error || res.statusText}`, 'error');
+            return;
+          }
+
+          const data = await res.json();
+          const suggestions = data.suggestions || [];
+
+          clearReviews();
+
+          if (suggestions.length === 0) {
+            setOutput('✨ AI Review: Your code looks excellent! No issues found.', 'success');
+            return;
+          }
+
+          setOutput(
+            `🔍 AI Review completed. Found ${suggestions.length} suggestion(s). Inline overlays have been mapped.`,
+            'success'
+          );
+          renderReviews(suggestions);
+        } catch (err) {
+          setOutput(`❌ AI Review Connection Error: ${err.message}`, 'error');
+        } finally {
+          isReviewing = false;
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
-    

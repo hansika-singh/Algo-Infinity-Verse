@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowflake ID Visualizer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="snowflake-id-visualizer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>Twitter Snowflake Distributed ID Visualizer</h1>
+            <p>Generate highly-scalable 64-bit unique identifiers using Timestamps, Machine IDs, and Sequence numbers without a central database bottleneck.</p>
+        </header>
+
+        <main class="simulator-layout">
+            <!-- Controls -->
+            <section class="controls-panel">
+                <div class="control-row">
+                    <div class="control-group">
+                        <label>Datacenter ID (5 bits: 0-31)</label>
+                        <input type="number" id="input-datacenter" min="0" max="31" value="1">
+                    </div>
+                    <div class="control-group">
+                        <label>Worker ID (5 bits: 0-31)</label>
+                        <input type="number" id="input-worker" min="0" max="31" value="1">
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-generate" class="primary-btn"><i class="fa-solid fa-bolt"></i> Generate ID</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 64-bit Visualizer -->
+            <section class="bits-panel">
+                <div class="bit-labels">
+                    <div class="label-group sign-label">Sign (1 bit)</div>
+                    <div class="label-group time-label">Timestamp (41 bits) - Milliseconds since custom epoch</div>
+                    <div class="label-group dc-label">DC (5 bits)</div>
+                    <div class="label-group worker-label">Worker (5 bits)</div>
+                    <div class="label-group seq-label">Sequence (12 bits)</div>
+                </div>
+                <div class="bits-container" id="bits-container">
+                    <!-- 64 bits generated via JS -->
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-row">
+                        <span class="result-label">BigInt Decimal:</span>
+                        <span id="res-decimal" class="result-value">0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Hexadecimal:</span>
+                        <span id="res-hex" class="result-value">0x0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Extracted Date:</span>
+                        <span id="res-date" class="result-value">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generated IDs Log -->
+            <section class="log-panel">
+                <h2><i class="fa-solid fa-list-ol"></i> Generated IDs Log</h2>
+                <div class="id-list" id="id-list">
+                    <!-- Logs appended via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="snowflake-id-visualizer.js"></script>
+</body>
+</html>

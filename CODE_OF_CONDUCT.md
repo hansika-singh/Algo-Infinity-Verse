@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.
+Any instances of abusive, harassing, or otherwise unacceptable behavior should be reported to the community leaders responsible for enforcement at conduct@algoinfinityverse.com. All reports will be handled promptly, reviewed fairly, and investigated in accordance with the project's Code of Conduct.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 

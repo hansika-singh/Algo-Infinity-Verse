@@ -1,6 +1,8 @@
 import { jest } from '@jest/globals';
 import IORedis from 'ioredis';
 import { Worker } from 'bullmq';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Stub out Redis so importing the server does not hang or hit a real Redis.
 IORedis.prototype.connect = function () {
@@ -9,6 +11,24 @@ IORedis.prototype.connect = function () {
 Worker.prototype.run = function () {
   return Promise.resolve();
 };
+
+jest.unstable_mockModule('../backend/jobs/queue.js', () => ({
+  enqueueBulkAudit: jest.fn(),
+  getBatchProgress: jest.fn(),
+  enqueueReport: jest.fn(),
+  getReportStatus: jest.fn(),
+  enqueueLeaderboardUpdate: jest.fn(),
+  batchStore: new Map(),
+  MAX_BULK_AUDIT_URLS: 100,
+  bulkAuditQueue: {
+    add: jest.fn(),
+    on: jest.fn(),
+  },
+  redisAvailable: false,
+  redisClient: null,
+  redisReady: Promise.resolve(),
+  default: {},
+}));
 
 process.env.NODE_ENV = 'test';
 process.env.SESSION_SECRET = 'test-secret-for-access-control';
@@ -43,7 +63,7 @@ describe('Access control: /api/team-profile IDOR (#1216)', () => {
   it('rejects anonymous POST with 401', async () => {
     const res = await fetch(`${origin}/api/team-profile`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Origin': origin },
+      headers: { 'Content-Type': 'application/json', Origin: origin },
       body: JSON.stringify({ id: 'team-anon-post', version: 1, name: 'x' }),
     });
     expect(res.status).toBe(401);
@@ -57,7 +77,7 @@ describe('Access control: /api/team-profile IDOR (#1216)', () => {
     // User A creates the profile -> becomes owner.
     const createRes = await fetch(`${origin}/api/team-profile`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(userA), 'Origin': origin },
+      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(userA), Origin: origin },
       body: JSON.stringify({ id: teamId, version: 1, name: 'A Team', description: 'secret' }),
     });
     expect(createRes.status).toBe(200);
@@ -73,7 +93,7 @@ describe('Access control: /api/team-profile IDOR (#1216)', () => {
     // User B must not be able to overwrite it.
     const bPost = await fetch(`${origin}/api/team-profile`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(userB), 'Origin': origin },
+      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(userB), Origin: origin },
       body: JSON.stringify({ id: teamId, version: created.version, name: 'hijacked' }),
     });
     expect(bPost.status).toBe(403);
@@ -85,6 +105,28 @@ describe('Access control: /api/team-profile IDOR (#1216)', () => {
     expect(aGet.status).toBe(200);
     const aData = await aGet.json();
     expect(aData.name).toBe('A Team');
+  });
+
+  it('denies everyone access to a legacy record with no ownerId (#2360)', async () => {
+    const teamId = `team-legacy-${Date.now()}`;
+    const someUser = { id: `userC-${Date.now()}`, name: 'C', email: 'c@example.com' };
+
+    const teamProfilesFile = path.join(process.cwd(), 'data', 'team_profiles.json');
+    const store = JSON.parse(await fs.readFile(teamProfilesFile, 'utf8'));
+    store[teamId] = { id: teamId, name: 'Legacy Team', description: 'secret', version: 1 };
+    await fs.writeFile(teamProfilesFile, `${JSON.stringify(store, null, 2)}\n`);
+
+    const getRes = await fetch(`${origin}/api/team-profile?id=${teamId}`, {
+      headers: { Cookie: cookieFor(someUser) },
+    });
+    expect(getRes.status).toBe(403);
+
+    const postRes = await fetch(`${origin}/api/team-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Cookie: cookieFor(someUser), Origin: origin },
+      body: JSON.stringify({ id: teamId, version: 1, name: 'hijacked' }),
+    });
+    expect(postRes.status).toBe(403);
   });
 });
 
@@ -105,7 +147,7 @@ describe('DoS guard: /api/audit/bulk URL cap (#1216)', () => {
   it(`rejects a CSV with more than ${MAX_BULK_AUDIT_URLS} repositories with 400`, async () => {
     const rows = Array.from(
       { length: MAX_BULK_AUDIT_URLS + 10 },
-      (_, i) => `https://github.com/owner/repo-${i}`,
+      (_, i) => `https://github.com/owner/repo-${i}`
     ).join('\n');
 
     const formData = new FormData();
@@ -113,8 +155,8 @@ describe('DoS guard: /api/audit/bulk URL cap (#1216)', () => {
 
     const res = await fetch(`${origin}/api/audit/bulk`, {
       method: 'POST',
-      headers: { 'Origin': origin },
-      body: formData
+      headers: { Origin: origin },
+      body: formData,
     });
     expect(res.status).toBe(400);
     const data = await res.json();

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed Tracing Simulator | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Simulate Jaeger/OpenTelemetry span propagation across microservices."
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="distributed-tracing.css" />
+    <script src="/theme.js"></script>
+  </head>
+  <body class="tracing-body">
+    <nav class="navbar tracing-nav">
+      <div class="nav-logo">
+        <span class="logo-text">∞</span>
+        <span class="logo-title">Algo Infinity Verse</span>
+      </div>
+      <div class="engine-badge">
+        <i class="fas fa-satellite-dish"></i> OpenTelemetry Collector Active
+      </div>
+    </nav>
+
+    <main class="tracing-workspace">
+      <!-- Top Half: Architecture Graph -->
+      <section class="tracing-panel arch-panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-project-diagram"></i> Microservice Architecture</h2>
+          <button class="btn btn-action" id="btnTriggerRequest">
+            <i class="fas fa-play"></i> Trigger API Request
+          </button>
+        </div>
+
+        <div class="network-graph" id="networkGraph">
+          <!-- Nodes -->
+          <div class="service-node" id="node-gateway" style="top: 20%; left: 10%">
+            <i class="fas fa-door-open"></i> API Gateway
+          </div>
+          <div class="service-node" id="node-auth" style="top: 60%; left: 30%">
+            <i class="fas fa-shield-alt"></i> Auth Service
+          </div>
+          <div class="service-node" id="node-billing" style="top: 20%; left: 50%">
+            <i class="fas fa-credit-card"></i> Billing Service
+          </div>
+          <div class="service-node" id="node-db" style="top: 60%; left: 70%">
+            <i class="fas fa-database"></i> Database Service
+          </div>
+
+          <!-- Edges (SVG) -->
+          <svg class="edge-svg" id="edgeSvg">
+            <line x1="15%" y1="20%" x2="35%" y2="60%" class="edge" id="edge-gw-auth" />
+            <line x1="15%" y1="20%" x2="55%" y2="20%" class="edge" id="edge-gw-billing" />
+            <line x1="55%" y1="20%" x2="75%" y2="60%" class="edge" id="edge-billing-db" />
+            <!-- Animated Packets -->
+            <circle cx="0" cy="0" r="5" class="packet hidden" id="packet-gw-auth" />
+            <circle cx="0" cy="0" r="5" class="packet hidden" id="packet-gw-billing" />
+            <circle cx="0" cy="0" r="5" class="packet hidden" id="packet-billing-db" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- Bottom Half: Waterfall Chart -->
+      <section class="tracing-panel waterfall-panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-align-left"></i> Trace Waterfall (Jaeger UI)</h2>
+          <div class="trace-meta">Trace ID: <span id="currentTraceId" class="mono">--</span></div>
+        </div>
+
+        <div class="waterfall-container">
+          <div class="waterfall-header">
+            <div class="span-name-col">Service / Operation</div>
+            <div class="span-timeline-col">
+              <span>0ms</span>
+              <span>50ms</span>
+              <span>100ms</span>
+              <span>150ms</span>
+              <span>200ms</span>
+            </div>
+          </div>
+          <div class="waterfall-body" id="waterfallBody">
+            <div class="empty-state">Trigger a request to generate a trace...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="distributed-tracing.js"></script>
+  </body>
+</html>

@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Algorithmic Complexity Sandbox - Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Profile and compare two code implementations side by side. Visualize time and memory complexity curves across custom input ranges in real time."
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+      :root {
+        --bg-color: #0b0f19;
+        --container-bg: rgba(22, 28, 45, 0.4);
+        --border-color: rgba(255, 255, 255, 0.08);
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --secondary-color: #3b82f6;
+        --secondary-hover: #2563eb;
+        --success-color: #10b981;
+        --success-hover: #059669;
+        --error-color: #ef4444;
+        --text-color: #f8fafc;
+        --text-muted: #94a3b8;
+        --card-bg: rgba(15, 23, 42, 0.6);
+        --shadow-color: rgba(0, 0, 0, 0.4);
+        --code-font: 'Fira Code', Consolas, Monaco, monospace;
+        --ui-font:
+          'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --stat-box-bg: rgba(255, 255, 255, 0.03);
+        --console-bg: #090d16;
+      }
+
+      html.light-mode {
+        --bg-color: #f1f5f9;
+        --container-bg: rgba(255, 255, 255, 0.8);
+        --border-color: rgba(0, 0, 0, 0.08);
+        --primary-color: #7c3aed;
+        --primary-hover: #6d28d9;
+        --secondary-color: #2563eb;
+        --secondary-hover: #1d4ed8;
+        --success-color: #10b981;
+        --success-hover: #059669;
+        --error-color: #dc2626;
+        --text-color: #0f172a;
+        --text-muted: #64748b;
+        --card-bg: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.05);
+        --stat-box-bg: #f8fafc;
+        --console-bg: #e2e8f0;
+      }
+
+      body {
+        font-family: var(--ui-font);
+        background: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 20px;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        min-height: 100vh;
+      }
+
+      .navbar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .back-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--text-muted);
+      }
+      html.light-mode .back-btn:hover {
+        background: rgba(0, 0, 0, 0.02);
+      }
+
+      h1 {
+        color: var(--text-color);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .sandbox-layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 1024px) {
+        .sandbox-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--container-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 24px var(--shadow-color);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .controls-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .controls-group label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .controls-group select,
+      .controls-group input {
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-family: var(--ui-font);
+        font-size: 0.9rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .controls-group select:focus,
+      .controls-group input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+      }
+
+      .run-btn {
+        background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      .run-btn:hover {
+        background: linear-gradient(135deg, var(--primary-hover), #8b5cf6);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .run-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .console-output {
+        background: var(--console-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        font-family: var(--code-font);
+        font-size: 0.82rem;
+        line-height: 1.4;
+        max-height: 200px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+
+      .workspace-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .editors-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      @media (max-width: 768px) {
+        .editors-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .editor-container-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .editor-header {
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .editor-container {
+        height: 320px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        box-shadow: 0 4px 12px var(--shadow-color);
+      }
+
+      .charts-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      @media (max-width: 768px) {
+        .charts-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .chart-box {
+        background: var(--container-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 12px var(--shadow-color);
+      }
+
+      .chart-box h3 {
+        margin: 0 0 10px 0;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .chart-wrapper {
+        position: relative;
+        height: 260px;
+        width: 100%;
+      }
+    </style>
+    <script src="/theme.js"></script>
+  </head>
+  <body>
+    <header class="navbar-header">
+      <a href="/pages/visualizers/visualizers.html" class="back-btn" id="backToCatalog">
+        <i class="fas fa-arrow-left"></i> Back to Visualizers
+      </a>
+      <h1><i class="fas fa-gauge-high"></i> Algorithmic Complexity Sandbox</h1>
+    </header>
+
+    <main class="sandbox-layout">
+      <!-- Control Panel -->
+      <aside class="panel">
+        <div class="controls-group">
+          <label for="templateSelect">Select Problem Preset</label>
+          <select id="templateSelect" aria-label="Select template preset">
+            <option value="fibonacci">Fibonacci (O(2^N) vs O(N))</option>
+            <option value="subsetSum">Subset Sum (O(2^N) recursion vs O(N) DP)</option>
+            <option value="factorial">Factorial (Recursive vs Iterative)</option>
+          </select>
+        </div>
+
+        <div class="controls-group">
+          <label for="inputSizesInput">Input Sizes (N, comma-separated)</label>
+          <input
+            type="text"
+            id="inputSizesInput"
+            value="5, 10, 15, 20, 25, 30"
+            placeholder="e.g. 10, 20, 50, 100"
+            aria-label="Input sizes list"
+          />
+        </div>
+
+        <button type="button" id="profileBtn" class="run-btn">
+          <i class="fas fa-play"></i> Run Complexity Profile
+        </button>
+
+        <div class="controls-group">
+          <label>Sandbox Terminal Log</label>
+          <div id="consoleLog" class="console-output">
+            Select a preset template and click Run to begin.
+          </div>
+        </div>
+      </aside>
+
+      <!-- Editor & Visualizations Panel -->
+      <section class="workspace-panel">
+        <!-- Split Editors -->
+        <div class="editors-row">
+          <div class="editor-container-wrapper">
+            <div class="editor-header">
+              <i class="fas fa-code" style="color: var(--secondary-color)"></i> Implementation A
+              (solve(N))
+            </div>
+            <div id="editorA" class="editor-container"></div>
+          </div>
+          <div class="editor-container-wrapper">
+            <div class="editor-header">
+              <i class="fas fa-code" style="color: var(--primary-color)"></i> Implementation B
+              (solve(N))
+            </div>
+            <div id="editorB" class="editor-container"></div>
+          </div>
+        </div>
+
+        <!-- Plots -->
+        <div class="charts-row">
+          <div class="chart-box">
+            <h3>⏱️ Runtime Complexity Profile (Time vs N)</h3>
+            <div class="chart-wrapper">
+              <canvas id="timeChart" width="400" height="260"></canvas>
+            </div>
+          </div>
+          <div class="chart-box">
+            <h3>💾 Space Complexity Profile (Memory vs N)</h3>
+            <div class="chart-wrapper">
+              <canvas id="memoryChart" width="400" height="260"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Chart.js & Monaco Editor AMD Loaders -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+    <script>
+      const presets = {
+        fibonacci: {
+          sizes: '5, 10, 15, 20, 25, 28',
+          codeA: `// Implementation A: Recursive (Exponential O(2^N) Time)\nfunction solve(n) {\n  if (n <= 1) return n;\n  return solve(n - 1) + solve(n - 2);\n}`,
+          codeB: `// Implementation B: Bottom-up DP (Linear O(N) Time)\nfunction solve(n) {\n  if (n <= 1) return n;\n  let dp = [0, 1];\n  for (let i = 2; i <= n; i++) {\n    dp[i] = dp[i - 1] + dp[i - 2];\n  }\n  return dp[n];\n}`,
+        },
+        subsetSum: {
+          sizes: '10, 15, 20, 22, 24',
+          codeA: `// Implementation A: Recursive Backtracking (Exponential O(2^N) Time)\nfunction solve(n) {\n  // Find if a subset of elements sums to N\n  const items = [1, 5, 8, 12, 15, 20, 22, 30, 35, 40, 45, 50];\n  function helper(i, target) {\n    if (target === 0) return true;\n    if (i >= items.length || target < 0) return false;\n    return helper(i + 1, target - items[i]) || helper(i + 1, target);\n  }\n  return helper(0, n);\n}`,
+          codeB: `// Implementation B: Memoized DP (Linear O(N * ItemCount) Time)\nfunction solve(n) {\n  const items = [1, 5, 8, 12, 15, 20, 22, 30, 35, 40, 45, 50];\n  const memo = new Map();\n  function helper(i, target) {\n    const key = i + ',' + target;\n    if (memo.has(key)) return memo.get(key);\n    if (target === 0) return true;\n    if (i >= items.length || target < 0) return false;\n    const res = helper(i + 1, target - items[i]) || helper(i + 1, target);\n    memo.set(key, res); \n    return res;\n  }\n  return helper(0, n);\n}`,
+        },
+        factorial: {
+          sizes: '50, 100, 150, 200, 250, 300',
+          codeA: `// Implementation A: Recursive O(N) Call Stack\nfunction solve(n) {\n  if (n <= 1) return 1;\n  return n * solve(n - 1);\n}`,
+          codeB: `// Implementation B: Iterative O(N) Loop (O(1) Space)\nfunction solve(n) {\n  let res = 1;\n  for (let i = 2; i <= n; i++) {\n    res *= i;\n  }\n  return res;\n}`,
+        },
+      };
+
+      let editorA, editorB;
+      let monacoInstance;
+      let timeChart, memoryChart;
+
+      // Initialize Monaco Editor
+      function initMonaco() {
+        require.config({
+          paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' },
+        });
+        require(['vs/editor/editor.main'], function () {
+          monacoInstance = monaco;
+
+          const isLight = document.documentElement.classList.contains('light-mode');
+          const initialTheme = isLight ? 'vs-light' : 'vs-dark';
+
+          editorA = monacoInstance.editor.create(document.getElementById('editorA'), {
+            value: presets.fibonacci.codeA,
+            language: 'javascript',
+            theme: initialTheme,
+            automaticLayout: true,
+            fontSize: 14,
+            fontFamily: 'var(--code-font)',
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            tabSize: 2,
+          });
+
+          editorB = monacoInstance.editor.create(document.getElementById('editorB'), {
+            value: presets.fibonacci.codeB,
+            language: 'javascript',
+            theme: initialTheme,
+            automaticLayout: true,
+            fontSize: 14,
+            fontFamily: 'var(--code-font)',
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            tabSize: 2,
+          });
+
+          // Theme syncing observer
+          const observer = new MutationObserver(() => {
+            const isL = document.documentElement.classList.contains('light-mode');
+            monacoInstance.editor.setTheme(isL ? 'vs-light' : 'vs-dark');
+            updateChartThemes();
+          });
+          observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+          });
+        });
+      }
+
+      // Initialize Chart.js
+      function initCharts() {
+        const isLight = document.documentElement.classList.contains('light-mode');
+        const gridColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        const textColor = isLight ? '#0f172a' : '#f8fafc';
+
+        const commonOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: textColor, font: { family: 'var(--ui-font)' } },
+            },
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor },
+              title: { display: true, text: 'Input Size (N)', color: textColor },
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: { color: textColor },
+              title: { display: true, text: '', color: textColor },
+            },
+          },
+        };
+
+        const ctxTime = document.getElementById('timeChart').getContext('2d');
+        timeChart = new Chart(ctxTime, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: 'Implementation A',
+                data: [],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.2,
+                borderWith: 2,
+              },
+              {
+                label: 'Implementation B',
+                data: [],
+                borderColor: '#8b5cf6',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                tension: 0.2,
+                borderWith: 2,
+              },
+            ],
+          },
+          options: {
+            ...commonOptions,
+            scales: {
+              ...commonOptions.scales,
+              y: {
+                ...commonOptions.scales.y,
+                title: { ...commonOptions.scales.y.title, text: 'Time (ms)' },
+              },
+            },
+          },
+        });
+
+        const ctxMem = document.getElementById('memoryChart').getContext('2d');
+        memoryChart = new Chart(ctxMem, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: 'Implementation A',
+                data: [],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.2,
+                borderWith: 2,
+              },
+              {
+                label: 'Implementation B',
+                data: [],
+                borderColor: '#8b5cf6',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                tension: 0.2,
+                borderWith: 2,
+              },
+            ],
+          },
+          options: {
+            ...commonOptions,
+            scales: {
+              ...commonOptions.scales,
+              y: {
+                ...commonOptions.scales.y,
+                title: { ...commonOptions.scales.y.title, text: 'Allocated memory (KB)' },
+              },
+            },
+          },
+        });
+      }
+
+      function updateChartThemes() {
+        if (!timeChart || !memoryChart) return;
+        const isLight = document.documentElement.classList.contains('light-mode');
+        const gridColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+        const textColor = isLight ? '#0f172a' : '#f8fafc';
+
+        [timeChart, memoryChart].forEach((chart) => {
+          chart.options.plugins.legend.labels.color = textColor;
+          chart.options.scales.x.grid.color = gridColor;
+          chart.options.scales.x.ticks.color = textColor;
+          chart.options.scales.x.title.color = textColor;
+          chart.options.scales.y.grid.color = gridColor;
+          chart.options.scales.y.ticks.color = textColor;
+          chart.options.scales.y.title.color = textColor;
+          chart.update();
+        });
+      }
+
+      // Change templates
+      document.getElementById('templateSelect').addEventListener('change', function () {
+        const p = presets[this.value];
+        if (p) {
+          document.getElementById('inputSizesInput').value = p.sizes;
+          if (editorA) editorA.setValue(p.codeA);
+          if (editorB) editorB.setValue(p.codeB);
+        }
+      });
+
+      // Run profile
+      document.getElementById('profileBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('profileBtn');
+        const logEl = document.getElementById('consoleLog');
+
+        if (!editorA || !editorB) return;
+        const codeA = editorA.getValue();
+        const codeB = editorB.getValue();
+
+        const sizesStr = document.getElementById('inputSizesInput').value;
+        const sizes = sizesStr
+          .split(',')
+          .map((s) => parseInt(s.trim(), 10))
+          .filter((n) => !isNaN(n) && n > 0);
+
+        if (sizes.length === 0) {
+          logEl.innerHTML =
+            '❌ Error: Please specify at least one valid positive integer for input sizes.';
+          return;
+        }
+
+        if (sizes.length > 8) {
+          logEl.innerHTML =
+            '❌ Error: Capped at maximum of 8 input size steps to prevent request timeout.';
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Profiling Sandbox...';
+        logEl.innerHTML = `⏳ Spawning isolated VM sandboxes...\nProfiling range: [${sizes.join(', ')}]\n\n`;
+
+        try {
+          const res = await fetch('/api/execute/profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Origin: window.location.origin,
+            },
+            body: JSON.stringify({ codeA, codeB, inputSizes: sizes }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            logEl.innerHTML += `❌ Execution Error: ${data.error || res.statusText}\n`;
+            return;
+          }
+
+          const data = await res.json();
+          const results = data.results || [];
+
+          logEl.innerHTML += `✅ Profiling complete!\n----------------------------------------\n`;
+
+          const labels = [];
+          const timesA = [];
+          const timesB = [];
+          const memsA = [];
+          const memsB = [];
+
+          results.forEach((r) => {
+            labels.push(r.inputSize);
+            timesA.push(r.timeA);
+            timesB.push(r.timeB);
+            memsA.push(r.memA);
+            memsB.push(r.memB);
+
+            logEl.innerHTML += `Size N = ${r.inputSize}:\n`;
+            logEl.innerHTML += `  Impl A: ${r.timeA} ms | Memory: ${r.memA} KB\n`;
+            logEl.innerHTML += `  Impl B: ${r.timeB} ms | Memory: ${r.memB} KB\n`;
+          });
+
+          // Update Time Chart
+          timeChart.data.labels = labels;
+          timeChart.data.datasets[0].data = timesA;
+          timeChart.data.datasets[1].data = timesB;
+          timeChart.update();
+
+          // Update Memory Chart
+          memoryChart.data.labels = labels;
+          memoryChart.data.datasets[0].data = memsA;
+          memoryChart.data.datasets[1].data = memsB;
+          memoryChart.update();
+        } catch (err) {
+          logEl.innerHTML += `❌ Connection Error: ${err.message}\n`;
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-play"></i> Run Complexity Profile';
+        }
+      });
+
+      // Initialize elements
+      window.addEventListener('DOMContentLoaded', () => {
+        initMonaco();
+        initCharts();
+      });
+    </script>
+  </body>
+</html>

@@ -147,4 +147,70 @@ describe('CacheManager', () => {
     const stored = await cache.get('http://api.com/data');
     expect(stored.data).toEqual({ updated: 'data' });
   });
+
+  // Issue #2537: fetchWithCache should not serve stale data forever if
+  // fetches keep failing — after enough consecutive failures the entry
+  // should be invalidated rather than served indefinitely.
+  test('fetchWithCache invalidates cache after too many consecutive failures', async () => {
+    const cache = new CacheManager('AlgoInfinityCache', 'api_responses', 3);
+    await cache.set('http://api.com/data', { cached: 'data' }, 'json', 10000);
+    global.fetch.mockRejectedValue(new Error('Network down'));
+
+    // Fake timers freeze Date.now(); advance it so the entry's age exceeds
+    // half of a small ttl, forcing fetchWithCache's background-refresh
+    // branch on every call below while still returning the
+    // (increasingly untrustworthy) stale data until the failure threshold
+    // is crossed.
+    jest.advanceTimersByTime(10);
+    const tinyTtl = 1;
+
+    const flush = async () => {
+      for (let i = 0; i < 10; i++) await Promise.resolve();
+    };
+
+    await cache.fetchWithCache('http://api.com/data', {}, tinyTtl); // failure #1 (background)
+    await flush();
+    expect(cache.failureCounts.get('http://api.com/data')).toBe(1);
+
+    await cache.fetchWithCache('http://api.com/data', {}, tinyTtl); // failure #2 (background)
+    await flush();
+    expect(cache.failureCounts.get('http://api.com/data')).toBe(2);
+
+    await cache.fetchWithCache('http://api.com/data', {}, tinyTtl); // failure #3 (background) — hits threshold
+    await flush();
+
+    const stored = await cache.get('http://api.com/data');
+    expect(stored).toBeNull();
+  });
+
+  test('fetchWithCache resets the failure count after a successful fetch', async () => {
+    const cache = new CacheManager('AlgoInfinityCache', 'api_responses', 3);
+    await cache.set('http://api.com/data', { cached: 'data' }, 'json', 10000);
+
+    global.fetch.mockRejectedValueOnce(new Error('Network down'));
+    jest.advanceTimersByTime(6000);
+
+    await cache.fetchWithCache('http://api.com/data', {}, 10000);
+    await Promise.resolve();
+    expect(cache.failureCounts.get('http://api.com/data')).toBe(1);
+
+    global.fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ fresh: 'data' }) });
+    // This call returns the still-cached (stale) data immediately and kicks
+    // off the background refresh as a detached promise chain (fetch -> json
+    // -> this.set(), each an async hop through the mock IndexedDB), so flush
+    // enough microtask ticks for that chain to fully settle before asserting.
+    await cache.fetchWithCache('http://api.com/data', {}, 10000);
+    for (let i = 0; i < 10; i++) {
+      await Promise.resolve();
+    }
+
+    expect(cache.failureCounts.has('http://api.com/data')).toBe(false);
+  });
+
+  test('fetchWithCache with no cache rejects on failure (no stale fallback to hide behind)', async () => {
+    const cache = new CacheManager('AlgoInfinityCache', 'api_responses', 3);
+    global.fetch.mockRejectedValueOnce(new Error('Network down'));
+
+    await expect(cache.fetchWithCache('http://api.com/empty', {}, 10000)).rejects.toThrow('Network down');
+  });
 });

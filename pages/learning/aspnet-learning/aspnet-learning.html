@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algo Infinity Verse - Learn ASP.NET Core</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* --- PLATFORM PERFECT MATCH DARK PURPLE BACKGROUND SETUPS --- */
+     html, body {
+        background: radial-gradient(circle at 50% 0%, #0c0c1e 0%, #05050a 70%, #020205 100%) !important;
+        color: #f8fafc !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+
+      /* 1. Force override eliminate the top global auth banner warning securely */
+      [style*="background-color: red"], 
+      [style*="background: red"], 
+      [id*="auth-alert"],
+      div[style*="color: white"][style*="text-align: center"],
+      .auth-warning-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* 2. Optimize the vertical hero container margins */
+      .hero {
+        min-height: 35vh !important;
+        padding: 40px 0 20px 0 !important;
+        text-align: center;
+      }
+
+      /* 3. Outer workspace container rules */
+      .container {
+        max-width: 1000px !important;
+        width: 90% !important;
+        margin: 0 auto !important;
+        padding: 20px 0;
+      }
+
+      .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-subtitle {
+        color: #94a3b8;
+        font-size: 1.05rem;
+        margin-bottom: 30px;
+      }
+
+      /* Progress Bar Fallback Styling */
+      .dbms-progress-bar {
+        background: rgba(30, 41, 59, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+      }
+
+      .dbms-progress-text {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .dbms-progress-track {
+        width: 100%;
+        height: 8px;
+        background: #111827;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .dbms-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #38bdf8, #3b82f6);
+        border-radius: 999px;
+      }
+
+      /* Flex Grid Workspace Wrapper Layout */
+      .aspnet-workspace-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        margin-top: 25px !important;
+        width: 100% !important;
+        position: relative;
+      }
+
+      /* Space-Saving Dropdown Layout Controls */
+      .dropdown-container {
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .modules-dropdown-btn {
+        width: 100%;
+        padding: 16px 20px;
+        background: rgba(20, 20, 35, 0.75) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(56, 189, 248, 0.4) !important; /* Glowing blue outline */
+        border-radius: 12px;
+        color: #38bdf8 !important;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+      }
+
+      .modules-dropdown-btn:hover {
+        background: rgba(20, 20, 35, 0.95) !important;
+        border-color: #38bdf8 !important;
+      }
+
+      .modules-dropdown-btn::after {
+        content: '\f078';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 0.85rem;
+      }
+
+      /* Dropdown Menu Links Navigation Layer Panel Box */
+      .dbms-sidebar-nav {
+        display: none; /* Forced style display toggle */
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        width: 100%;
+        background: #0d0d15 !important; /* Shielding fallback dark shade color */
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        border-radius: 12px;
+        list-style: none !important;
+        padding: 8px !important;
+        margin: 0 !important;
+        z-index: 99999 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        box-sizing: border-box;
+      }
+
+      .dbms-sidebar-nav li {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .dbms-sidebar-nav li a {
+        text-decoration: none !important;
+        color: #94a3b8 !important;
+        display: block !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease !important;
+        font-size: 0.95rem;
+        text-align: left;
+      }
+
+      .dbms-sidebar-nav li a:hover, .dbms-sidebar-nav li a.active-tab {
+        background: rgba(56, 189, 248, 0.1) !important;
+        color: #38bdf8 !important;
+      }
+
+      /* Glassmorphism Main Content Panel Box */
+      .dbms-main-content {
+        background: rgba(25, 25, 40, 0.45) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        border-radius: 16px !important;
+        padding: 35px !important;
+        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4) !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        text-align: left;
+      }
+
+      /* Content Tab Toggle Switches Rules */
+      .dbms-lesson { display: none !important; }
+      .dbms-lesson.active { display: block !important; }
+
+      .dbms-lesson-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding-bottom: 15px;
+      }
+
+      .dbms-lesson-number {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: rgba(56, 189, 248, 0.4);
+      }
+
+      .dbms-lesson h3 {
+        font-size: 1.5rem;
+        color: #ffffff;
+        margin: 0;
+      }
+
+      .dbms-lesson p {
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 1.02rem;
+      }
+
+      /* Fallback Code Block Formatting Styles */
+      .dbms-code-block {
+        background: #05050a !important;
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+
+      .dbms-code-block pre { margin: 0; }
+      .dbms-code-block code { font-family: 'Courier New', Courier, monospace; color: #e2e8f0; }
+
+      /* Syntax Tokens Colors Fallbacks */
+      .tok-kw { color: #f43f5e; font-weight: 600; }
+      .tok-var { color: #38bdf8; }
+      .tok-str { color: #34d399; }
+      .tok-bi { color: #fbbf24; }
+
+      /* Dynamic Amber Show Solution Interactive Buttons */
+      .dbms-exercise-toggle {
+        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        color: #0f172a !important;
+        border: none !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease-in-out !important;
+        margin-top: 15px !important;
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3) !important;
+        font-size: 0.95rem;
+      }
+
+      .dbms-exercise-toggle:hover {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45) !important;
+      }
+
+      .dbms-exercise-toggle:active {
+        transform: translateY(1px) !important;
+      }
+
+      .dbms-exercise-toggle.solution-open {
+        background: rgba(30, 41, 59, 0.8) !important;
+        color: #f59e0b !important;
+        border: 1px solid rgba(245, 158, 11, 0.4) !important;
+        box-shadow: none !important;
+      }
+
+      .dbms-exercise-solution {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border-left: 3px solid #f59e0b !important;
+        border-radius: 4px 8px 8px 4px;
+        padding: 16px 20px !important;
+        margin-top: 15px !important;
+      }
+    </style>
+  </head>
+  <body>
+
+    <section id="dbms-learning" class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="title-icon">🚀</span> Learn ASP.NET Core</h2>
+        <p class="section-subtitle">Master enterprise web systems with step-by-step documentation, architectural breakdowns, and quizzes.</p>
+
+        <div class="dbms-progress-bar">
+          <span class="dbms-progress-text"><span id="progressCount">0</span> / 7 tracks completed</span>
+          <div class="dbms-progress-track"><div class="dbms-progress-fill" id="progressFill" style="width: 14%"></div></div>
+        </div>
+
+        <div class="aspnet-workspace-grid">
+          
+          <div class="dropdown-container" id="menuDropdown">
+            <button class="modules-dropdown-btn" onclick="toggleDropdown(event)">
+              <span id="selectedModuleLabel">📖 Introduction</span>
+            </button>
+            <ul class="dbms-sidebar-nav" id="topicNav">
+              <li><a href="javascript:void(0)" class="active-tab" onclick="switchTab('introduction', this, '📖 Introduction', event)"><span class="nav-icon">📖</span> Introduction</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('middleware', this, '🏗️ Pipeline &amp; Middleware', event)"><span class="nav-icon">🏗️</span> Pipeline &amp; Middleware</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('mvc', this, '📊 MVC Architecture', event)"><span class="nav-icon">📊</span> MVC Architecture</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('webapi', this, '💻 Web APIs &amp; DI', event)"><span class="nav-icon">💻</span> Web APIs &amp; DI</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('efcore', this, '🔑 EF Core &amp; Databases', event)"><span class="nav-icon">🔑</span> EF Core &amp; Databases</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('security', this, '🔒 Token Authentication', event)"><span class="nav-icon">🔒</span> Token Authentication</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('deployment', this, '⚡ Deployment Matrix', event)"><span class="nav-icon">⚡</span> Deployment Matrix</a></li>
+              <li><a href="javascript:void(0)" onclick="switchTab('assessment-quiz', this, '🎯 Interactive Quiz', event)" style="border-top: 1px solid rgba(255,255,255,0.1); color: #38bdf8 !important;"><span class="nav-icon">🎯</span> Interactive Quiz</a></li>
+            </ul>
+          </div>
+
+          <main class="dbms-main-content" id="mainContent">
+            
+            <article class="dbms-lesson active" id="introduction" data-topic="1">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">01</span>
+                <h3>C# Basics &amp; OOP Principles</h3>
+              </div>
+              <p>To construct scalable web services with ASP.NET Core, mastering typed code structures and runtime Intermediate Language compilation targets is fundamental.</p>
+              
+              <div class="dbms-code-block">
+                <div class="dbms-code-header"><span class="dbms-code-lang" style="color:#94a3b8; font-size:0.85rem; font-weight:600;">C#</span></div>
+                <pre><code><span class="tok-kw">public class</span> <span class="tok-var">BankAccount</span> {
+    <span class="tok-kw">private decimal</span> <span class="tok-str">_balance</span>;
+    <span class="tok-kw">public decimal</span> <span class="tok-var">Balance</span> => <span class="tok-str">_balance</span>;
+}</code></pre>
+              </div>
+
+              <div class="dbms-exercise" id="exercise-introduction">
+                <div class="dbms-exercise-title" style="color:#fbbf24; font-weight:600; margin-top:20px;"><i class="fas fa-dumbbell"></i> Practice: Access Modifiers</div>
+                <p>Which C# access modifier ensures a class field can only be accessed inside its parent assembly or derived subtypes?</p>
+                <button class="dbms-exercise-toggle" aria-expanded="false" onclick="toggleSolution(this, event)">Show Solution</button>
+                <div class="dbms-exercise-solution" style="display:none;">
+                  <p style="margin:0; color:#4ade80;"><strong>Correct Answer: protected internal</strong></p>
+                </div>
+              </div>
+            </article>
+
+            <article class="dbms-lesson" id="middleware" data-topic="2">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">02</span><h3>HTTP Pipeline Execution</h3></div>
+              <p>ASP.NET Core applications manage network contexts using a sequential request execution pipeline containing bidirectional logical filter modules.</p>
+              <div class="dbms-code-block">
+                <pre><code><span class="tok-var">app</span>.<span class="tok-bi">Use</span>(<span class="tok-kw">async</span> (context, next) => {
+    <span class="tok-var">Console</span>.<span class="tok-bi">WriteLine</span>(context.<span class="tok-var">Request</span>.<span class="tok-var">Path</span>);
+    <span class="tok-kw">await</span> next.<span class="tok-bi">Invoke</span>();
+});</code></pre>
+              </div>
+            </article>
+
+            <article class="dbms-lesson" id="mvc" data-topic="3">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">03</span><h3>Model-View-Controller Architecture</h3></div>
+              <p>Isolate structural domain operations cleanly away from presentation engines utilizing declarative pattern boundaries.</p>
+            </article>
+
+            <article class="dbms-lesson" id="webapi" data-topic="4">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">04</span><h3>Web APIs &amp; Dependency Injection</h3></div>
+              <p>Understand standard inversion-of-control life cycles to register services cleanly inside built-in dependency resolution trees:</p>
+              <ul style="color:#cbd5e1; line-height:1.8;">
+                <li><strong>Transient:</strong> Re-allocated freshly upon every request parameter call.</li>
+                <li><strong>Scoped:</strong> Shared as a unique instance across an individual network context connection lifetime.</li>
+                <li><strong>Singleton:</strong> Instantiated once globally at application bootstrap.</li>
+              </ul>
+            </article>
+
+            <article class="dbms-lesson" id="efcore" data-topic="5">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">05</span><h3>Entity Framework Core Mapping</h3></div>
+              <p>Generate database records through automated migrations tracking entities directly from application class blueprints:</p>
+              <div class="dbms-code-block">
+                <pre><code>dotnet ef migrations add AddUserTrackingTables
+dotnet ef database update</code></pre>
+              </div>
+            </article>
+
+            <article class="dbms-lesson" id="security" data-topic="6">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">06</span><h3>Security &amp; JWT Identity Verification</h3></div>
+              <p>Secure web endpoints with stateless JSON Web Token filters using declarative attributes.</p>
+              <div class="dbms-code-block">
+                <pre><code>[<span class="tok-bi">Authorize</span>(<span class="tok-var">Roles</span> = <span class="tok-str">"Administrator"</span>)]
+<span class="tok-kw">public class</span> <span class="tok-var">SystemLogsController</span> : <span class="tok-var">ControllerBase</span> {}</code></pre>
+              </div>
+            </article>
+
+            <article class="dbms-lesson" id="deployment" data-topic="7">
+              <div class="dbms-lesson-header"><span class="dbms-lesson-number">07</span><h3>Production Publishing Configurations</h3></div>
+              <p>Publish optimized code binary packages designed to execute smoothly behind high-performance proxies like Nginx:</p>
+              <div class="dbms-code-block">
+                <pre><code>dotnet publish -c Release -o ./production-bundle</code></pre>
+              </div>
+            </article>
+
+            <article class="dbms-lesson" id="assessment-quiz" data-topic="8">
+              <div class="dbms-lesson-header">
+                <span class="dbms-lesson-number">08</span>
+                <h3>ASP.NET Core Final Assessment Quiz</h3>
+              </div>
+              
+              <div class="dbms-exercise" style="margin-top: 20px;">
+                <div style="font-size: 0.9rem; color: #38bdf8; margin-bottom: 10px; font-weight: 600;" id="quiz-progress-text">
+                  Question 1 of 3
+                </div>
+
+                <p style="font-size: 1.05rem; line-height: 1.6; color: #f8fafc; margin-bottom: 20px;" id="quiz-question-container">
+                  <strong>Question:</strong> Which framework dependency injection lifecycle should be assigned to a relational database context instance tracking transactions across an isolated client connection session?
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;" id="quiz-options-container">
+                  <label style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; color: #94a3b8;">
+                    <input type="radio" name="di-quiz" value="transient" style="accent-color: #38bdf8;"> Transient — Instantiated instantly upon every discrete request call.
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; color: #94a3b8;">
+                    <input type="radio" name="di-quiz" value="scoped" style="accent-color: #38bdf8;"> Scoped — Instantiated exactly once per HTTP lifecycle sequence.
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; color: #94a3b8;">
+                    <input type="radio" name="di-quiz" value="singleton" style="accent-color: #38bdf8;"> Singleton — Instantiated once at initial application initialization.
+                  </label>
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center;">
+                  <button class="dbms-exercise-toggle" onclick="evaluateQuizSelection()" id="quiz-submit-btn">Evaluate Selection</button>
+                  <button class="dbms-exercise-toggle" onclick="advanceQuizQuestion()" id="quiz-next-btn" style="display: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3) !important; color: white !important;">Next Question <i class="fas fa-arrow-right" style="margin-left: 5px; font-size: 0.85rem;"></i></button>
+                </div>
+                
+                <div id="quiz-feedback-box" style="display: none; margin-top: 20px; padding: 16px 20px; border-radius: 8px; font-weight: 500;"></div>
+              </div>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const quizBank = [
+        {
+          question: "Which framework dependency injection lifecycle should be assigned to a relational database context instance tracking transactions across an isolated client connection session?",
+          options: [
+            { label: "Transient — Instantiated instantly upon every discrete request call.", value: "transient" },
+            { label: "Scoped — Instantiated exactly once per HTTP lifecycle sequence.", value: "scoped" },
+            { label: "Singleton — Instantiated once at initial application initialization.", value: "singleton" }
+          ],
+          correct: "scoped",
+          successMsg: "Correct choice! DBContext instances are scoped to an individual HTTP request context pipeline session execution loop.",
+          failMsg: "Incorrect choice. Review the Module 04 DI Lifetime specifications and evaluate contextual boundaries again."
+        },
+        {
+          question: "Which of the following architectural middleware pipeline configurations represents the proper sequence to securely execute authorization gates?",
+          options: [
+            { label: "app.UseAuthorization(); followed by app.UseAuthentication();", value: "wrong-seq" },
+            { label: "app.UseAuthentication(); followed by app.UseAuthorization();", value: "correct-seq" },
+            { label: "app.UseRouting(); integrated right inside app.UseEndpoints();", value: "routing-only" }
+          ],
+          correct: "correct-seq",
+          successMsg: "Spot on! You must authenticate an identity context (Who are you?) before evaluating access authorization policies (What are you allowed to do?).",
+          failMsg: "Order error! If authorization runs before authentication, the pipeline processing filter will reject access token claims contexts."
+        },
+        {
+          question: "What is the primary operational advantage of implementing an Entity Framework Core AsNoTracking() query string projection configuration?",
+          options: [
+            { label: "It automatically compiles native database views execution models instantly.", value: "compile" },
+            { label: "It skips memory tracking snapshot allocations, drastically reducing query execution overhead.", value: "tracking" },
+            { label: "It bypasses relational constraints schema validation architectures completely.", value: "schema" }
+          ],
+          correct: "tracking",
+          successMsg: "Excellent performance observation! Disabling change tracker snapshot caches minimizes memory overhead for read-only tracking arrays.",
+          failMsg: "Incorrect parameter mapping. Think about how Entity Framework monitors object state graphs in local worker caches."
+        }
+      ];
+
+      let currentQuizIndex = 0;
+
+      // 1. Direct Style Injection Toggle helper with ironclad display override strings
+      function toggleDropdown(e) {
+        if (e) e.stopPropagation();
+        const navList = document.getElementById('topicNav');
+        if (!navList) return;
+        
+        if (navList.style.display === 'block') {
+          navList.style.display = 'none';
+        } else {
+          navList.style.display = 'block';
+        }
+      }
+
+      // 2. Clear content views switching handler
+      function switchTab(targetId, clickElement, moduleName, e) {
+        if (e) e.stopPropagation();
+        
+        const lessons = document.querySelectorAll('.dbms-lesson');
+        lessons.forEach(lesson => lesson.classList.remove('active'));
+
+        const selectedLesson = document.getElementById(targetId);
+        if (selectedLesson) selectedLesson.classList.add('active');
+
+        const navLinks = document.querySelectorAll('.dbms-sidebar-nav li a');
+        navLinks.forEach(link => link.classList.remove('active-tab'));
+
+        if (clickElement) clickElement.classList.add('active-tab');
+        
+        const trackingLabel = document.getElementById('selectedModuleLabel');
+        if (trackingLabel) trackingLabel.innerHTML = moduleName;
+
+        const navList = document.getElementById('topicNav');
+        if (navList) navList.style.display = 'none';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 3. Multi-Stage Quiz Evaluation Handler Engine
+      function evaluateQuizSelection() {
+        const selectedOption = document.querySelector('input[name="di-quiz"]:checked');
+        const feedbackBox = document.getElementById('quiz-feedback-box');
+        const nextBtn = document.getElementById('quiz-next-btn');
+        const currentData = quizBank[currentQuizIndex];
+        
+        if (!feedbackBox) return;
+
+        feedbackBox.style.display = 'block';
+
+        if (!selectedOption) {
+          feedbackBox.style.background = 'rgba(239, 68, 68, 0.1)';
+          feedbackBox.style.borderLeft = '4px solid #ef4444';
+          feedbackBox.style.color = '#f87171';
+          feedbackBox.innerText = 'Please select an option before evaluating.';
+          return;
+        }
+
+        if (selectedOption.value === currentData.correct) {
+          feedbackBox.style.background = 'rgba(34, 197, 94, 0.1)';
+          feedbackBox.style.borderLeft = '4px solid #22c55e';
+          feedbackBox.style.color = '#4ade80';
+          feedbackBox.innerText = currentData.successMsg;
+        } else {
+          feedbackBox.style.background = 'rgba(239, 68, 68, 0.1)';
+          feedbackBox.style.borderLeft = '4px solid #ef4444';
+          feedbackBox.style.color = '#f87171';
+          feedbackBox.innerText = currentData.failMsg;
+        }
+
+        if (nextBtn && currentQuizIndex < quizBank.length - 1) {
+          nextBtn.style.display = 'block';
+        }
+      }
+
+      // 4. Step forward into the next structured question array index 
+      function advanceQuizQuestion() {
+        if (currentQuizIndex >= quizBank.length - 1) return;
+        
+        currentQuizIndex++;
+        const currentData = quizBank[currentQuizIndex];
+        
+        const progressIndicator = document.getElementById('quiz-progress-text');
+        const questionBox = document.getElementById('quiz-question-container');
+        const optionsWrapper = document.getElementById('quiz-options-container');
+        
+        if (progressIndicator) progressIndicator.innerText = `Question ${currentQuizIndex + 1} of 3`;
+        if (questionBox) questionBox.innerHTML = `<strong>Question:</strong> ${currentData.question}`;
+        
+        if (optionsWrapper) {
+          optionsWrapper.innerHTML = '';
+          currentData.options.forEach(opt => {
+            optionsWrapper.innerHTML += `
+              <label style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; color: #94a3b8;">
+                <input type="radio" name="di-quiz" value="${opt.value}" style="accent-color: #38bdf8;"> ${opt.label}
+              </label>
+            `;
+          });
+        }
+
+        const feedbackBox = document.getElementById('quiz-feedback-box');
+        const nextBtn = document.getElementById('quiz-next-btn');
+        if (feedbackBox) feedbackBox.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+      }
+
+      // 5. Practice task solution view switches logic
+      function toggleSolution(btn, e) {
+        if (e) e.stopPropagation();
+        const solutionBlock = btn.nextElementSibling;
+        if (!solutionBlock) return;
+        
+        if (solutionBlock.style.display === 'block') {
+          solutionBlock.style.display = 'none';
+          btn.classList.remove('solution-open');
+          btn.innerText = 'Show Solution';
+        } else {
+          solutionBlock.style.display = 'block';
+          btn.classList.add('solution-open');
+          btn.innerText = 'Hide Solution';
+        }
+      }
+
+      // 6. Dismiss dropdown context menus out of bounds safely
+      window.addEventListener('click', function() {
+        const navList = document.getElementById('topicNav');
+        if (navList) {
+          navList.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>

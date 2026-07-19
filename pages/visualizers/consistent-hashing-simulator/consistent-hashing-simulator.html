@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consistent Hashing Visualizer | Algo Infinity Verse</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="consistent-hashing-simulator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Algo Infinity Verse</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/pages/visualizers/visualizers.html">Visualizers</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>Consistent Hashing & Distributed Cache Simulator</h1>
+            <p>Understand how distributed systems balance load and handle node failures with minimal key remapping.</p>
+        </header>
+
+        <main class="simulator-layout">
+            <aside class="controls-panel">
+                <div class="control-group">
+                    <label>Node Management</label>
+                    <div class="button-group">
+                        <button id="add-node-btn" class="primary-btn"><i class="fa-solid fa-server"></i> Add Node</button>
+                        <button id="remove-node-btn" class="secondary-btn"><i class="fa-solid fa-trash"></i> Remove Node</button>
+                    </div>
+                </div>
+                
+                <div class="control-group" style="margin-top: 1rem;">
+                    <label for="key-input">Cache Data Key</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="key-input" placeholder="e.g., user_123" style="flex: 1;">
+                        <button id="route-key-btn" class="primary-btn">Route</button>
+                    </div>
+                </div>
+
+                <div class="stats-container">
+                    <h3>Current State</h3>
+                    <p>Total Nodes: <span id="stat-nodes">3</span></p>
+                    <p>Total Keys Cached: <span id="stat-keys">0</span></p>
+                </div>
+
+                <div class="logs-container">
+                    <h3>Event Logs</h3>
+                    <div id="logs-area" class="logs-area"></div>
+                </div>
+            </aside>
+
+            <section class="visualization-panel">
+                <div class="ring-container" id="ring-container">
+                    <svg width="400" height="400" viewBox="-200 -200 400 400" id="hash-ring-svg">
+                        <circle cx="0" cy="0" r="160" fill="none" stroke="#e2e8f0" stroke-width="20" />
+                        <circle cx="0" cy="0" r="160" fill="none" stroke="#4facfe" stroke-width="4" stroke-dasharray="1000" class="ring-active" />
+                    </svg>
+                    <!-- Nodes and Keys will be positioned absolutely here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="consistent-hashing-simulator.js"></script>
+</body>
+</html>

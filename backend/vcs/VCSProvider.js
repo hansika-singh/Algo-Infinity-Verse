@@ -21,7 +21,7 @@ export class VCSProvider {
    * @param {string} rawContent - The raw YAML string from the CI file.
    * @returns {Array<string>} - A flat array of executed shell commands.
    */
-  normalizeCIConfig(rawContent) {
+  normalizeCIConfig(_rawContent) {
     throw new Error("Method 'normalizeCIConfig()' must be implemented by subclasses.");
   }
 

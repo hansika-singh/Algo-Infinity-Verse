@@ -289,7 +289,10 @@ function loadLesson(mIndex, lIndex) {
   }
 
   // Render content
-  elements.lessonContent.innerHTML = lesson.content;
+  elements.lessonContent.innerHTML = (window.eli5Toggle ? window.eli5Toggle.wrapContent(lesson.content, '') : lesson.content);
+  if (window.eli5Toggle) {
+    window.eli5Toggle.initToggle('postgresql', elements.lessonContent);
+  }
 
   // Set default code in simulator
   elements.sqlEditor.value = lesson.defaultCode;

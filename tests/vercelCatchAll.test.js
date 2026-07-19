@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import http from 'http';
 import IORedis from 'ioredis';
 import { Worker } from 'bullmq';

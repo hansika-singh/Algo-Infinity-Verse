@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centroid Decomposition Visualizer · Algo Infinity Verse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="centroid.css">
+</head>
+<body>
+
+<div class="starfield" id="starfield"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">∞</span>
+    <div class="brand-text">
+      <span class="brand-name">Algo</span>
+      <span class="brand-sub">INFINITY VERSE</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <span>Learn</span><span>Practice</span><span class="active">Interview</span><span>Discussions</span>
+  </nav>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <p class="eyebrow">DSA TOPIC · TREE DECOMPOSITION</p>
+    <h1>Recursive <span class="accent">Centroid Engine</span></h1>
+    <p class="subhead">Halve the tree, over and over, in O(log n) levels.</p>
+    <p class="lede">Centroid decomposition repeatedly finds a subtree's <strong>centroid</strong> — the node whose removal splits it into pieces no larger than half — removes it, and recurses on what's left. The result is a separate <strong>centroid tree</strong> of depth O(log n), the standard tool behind "count all paths in a tree with property X" problems.</p>
+  </section>
+
+  <section class="panel controls-panel">
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="nodeCount">Nodes (n)</label>
+        <input type="number" id="nodeCount" value="20" min="3" max="120">
+      </div>
+      <div class="control-group">
+        <label for="treeShape">Shape</label>
+        <select id="treeShape">
+          <option value="random">Random tree</option>
+          <option value="path">Path graph (pathological)</option>
+          <option value="broom">Broom (pathological)</option>
+          <option value="star">Star graph (pathological)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="btnGenerate">🌳 Generate Tree</button>
+      <button class="btn btn-secondary" id="btnDecompose">▶ Run Centroid Decomposition</button>
+      <button class="btn btn-ghost" id="btnReset">Reset</button>
+    </div>
+    <div class="status-line" id="statusLine">Generate a tree, then run the decomposition to watch centroids get found and removed level by level.</div>
+  </section>
+
+  <section class="panel dual-view">
+    <div class="view-col">
+      <div class="view-header">
+        <h2>Original Tree <span class="view-tag">grey = removed centroid, cyan = current piece</span></h2>
+      </div>
+      <svg id="origSvg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMin meet"></svg>
+    </div>
+    <div class="view-divider"><span class="divider-label">decomposes into</span></div>
+    <div class="view-col">
+      <div class="view-header">
+        <h2>Centroid Tree <span class="view-tag">built live, depth O(log n)</span></h2>
+      </div>
+      <svg id="centSvg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMin meet"></svg>
+    </div>
+  </section>
+
+  <section class="panel depth-panel">
+    <div class="view-header">
+      <h2>Depth Guarantee Readout <span class="view-tag">stays O(log n) regardless of input shape</span></h2>
+    </div>
+    <div class="depth-stats" id="depthStats">
+      <div class="stat"><span class="stat-label">n (nodes)</span><span class="stat-value" id="statN">–</span></div>
+      <div class="stat"><span class="stat-label">Centroid tree depth</span><span class="stat-value" id="statDepth">–</span></div>
+      <div class="stat"><span class="stat-label">⌈log₂(n+1)⌉ bound</span><span class="stat-value" id="statBound">–</span></div>
+      <div class="stat"><span class="stat-label">Within bound?</span><span class="stat-value" id="statWithin">–</span></div>
+    </div>
+  </section>
+
+  <section class="panel path-count-panel">
+    <div class="view-header">
+      <h2>Path&#8209;Counting Demo <span class="view-tag">count pairs (u, v) with dist(u, v) ≤ K</span></h2>
+    </div>
+    <p class="path-copy">The classic centroid-decomposition worked example. For each centroid, we gather distances from the centroid to every node in its current piece, count pairs summing to ≤ K, then <strong>subtract pairs that fall entirely within the same child branch</strong> — those don't actually pass through the centroid and would otherwise be double-counted.</p>
+    <div class="controls-row">
+      <div class="control-group">
+        <label for="kInput">K (max distance)</label>
+        <input type="number" id="kInput" value="3" min="0" max="50">
+      </div>
+      <button class="btn btn-primary" id="btnRunPathCount">▶ Run Path&#8209;Count Demo</button>
+      <button class="btn btn-secondary" id="btnVerifyBrute">✓ Verify vs Brute&#8209;Force O(n²)</button>
+      <span class="verify-badge" id="verifyBadge"></span>
+    </div>
+    <div class="path-count-body">
+      <div class="path-count-log" id="pathCountLog"></div>
+      <div class="path-count-total">
+        <div class="stat"><span class="stat-label">Total pairs (dist ≤ K)</span><span class="stat-value" id="statTotalPairs">–</span></div>
+        <div class="stat"><span class="stat-label">Brute-force result</span><span class="stat-value" id="statBruteForce">–</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot-note">
+    Built as a Recursive Centroid Engine for issue <strong>#2450</strong> · Algo Infinity Verse
+  </footer>
+
+</main>
+
+<script src="centroid.js"></script>
+</body>
+</html>

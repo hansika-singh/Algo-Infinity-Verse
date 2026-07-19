@@ -1,0 +1,460 @@
+/* Interview Self-Scorecard */
+
+:root {
+  --isc-bg: #090d16;
+  --isc-card: rgba(15, 23, 42, 0.6);
+  --isc-border: #1e293b;
+  --isc-muted: #94a3b8;
+  --isc-cyan: #06b6d4;
+  --isc-purple: #a855f7;
+  --isc-amber: #f59e0b;
+  --isc-green: #10b981;
+  --isc-red: #f87171;
+  --isc-text: #f8fafc;
+}
+
+html.light-mode {
+  --isc-bg: #f1f5f9;
+  --isc-card: rgba(255, 255, 255, 0.92);
+  --isc-border: #e2e8f0;
+  --isc-muted: #64748b;
+  --isc-text: #0f172a;
+}
+
+body.isc-body {
+  background: var(--isc-bg);
+  color: var(--isc-text);
+  font-family: 'Poppins', sans-serif;
+}
+
+.isc-skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--isc-cyan);
+  color: #0a0a14;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.isc-skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.isc-hero {
+  padding: 7rem 1.5rem 3rem;
+  text-align: center;
+  border-bottom: 1px solid var(--isc-border);
+  background:
+    radial-gradient(ellipse at top right, rgba(6, 182, 212, 0.14), transparent 55%),
+    radial-gradient(ellipse at bottom left, rgba(168, 85, 247, 0.1), transparent 50%);
+}
+
+.isc-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--isc-cyan);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.isc-hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin: 0 0 0.75rem;
+  font-weight: 800;
+}
+
+.isc-accent {
+  background: linear-gradient(135deg, var(--isc-cyan), var(--isc-purple));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.isc-hero p {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--isc-muted);
+  line-height: 1.6;
+}
+
+.isc-main {
+  padding: 2rem 0 4rem;
+}
+
+.isc-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.isc-card {
+  background: var(--isc-card);
+  border: 1px solid var(--isc-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.isc-right .isc-card:last-child {
+  margin-bottom: 0;
+}
+
+.isc-card-head h2 {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.isc-card-head h2 i {
+  color: var(--isc-cyan);
+}
+
+.isc-row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.isc-avg {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--isc-purple);
+}
+
+.isc-field {
+  margin: 1rem 0;
+}
+
+.isc-label,
+.isc-legend {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 0.4rem;
+}
+
+html.light-mode .isc-label,
+html.light-mode .isc-legend {
+  color: #334155;
+}
+
+.isc-input,
+.isc-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--isc-border);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.45);
+  color: var(--isc-text);
+  padding: 0.65rem 0.85rem;
+  font: 0.9rem 'Poppins', sans-serif;
+}
+
+html.light-mode .isc-input,
+html.light-mode .isc-textarea {
+  background: #fff;
+}
+
+.isc-input:focus,
+.isc-textarea:focus {
+  outline: 2px solid rgba(6, 182, 212, 0.55);
+  outline-offset: 1px;
+  border-color: var(--isc-cyan);
+}
+
+.isc-scores {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.isc-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--isc-border);
+  flex-wrap: wrap;
+}
+
+.isc-score-row:last-child {
+  border-bottom: none;
+}
+
+.isc-score-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.isc-score-name i {
+  color: var(--isc-cyan);
+  margin-right: 0.35rem;
+}
+
+.isc-score-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--isc-muted);
+  margin-top: 0.15rem;
+}
+
+.isc-stars {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.isc-star-btn {
+  appearance: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--isc-border);
+  background: rgba(30, 41, 59, 0.5);
+  color: var(--isc-muted);
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+html.light-mode .isc-star-btn {
+  background: #fff;
+}
+
+.isc-star-btn:hover,
+.isc-star-btn:focus-visible {
+  border-color: var(--isc-cyan);
+  color: var(--isc-text);
+  outline: none;
+}
+
+.isc-star-btn.active {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: var(--isc-cyan);
+  color: var(--isc-cyan);
+}
+
+.isc-star-btn.weak-active {
+  background: rgba(248, 113, 113, 0.18);
+  border-color: rgba(248, 113, 113, 0.55);
+  color: var(--isc-red);
+}
+
+.isc-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
+}
+
+.isc-save-msg {
+  min-height: 1.2rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--isc-green);
+}
+
+.isc-radar-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.isc-radar {
+  width: min(100%, 320px);
+  height: auto;
+}
+
+.isc-legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--isc-muted);
+}
+
+.isc-muted {
+  margin: 0;
+  color: var(--isc-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.isc-weak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.isc-weak-card {
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.isc-weak-card.ok {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.isc-weak-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.isc-weak-card p {
+  margin: 0 0 0.65rem;
+  font-size: 0.8rem;
+  color: var(--isc-muted);
+  line-height: 1.45;
+}
+
+.isc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.isc-links a {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--isc-cyan);
+}
+
+.isc-links a:hover,
+.isc-links a:focus-visible {
+  background: rgba(6, 182, 212, 0.2);
+  outline: none;
+}
+
+.isc-score-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--isc-red);
+}
+
+.isc-weak-card.ok .isc-score-chip {
+  color: var(--isc-green);
+}
+
+.isc-link-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--isc-muted);
+  font: 600 0.8rem 'Poppins', sans-serif;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.isc-link-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.isc-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.isc-history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--isc-border);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.3);
+}
+
+html.light-mode .isc-history-item {
+  background: #f8fafc;
+}
+
+.isc-history-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.isc-history-meta {
+  font-size: 0.75rem;
+  color: var(--isc-muted);
+  margin-top: 0.2rem;
+}
+
+.isc-history-scores {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.isc-mini {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--isc-border);
+  color: var(--isc-muted);
+}
+
+.isc-empty {
+  color: var(--isc-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .isc-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .isc-star-btn {
+    transition: none;
+  }
+}

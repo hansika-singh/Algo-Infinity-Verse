@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Focus Pomodoro + Topic Tags | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Topic-linked 25/5 pomodoro for DSA study — tag sessions (Arrays, DP, Graphs), save history in localStorage, and view focus analytics."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="dsa-focus-timer.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body data-page="dsa-focus-timer">
+    <div id="loading-screen" class="hidden">
+      <div class="loader">
+        <div class="infinity-loader">∞</div>
+        <h2>Algo Infinity Verse</h2>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+      </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="fas fa-circle-chevron-up"></i>
+    </button>
+
+    <div id="navbar-placeholder"></div>
+
+    <section class="hero ft-hero">
+      <div class="hero-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Focus · Tag · Track</span>
+          <span class="main-title ft-gradient">DSA Focus Pomodoro</span>
+          <span class="subtitle">Not a generic timer — topic-linked study analytics</span>
+        </h1>
+        <p class="section-subtitle">
+          Run 25/5 sessions tagged with Arrays, DP, Graphs, and more. History and topic-wise stats
+          stay in localStorage so you know where your hours go.
+        </p>
+        <div class="hero-buttons">
+          <a href="#timer" class="btn btn-primary ft-btn-primary"
+            ><i class="fas fa-play"></i> Start Focusing</a
+          >
+          <a href="#analytics" class="btn btn-secondary"
+            ><i class="fas fa-chart-pie"></i> View Analytics</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="timer" class="section">
+      <div class="container">
+        <div class="ft-layout">
+          <div class="ft-card ft-timer-card">
+            <div class="ft-mode-tabs" role="group" aria-label="Timer mode">
+              <button type="button" class="ft-mode active" data-mode="focus">Focus 25</button>
+              <button type="button" class="ft-mode" data-mode="break">Break 5</button>
+            </div>
+
+            <div class="ft-display" aria-live="polite">
+              <span class="ft-time" id="ftTime">25:00</span>
+              <span class="ft-mode-label" id="ftModeLabel">Focus session</span>
+            </div>
+
+            <div class="ft-progress" aria-hidden="true">
+              <div class="ft-progress-fill" id="ftProgress"></div>
+            </div>
+
+            <div class="ft-controls">
+              <button type="button" class="ft-ctrl" id="ftResetBtn" aria-label="Reset">
+                <i class="fas fa-undo"></i>
+              </button>
+              <button type="button" class="ft-ctrl ft-play" id="ftPlayBtn" aria-label="Start">
+                <i class="fas fa-play"></i>
+              </button>
+              <button type="button" class="ft-ctrl" id="ftSkipBtn" aria-label="Skip to next mode">
+                <i class="fas fa-forward"></i>
+              </button>
+            </div>
+
+            <div class="ft-topic-block">
+              <label class="ft-label" for="ftTopic">Topic tag</label>
+              <div class="ft-topic-row">
+                <select id="ftTopic" class="ft-select" aria-label="DSA topic">
+                  <option value="Arrays">Arrays</option>
+                  <option value="Strings">Strings</option>
+                  <option value="Linked Lists">Linked Lists</option>
+                  <option value="Trees">Trees</option>
+                  <option value="Graphs">Graphs</option>
+                  <option value="DP">DP</option>
+                  <option value="Recursion">Recursion</option>
+                  <option value="Heaps">Heaps</option>
+                  <option value="Sorting">Sorting</option>
+                  <option value="Binary Search">Binary Search</option>
+                  <option value="System Design">System Design</option>
+                  <option value="Custom">Custom…</option>
+                </select>
+                <input
+                  type="text"
+                  id="ftCustomTopic"
+                  class="ft-input"
+                  placeholder="Custom topic"
+                  maxlength="40"
+                  hidden
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+              </div>
+              <div class="ft-topic-chips" id="ftQuickTopics" role="group" aria-label="Quick topics">
+                <button type="button" class="ft-chip" data-topic="Arrays">Arrays</button>
+                <button type="button" class="ft-chip" data-topic="DP">DP</button>
+                <button type="button" class="ft-chip" data-topic="Graphs">Graphs</button>
+                <button type="button" class="ft-chip" data-topic="Trees">Trees</button>
+                <button type="button" class="ft-chip" data-topic="Strings">Strings</button>
+              </div>
+            </div>
+
+            <label class="ft-toggle">
+              <input type="checkbox" id="ftSound" checked />
+              <span>Sound alert when session ends</span>
+            </label>
+
+            <p class="ft-status" id="ftStatus" role="status" aria-live="polite">
+              Pick a topic and press play to start a focus block.
+            </p>
+          </div>
+
+          <div class="ft-side">
+            <div class="ft-card" id="analytics">
+              <h3><i class="fas fa-chart-simple"></i> Study analytics</h3>
+              <dl class="ft-stats">
+                <div>
+                  <dt>Total focus</dt>
+                  <dd id="ftTotalFocus">0m</dd>
+                </div>
+                <div>
+                  <dt>Sessions</dt>
+                  <dd id="ftSessionCount">0</dd>
+                </div>
+                <div>
+                  <dt>Day streak</dt>
+                  <dd id="ftStreak">0</dd>
+                </div>
+                <div>
+                  <dt>Top topic</dt>
+                  <dd id="ftTopTopic">—</dd>
+                </div>
+              </dl>
+              <div class="ft-topic-bars" id="ftTopicBars" aria-label="Time per topic"></div>
+            </div>
+
+            <div class="ft-card">
+              <div class="ft-history-head">
+                <h3><i class="fas fa-clock-rotate-left"></i> Session history</h3>
+                <button type="button" class="ft-link-btn" id="ftClearBtn">Clear</button>
+              </div>
+              <ul class="ft-history" id="ftHistory"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Why topic tags matter</h2>
+        <div class="ft-guide-grid">
+          <div class="ft-guide-card">
+            <div class="ft-guide-num">01</div>
+            <h3>Measure real effort</h3>
+            <p>
+              Generic timers hide imbalance. Tagging shows if DP is getting 80% of your week while
+              Graphs get none.
+            </p>
+          </div>
+          <div class="ft-guide-card">
+            <div class="ft-guide-num">02</div>
+            <h3>Stay consistent</h3>
+            <p>
+              Day streak counts calendar days with at least one completed focus session — not just
+              opening the page.
+            </p>
+          </div>
+          <div class="ft-guide-card">
+            <div class="ft-guide-num">03</div>
+            <h3>Local-first</h3>
+            <p>
+              All history lives in <code>localStorage</code> under
+              <code>aiv_dsa_focus_sessions</code> — no account required.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
+    <script src="dsa-focus-timer.js"></script>
+  </body>
+</html>

@@ -110,10 +110,14 @@ function getTopicProgress(topicName) {
  */
 function showNotification(message, type = "info") {
   const notification = document.createElement("div");
-  notification.style.cssText = `position:fixed; top:100px; right:20px; padding:1rem 1.5rem; background:${type === "success" ? "var(--gradient-4)" : type === "error" ? "#ef4444" : "var(--primary)"}; color:${type === "success" ? "var(--dark-bg)" : "white"}; border-radius:10px; box-shadow:var(--glass-shadow); z-index:10000; animation:slideIn 0.3s ease; font-weight:600; max-width:350px;`;
+  notification.className = `toast-notification toast-${type}`;
   notification.textContent = message;
   document.body.appendChild(notification);
-  setTimeout(() => { notification.style.opacity = "0"; notification.style.transform = "translateX(100%)"; notification.style.transition = "all 0.3s ease"; setTimeout(() => notification.remove(), 300); }, 3000);
+  requestAnimationFrame(() => notification.classList.add('toast-visible'));
+  setTimeout(() => {
+    notification.classList.remove('toast-visible');
+    notification.addEventListener('transitionend', () => notification.remove(), { once: true });
+  }, 2200);
 }
 
 let scrollPosition = 0;

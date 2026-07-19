@@ -4,12 +4,22 @@ html, body {
     padding: 0;
 }
 
-/* Base Angular theme colors */
+/* Soft pastel palette for Angular Academy */
 :root {
     --angular-red: #dd0031;
-    --angular-gradient-start: #e11d48; /* rose-600 */
-    --angular-gradient-end: #b91c1c; /* red-700 */
-    --angular-hover: #be123c; /* rose-700 */
+    --sidebar-bg: #faf5ff;
+    --sidebar-active: #ccfbf1;
+    --sidebar-active-border: #14b8a6;
+    --accent-teal: #14b8a6;
+    --accent-teal-light: #ccfbf1;
+    --accent-sky: #38bdf8;
+    --accent-sky-light: #e0f2fe;
+    --accent-amber: #fbbf24;
+    --accent-amber-light: #fef3c7;
+    --accent-purple: #a78bfa;
+    --accent-purple-light: #ede9fe;
+    --accent-emerald: #34d399;
+    --accent-emerald-light: #d1fae5;
     --editor-bg: #1e1e1e;
     --editor-fg: #d4d4d4;
     --terminal-bg: #0c0c0d;
@@ -34,9 +44,13 @@ html, body {
 /* Active tab button styles */
 .tab-btn.active {
     background-color: white;
-    color: var(--angular-red);
+    color: var(--accent-teal);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border: 1px solid #e5e7eb;
+}
+
+.tab-btn:hover {
+    color: var(--accent-teal);
 }
 
 /* Code Editor Specific Styles */
@@ -120,6 +134,14 @@ html, body {
     background: #9ca3af;
 }
 
+/* Lesson content callout styles — using Tailwind classes; these are fallback overrides */
+/* (Tailwind CDN provides these, so we keep only project-specific overrides) */
+
+/* Sidebar */
+#sidebar {
+    background: linear-gradient(180deg, #faf5ff 0%, #f0fdfa 100%);
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
@@ -130,22 +152,7 @@ html, body {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Interactive elements transitions */
-.btn-angular-action {
-    background: linear-gradient(135deg, var(--angular-gradient-start), var(--angular-gradient-end));
-    transition: all 0.2s ease-in-out;
-}
-
-.btn-angular-action:hover {
-    background: var(--angular-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(221, 0, 49, 0.2);
-}
-
-.btn-angular-action:active {
-    transform: translateY(0);
-}
-
+/* Spin animation for Angular logo */
 .spin-angular {
     animation: angular-spin 20s linear infinite;
 }
@@ -153,4 +160,30 @@ html, body {
 @keyframes angular-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Smooth hover transitions for sidebar items */
+#module-list button {
+    transition: all 0.2s ease-in-out;
+}
+
+#module-list button:hover {
+    transform: translateX(2px);
+}
+
+/* Quiz option hover effects */
+label.flex.items-center.p-4.border {
+    transition: all 0.2s ease;
+}
+
+label.flex.items-center.p-4.border:hover {
+    border-color: #a7f3d0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .tab-btn {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
 }

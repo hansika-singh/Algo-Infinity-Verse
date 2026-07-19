@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topic Quiz | Algo Infinity Verse</title>
+    <meta
+      name="description"
+      content="Test your DSA knowledge with topic-specific quizzes. Track your progress and improve with instant feedback."
+    />
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="topic-quiz.css" />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var p = window.matchMedia('(prefers-color-scheme: light)').matches;
+          var theme = t || (p ? 'light' : 'dark');
+          if (theme === 'light') document.documentElement.classList.add('light-mode');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="topic-quiz-page" data-no-loading>
+    <!-- ===== TOP BAR ===== -->
+    <header class="tq-topbar">
+      <div class="tq-topbar-inner">
+        <button type="button" class="tq-back-btn" id="tqBackBtn" aria-label="Back to quizzes">
+          <i class="fas fa-arrow-left"></i>
+          <span class="tq-back-text">Back</span>
+        </button>
+
+        <div class="tq-topbar-center">
+          <span class="tq-topic-badge" id="tqTopicBadge">Arrays</span>
+          <span class="tq-difficulty-badge" id="tqDifficultyBadge">Medium</span>
+        </div>
+
+        <div class="tq-topbar-right">
+          <div class="tq-timer" id="tqTimer">
+            <i class="fas fa-clock tq-timer-icon"></i>
+            <span id="tqTimerDisplay">00:00</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== QUIZ CONTENT ===== -->
+    <main class="tq-main">
+      <div class="tq-container">
+        <!-- Question Progress Header -->
+        <div class="tq-progress-header">
+          <div class="tq-counter" id="tqCounter">
+            <span class="tq-counter-current" id="tqCounterCurrent">1</span>
+            <span class="tq-counter-sep">/</span>
+            <span class="tq-counter-total" id="tqCounterTotal">10</span>
+          </div>
+          <div class="tq-progress-track">
+            <div class="tq-progress-fill" id="tqProgressFill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Quiz progress"></div>
+          </div>
+          <span class="tq-percent" id="tqPercent">10%</span>
+        </div>
+
+        <!-- Question Area -->
+        <div class="tq-question-area" id="tqQuestionArea">
+          <!-- Question Content Rendered by JS -->
+        </div>
+
+        <!-- Answer Options -->
+        <div class="tq-options" id="tqOptions" role="radiogroup" aria-labelledby="tqQuestionText">
+          <!-- Options Rendered by JS -->
+        </div>
+
+        <!-- Result Area (hidden until quiz finishes) -->
+        <div class="tq-result hidden" id="tqResult">
+          <!-- Result Content Rendered by JS -->
+        </div>
+
+        <!-- Live region for screen readers -->
+        <div id="tqLiveRegion" class="sr-only" role="status" aria-live="polite"></div>
+      </div>
+    </main>
+
+    <!-- ===== DATA SCRIPTS ===== -->
+    <script src="/data/quiz-questions.js"></script>
+    <script src="/data/dsa-topics.js"></script>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="/script.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script type="module" src="topic-quiz.js"></script>
+  </body>
+</html>

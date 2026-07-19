@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link-Cut Trees · Algo Infinity Verse</title>
+<meta name="description" content="A Represented-Tree Engine — watch access(v) splay auxiliary trees, re-link preferred children, and walk path-parent pointers to expose the root-to-v path, backed by a genuine splay-tree implementation.">
+<link rel="stylesheet" href="link-cut-tree.css">
+</head>
+<body>
+
+<div id="starfield"></div>
+<div class="bg-glow"></div>
+
+<div class="app-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <span class="logo-mark">🌲</span>
+      <span class="name">Algo Infinity Verse</span>
+    </a>
+
+    <div class="page-title">
+      <h1>Link-Cut Trees</h1>
+      <p>Represented-Tree Engine · preferred-path decomposition via splay trees</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="crumb">Visualizers / <strong>Link-Cut Trees</strong></span>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="workspace">
+
+    <!-- ---------- Left panel: operations ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Operations</h2></div>
+      <div class="panel-body">
+
+        <div class="control-group">
+          <button class="btn primary full" id="loadExampleBtn">📖 Load example forest</button>
+        </div>
+        <div class="control-group">
+          <button class="btn full" id="resetBtn">🔄 Reset to isolated nodes</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>access(v) — animated</span></div>
+          <div class="op-row">
+            <select class="text-input" id="accessSelect"></select>
+            <button class="btn primary" id="accessBtn">Run</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>link(u, v) — u must be a root</span></div>
+          <div class="op-row">
+            <select class="text-input" id="linkUSelect"></select>
+            <select class="text-input" id="linkVSelect"></select>
+          </div>
+          <button class="btn full" id="linkBtn">Link</button>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>cut(v)</span></div>
+          <div class="op-row">
+            <select class="text-input" id="cutSelect"></select>
+            <button class="btn" id="cutBtn">Cut</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>findRoot(v)</span></div>
+          <div class="op-row">
+            <select class="text-input" id="rootSelect"></select>
+            <button class="btn" id="rootBtn">Find</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label"><span>query(v) — max on path to root</span></div>
+          <div class="op-row">
+            <select class="text-input" id="querySelect"></select>
+            <button class="btn" id="queryBtn">Query</button>
+          </div>
+        </div>
+
+        <p class="error-text" id="opError"></p>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label"><span>Animation speed</span><span class="val" id="speedVal">420ms/step</span></div>
+          <input type="range" id="speedSlider" min="80" max="1000" step="20" value="420">
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="stepBtn">Step ⏭</button>
+          <button class="btn primary" id="playBtn">▶ Play</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="legend-item"><span class="swatch real"></span> Real forest edge</div>
+        <div class="legend-item"><span class="swatch splay"></span> Splay-tree edge (left/right)</div>
+        <div class="legend-item"><span class="swatch pathp"></span> Path-parent (virtual) edge</div>
+        <div class="legend-item"><span class="swatch-dot active"></span> Node currently being splayed</div>
+        <div class="legend-item"><span class="swatch-dot onpath"></span> On the exposed root→v path</div>
+
+      </div>
+    </aside>
+
+    <!-- ---------- Center: dual view ---------- -->
+    <section class="panel viewport-panel">
+      <div id="viewport">
+        <div class="viewport-overlay">
+          <span class="chip">Nodes <strong id="chipN">7</strong></span>
+          <span class="chip">Operations run <strong id="chipOps">0</strong></span>
+        </div>
+        <div class="phase-badge" id="phaseBadge">Idle</div>
+
+        <div class="dual-view">
+          <div class="view-half">
+            <h4>Represented Forest (the real, logical tree) <span class="tag">ground truth</span></h4>
+            <div class="view-svg-wrap">
+              <svg class="view-svg" id="forestSvg" viewBox="0 0 900 220">
+                <defs><marker id="arrowReal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#3b82f6"></path></marker></defs>
+                <g id="forestEdgeLayer"></g><g id="forestNodeLayer"></g>
+              </svg>
+            </div>
+          </div>
+          <div class="view-half">
+            <h4>Auxiliary Splay Trees (internal LCT state) <span class="tag">preferred-path decomposition</span></h4>
+            <div class="view-svg-wrap">
+              <svg class="view-svg" id="auxSvg" viewBox="0 0 900 260">
+                <g id="auxEdgeLayer"></g><g id="auxNodeLayer"></g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="loading-veil" id="loadingVeil">
+          <div class="spinner"></div>
+          <p>building the forest…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Right panel: telemetry ---------- -->
+    <aside class="panel">
+      <div class="panel-header"><span class="dot"></span><h2>Telemetry</h2></div>
+      <div class="panel-body">
+
+        <div class="result-box" id="resultBox">
+          <div class="rtitle">Status</div>
+          <div id="resultVal" role="status" aria-live="polite">Load the example forest, then try access(v), link, cut, findRoot, or query.</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="num" id="statRotations">0</div><div class="lbl">Rotations this op</div></div>
+          <div class="stat-box"><div class="num" id="statSplices">0</div><div class="lbl">Preferred-child splices</div></div>
+        </div>
+
+        <div class="control-label"><span>Step log</span></div>
+        <div class="step-log" id="stepLog" role="log" aria-live="polite"><div class="log-line">Ready.</div></div>
+
+        <div class="divider"></div>
+        <p class="hint">Every <code>query(v)</code> and <code>findRoot(v)</code> result shown here is cross-checked live against a naive O(n) walk of the real parent-pointer forest (see the step log) — if they ever disagree, that's a bug, not a feature.</p>
+      </div>
+    </aside>
+
+  </main>
+</div>
+
+<script src="link-cut-tree.js"></script>
+</body>
+</html>

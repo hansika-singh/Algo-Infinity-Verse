@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keyboard Shortcut Trainer | Algo Infinity Verse</title>
+  <meta name="description" content="Practice code-editor keyboard shortcuts (run, format, comment, undo) in a score-and-streak trainer game." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="editor-shortcut-trainer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-page="editor-shortcut-trainer">
+  <a href="#est-main" class="est-skip-link">Skip to main content</a>
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <div id="navbar-placeholder"></div>
+
+  <header class="est-hero">
+    <div class="est-hero-badge">
+      <i class="fas fa-keyboard" aria-hidden="true"></i>
+      Code Editor Focus
+    </div>
+    <h1>
+      Keyboard Shortcut
+      <span class="est-hero-accent">Trainer</span>
+    </h1>
+    <p>
+      Drill run, format, comment, undo, and more — build muscle memory with score,
+      streaks, and instant feedback in a focused practice game.
+    </p>
+  </header>
+
+  <main id="est-main" class="est-main">
+    <div class="container">
+      <div class="est-workspace">
+        <!-- Stats + controls -->
+        <aside class="est-panel" aria-labelledby="est-stats-title">
+          <div class="est-panel-header">
+            <div class="est-panel-title">
+              <i class="fas fa-chart-simple est-panel-icon" aria-hidden="true"></i>
+              <h2 id="est-stats-title">Session stats</h2>
+            </div>
+          </div>
+
+          <div class="est-stats" aria-live="polite">
+            <div class="est-stat">
+              <span class="est-stat-val" id="estScore">0</span>
+              <span class="est-stat-label">Score</span>
+            </div>
+            <div class="est-stat">
+              <span class="est-stat-val" id="estStreak">0</span>
+              <span class="est-stat-label">Streak</span>
+            </div>
+            <div class="est-stat">
+              <span class="est-stat-val" id="estBest">0</span>
+              <span class="est-stat-label">Best streak</span>
+            </div>
+            <div class="est-stat">
+              <span class="est-stat-val" id="estRound">0</span>
+              <span class="est-stat-label">Round</span>
+            </div>
+          </div>
+
+          <label class="est-label" for="estMode">Practice mode</label>
+          <select id="estMode" class="est-select">
+            <option value="mixed">Mixed shortcuts</option>
+            <option value="core">Core only (run / format / comment / undo)</option>
+            <option value="timed">Timed round (60s)</option>
+          </select>
+
+          <div class="est-timer-wrap" id="estTimerWrap" hidden>
+            <div class="est-timer-bar" aria-hidden="true"><div class="est-timer-fill" id="estTimerFill"></div></div>
+            <p class="est-timer-text"><span id="estTimerSec">60</span>s left</p>
+          </div>
+
+          <div class="est-actions">
+            <button type="button" id="estStartBtn" class="btn btn-primary">
+              <i class="fas fa-play" aria-hidden="true"></i> Start
+            </button>
+            <button type="button" id="estNextBtn" class="btn btn-secondary" disabled>
+              <i class="fas fa-forward" aria-hidden="true"></i> Skip / Next
+            </button>
+            <button type="button" id="estRestartBtn" class="btn btn-outline" disabled>
+              <i class="fas fa-rotate-left" aria-hidden="true"></i> Restart
+            </button>
+          </div>
+
+          <div class="est-cheat" id="estCheatSheet" aria-label="Shortcut reference">
+            <h3 class="est-cheat-title">Quick reference</h3>
+            <ul class="est-cheat-list" id="estCheatList"></ul>
+          </div>
+        </aside>
+
+        <!-- Game arena -->
+        <section class="est-panel est-arena" aria-labelledby="est-arena-title">
+          <div class="est-panel-header">
+            <div class="est-panel-title">
+              <i class="fas fa-terminal est-panel-icon" aria-hidden="true"></i>
+              <h2 id="est-arena-title">Practice arena</h2>
+            </div>
+            <span class="est-mod-hint" id="estModHint">Use Ctrl on Windows/Linux · ⌘ on Mac</span>
+          </div>
+
+          <div id="estIdle" class="est-idle">
+            <i class="fas fa-keyboard" aria-hidden="true"></i>
+            <p>Press <strong>Start</strong>, then type the shortcut shown — no mouse needed.</p>
+          </div>
+
+          <div id="estPlay" class="est-play" hidden>
+            <p class="est-prompt-label">Press the shortcut for</p>
+            <h3 class="est-prompt" id="estPrompt">Run code</h3>
+            <p class="est-prompt-desc" id="estPromptDesc"></p>
+
+            <div class="est-keys-target" id="estKeysTarget" aria-label="Expected shortcut"></div>
+
+            <div class="est-live-keys" aria-live="polite">
+              <span class="est-live-label">You pressed</span>
+              <div class="est-keys-live" id="estKeysLive"><span class="est-key muted">Waiting…</span></div>
+            </div>
+
+            <div class="est-feedback" id="estFeedback" role="status" aria-live="assertive"></div>
+
+            <p class="est-hint">Tip: focus this page (click the arena) so key events are captured. Esc cancels a wrong attempt.</p>
+          </div>
+
+          <div id="estRoundOver" class="est-round-over" hidden>
+            <h3>Round complete</h3>
+            <p id="estRoundSummary"></p>
+            <button type="button" id="estPlayAgainBtn" class="btn btn-primary">
+              <i class="fas fa-play" aria-hidden="true"></i> Play again
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/auth.js"></script>
+  <script src="/bootstrap-legacy.js"></script>
+  <script src="/script.js"></script>
+  <script type="module" src="/dist/legacy-bundle.mjs"></script>
+  <script src="/theme.js"></script>
+  <script src="editor-shortcut-trainer.js"></script>
+  <script>
+    if (typeof loadPartial === 'function') {
+      loadPartial('navbar-placeholder', '/partials/navbar.html');
+      loadPartial('footer-placeholder', '/partials/footer.html');
+    }
+  </script>
+</body>
+</html>
