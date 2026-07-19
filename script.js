@@ -3750,9 +3750,7 @@ function updateLeaderboard() {
   const leaderboardList = document.getElementById('leaderboardList');
   if (!leaderboardList) return;
   const requestId = ++leaderboardRequestId;
-  renderLeaderboardRows(buildLeaderboardRows([], getCurrentUserId()), getCurrentUserId(), {
-    emptyMessage: 'Loading leaderboard...',
-  });
+  showSkeleton('leaderboardList', { count: 5, type: 'row' });
   loadLeaderboard()
     .then(({ leaders, currentUserId }) => {
       if (requestId !== leaderboardRequestId) return;
@@ -3762,13 +3760,11 @@ function updateLeaderboard() {
         resolvedCurrentUserId
       );
     })
-    .catch((error) => {
+  .catch((error) => {
       if (error.name === 'AbortError') return;
       console.warn('Could not load leaderboard:', error);
       if (requestId !== leaderboardRequestId) return;
-      renderLeaderboardRows(buildLeaderboardRows([], getCurrentUserId()), getCurrentUserId(), {
-        emptyMessage: 'Leaderboard unavailable.',
-      });
+      showError('leaderboardList', 'Failed to load leaderboard.', 'updateLeaderboard');
     });
 }
 

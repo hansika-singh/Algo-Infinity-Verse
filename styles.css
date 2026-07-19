@@ -7739,23 +7739,70 @@ html.light-mode .dropdown-menu {
   text-align: center;
 }
 
-.quiz-loader {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  border-top: 5px solid var(--primary);
-  border-radius: 50%;
-  animation: quizSpin 1s linear infinite;
+/* ===== ISSUE #1737: ERROR STATES & SKELETON LOADING ===== */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
 }
 
-@keyframes quizSpin {
-  0% {
-    transform: rotate(0deg);
-  }
+.retry-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
 
-  100% {
-    transform: rotate(360deg);
-  }
+.retry-btn:hover {
+  opacity: 0.85;
+}
+
+.skeleton-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--dark-card) 25%,
+    var(--dark-surface) 50%,
+    var(--dark-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--dark-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-title { height: 20px; width: 60%; }
+.skeleton-line { height: 14px; width: 100%; }
+.skeleton-line.short { width: 40%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
 }
 
 .hidden {
