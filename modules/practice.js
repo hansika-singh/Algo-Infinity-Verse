@@ -52,21 +52,6 @@ function initPracticeSection() {
       currentFilter = btn.dataset.filter;
       renderProblems();
     });
-    // Topic filter buttons
-  let currentTopic = 'all';
-  const topicButtons = document.querySelectorAll(".topic-btn");
-  topicButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      topicButtons.forEach((b) => b.classList.remove("active-topic"));
-      btn.classList.add("active-topic");
-      currentTopic = btn.dataset.topic;
-      renderProblems();
-    });
-  });
-
-  // Override renderProblems to include topic filter
-  const originalRenderProblems = window.renderProblems;
-  window.currentTopic = 'all';
     // Set active state on load if restored
     if (btn.dataset.filter === currentFilter) {
       filterButtons.forEach((b) => b.classList.remove('active'));
@@ -131,26 +116,11 @@ function initPracticeSection() {
     });
   }
   if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      currentSearch = "";
-      clearBtn.classList.remove("visible");
-      // Topic filter buttons
-  const topicButtons = document.querySelectorAll(".topic-btn");
-  topicButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      topicButtons.forEach((b) => b.classList.remove("active-topic"));
-      btn.classList.add("active-topic");
-      currentTopic = btn.dataset.topic;
     clearBtn.addEventListener('click', () => {
       searchInput.value = '';
       currentSearch = '';
       clearBtn.classList.remove('visible');
       renderProblems();
-    });
-  });
-
-  renderProblems();
       searchInput.focus();
     });
     if (currentSearch) {
@@ -188,8 +158,6 @@ function initPracticeSection() {
     );
   });
 }
-
-let currentTopic = 'all';
 
 function getFilteredProblems() {
   const userProgress = window.userProgress || {};
