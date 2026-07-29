@@ -323,6 +323,20 @@ const aiTools = [
     icon: 'fa-flag-checkered',
     desc: 'Compete head-to-head in real-time P2P algorithm races against other learners.',
   },
+  {
+    name: 'Complexity Diff Studio',
+    path: '/pages/ai-features/complexity-diff-studio/complexity-diff-studio.html',
+    category: 'Analysis & Profiling',
+    icon: 'fa-code-compare',
+    desc: 'Diff two implementations of the same problem and compare their time/space complexity side by side.',
+  },
+  {
+    name: 'RL Grid World',
+    path: '/pages/ai/rl-grid-world/index.html',
+    category: 'Simulations',
+    icon: 'fa-robot',
+    desc: 'Watch a reinforcement learning agent explore a grid world, learning an optimal policy through trial and reward.',
+  },
 ];
 
 /* ─── Categories ─── */

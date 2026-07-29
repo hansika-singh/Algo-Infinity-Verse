@@ -306,6 +306,48 @@ const learningTopics = [
     icon: 'fa-flask',
     desc: 'Learn the Flask micro web framework — routing, templating, and building lightweight APIs.',
   },
+  {
+    name: 'Learn ASP.NET Core',
+    path: '/pages/learning/aspnet-learning/aspnet-learning.html',
+    category: 'Special',
+    icon: 'fa-server',
+    desc: 'Learn the ASP.NET Core web framework — MVC, Razor Pages, dependency injection, and Entity Framework.',
+  },
+  {
+    name: 'Learn Laravel',
+    path: '/pages/learning/laravel-learning/laravel-learning.html',
+    category: 'Special',
+    icon: 'fa-php',
+    desc: 'Master modern PHP web development, MVC architecture, Eloquent ORM, Blade templating, and artisan commands.',
+  },
+  {
+    name: 'Cache Systems: LRU & LFU',
+    path: '/pages/learning/cache-learning/cache-learning.html',
+    category: 'Data Structures',
+    icon: 'fa-database',
+    desc: 'Learn cache eviction strategies — Least Recently Used and Least Frequently Used — and how to implement them.',
+  },
+  {
+    name: 'Time Complexity Tycoon',
+    path: '/pages/learning/time-complexity-tycoon/time-complexity-tycoon.html',
+    category: 'Core Algorithms',
+    icon: 'fa-chart-line',
+    desc: 'A tycoon-style game that teaches Big-O intuition by having you scale a business against growing input sizes.',
+  },
+  {
+    name: 'Learning Mirror',
+    path: '/pages/learning/Learning Mirror/learning-mirror.html',
+    category: 'Special',
+    icon: 'fa-brain',
+    desc: 'Reflect on your learning progress and get a mirrored view of your strengths and knowledge gaps.',
+  },
+  {
+    name: 'Linear Algebra for Programmers',
+    path: '/pages/linear-algebra/linear-algebra.html',
+    category: 'Core Algorithms',
+    icon: 'fa-square-root-variable',
+    desc: 'Vectors, matrices, transformations, and dot products explained for programmers building graphics, ML, or games.',
+  },
 ];
 
 /* ─── Categories ─── */

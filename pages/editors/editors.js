@@ -3,7 +3,7 @@
    ============================================ */
 
 const editors = [
-  // ── Mainstream Languages ──
+  // ── Mainstream Languages 
   {
     name: 'Python Editor',
     path: '/pages/editors/python-editor/python-editor.html',
@@ -263,6 +263,76 @@ const editors = [
     category: 'Systems & Special',
     icon: 'fa-pencil',
     desc: 'Design algorithms with instant syntax highlighting, auto-indent, and real-time linting for pseudo-code.',
+  },
+  {
+    name: 'Assembly Editor',
+    path: '/pages/editors/assembly-editor/assembly.html',
+    category: 'Systems & Special',
+    icon: 'fa-microchip',
+    desc: 'Write low-level Assembly code with syntax highlighting, starter templates, and simulated execution.',
+  },
+  {
+    name: 'Fortran Editor',
+    path: '/pages/editors/fortran-editor/fortran.html',
+    category: 'Systems & Special',
+    icon: 'fa-square-root-variable',
+    desc: 'Write Fortran programming language code with syntax highlighting, starter templates, and fast simulated execution.',
+  },
+  {
+    name: 'COBOL Editor',
+    path: '/pages/editors/cobol/cobol.html',
+    category: 'Systems & Special',
+    icon: 'fa-building-columns',
+    desc: 'Write COBOL programming language code with syntax highlighting, starter templates, and fast simulated execution.',
+  },
+  {
+    name: 'MATLAB Editor',
+    path: '/pages/editors/MATLAB-editor/matlab.html',
+    category: 'Systems & Special',
+    icon: 'fa-chart-line',
+    desc: 'Write MATLAB code for numerical computing, matrix operations, and plotting with simulated execution.',
+  },
+  {
+    name: 'V Editor',
+    path: '/pages/editors/V-editor/v.html',
+    category: 'Systems & Special',
+    icon: 'fa-v',
+    desc: 'Write V programming language code with syntax highlighting, starter templates, and fast simulated execution.',
+  },
+  {
+    name: 'Erlang Editor',
+    path: '/pages/editors/erlang-editor/index.html',
+    category: 'Systems & Special',
+    icon: 'fa-diagram-project',
+    desc: 'Explore Erlang concurrency primitives, pattern matching, and recursion with a live simulated editor.',
+  },
+  {
+    name: 'ABAP Editor',
+    path: '/pages/editors/ABAP-editor/abap.html',
+    category: 'Systems & Special',
+    icon: 'fa-server',
+    desc: 'Write ABAP code for enterprise business logic with syntax highlighting and simulated execution.',
+  },
+  {
+    name: 'Apex Editor',
+    path: '/pages/editors/Apex-editor/apex.html',
+    category: 'Systems & Special',
+    icon: 'fa-cloud',
+    desc: 'Write Salesforce Apex code with syntax highlighting, starter templates, and simulated execution.',
+  },
+  {
+    name: 'Solidity Editor',
+    path: '/pages/editors/solidity-editor/solidity.html',
+    category: 'Systems & Special',
+    icon: 'fa-ethereum',
+    desc: 'Write Solidity smart contracts with syntax highlighting, starter templates, and simulated blockchain execution.',
+  },
+  {
+    name: 'Motoko Editor',
+    path: '/pages/editors/motoko-editor/motoko.html',
+    category: 'Systems & Special',
+    icon: 'fa-infinity',
+    desc: 'Write Motoko smart contracts for the Internet Computer with syntax highlighting and simulated execution.',
   },
 ];
 
